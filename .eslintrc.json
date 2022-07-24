@@ -1,0 +1,107 @@
+{
+  "env": {
+    "es2022": true,
+    "node": true
+  },
+  "extends": [
+    "canonical"
+  ],
+  "overrides": [
+    {
+      "extends": [
+        "canonical/typescript",
+        "canonical/node",
+        "canonical/module"
+      ],
+      "files": "*.ts",
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      },
+      "rules": {
+        "@typescript-eslint/comma-dangle": [
+          "error",
+          "never"
+        ],
+        "@typescript-eslint/member-delimiter-style": [
+          "error",
+          {
+            "multiline": {
+              "delimiter": "semi",
+              "requireLast": true
+            },
+            "multilineDetection": "brackets",
+            "singleline": {
+              "delimiter": "semi",
+              "requireLast": false
+            }
+          }
+        ],
+        "@typescript-eslint/no-base-to-string": [
+          "error",
+          {
+            "ignoredTypeNames": [
+              "RawData"
+            ]
+          }
+        ],
+        "@typescript-eslint/object-curly-spacing": [
+          "error",
+          "never"
+        ]
+      }
+    },
+    {
+      "extends": [
+        "canonical/json"
+      ],
+      "files": "*.json"
+    }
+  ],
+  "rules": {
+    "array-bracket-newline": [
+      "error",
+      "consistent"
+    ],
+    "array-element-newline": [
+      "error",
+      "consistent"
+    ],
+    "arrow-body-style": [
+      "error",
+      "as-needed"
+    ],
+    "canonical/destructuring-property-newline": [
+      "off"
+    ],
+    "comma-dangle": [
+      "error",
+      "never"
+    ],
+    "func-style": [
+      "error",
+      "declaration"
+    ],
+    "import/extensions": [
+      "off"
+    ],
+    "linebreak-style": [
+      "error",
+      "windows"
+    ],
+    "object-curly-newline": [
+      "error",
+      {
+        "multiline": true,
+        "minProperties": 2,
+        "consistent": true
+      }
+    ],
+    "object-curly-spacing": [
+      "error",
+      "never"
+    ],
+    "no-param-reassign": [
+      "off"
+    ]
+  }
+}
