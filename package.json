@@ -5,9 +5,8 @@
   "main": "src/main.js",
   "scripts": {
     "build": "npm run lint && tsc",
-    "build-config": "npm run lint-config && tsc src/config.ts --outDir dist --target esnext",
-    "lint": "eslint **/*.ts --fix",
-    "lint-config": "eslint src/config.ts --fix",
+    "watch": "tsc --watch",
+    "lint": "eslint src --cache --ext .ts",
     "start": "node dist/main.js"
   },
   "author": "Delemangi",
