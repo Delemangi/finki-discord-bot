@@ -1,6 +1,5 @@
 import { EmbedBuilder } from 'discord.js';
-
-const questions = (await import('../config/questions.json')).default;
+import questions from '../config/questions.json' assert { type: 'json' };
 
 export function getAllQuetions (): string[] {
   return questions.map(question => question.name);
