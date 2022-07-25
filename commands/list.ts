@@ -6,7 +6,7 @@ export const data = new SlashCommandBuilder()
   .setDescription('Get all questions');
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
-  const embed = new EmbedBuilder().setColor('Green').setTitle('Questions').setDescription(getAllQuetions().join('\n'));
+  const embed = new EmbedBuilder().setColor('Green').setTitle('Questions').setDescription(getAllQuetions().map((question, index) => `${index + 1}. ${question}`).join('\n\n'));
 
   await interaction.editReply({ embeds: [embed] });
 }
