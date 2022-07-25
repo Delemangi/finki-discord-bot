@@ -1,8 +1,8 @@
 import { REST } from '@discordjs/rest';
 import { Client, Collection, Routes } from 'discord.js';
-import { getFromConfig } from './config.js';
+import { getFromConfig } from './src/config.js';
 import { readdirSync } from 'fs';
-import { logger } from './logger.js';
+import { logger } from './src/logger.js';
 
 const [applicationID, token] = [getFromConfig('applicationID'), getFromConfig('token')];
 
