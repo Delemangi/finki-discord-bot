@@ -7,6 +7,11 @@ declare global {
       execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
     };
 
+    type Question = {
+      name: string;
+      value: string;
+    }
+
     type Config = {
       applicationID: string;
       token: string;
