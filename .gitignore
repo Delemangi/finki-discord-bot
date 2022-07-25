@@ -193,5 +193,5 @@ fabric.properties
 .idea
 *.js
 *.map
-config.ts
+config
 .vscode
