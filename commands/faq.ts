@@ -10,7 +10,7 @@ export const data = new SlashCommandBuilder()
     .setRequired(true)
     .addChoices(...getAllOptions()));
 
-export async function execute(interaction: ChatInputCommandInteraction): Promise<void> {
+export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   const keyword = interaction.options.getString('keyword') ?? '';
   const question = getQuestion(keyword);
   const embed = getEmbedFromQuestion(question);

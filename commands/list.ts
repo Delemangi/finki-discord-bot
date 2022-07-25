@@ -5,7 +5,7 @@ export const data = new SlashCommandBuilder()
   .setName('list')
   .setDescription('Get all questions');
 
-export async function execute(interaction: ChatInputCommandInteraction): Promise<void> {
+export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   const embed = new EmbedBuilder().setColor('Green').setTitle('Questions').setDescription(getAllQuetions().join('\n'));
 
   await interaction.reply({ embeds: [embed] });

@@ -1,5 +1,5 @@
 import { REST } from '@discordjs/rest';
-import { Client,  Collection, Routes } from 'discord.js';
+import { Client, Collection, Routes } from 'discord.js';
 import { getFromConfig } from './config.js';
 import { readdirSync } from 'fs';
 import { logger } from './logger.js';
@@ -7,7 +7,7 @@ import { logger } from './logger.js';
 const [applicationID, token] = [getFromConfig('applicationID'), getFromConfig('token')];
 
 if (applicationID === undefined || token === undefined) {
-    throw new Error('Missing applicationID or token');
+  throw new Error('Missing applicationID or token');
 }
 
 const client = new Client({ intents: [] });
@@ -39,10 +39,10 @@ client.on('interactionCreate', async (interaction) => {
   logger.info(`${interaction.user.tag}: ${interaction}`);
 
   try {
-   await interaction.deferReply();
-   await command.execute(interaction);
+    await interaction.deferReply();
+    await command.execute(interaction);
   } catch (error) {
-   logger.error(`Failed to handle interaction: ${error}`);
+    logger.error(`Failed to handle interaction: ${error}`);
   }
 });
 
