@@ -15,5 +15,5 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   const question = getQuestion(keyword);
   const embed = getEmbedFromQuestion(question);
 
-  await interaction.reply({ embeds: [embed] });
+  await interaction.editReply({ embeds: [embed] });
 }

@@ -8,5 +8,5 @@ export const data = new SlashCommandBuilder()
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   const embed = new EmbedBuilder().setColor('Green').setTitle('Questions').setDescription(getAllQuetions().join('\n'));
 
-  await interaction.reply({ embeds: [embed] });
+  await interaction.editReply({ embeds: [embed] });
 }
