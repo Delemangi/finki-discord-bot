@@ -1,5 +1,7 @@
 import { EmbedBuilder } from 'discord.js';
-import questions from '../config/questions.json' assert { type: 'json' };
+import { readFileSync } from 'fs';
+
+const questions: Question[] = JSON.parse(readFileSync('./config/questions.json', 'utf8'));
 
 export function getAllQuetions (): string[] {
   return questions.map(question => question.name);
