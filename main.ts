@@ -10,7 +10,7 @@ if (applicationID === undefined || token === undefined) {
   throw new Error('Missing applicationID or token');
 }
 
-const client = new Client({ intents: [] });
+const client = new Client({ intents: [], presence: { activities: [{ name: 'World Domination' }] } });
 const rest = new REST().setToken(token);
 
 const files = readdirSync('./dist/commands').filter((file) => file.endsWith('.js'));
