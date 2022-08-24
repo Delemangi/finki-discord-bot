@@ -1,8 +1,9 @@
 import { REST } from '@discordjs/rest';
-import { Client, Collection, Routes } from 'discord.js';
+import { Collection, Routes } from 'discord.js';
 import { getFromConfig } from './src/config.js';
 import { readdirSync } from 'fs';
 import { logger } from './src/logger.js';
+import { client } from './src/client.js';
 
 const [applicationID, token] = [getFromConfig('applicationID'), getFromConfig('token')];
 
@@ -10,7 +11,6 @@ if (applicationID === undefined || token === undefined) {
   throw new Error('Missing applicationID or token');
 }
 
-const client = new Client({ intents: [], presence: { activities: [{ name: 'World Domination' }] } });
 const rest = new REST().setToken(token);
 
 const files = readdirSync('./dist/commands').filter((file) => file.endsWith('.js'));
