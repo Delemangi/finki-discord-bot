@@ -9,7 +9,7 @@ export function getAllQuetions (): string[] {
 
 export function getAllOptions (): Question[] {
   return questions.map(question => {
-    return { name: question.name, value: question.name };
+    return { name: question.name.replaceAll('`', ''), value: question.name };
   });
 }
 
