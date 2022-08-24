@@ -21,5 +21,6 @@ export function getEmbedFromQuestion (question: Question): EmbedBuilder {
   return new EmbedBuilder()
     .setColor('Aqua')
     .setTitle(question.name)
-    .setDescription(question.value);
+    .setDescription(question.value)
+    .setTimestamp();
 }
