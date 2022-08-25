@@ -7,7 +7,7 @@ declare global {
     execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
   };
 
-  type Question = {
+  type EmbedInfo = {
     name: string;
     value: string;
   };
