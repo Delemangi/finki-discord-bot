@@ -21,7 +21,6 @@ export function getEmbedFromLink (link: EmbedInfo): EmbedBuilder {
     return new EmbedBuilder()
         .setColor('Orange')
         .setTitle(link.name)
-        .setURL(link.value)
         .setDescription(link.value)
         .setTimestamp();
 }
