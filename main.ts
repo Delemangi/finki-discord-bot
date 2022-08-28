@@ -90,14 +90,9 @@ async function handleButton (interaction: ButtonInteraction) {
 
     const memberRoles = (member.roles as GuildMemberRoleManager);
 
-    if ((member.roles as GuildMemberRoleManager).cache.has(role.id)) {
-      await memberRoles.remove(role);
-      await interaction.reply({ content: `Ја тргнавте бојата ${args[0]}.`, ephemeral: true });
-    } else {
-      await memberRoles.remove(colorRoles );
-      await memberRoles.add(role);
+    await memberRoles.remove(colorRoles);
+    await memberRoles.add(role);
 
-      await interaction.reply({ content: `Ја земавте бојата ${args[0]}.`, ephemeral: true });
-    }
+    await interaction.deferUpdate();
   }
 }
