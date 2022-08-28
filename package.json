@@ -4,7 +4,8 @@
   "description": "FINKI Discord bot",
   "main": "src/main.js",
   "scripts": {
-    "start": "tsc && node dist/main.js"
+    "start": "tsc && node dist/main.js",
+    "colors": "tsc && node dist/scripts/colors.js"
   },
   "author": "Delemangi",
   "homepage": "https://github.com/Delemangi/finki-discord-bot",
