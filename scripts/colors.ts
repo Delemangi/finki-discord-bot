@@ -46,6 +46,7 @@ client.once('ready', async () => {
   }
 
   await channel.send({ embeds: [embed], components });
+  logger.info('Embed sent. Exiting.');
 
   process.exit(0);
 });
