@@ -15,7 +15,6 @@ declare global {
   type Config = {
     applicationID: string;
     token: string;
-    server: string;
     logChannel: string;
     colorRoles: string[];
   };
