@@ -5,7 +5,8 @@
   "main": "src/main.js",
   "scripts": {
     "start": "tsc && node dist/main.js",
-    "colors": "tsc && node dist/scripts/colors.js"
+    "colors": "tsc && node dist/scripts/colors.js",
+    "years": "tsc && node dist/scripts/years.js"
   },
   "author": "Delemangi",
   "homepage": "https://github.com/Delemangi/finki-discord-bot",

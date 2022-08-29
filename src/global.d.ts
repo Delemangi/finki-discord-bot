@@ -17,6 +17,7 @@ declare global {
     token: string;
     logChannel: string;
     colorRoles: string[];
+    yearRoles: string[];
   };
 }
 

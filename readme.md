@@ -14,6 +14,7 @@ The bot can be run normally using `npm run start`. However, the source code also
 Currently there are:
 
 1. `npm run colors` - takes an argument of channel ID and image URL, in that order
+2. `npm run years` - takes an argument of channel ID
 
 ## Config
 
