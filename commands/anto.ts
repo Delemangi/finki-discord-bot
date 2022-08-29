@@ -154,7 +154,7 @@ const facts = [
 
 export const data = new SlashCommandBuilder()
     .setName('anto')
-    .setDescription('Get a question');
+    .setDescription('Get an Anto fact');
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
     const random = Math.floor(Math.random() * facts.length);
