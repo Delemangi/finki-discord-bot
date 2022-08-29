@@ -127,7 +127,7 @@ async function handleButton (interaction: ButtonInteraction) {
         .addFields(
           { name: 'Author', value: userMention(interaction.user.id) },
           { name: 'Command', value: 'Color' },
-          { name: 'Role', value: roleMention(role.id) },
+          { name: 'Role', value: roleMention(role.id) }
         )
         .setFooter({ text: interaction.id })
         .setTimestamp();
