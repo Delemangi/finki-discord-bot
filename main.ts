@@ -1,5 +1,5 @@
 import { REST } from '@discordjs/rest';
-import { ButtonInteraction, ChatInputCommandInteraction, Collection, GuildMemberRoleManager, Role, Routes } from 'discord.js';
+import { ButtonInteraction, channelMention, ChannelType, ChatInputCommandInteraction, Collection, EmbedBuilder, GuildMemberRoleManager, inlineCode, Role, roleMention, Routes, TextChannel, userMention } from 'discord.js';
 import { getFromConfig } from './src/config.js';
 import { readdirSync } from 'fs';
 import { logger } from './src/logger.js';
@@ -39,8 +39,18 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
+let logChannel: TextChannel;
+
 client.once('ready', async () => {
   logger.info('Bot is ready!');
+
+  const channel = client.channels.cache.get(getFromConfig('logChannel'));
+
+  if (channel?.type !== ChannelType.GuildText) {
+    throw new Error('Provided log channel is not a guild text channel.');
+  }
+
+  logChannel = channel;
 });
 
 try {
@@ -61,6 +71,21 @@ async function handleChatInputCommand (interaction: ChatInputCommandInteraction)
     await command.execute(interaction);
   } catch (error) {
     logger.error(`Failed to handle interaction: ${error}`);
+  }
+
+  if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
+    const embed = new EmbedBuilder()
+      .setTitle('Chat')
+      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+      .addFields(
+        { name: 'Author', value: userMention(interaction.user.id) },
+        { name: 'Command', value: inlineCode(interaction.toString()) },
+        { name: 'Channel', value: channelMention(interaction.channel.id) }
+      )
+      .setFooter({ text: interaction.id })
+      .setTimestamp();
+
+    await logChannel.send({ embeds: [embed] });
   }
 }
 
@@ -94,5 +119,20 @@ async function handleButton (interaction: ButtonInteraction) {
     await memberRoles.add(role);
 
     await interaction.deferUpdate();
+
+    if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
+      const embed = new EmbedBuilder()
+        .setTitle('Button')
+        .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+        .addFields(
+          { name: 'Author', value: userMention(interaction.user.id) },
+          { name: 'Command', value: 'Color' },
+          { name: 'Role', value: roleMention(role.id) },
+        )
+        .setFooter({ text: interaction.id })
+        .setTimestamp();
+
+      await logChannel.send({ embeds: [embed] });
+    }
   }
 }

@@ -16,6 +16,7 @@ declare global {
     applicationID: string;
     token: string;
     server: string;
+    logChannel: string;
     colorRoles: string[];
   };
 }
