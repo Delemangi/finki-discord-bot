@@ -18,6 +18,7 @@ declare global {
     logChannel: string;
     colorRoles: string[];
     yearRoles: string[];
+    activityRoles: string[];
   };
 }
 
