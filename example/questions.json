@@ -1,6 +1,7 @@
 [
   {
-    "name": "Question",
-    "value": "Answer"
+    "question": "Question",
+    "answer": "Answer",
+    "links": {}
   }
 ]

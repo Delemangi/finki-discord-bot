@@ -1,3 +1,5 @@
+import { ColorResolvable } from 'discord.js';
+
 declare global {
   type Command = {
     data: {
@@ -7,21 +9,34 @@ declare global {
     execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
   };
 
-  type EmbedInfo = {
-    name: string;
-    value: string;
-  };
-
   type BotConfig = {
     applicationID: string;
     token: string;
     logChannel: string;
+    color: ColorResolvable;
   };
 
   type RoleConfig = {
     color: string[];
     year: string[];
     activity: string[];
+  };
+
+  type Option = {
+    name: string;
+    value: string;
+  };
+
+  type Question = {
+    question: string;
+    answer: string;
+    links?: { [index: string]: string; };
+  };
+
+  type Link = {
+    name: string;
+    link: string;
+    description?: string;
   };
 }
 

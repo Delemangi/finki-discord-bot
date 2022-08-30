@@ -1,26 +1,65 @@
-import { EmbedBuilder } from 'discord.js';
-import { readFileSync } from 'fs';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
+import { getFromBotConfig, getQuestions } from './config.js';
 
-const questions: EmbedInfo[] = JSON.parse(readFileSync('./config/questions.json', 'utf8'));
+const questions = getQuestions();
 
 export function getAllQuetions (): string[] {
-  return questions.map(question => question.name);
+  return questions.map(q => q.question);
 }
 
-export function getAllOptions (): EmbedInfo[] {
-  return questions.map(question => {
-    return { name: question.name.replaceAll('`', ''), value: question.name };
+export function getAllOptions (): Option[] {
+  return questions.map(q => {
+    return {
+      name: q.question.replaceAll('`', ''),
+      value: q.question
+    };
   });
 }
 
-export function getQuestion (keyword: string): EmbedInfo {
-  return questions.find(question => question.name === keyword) ?? { name: 'No question found', value: 'No question found' };
+export function getQuestion (name: string): Question {
+  return questions.find(q => q.question === name) ?? { question: 'No question found', answer: 'No question found' };
 }
 
-export function getEmbedFromQuestion (question: EmbedInfo): EmbedBuilder {
-  return new EmbedBuilder()
-    .setColor('Aqua')
-    .setTitle(question.name)
-    .setDescription(question.value)
+export function getEmbedFromQuestion (question: Question): EmbedBuilder {
+  const embed = new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle(question.question)
+    .setDescription(question.answer)
     .setTimestamp();
+
+  return embed;
+}
+
+export function getComponentsFromQuestion (question: Question): ActionRowBuilder<ButtonBuilder>[] {
+  const components: ActionRowBuilder<ButtonBuilder>[] = [];
+
+  if (question.links === undefined) {
+    return [];
+  }
+
+  const entries = Object.entries(question.links);
+
+  for (let i = 0; i < entries.length; i += 5) {
+    const row = new ActionRowBuilder<ButtonBuilder>();
+    const buttons: ButtonBuilder[] = [];
+
+    for (let j = i; j < i + 5; j++) {
+      const [label, link] = entries[j] ?? ['', ''];
+      if (label === undefined || link === undefined || label === '' || link === '') {
+        break;
+      }
+
+      const button = new ButtonBuilder()
+        .setURL(link)
+        .setLabel(label)
+        .setStyle(ButtonStyle.Link);
+
+      buttons.push(button);
+    }
+
+    row.addComponents(buttons);
+    components.push(row);
+  }
+
+  return components;
 }

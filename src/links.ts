@@ -1,26 +1,44 @@
-import { EmbedBuilder } from 'discord.js';
-import { readFileSync } from 'fs';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
+import { getFromBotConfig, getLinks } from './config.js';
 
-const links: EmbedInfo[] = JSON.parse(readFileSync('./config/links.json', 'utf8'));
+const links = getLinks();
 
 export function getAllLinks (): string[] {
-  return links.map(link => link.name);
+  return links.map(l => l.name);
 }
 
-export function getAllOptions (): EmbedInfo[] {
-  return links.map(link => {
-    return { name: link.name.replaceAll('`', ''), value: link.name };
+export function getAllOptions (): Option[] {
+  return links.map(l => {
+    return {
+      name: l.name.replaceAll('`', ''),
+      value: l.name
+    };
   });
 }
 
-export function getLink (keyword: string): EmbedInfo {
-  return links.find(link => link.name === keyword) ?? { name: 'No link found', value: 'No link found' };
+export function getLink (name: string): Link {
+  return links.find(link => link.name === name) ?? { name: 'No link found', link: 'No link found' };
 }
 
-export function getEmbedFromLink (link: EmbedInfo): EmbedBuilder {
-  return new EmbedBuilder()
-    .setColor('Orange')
+export function getEmbedFromLink (link: Link): EmbedBuilder {
+  const embed = new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
     .setTitle(link.name)
-    .setDescription(link.value)
     .setTimestamp();
+
+  if (link.description !== undefined) {
+    embed.setDescription(link.description);
+  }
+
+  return embed;
+}
+
+export function getComponentsFromLink (link: Link): ActionRowBuilder<ButtonBuilder>[] {
+  const components = new ActionRowBuilder<ButtonBuilder>()
+    .addComponents(new ButtonBuilder()
+      .setURL(link.link)
+      .setLabel('Link')
+      .setStyle(ButtonStyle.Link));
+
+  return [components];
 }

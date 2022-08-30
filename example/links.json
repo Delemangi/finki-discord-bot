@@ -1,6 +1,7 @@
 [
-    {
-        "name": "Name",
-        "value": "Link"
-    }
+  {
+    "name": "Name",
+    "link": "Link",
+    "description": "Description"
+  }
 ]
