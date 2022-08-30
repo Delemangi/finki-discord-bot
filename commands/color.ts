@@ -1,5 +1,5 @@
 import { ChatInputCommandInteraction, Role, SlashCommandBuilder } from 'discord.js';
-import { getFromConfig } from '../src/config.js';
+import { getFromRoleConfig } from '../src/config.js';
 
 export const data = new SlashCommandBuilder()
   .setName('color')
@@ -10,7 +10,7 @@ export const data = new SlashCommandBuilder()
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   const guild = interaction.guild;
-  const colorRoles = getFromConfig('colorRoles');
+  const colorRoles = getFromRoleConfig('color');
 
   if (guild === null) {
     interaction.editReply('You can only use this command in a server.');

@@ -1,11 +1,11 @@
 import { REST } from '@discordjs/rest';
 import { ButtonInteraction, channelMention, ChannelType, ChatInputCommandInteraction, Collection, EmbedBuilder, GuildMemberRoleManager, inlineCode, Role, roleMention, Routes, TextChannel, userMention } from 'discord.js';
-import { getFromConfig } from './src/config.js';
+import { getFromBotConfig, getFromRoleConfig } from './src/config.js';
 import { readdirSync } from 'fs';
 import { logger } from './src/logger.js';
 import { client } from './src/client.js';
 
-const [applicationID, token] = [getFromConfig('applicationID'), getFromConfig('token')];
+const [applicationID, token] = [getFromBotConfig('applicationID'), getFromBotConfig('token')];
 
 if (applicationID === undefined || token === undefined) {
   throw new Error('Missing applicationID or token');
@@ -44,7 +44,7 @@ let logChannel: TextChannel;
 client.once('ready', async () => {
   logger.info('Bot is ready!');
 
-  const channel = client.channels.cache.get(getFromConfig('logChannel'));
+  const channel = client.channels.cache.get(getFromBotConfig('logChannel'));
 
   if (channel?.type !== ChannelType.GuildText) {
     throw new Error('Provided log channel is not a guild text channel.');
@@ -105,7 +105,7 @@ async function handleButton (interaction: ButtonInteraction) {
 
   if (command === 'color') {
     if (colorRoles.length === 0) {
-      colorRoles = getFromConfig('colorRoles').map(r => guild.roles.cache.find(ro => ro.name === r)) as Role[];
+      colorRoles = getFromRoleConfig('color').map(r => guild.roles.cache.find(ro => ro.name === r)) as Role[];
     }
 
     const role = guild.roles.cache.find(r => r.name === args[0]);
@@ -138,7 +138,7 @@ async function handleButton (interaction: ButtonInteraction) {
     }
   } else if (command === 'year') {
     if (yearRoles.length === 0) {
-      yearRoles = getFromConfig('yearRoles').map(r => guild.roles.cache.find(ro => ro.name === r)) as Role[];
+      yearRoles = getFromRoleConfig('year').map(r => guild.roles.cache.find(ro => ro.name === r)) as Role[];
     }
 
     const role = guild.roles.cache.find(r => r.name === args[0]);
@@ -171,7 +171,7 @@ async function handleButton (interaction: ButtonInteraction) {
     }
   } else if (command === 'activity') {
     if (activityRoles.length === 0) {
-      activityRoles = getFromConfig('activityRoles').map(r => guild.roles.cache.find(ro => ro.name === r)) as Role[];
+      activityRoles = getFromRoleConfig('activity').map(r => guild.roles.cache.find(ro => ro.name === r)) as Role[];
     }
 
     const role = guild.roles.cache.find(r => r.name === args[0]);

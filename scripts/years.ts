@@ -1,6 +1,6 @@
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder } from 'discord.js';
 import { client } from '../src/client.js';
-import { getFromConfig } from '../src/config.js';
+import { getFromBotConfig, getFromRoleConfig } from '../src/config.js';
 import { logger } from '../src/logger.js';
 
 const channelID = process.argv[2];
@@ -9,13 +9,13 @@ if (channelID === undefined) {
   throw new Error('Missing channelID. Please provide it and try again.');
 }
 
-await client.login(getFromConfig('token'));
+await client.login(getFromBotConfig('token'));
 
 client.once('ready', async () => {
   logger.info('Bot is ready!');
 
   const channel = client.channels.cache.get(channelID);
-  const roles = getFromConfig('yearRoles');
+  const roles = getFromRoleConfig('year');
 
   if (channel === undefined || channel.type !== ChannelType.GuildText) {
     throw new Error('Invalid channel provided.');

@@ -12,13 +12,16 @@ declare global {
     value: string;
   };
 
-  type Config = {
+  type BotConfig = {
     applicationID: string;
     token: string;
     logChannel: string;
-    colorRoles: string[];
-    yearRoles: string[];
-    activityRoles: string[];
+  };
+
+  type RoleConfig = {
+    color: string[];
+    year: string[];
+    activity: string[];
   };
 }
 

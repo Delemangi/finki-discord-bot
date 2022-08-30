@@ -23,6 +23,7 @@ The `config` folder should contain:
 1. `config.json` - the basic bot configuration.
 2. `questions.json` - questions and answers for the `faq` command.
 3. `links.json` - links for the `link` command.
+4. `roles.json` - roles for the scripts.
 
 Check the `example` folder for example config files.
 
