@@ -6,7 +6,7 @@ export const data = new SlashCommandBuilder()
   .setDescription('Get a link')
   .addStringOption(option => option
     .setName('name')
-    .setDescription('Link name')
+    .setDescription('Link')
     .setRequired(true)
     .addChoices(...getAllOptions()));
 
