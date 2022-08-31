@@ -6,7 +6,7 @@ declare global {
       name: string;
       toJSON: () => string;
     };
-    execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
+    execute: (interaction: CommandInteraction) => Promise<void>;
   };
 
   type BotConfig = {
