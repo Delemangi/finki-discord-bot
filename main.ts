@@ -78,9 +78,12 @@ async function handleChatInputCommand (interaction: ChatInputCommandInteraction)
   }
 
   if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
+    // @ts-ignore
+    const avatar = interaction.member.displayAvatarURL();
+
     const embed = new EmbedBuilder()
       .setTitle('Chat')
-      .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+      .setAuthor({ name: interaction.user.tag, iconURL: avatar })
       .addFields(
         { name: 'Author', value: userMention(interaction.user.id) },
         { name: 'Command', value: inlineCode(interaction.toString()) },
@@ -127,9 +130,12 @@ async function handleButton (interaction: ButtonInteraction) {
     await interaction.deferUpdate();
 
     if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
+      // @ts-ignore
+      const avatar = interaction.member.displayAvatarURL();
+
       const embed = new EmbedBuilder()
         .setTitle('Button')
-        .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+        .setAuthor({ name: interaction.user.tag, iconURL: avatar })
         .addFields(
           { name: 'Author', value: userMention(interaction.user.id) },
           { name: 'Command', value: 'Color' },
@@ -160,9 +166,12 @@ async function handleButton (interaction: ButtonInteraction) {
     await interaction.deferUpdate();
 
     if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
+      // @ts-ignore
+      const avatar = interaction.member.displayAvatarURL();
+
       const embed = new EmbedBuilder()
         .setTitle('Button')
-        .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+        .setAuthor({ name: interaction.user.tag, iconURL: avatar })
         .addFields(
           { name: 'Author', value: userMention(interaction.user.id) },
           { name: 'Command', value: 'Year' },
@@ -196,9 +205,12 @@ async function handleButton (interaction: ButtonInteraction) {
     await interaction.deferUpdate();
 
     if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
+      // @ts-ignore
+      const avatar = interaction.member.displayAvatarURL();
+
       const embed = new EmbedBuilder()
         .setTitle('Button')
-        .setAuthor({ name: interaction.user.tag, iconURL: interaction.user.displayAvatarURL() })
+        .setAuthor({ name: interaction.user.tag, iconURL: avatar })
         .addFields(
           { name: 'Author', value: userMention(interaction.user.id) },
           { name: 'Command', value: 'Activity' },
