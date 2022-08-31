@@ -1,5 +1,5 @@
 import { REST } from '@discordjs/rest';
-import { ButtonInteraction, channelMention, ChannelType, ChatInputCommandInteraction, Collection, EmbedBuilder, GuildMemberRoleManager, inlineCode, Role, roleMention, Routes, TextChannel, userMention } from 'discord.js';
+import { ButtonInteraction, channelMention, ChannelType, ChatInputCommandInteraction, Collection, EmbedBuilder, GuildMemberRoleManager, inlineCode, Role, roleMention, Routes, TextChannel, UserContextMenuCommandInteraction, userMention } from 'discord.js';
 import { getFromBotConfig, getFromRoleConfig } from './src/config.js';
 import { readdirSync } from 'fs';
 import { logger } from './src/logger.js';
@@ -34,6 +34,8 @@ client.on('interactionCreate', async (interaction) => {
     await handleChatInputCommand(interaction);
   } else if (interaction.isButton()) {
     await handleButton(interaction);
+  } else if (interaction.isUserContextMenuCommand()) {
+    await handleUserContextMenuCommand(interaction);
   } else {
     logger.warn(`Unhandled interaction: ${interaction}`);
   }
@@ -62,7 +64,9 @@ try {
 async function handleChatInputCommand (interaction: ChatInputCommandInteraction) {
   const command = commands.get(interaction.commandName);
 
-  if (!command) return;
+  if (command === undefined) {
+    return;
+  }
 
   logger.info(`[Chat] ${interaction.user.tag}: ${interaction}`);
 
@@ -208,5 +212,41 @@ async function handleButton (interaction: ButtonInteraction) {
     } else {
       logger.warn(`Unhandled button interaction: ${interaction.customId}`);
     }
+  }
+}
+
+async function handleUserContextMenuCommand (interaction: UserContextMenuCommandInteraction) {
+  const command = commands.get(interaction.commandName);
+
+  if (command === undefined) {
+    return;
+  }
+
+  logger.info(`[User Context Menu] ${interaction.user.tag}: ${interaction.commandName}`);
+
+  try {
+    await interaction.deferReply();
+    await command.execute(interaction);
+  } catch (error) {
+    logger.error(`Failed to handle interaction: ${error}`);
+  }
+
+  if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
+    // @ts-ignore
+    const avatar = interaction.member.displayAvatarURL();
+
+    const embed = new EmbedBuilder()
+      .setTitle('User Context Menu')
+      .setAuthor({ name: interaction.user.tag, iconURL: avatar })
+      .addFields(
+        { name: 'Author', value: userMention(interaction.user.id) },
+        { name: 'Command', value: inlineCode(interaction.commandName) },
+        { name: 'Channel', value: channelMention(interaction.channel.id) },
+        { name: 'Target', value: userMention(interaction.targetId) }
+      )
+      .setFooter({ text: interaction.id })
+      .setTimestamp();
+
+    await logChannel.send({ embeds: [embed] });
   }
 }
