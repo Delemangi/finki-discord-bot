@@ -15,6 +15,8 @@ Currently there are:
 
 1. `npm run colors` - takes an argument of channel ID and image URL, in that order
 2. `npm run years` - takes an argument of channel ID
+3. `npm run activities` - takes an argument of channel ID
+4. `npm run delete` - takes arguments of application command IDs
 
 ## Config
 
