@@ -4,7 +4,7 @@ Discord bot for the FINKI Discord server, made in [discord.js](https://github.co
 
 ## Installation
 
-1. `git pull git@github.com:Delemangi/finki-discord-bot.git`
+1. `git clone git@github.com:Delemangi/finki-discord-bot.git`
 2. `npm install`
 
 ## Running
