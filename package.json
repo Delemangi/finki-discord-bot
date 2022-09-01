@@ -8,6 +8,7 @@
     "colors": "tsc && node dist/scripts/colors.js",
     "years": "tsc && node dist/scripts/years.js",
     "activities": "tsc && node dist/scripts/activities.js",
+    "subjects": "tsc && node dist/scripts/subjects.js",
     "delete": "tsc && node dist/scripts/delete.js"
   },
   "author": "Delemangi",

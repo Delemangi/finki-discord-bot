@@ -16,7 +16,8 @@ Currently there are:
 1. `npm run colors` - takes an argument of channel ID and image URL, in that order
 2. `npm run years` - takes an argument of channel ID
 3. `npm run activities` - takes an argument of channel ID
-4. `npm run delete` - takes arguments of application command IDs
+4. `npm run subjects` - takes an argument of channel ID and role sets, as set in `roles.json`
+5. `npm run delete` - takes arguments of application command IDs
 
 ## Config
 
@@ -26,6 +27,7 @@ The `config` folder should contain:
 2. `questions.json` - questions and answers for the `faq` command.
 3. `links.json` - links for the `link` command.
 4. `roles.json` - roles for the scripts.
+5. `subjects.json` - full names of the subjects
 
 Check the `example` folder for example config files.
 

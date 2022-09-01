@@ -20,6 +20,7 @@ declare global {
     color: string[];
     year: string[];
     activity: string[];
+    subject: { [index: string]: string[]; };
   };
 
   type Option = {

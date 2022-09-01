@@ -98,7 +98,6 @@ async function handleChatInputCommand (interaction: ChatInputCommandInteraction)
 
 let colorRoles: Role[] = [];
 let yearRoles: Role[] = [];
-let activityRoles: Role[] = [];
 
 async function handleButton (interaction: ButtonInteraction) {
   const [command, ...args] = interaction.customId.split(':');
@@ -183,10 +182,6 @@ async function handleButton (interaction: ButtonInteraction) {
       await logChannel.send({ embeds: [embed] });
     }
   } else if (command === 'activity') {
-    if (activityRoles.length === 0) {
-      activityRoles = getFromRoleConfig('activity').map(r => guild.roles.cache.find(ro => ro.name === r)) as Role[];
-    }
-
     const role = guild.roles.cache.find(r => r.name === args[0]);
     const member = interaction.member;
 
@@ -220,7 +215,41 @@ async function handleButton (interaction: ButtonInteraction) {
         .setTimestamp();
 
       await logChannel.send({ embeds: [embed] });
+    }
+  } else if (command === 'subject') {
+    const role = guild.roles.cache.find(r => r.name === args[0]);
+    const member = interaction.member;
 
+    if (role === undefined || member === null) {
+      return;
+    }
+
+    const memberRoles = member.roles as GuildMemberRoleManager;
+
+    if (memberRoles.cache.has(role.id)) {
+      await memberRoles.remove(role);
+    } else {
+      await memberRoles.add(role);
+    }
+
+    await interaction.deferUpdate();
+
+    if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
+      // @ts-ignore
+      const avatar = interaction.member.displayAvatarURL();
+
+      const embed = new EmbedBuilder()
+        .setTitle('Button')
+        .setAuthor({ name: interaction.user.tag, iconURL: avatar })
+        .addFields(
+          { name: 'Author', value: userMention(interaction.user.id) },
+          { name: 'Command', value: 'Subject' },
+          { name: 'Role', value: roleMention(role.id) }
+        )
+        .setFooter({ text: interaction.id })
+        .setTimestamp();
+
+      await logChannel.send({ embeds: [embed] });
     } else {
       logger.warn(`Unhandled button interaction: ${interaction.customId}`);
     }
