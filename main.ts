@@ -124,8 +124,12 @@ async function handleButton (interaction: ButtonInteraction) {
 
     const memberRoles = member.roles as GuildMemberRoleManager;
 
-    await memberRoles.remove(colorRoles);
-    await memberRoles.add(role);
+    if (memberRoles.cache.has(role.id)) {
+      await memberRoles.remove(role);
+    } else {
+      await memberRoles.remove(colorRoles);
+      await memberRoles.add(role);
+    }
 
     await interaction.deferUpdate();
 
@@ -161,8 +165,12 @@ async function handleButton (interaction: ButtonInteraction) {
 
     const memberRoles = member.roles as GuildMemberRoleManager;
 
-    await memberRoles.remove(yearRoles);
-    await memberRoles.add(role);
+    if (memberRoles.cache.has(role.id)) {
+      await memberRoles.remove(role);
+    } else {
+      await memberRoles.remove(yearRoles);
+      await memberRoles.add(role);
+    }
 
     await interaction.deferUpdate();
 
