@@ -21,7 +21,9 @@ client.once('ready', async () => {
     throw new Error('Invalid channel provided.');
   }
 
-  const embed = new EmbedBuilder().setTitle('Година на студирање');
+  const embed = new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Година на студирање');
   const components = new ActionRowBuilder<ButtonBuilder>();
   const buttons: ButtonBuilder[] = [];
 

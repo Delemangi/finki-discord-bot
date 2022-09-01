@@ -1,4 +1,5 @@
 import { ApplicationCommandType, ContextMenuCommandBuilder, EmbedBuilder, GuildMember, time, TimestampStyles, UserContextMenuCommandInteraction } from 'discord.js';
+import { getFromBotConfig } from '../src/config.js';
 
 export const data = new ContextMenuCommandBuilder()
   .setName('User Info')
@@ -12,6 +13,7 @@ export async function execute (interaction: UserContextMenuCommandInteraction): 
   }
 
   const embed = new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
     .setAuthor({ name: member.user.tag, iconURL: member.displayAvatarURL() })
     .setTitle('User Info')
     .addFields(

@@ -82,6 +82,7 @@ async function handleChatInputCommand (interaction: ChatInputCommandInteraction)
     const avatar = interaction.member.displayAvatarURL();
 
     const embed = new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
       .setTitle('Chat')
       .setAuthor({ name: interaction.user.tag, iconURL: avatar })
       .addFields(
@@ -133,6 +134,7 @@ async function handleButton (interaction: ButtonInteraction) {
       const avatar = interaction.member.displayAvatarURL();
 
       const embed = new EmbedBuilder()
+        .setColor(getFromBotConfig('color'))
         .setTitle('Button')
         .setAuthor({ name: interaction.user.tag, iconURL: avatar })
         .addFields(
@@ -169,6 +171,7 @@ async function handleButton (interaction: ButtonInteraction) {
       const avatar = interaction.member.displayAvatarURL();
 
       const embed = new EmbedBuilder()
+        .setColor(getFromBotConfig('color'))
         .setTitle('Button')
         .setAuthor({ name: interaction.user.tag, iconURL: avatar })
         .addFields(
@@ -204,6 +207,7 @@ async function handleButton (interaction: ButtonInteraction) {
       const avatar = interaction.member.displayAvatarURL();
 
       const embed = new EmbedBuilder()
+        .setColor(getFromBotConfig('color'))
         .setTitle('Button')
         .setAuthor({ name: interaction.user.tag, iconURL: avatar })
         .addFields(
@@ -239,6 +243,7 @@ async function handleButton (interaction: ButtonInteraction) {
       const avatar = interaction.member.displayAvatarURL();
 
       const embed = new EmbedBuilder()
+        .setColor(getFromBotConfig('color'))
         .setTitle('Button')
         .setAuthor({ name: interaction.user.tag, iconURL: avatar })
         .addFields(
@@ -277,6 +282,7 @@ async function handleUserContextMenuCommand (interaction: UserContextMenuCommand
     const avatar = interaction.member.displayAvatarURL();
 
     const embed = new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
       .setTitle('User Context Menu')
       .setAuthor({ name: interaction.user.tag, iconURL: avatar })
       .addFields(

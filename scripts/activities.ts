@@ -21,7 +21,9 @@ client.once('ready', async () => {
     throw new Error('Invalid channel provided.');
   }
 
-  const embed = new EmbedBuilder().setTitle('Активности');
+  const embed = new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Активности');
   const components: ActionRowBuilder<ButtonBuilder>[] = [];
 
   for (let i = 0; i < roles.length; i += 5) {
