@@ -13,7 +13,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   const colorRoles = getFromRoleConfig('color');
 
   if (guild === null) {
-    interaction.editReply('You can only use this command in a server.');
+    await interaction.editReply('You can only use this command in a server.');
     return;
   }
 
