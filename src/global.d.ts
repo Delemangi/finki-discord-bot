@@ -20,6 +20,7 @@ declare global {
     color: string[];
     year: string[];
     activity: string[];
+    program: string[];
     subject: { [index: string]: string[]; };
   };
 

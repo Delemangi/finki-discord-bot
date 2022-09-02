@@ -17,7 +17,8 @@ Currently there are:
 2. `npm run years` - takes an argument of channel ID
 3. `npm run activities` - takes an argument of channel ID
 4. `npm run subjects` - takes an argument of channel ID and role sets, as set in `roles.json`
-5. `npm run delete` - takes arguments of application command IDs
+5. `npm run programs` - takes an argument of channel ID
+6. `npm run delete` - takes arguments of application command IDs
 
 ## Config
 

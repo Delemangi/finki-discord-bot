@@ -9,6 +9,7 @@
     "years": "tsc && node dist/scripts/years.js",
     "activities": "tsc && node dist/scripts/activities.js",
     "subjects": "tsc && node dist/scripts/subjects.js",
+    "programs": "tsc && node dist/scripts/programs.js",
     "delete": "tsc && node dist/scripts/delete.js"
   },
   "author": "Delemangi",

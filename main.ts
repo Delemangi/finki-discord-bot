@@ -99,6 +99,7 @@ async function handleChatInputCommand (interaction: ChatInputCommandInteraction)
 
 let colorRoles: Role[] = [];
 let yearRoles: Role[] = [];
+let programRoles: Role[] = [];
 
 async function handleButton (interaction: ButtonInteraction) {
   const [command, ...args] = interaction.customId.split(':');
@@ -257,6 +258,47 @@ async function handleButton (interaction: ButtonInteraction) {
         .addFields(
           { name: 'Author', value: userMention(interaction.user.id) },
           { name: 'Command', value: 'Subject' },
+          { name: 'Role', value: roleMention(role.id) }
+        )
+        .setFooter({ text: interaction.id })
+        .setTimestamp();
+
+      await logChannel.send({ embeds: [embed] });
+    }
+  } else if (command === 'program') {
+    if (programRoles.length === 0) {
+      programRoles = getFromRoleConfig('program').map(r => guild.roles.cache.find(ro => ro.name === r)) as Role[];
+    }
+
+    const role = guild.roles.cache.find(r => r.name === args[0]);
+    const member = interaction.member;
+
+    if (role === undefined || member === null) {
+      return;
+    }
+
+    const memberRoles = member.roles as GuildMemberRoleManager;
+
+    if (memberRoles.cache.has(role.id)) {
+      await memberRoles.remove(role);
+    } else {
+      await memberRoles.remove(programRoles);
+      await memberRoles.add(role);
+    }
+
+    await interaction.deferUpdate();
+
+    if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
+      // @ts-ignore
+      const avatar = interaction.member.displayAvatarURL();
+
+      const embed = new EmbedBuilder()
+        .setColor(getFromBotConfig('color'))
+        .setTitle('Button')
+        .setAuthor({ name: interaction.user.tag, iconURL: avatar })
+        .addFields(
+          { name: 'Author', value: userMention(interaction.user.id) },
+          { name: 'Command', value: 'Program' },
           { name: 'Role', value: roleMention(role.id) }
         )
         .setFooter({ text: interaction.id })
