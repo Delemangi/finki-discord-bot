@@ -1,23 +1,32 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
-import { getFromBotConfig, getLinks } from './config.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder
+} from 'discord.js';
+import {
+  getFromBotConfig,
+  getLinks
+} from './config.js';
 
 const links = getLinks();
 
 export function getAllLinks (): string[] {
-  return links.map(l => l.name);
+  return links.map((l) => l.name);
 }
 
 export function getAllOptions (): Option[] {
-  return links.map(l => {
-    return {
-      name: l.name.replaceAll('`', ''),
-      value: l.name
-    };
-  });
+  return links.map((l) => ({
+    name: l.name.replaceAll('`', ''),
+    value: l.name
+  }));
 }
 
 export function getLink (name: string): Link {
-  return links.find(link => link.name === name) ?? { name: 'No link found', link: 'No link found' };
+  return links.find((link) => link.name === name) ?? {
+    link: 'No link found',
+    name: 'No link found'
+  };
 }
 
 export function getEmbedFromLink (link: Link): EmbedBuilder {

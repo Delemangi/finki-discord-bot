@@ -1,37 +1,47 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder } from 'discord.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ChannelType,
+  EmbedBuilder
+} from 'discord.js';
 import { client } from '../src/client.js';
-import { getFromBotConfig, getFromRoleConfig, getSubject } from '../src/config.js';
+import {
+  getFromBotConfig,
+  getFromRoleConfig,
+  getSubject
+} from '../src/config.js';
 import { logger } from '../src/logger.js';
 
 const [channelID, ...roleSets] = process.argv.slice(2);
 
-if (channelID === undefined || roleSets === undefined) {
-  throw new Error('Missing channelID or role set. Please provide them and try again.');
+if (channelID === undefined || roleSets === undefined || roleSets.length === 0) {
+  throw new Error('Missing channel ID or role sets arguments');
 }
 
 await client.login(getFromBotConfig('token'));
 
 client.once('ready', async () => {
-  logger.info('Bot is ready!');
+  logger.info('Bot is ready');
 
   const channel = client.channels.cache.get(channelID);
 
   if (channel === undefined || channel.type !== ChannelType.GuildText) {
-    throw new Error('Invalid channel provided.');
+    throw new Error('The provided channel must be a guild text channel');
   }
 
   for (const roleSet of roleSets) {
     const roles = getFromRoleConfig('subject')[roleSet];
 
     if (roles === undefined) {
-      throw new Error('Invalid role set provided.');
+      throw new Error(`Invalid role set provided: ${roleSet}`);
     }
 
+    const components: ActionRowBuilder<ButtonBuilder>[] = [];
     const embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle(`${roleSet.length > 1 ? '' : 'Семестар'} ${roleSet}`)
       .setDescription(roles.map((role, i) => `${(i + 1).toString().padStart(2, '0')}. ${getSubject(role)}`).join('\n'));
-    const components: ActionRowBuilder<ButtonBuilder>[] = [];
 
     for (let i = 0; i < roles.length; i += 5) {
       const row = new ActionRowBuilder<ButtonBuilder>();
@@ -54,10 +64,16 @@ client.once('ready', async () => {
       components.push(row);
     }
 
-    await channel.send({ embeds: [embed], components });
+    try {
+      await channel.send({
+        components,
+        embeds: [embed]
+      });
+    } catch (error) {
+      throw new Error(`Failed to send embed\n${error}`);
+    }
   }
 
-  logger.info('Embeds sent. Exiting.');
-
-  process.exit(0);
+  logger.info('Done');
+  client.destroy();
 });

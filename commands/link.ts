@@ -1,10 +1,18 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
-import { getAllOptions, getComponentsFromLink, getEmbedFromLink, getLink } from '../src/links.js';
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder
+} from 'discord.js';
+import {
+  getAllOptions,
+  getComponentsFromLink,
+  getEmbedFromLink,
+  getLink
+} from '../src/links.js';
 
 export const data = new SlashCommandBuilder()
   .setName('link')
   .setDescription('Get a link')
-  .addStringOption(option => option
+  .addStringOption((option) => option
     .setName('name')
     .setDescription('Link')
     .setRequired(true)
@@ -16,5 +24,8 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   const embed = getEmbedFromLink(link);
   const components = getComponentsFromLink(link);
 
-  await interaction.editReply({ embeds: [embed], components });
+  await interaction.editReply({
+    components,
+    embeds: [embed]
+  });
 }

@@ -1,10 +1,18 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
-import { getAllOptions, getComponentsFromQuestion, getEmbedFromQuestion, getQuestion } from '../src/faq.js';
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder
+} from 'discord.js';
+import {
+  getAllOptions,
+  getComponentsFromQuestion,
+  getEmbedFromQuestion,
+  getQuestion
+} from '../src/faq.js';
 
 export const data = new SlashCommandBuilder()
   .setName('faq')
   .setDescription('Get a question')
-  .addStringOption(option => option
+  .addStringOption((option) => option
     .setName('name')
     .setDescription('Question')
     .setRequired(true)
@@ -16,5 +24,8 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   const embed = getEmbedFromQuestion(question);
   const components = getComponentsFromQuestion(question);
 
-  await interaction.editReply({ embeds: [embed], components });
+  await interaction.editReply({
+    components,
+    embeds: [embed]
+  });
 }

@@ -1,17 +1,22 @@
-import { ChannelType, ChatInputCommandInteraction, PermissionsBitField, SlashCommandBuilder } from 'discord.js';
-import { setTimeout } from 'timers/promises';
+import { setTimeout } from 'node:timers/promises';
+import {
+  type ChatInputCommandInteraction,
+  ChannelType,
+  PermissionsBitField,
+  SlashCommandBuilder
+} from 'discord.js';
 
 export const data = new SlashCommandBuilder()
   .setName('purge')
   .setDescription('Purge last N messages')
-  .addNumberOption(option => option
+  .addNumberOption((option) => option
     .setName('count')
     .setDescription('Number of messages to purge')
     .setRequired(true));
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
-  if (interaction.channel?.type !== ChannelType.GuildText) {
-    await interaction.editReply('You can only use this command in a server.');
+  if (interaction.guild === null || interaction.channel === null || interaction.channel?.type !== ChannelType.GuildText) {
+    await interaction.editReply('You cannot use this command here.');
     return;
   }
 
@@ -19,22 +24,17 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
 
   if (count < 1) {
     await interaction.editReply('You must specify a positive number of messages to purge.');
-  }
-
-  const guild = interaction.guild;
-  if (guild === null) {
     return;
   }
 
-  const member = interaction.member;
-  const permissions = member?.permissions as PermissionsBitField;
+  const permissions = interaction.member?.permissions as PermissionsBitField;
   if (!permissions.has(PermissionsBitField.Flags.Administrator) && !permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-    await interaction.editReply('No permission!');
+    await interaction.editReply('You cannot run this command.');
+    return;
   }
 
   await interaction.editReply(`Deleting last ${count} messages...`);
-  await setTimeout(1000);
+  await setTimeout(1_000);
   await interaction.deleteReply();
-
   await interaction.channel.bulkDelete(count);
 }

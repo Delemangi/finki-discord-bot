@@ -1,4 +1,13 @@
-import { ApplicationCommandType, ContextMenuCommandBuilder, EmbedBuilder, GuildMember, time, TimestampStyles, UserContextMenuCommandInteraction } from 'discord.js';
+import {
+  type GuildMember,
+  type UserContextMenuCommandInteraction,
+  ApplicationCommandType,
+  ContextMenuCommandBuilder,
+  EmbedBuilder,
+  time,
+  TimestampStyles,
+  ChannelType
+} from 'discord.js';
 import { getFromBotConfig } from '../src/config.js';
 
 export const data = new ContextMenuCommandBuilder()
@@ -8,17 +17,29 @@ export const data = new ContextMenuCommandBuilder()
 export async function execute (interaction: UserContextMenuCommandInteraction): Promise<void> {
   const member = interaction.targetMember as GuildMember;
 
-  if (member === null) {
-    await interaction.editReply('This should never happen. Report it to the developer.');
+  if (interaction.guild === null || interaction.channel === null || interaction.channel.type !== ChannelType.GuildText) {
+    await interaction.editReply('You cannot use this command here.');
+    return;
   }
 
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
-    .setAuthor({ name: member.user.tag, iconURL: member.displayAvatarURL() })
+    .setAuthor({
+      iconURL: member.displayAvatarURL(),
+      name: member.user.tag
+    })
     .setTitle('User Info')
     .addFields(
-      { name: 'Created At', value: time(member.user.createdAt, TimestampStyles.RelativeTime), inline: true },
-      { name: 'Joined At', value: time(member.joinedAt ?? new Date(), TimestampStyles.RelativeTime), inline: true }
+      {
+        inline: true,
+        name: 'Created At',
+        value: time(member.user.createdAt, TimestampStyles.RelativeTime)
+      },
+      {
+        inline: true,
+        name: 'Joined At',
+        value: time(member.joinedAt ?? new Date(), TimestampStyles.RelativeTime)
+      }
     );
 
   await interaction.editReply({ embeds: [embed] });

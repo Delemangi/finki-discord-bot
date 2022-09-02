@@ -1,23 +1,32 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } from 'discord.js';
-import { getFromBotConfig, getQuestions } from './config.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder
+} from 'discord.js';
+import {
+  getFromBotConfig,
+  getQuestions
+} from './config.js';
 
 const questions = getQuestions();
 
 export function getAllQuetions (): string[] {
-  return questions.map(q => q.question);
+  return questions.map((q) => q.question);
 }
 
 export function getAllOptions (): Option[] {
-  return questions.map(q => {
-    return {
-      name: q.question.replaceAll('`', ''),
-      value: q.question
-    };
-  });
+  return questions.map((q) => ({
+    name: q.question.replaceAll('`', ''),
+    value: q.question
+  }));
 }
 
 export function getQuestion (name: string): Question {
-  return questions.find(q => q.question === name) ?? { question: 'No question found', answer: 'No question found' };
+  return questions.find((q) => q.question === name) ?? {
+    answer: 'No question found',
+    question: 'No question found'
+  };
 }
 
 export function getEmbedFromQuestion (question: Question): EmbedBuilder {

@@ -1,51 +1,57 @@
-import { ChannelType, ChatInputCommandInteraction, EmbedBuilder, SlashCommandBuilder, TextChannel } from 'discord.js';
+import {
+  type ChatInputCommandInteraction,
+  type TextChannel,
+  ChannelType,
+  EmbedBuilder,
+  SlashCommandBuilder
+} from 'discord.js';
 import { logger } from '../src/logger.js';
 
 export const data = new SlashCommandBuilder()
   .setName('embed')
   .setDescription('Interact with embeds')
-  .addSubcommand(command => command
+  .addSubcommand((command) => command
     .setName('create')
     .setDescription('Create an embed')
-    .addChannelOption(option => option
+    .addChannelOption((option) => option
       .setName('channel')
       .setDescription('The channel to send the embed to')
       .setRequired(true))
-    .addStringOption(option => option
+    .addStringOption((option) => option
       .setName('json')
       .setDescription('Embed JSON')
       .setRequired(true))
-    .addBooleanOption(option => option
+    .addBooleanOption((option) => option
       .setName('timestamp')
       .setDescription('Whether to add a timestamp to the embed')
       .setRequired(false)))
-  .addSubcommand(command => command
+  .addSubcommand((command) => command
     .setName('edit')
     .setDescription('Edit an existing embed')
-    .addChannelOption(option => option
+    .addChannelOption((option) => option
       .setName('channel')
       .setDescription('The channel of the embed')
       .setRequired(true))
-    .addStringOption(option => option
+    .addStringOption((option) => option
       .setName('id')
       .setDescription('The ID of the message')
       .setRequired(true))
-    .addStringOption(option => option
+    .addStringOption((option) => option
       .setName('json')
       .setDescription('Embed JSON')
       .setRequired(true))
-    .addBooleanOption(option => option
+    .addBooleanOption((option) => option
       .setName('timestamp')
       .setDescription('Whether to add a timestamp to the embed')
       .setRequired(false)))
-  .addSubcommand(command => command
+  .addSubcommand((command) => command
     .setName('delete')
     .setDescription('Delete an existing embed')
-    .addChannelOption(option => option
+    .addChannelOption((option) => option
       .setName('channel')
       .setDescription('The channel of the embed')
       .setRequired(true))
-    .addStringOption(option => option
+    .addStringOption((option) => option
       .setName('id')
       .setDescription('The ID of the message')
       .setRequired(true)));
@@ -63,7 +69,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     let json;
     try {
       json = JSON.parse(interaction.options.getString('json') ?? '');
-    } catch (error) {
+    } catch {
       await interaction.editReply('Invalid JSON provided.');
       return;
     }

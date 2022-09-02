@@ -1,30 +1,43 @@
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, ChannelType, EmbedBuilder } from 'discord.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ChannelType,
+  EmbedBuilder
+} from 'discord.js';
 import { client } from '../src/client.js';
-import { getFromBotConfig, getFromRoleConfig } from '../src/config.js';
+import {
+  getFromBotConfig,
+  getFromRoleConfig
+} from '../src/config.js';
 import { logger } from '../src/logger.js';
 
 const channelID = process.argv[2];
 
 if (channelID === undefined) {
-  throw new Error('Missing channelID. Please provide it and try again.');
+  throw new Error('Missing channel ID argument');
 }
 
 await client.login(getFromBotConfig('token'));
 
 client.once('ready', async () => {
-  logger.info('Bot is ready!');
+  logger.info('Bot is ready');
 
   const channel = client.channels.cache.get(channelID);
   const roles = getFromRoleConfig('activity');
 
   if (channel === undefined || channel.type !== ChannelType.GuildText) {
-    throw new Error('Invalid channel provided.');
+    throw new Error('The provided channel must be a guild text channel');
   }
 
+  if (roles === undefined || roles.length === 0) {
+    throw new Error('No activity roles have been provided');
+  }
+
+  const components: ActionRowBuilder<ButtonBuilder>[] = [];
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle('Активности');
-  const components: ActionRowBuilder<ButtonBuilder>[] = [];
 
   for (let i = 0; i < roles.length; i += 5) {
     const row = new ActionRowBuilder<ButtonBuilder>();
@@ -47,8 +60,15 @@ client.once('ready', async () => {
     components.push(row);
   }
 
-  await channel.send({ embeds: [embed], components });
-  logger.info('Embed sent. Exiting.');
+  try {
+    await channel.send({
+      components,
+      embeds: [embed]
+    });
+  } catch (error) {
+    throw new Error(`Failed to send embed\n${error}`);
+  }
 
-  process.exit(0);
+  logger.info('Done');
+  client.destroy();
 });

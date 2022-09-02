@@ -1,0 +1,124 @@
+{
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2022": true
+  },
+  "extends": [
+    "canonical"
+  ],
+  "overrides": [
+    {
+      "extends": [
+        "canonical/typescript",
+        "canonical/node",
+        "canonical/module"
+      ],
+      "files": "*.ts",
+      "parserOptions": {
+        "project": "./tsconfig.json"
+      },
+      "rules": {
+        "@typescript-eslint/comma-dangle": [
+          "error",
+          "never"
+        ],
+        "@typescript-eslint/member-delimiter-style": [
+          "error",
+          {
+            "multiline": {
+              "delimiter": "semi",
+              "requireLast": true
+            },
+            "multilineDetection": "brackets",
+            "singleline": {
+              "delimiter": "semi",
+              "requireLast": false
+            }
+          }
+        ],
+        "@typescript-eslint/no-base-to-string": [
+          "error"
+        ],
+        "@typescript-eslint/array-type": [
+          "error",
+          {
+            "default": "array"
+          }
+        ],
+        "@typescript-eslint/object-curly-spacing": [
+          "error",
+          "always"
+        ]
+      }
+    },
+    {
+      "extends": [
+        "canonical/json"
+      ],
+      "files": "*.json"
+    }
+  ],
+  "root": true,
+  "rules": {
+    "array-bracket-newline": [
+      "error",
+      "consistent"
+    ],
+    "array-element-newline": [
+      "error",
+      "consistent"
+    ],
+    "arrow-body-style": [
+      "error",
+      "as-needed"
+    ],
+    "comma-dangle": [
+      "error",
+      "never"
+    ],
+    "func-style": [
+      "error",
+      "declaration"
+    ],
+    "linebreak-style": [
+      "error",
+      "windows"
+    ],
+    "object-curly-newline": [
+      "error",
+      {
+        "multiline": true,
+        "minProperties": 2,
+        "consistent": true
+      }
+    ],
+    "object-curly-spacing": [
+      "error",
+      "always"
+    ],
+    "radix": [
+      "error",
+      "as-needed"
+    ],
+    "complexity": [
+      "error",
+      30
+    ],
+    "no-param-reassign": [
+      "off"
+    ],
+    "id-length": [
+      "off"
+    ],
+    "canonical/destructuring-property-newline": [
+      "off"
+    ],
+    "import/extensions": [
+      "off"
+    ],
+    "unicorn/prevent-abbreviations": [
+      "off"
+    ]
+  }
+}

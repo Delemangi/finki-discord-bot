@@ -1,4 +1,7 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder
+} from 'discord.js';
 
 const facts = [
   'Програма на Анто никогаш нема влезено во јамка.',

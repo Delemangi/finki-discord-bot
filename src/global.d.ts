@@ -1,4 +1,4 @@
-import { ColorResolvable } from 'discord.js';
+import { type ColorResolvable } from 'discord.js';
 
 declare global {
   type Command = {
@@ -11,17 +11,17 @@ declare global {
 
   type BotConfig = {
     applicationID: string;
-    token: string;
-    logChannel: string;
     color: ColorResolvable;
+    logChannel: string;
+    token: string;
   };
 
   type RoleConfig = {
-    color: string[];
-    year: string[];
     activity: string[];
+    color: string[];
     program: string[];
-    subject: { [index: string]: string[]; };
+    subject: { [index: string]: string[] };
+    year: string[];
   };
 
   type Option = {
@@ -30,15 +30,15 @@ declare global {
   };
 
   type Question = {
-    question: string;
     answer: string;
-    links?: { [index: string]: string; };
+    links?: { [index: string]: string };
+    question: string;
   };
 
   type Link = {
-    name: string;
-    link: string;
     description?: string;
+    link: string;
+    name: string;
   };
 }
 
