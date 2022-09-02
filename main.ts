@@ -263,9 +263,9 @@ async function handleButton (interaction: ButtonInteraction) {
         .setTimestamp();
 
       await logChannel.send({ embeds: [embed] });
-    } else {
-      logger.warn(`Unhandled button interaction: ${interaction.customId}`);
     }
+  } else {
+    logger.warn(`Unhandled button interaction: ${interaction.customId}`);
   }
 }
 
