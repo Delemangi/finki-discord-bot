@@ -30,7 +30,7 @@ client.once('ready', async () => {
     throw new Error('The provided channel must be a guild text channel');
   }
 
-  for (const roleSet of roleSets) {
+  for (const [index, roleSet] of roleSets.entries()) {
     const roles = getFromRoleConfig('subject')[roleSet];
 
     if (roles === undefined) {
@@ -67,7 +67,7 @@ client.once('ready', async () => {
     try {
       await channel.send({
         components,
-        content: newlines === undefined || Number.isNaN(newlines) ? null : Array.from<string>({ length: Number.parseInt(newlines) + 1 }).fill('_ _', 0, -1).join('\n'),
+        content: index === 0 || newlines === undefined || Number.isNaN(newlines) ? null : Array.from<string>({ length: Number.parseInt(newlines) + 1 }).fill('_ _', 0, -1).join('\n'),
         embeds: [embed]
       });
     } catch (error) {
