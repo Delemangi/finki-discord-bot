@@ -12,7 +12,7 @@ import {
 } from '../src/config.js';
 import { logger } from '../src/logger.js';
 
-const [channelID, image] = [process.argv[2], process.argv[3]];
+const [channelID, newlines, image] = process.argv.slice(2);
 
 if (channelID === undefined || image === undefined) {
   throw new Error('Missing channel ID or image argument');
@@ -63,6 +63,7 @@ client.once('ready', async () => {
   try {
     await channel.send({
       components,
+      content: newlines === undefined || Number.isNaN(newlines) ? null : Array.from<string>({ length: Number.parseInt(newlines) + 1 }).fill('_ _', 0, -1).join('\n'),
       embeds: [embed]
     });
   } catch (error) {

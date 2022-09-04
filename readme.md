@@ -27,12 +27,14 @@ In the `scripts` folder are a few single run scripts for different functionaliti
 
 Currently there are:
 
-1. `npm run colors <channel ID>` - send a colors embed to `channel ID`
-2. `npm run years <channel ID>` - send a years embed to `channel ID`
-3. `npm run activities <channel ID>` - send an activities embed to `channel ID`  
-4. `npm run subjects <channel ID> <...semesters>` - send subjects embeds to `channel ID` for all semesters, as set in `roles.json`
-5. `npm run programs <channel ID>` - send a programs embed to `channel ID`
+1. `npm run colors <channel ID> [newlines]` - send a colors embed to `channel ID` with `newlines` number of newlines in the message content
+2. `npm run years <channel ID> [newlines]` - send a years embed to `channel ID` with `newlines` number of newlines in the message content
+3. `npm run activities <channel ID> [newlines]` - send an activities embed to `channel ID`  with `newlines` number of newlines in the message content  
+4. `npm run subjects <channel ID> <newlines> <...semesters>` - send subjects embeds to `channel ID` for all semesters, as set in `roles.json` with `newlines` number of newlines in the message content
+5. `npm run programs <channel ID> [newlines]` - send a programs embed to `channel ID` with `newlines` number of newlines in the message content
 6. `npm run delete <...command IDs>` - delete the provided application commands
+
+The arguments marked with `< >` are required, while the arguments marked with `[ ]` are optional.
 
 ## Logging
 
