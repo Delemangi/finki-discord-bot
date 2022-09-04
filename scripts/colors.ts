@@ -12,7 +12,7 @@ import {
 } from '../src/config.js';
 import { logger } from '../src/logger.js';
 
-const [channelID, newlines, image] = process.argv.slice(2);
+const [channelID, image, newlines] = process.argv.slice(2);
 
 if (channelID === undefined || image === undefined) {
   throw new Error('Missing channel ID or image argument');

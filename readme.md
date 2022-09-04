@@ -27,7 +27,7 @@ In the `scripts` folder are a few single run scripts for different functionaliti
 
 Currently there are:
 
-1. `npm run colors <channel ID> [newlines]` - send a colors embed to `channel ID` with `newlines` number of newlines in the message content
+1. `npm run colors <channel ID> <image> [newlines]` - send a colors embed to `channel ID` with `image` as the embed description and `newlines` number of newlines in the message content
 2. `npm run years <channel ID> [newlines]` - send a years embed to `channel ID` with `newlines` number of newlines in the message content
 3. `npm run activities <channel ID> [newlines]` - send an activities embed to `channel ID`  with `newlines` number of newlines in the message content  
 4. `npm run subjects <channel ID> <newlines> <...semesters>` - send subjects embeds to `channel ID` for all semesters, as set in `roles.json` with `newlines` number of newlines in the message content
