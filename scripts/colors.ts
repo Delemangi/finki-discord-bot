@@ -37,6 +37,10 @@ client.once('ready', async () => {
   const components: ActionRowBuilder<ButtonBuilder>[] = [];
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
+    .setThumbnail('http://fss.finki.ukim.mk/wp-content/uploads/2020/11/cropped-fssFINKI-logo.png')
+    .setTitle('Боја на име')
+    .setDescription('Изберете боја за вашето име со кликање на бројот со кој е означена бојата.')
+    .setFooter({ text: '(може да изберете само една опција)' })
     .setImage(image);
 
   for (let i = 0; i < roles.length; i += 5) {

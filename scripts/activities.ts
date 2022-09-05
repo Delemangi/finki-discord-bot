@@ -37,7 +37,10 @@ client.once('ready', async () => {
   const components: ActionRowBuilder<ButtonBuilder>[] = [];
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
-    .setTitle('Активности');
+    .setThumbnail('http://fss.finki.ukim.mk/wp-content/uploads/2020/11/cropped-fssFINKI-logo.png')
+    .setTitle('Активности')
+    .setDescription('Изберете активности кои ќе ви дадат пристап до соодветните канали на самата активност.')
+    .setFooter({ text: '(може да изберете повеќе опции)' });
 
   for (let i = 0; i < roles.length; i += 5) {
     const row = new ActionRowBuilder<ButtonBuilder>();

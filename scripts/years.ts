@@ -38,7 +38,10 @@ client.once('ready', async () => {
   const buttons: ButtonBuilder[] = [];
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
-    .setTitle('Година на студирање');
+    .setThumbnail('http://fss.finki.ukim.mk/wp-content/uploads/2020/11/cropped-fssFINKI-logo.png')
+    .setTitle('Година на студирање')
+    .setDescription('Изберете ја годината на студирање.')
+    .setFooter({ text: '(може да изберете само една опција)' });
 
   for (const role of roles) {
     const button = new ButtonBuilder()
