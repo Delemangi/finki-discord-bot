@@ -37,7 +37,6 @@ client.once('ready', async () => {
   const components: ActionRowBuilder<ButtonBuilder>[] = [];
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
-    .setThumbnail('http://fss.finki.ukim.mk/wp-content/uploads/2020/11/cropped-fssFINKI-logo.png')
     .setTitle('Смер')
     .setDescription('Изберете го смерот на кој студирате.')
     .setFooter({ text: '(може да изберете само една опција)' });
