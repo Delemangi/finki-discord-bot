@@ -263,16 +263,21 @@ async function handleColorButton (interaction: ButtonInteraction, args: string[]
 
   // @ts-expect-error The member cannot be null
   const memberRoles = member.roles as GuildMemberRoleManager;
+  let removed = true;
 
   if (memberRoles.cache.has(role.id)) {
     await memberRoles.remove(role);
   } else {
     await memberRoles.remove(colorRoles);
     await memberRoles.add(role);
+    removed = false;
   }
 
   try {
-    await interaction.deferUpdate();
+    await interaction.reply({
+      content: `Ја ${removed ? 'отстранивте' : 'добивте'} улогата ${inlineCode(role.name)}.`,
+      ephemeral: true
+    });
   } catch (error) {
     logger.warn(`Failed to respond to button interaction ${interaction.id}: ${interaction.customId}\n${error}`);
     return;
@@ -341,16 +346,21 @@ async function handleYearButton (interaction: ButtonInteraction, args: string[])
 
   // @ts-expect-error The member cannot be null
   const memberRoles = member.roles as GuildMemberRoleManager;
+  let removed = true;
 
   if (memberRoles.cache.has(role.id)) {
     await memberRoles.remove(role);
   } else {
     await memberRoles.remove(yearRoles);
     await memberRoles.add(role);
+    removed = false;
   }
 
   try {
-    await interaction.deferUpdate();
+    await interaction.reply({
+      content: `Ја ${removed ? 'отстранивте' : 'добивте'} улогата ${inlineCode(role.name)}.`,
+      ephemeral: true
+    });
   } catch (error) {
     logger.warn(`Failed to respond to button interaction ${interaction.id}: ${interaction.customId}\n${error}`);
     return;
@@ -408,15 +418,20 @@ async function handleActivityButton (interaction: ButtonInteraction, args: strin
 
   // @ts-expect-error The member cannot be null
   const memberRoles = member.roles as GuildMemberRoleManager;
+  let removed = true;
 
   if (memberRoles.cache.has(role.id)) {
     await memberRoles.remove(role);
   } else {
     await memberRoles.add(role);
+    removed = false;
   }
 
   try {
-    await interaction.deferUpdate();
+    await interaction.reply({
+      content: `Ја ${removed ? 'отстранивте' : 'добивте'} улогата ${inlineCode(role.name)}.`,
+      ephemeral: true
+    });
   } catch (error) {
     logger.warn(`Failed to respond to button interaction ${interaction.id}: ${interaction.customId}\n${error}`);
     return;
@@ -474,15 +489,20 @@ async function handleSubjectButton (interaction: ButtonInteraction, args: string
 
   // @ts-expect-error The member cannot be null
   const memberRoles = member.roles as GuildMemberRoleManager;
+  let removed = true;
 
   if (memberRoles.cache.has(role.id)) {
     await memberRoles.remove(role);
   } else {
     await memberRoles.add(role);
+    removed = false;
   }
 
   try {
-    await interaction.deferUpdate();
+    await interaction.reply({
+      content: `Ја ${removed ? 'отстранивте' : 'добивте'} улогата ${inlineCode(role.name)}.`,
+      ephemeral: true
+    });
   } catch (error) {
     logger.warn(`Failed to respond to button interaction ${interaction.id}: ${interaction.customId}\n${error}`);
     return;
@@ -551,16 +571,21 @@ async function handleProgramButton (interaction: ButtonInteraction, args: string
 
   // @ts-expect-error The member cannot be null
   const memberRoles = member.roles as GuildMemberRoleManager;
+  let removed = true;
 
   if (memberRoles.cache.has(role.id)) {
     await memberRoles.remove(role);
   } else {
     await memberRoles.remove(programRoles);
     await memberRoles.add(role);
+    removed = false;
   }
 
   try {
-    await interaction.deferUpdate();
+    await interaction.reply({
+      content: `Ја ${removed ? 'отстранивте' : 'добивте'} улогата ${inlineCode(role.name)}.`,
+      ephemeral: true
+    });
   } catch (error) {
     logger.warn(`Failed to respond to button interaction ${interaction.id}: ${interaction.customId}\n${error}`);
     return;
