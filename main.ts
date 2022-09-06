@@ -23,7 +23,10 @@ import {
 } from './src/config.js';
 import { logger } from './src/logger.js';
 
-const [applicationID, token] = [getFromBotConfig('applicationID'), getFromBotConfig('token')];
+const applicationID = getFromBotConfig('applicationID');
+const token = getFromBotConfig('token');
+const logChannel = getFromBotConfig('logChannel');
+const color = getFromBotConfig('color');
 
 if (applicationID === undefined || applicationID === '') {
   throw new Error('Missing application ID');
@@ -31,6 +34,15 @@ if (applicationID === undefined || applicationID === '') {
 
 if (token === undefined || token === '') {
   throw new Error('Missing token');
+}
+
+if (logChannel === undefined || logChannel === '') {
+  throw new Error('Missing log channel');
+}
+
+// @ts-expect-error This could happen if the property is empty
+if (color === undefined || color === '') {
+  throw new Error('Missing color');
 }
 
 const rest = new REST().setToken(token);
@@ -54,7 +66,7 @@ try {
   throw new Error(`Failed to register application commands\n${error}`);
 }
 
-let logChannel: TextChannel;
+let logTextChannel: TextChannel;
 let colorRoles: Role[] = [];
 let yearRoles: Role[] = [];
 let programRoles: Role[] = [];
@@ -77,13 +89,13 @@ client.on('interactionCreate', async (interaction) => {
 client.once('ready', async () => {
   logger.info('Bot is ready');
 
-  const channel = client.channels.cache.get(getFromBotConfig('logChannel'));
+  const channel = client.channels.cache.get(logChannel);
 
   if (channel === undefined || channel?.type !== ChannelType.GuildText) {
     throw new Error('The log channel must be a guild text channel');
   }
 
-  logChannel = channel;
+  logTextChannel = channel;
 });
 
 try {
@@ -114,7 +126,7 @@ async function handleChatInputCommand (interaction: ChatInputCommandInteraction)
 
   if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
     const embed = new EmbedBuilder()
-      .setColor(getFromBotConfig('color'))
+      .setColor(color)
       .setTitle('Chat Input Command')
       .setAuthor({
         // @ts-expect-error This should never happen, since it's a member
@@ -139,7 +151,7 @@ async function handleChatInputCommand (interaction: ChatInputCommandInteraction)
       .setTimestamp();
 
     try {
-      await logChannel.send({ embeds: [embed] });
+      await logTextChannel.send({ embeds: [embed] });
     } catch (error) {
       logger.error(`Failed to send log for interaction ${interaction.id}\n${error}`);
     }
@@ -186,7 +198,7 @@ async function handleUserContextMenuCommand (interaction: UserContextMenuCommand
 
   if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
     const embed = new EmbedBuilder()
-      .setColor(getFromBotConfig('color'))
+      .setColor(color)
       .setTitle('User Context Menu')
       .setAuthor({
         // @ts-expect-error The member cannot be null
@@ -215,7 +227,7 @@ async function handleUserContextMenuCommand (interaction: UserContextMenuCommand
       .setTimestamp();
 
     try {
-      await logChannel.send({ embeds: [embed] });
+      await logTextChannel.send({ embeds: [embed] });
     } catch (error) {
       logger.warn(`Failed to log user context menu interaction ${interaction.id}: ${interaction.commandName} ${interaction.targetId}\n${error}`);
     }
@@ -268,7 +280,7 @@ async function handleColorButton (interaction: ButtonInteraction, args: string[]
 
   if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
     const embed = new EmbedBuilder()
-      .setColor(getFromBotConfig('color'))
+      .setColor(color)
       .setTitle('Button')
       .setAuthor({
         // @ts-expect-error The member cannot be null
@@ -293,7 +305,7 @@ async function handleColorButton (interaction: ButtonInteraction, args: string[]
       .setTimestamp();
 
     try {
-      await logChannel.send({ embeds: [embed] });
+      await logTextChannel.send({ embeds: [embed] });
     } catch (error) {
       logger.warn(`Failed to log button interaction ${interaction.id}: ${interaction.customId}\n${error}`);
     }
@@ -346,7 +358,7 @@ async function handleYearButton (interaction: ButtonInteraction, args: string[])
 
   if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
     const embed = new EmbedBuilder()
-      .setColor(getFromBotConfig('color'))
+      .setColor(color)
       .setTitle('Button')
       .setAuthor({
         // @ts-expect-error The member cannot be null
@@ -371,7 +383,7 @@ async function handleYearButton (interaction: ButtonInteraction, args: string[])
       .setTimestamp();
 
     try {
-      await logChannel.send({ embeds: [embed] });
+      await logTextChannel.send({ embeds: [embed] });
     } catch (error) {
       logger.warn(`Failed to log button interaction ${interaction.id}: ${interaction.customId}\n${error}`);
     }
@@ -412,7 +424,7 @@ async function handleActivityButton (interaction: ButtonInteraction, args: strin
 
   if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
     const embed = new EmbedBuilder()
-      .setColor(getFromBotConfig('color'))
+      .setColor(color)
       .setTitle('Button')
       .setAuthor({
         // @ts-expect-error The member cannot be null
@@ -437,7 +449,7 @@ async function handleActivityButton (interaction: ButtonInteraction, args: strin
       .setTimestamp();
 
     try {
-      await logChannel.send({ embeds: [embed] });
+      await logTextChannel.send({ embeds: [embed] });
     } catch (error) {
       logger.warn(`Failed to log button interaction ${interaction.id}: ${interaction.customId}\n${error}`);
     }
@@ -478,7 +490,7 @@ async function handleSubjectButton (interaction: ButtonInteraction, args: string
 
   if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
     const embed = new EmbedBuilder()
-      .setColor(getFromBotConfig('color'))
+      .setColor(color)
       .setTitle('Button')
       .setAuthor({
         // @ts-expect-error The member cannot be null
@@ -503,7 +515,7 @@ async function handleSubjectButton (interaction: ButtonInteraction, args: string
       .setTimestamp();
 
     try {
-      await logChannel.send({ embeds: [embed] });
+      await logTextChannel.send({ embeds: [embed] });
     } catch (error) {
       logger.warn(`Failed to log button interaction ${interaction.id}: ${interaction.customId}\n${error}`);
     }
@@ -556,7 +568,7 @@ async function handleProgramButton (interaction: ButtonInteraction, args: string
 
   if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
     const embed = new EmbedBuilder()
-      .setColor(getFromBotConfig('color'))
+      .setColor(color)
       .setTitle('Button')
       .setAuthor({
         // @ts-expect-error The member cannot be null
@@ -581,7 +593,7 @@ async function handleProgramButton (interaction: ButtonInteraction, args: string
       .setTimestamp();
 
     try {
-      await logChannel.send({ embeds: [embed] });
+      await logTextChannel.send({ embeds: [embed] });
     } catch (error) {
       logger.warn(`Failed to log button interaction ${interaction.id}: ${interaction.customId}\n${error}`);
     }
