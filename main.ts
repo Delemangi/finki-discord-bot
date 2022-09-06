@@ -26,7 +26,7 @@ import { logger } from './src/logger.js';
 const [applicationID, token] = [getFromBotConfig('applicationID'), getFromBotConfig('token')];
 
 if (applicationID === undefined || applicationID === '') {
-  throw new Error('Missing application ID or token');
+  throw new Error('Missing application ID');
 }
 
 if (token === undefined || token === '') {
