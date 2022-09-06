@@ -73,16 +73,16 @@ let programRoles: Role[] = [];
 
 client.on('interactionCreate', async (interaction) => {
   if (interaction.isChatInputCommand()) {
-    logger.debug(`Interaction ${interaction.id} is chat input command`);
+    logger.debug(`Handling chat input command interaction ${interaction.id} from ${interaction.user.id}: ${interaction}`);
     await handleChatInputCommand(interaction);
   } else if (interaction.isButton()) {
-    logger.debug(`Interaction ${interaction.id} is button`);
+    logger.debug(`Handling button interaction ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
     await handleButton(interaction);
   } else if (interaction.isUserContextMenuCommand()) {
-    logger.debug(`Interaction ${interaction.id} is user context menu command`);
+    logger.debug(`Handling user context menu interaction ${interaction.id} from ${interaction.user.id}: ${interaction.commandName} ${interaction.targetId}`);
     await handleUserContextMenuCommand(interaction);
   } else {
-    logger.warn(`Unknown interaction ${interaction.id}: ${interaction.toJSON()}`);
+    logger.warn(`Received unknown interaction ${interaction.id} from ${interaction.user.id}: ${interaction.toJSON()}`);
   }
 });
 
@@ -156,6 +156,8 @@ async function handleChatInputCommand (interaction: ChatInputCommandInteraction)
       logger.error(`Failed to send log for interaction ${interaction.id}\n${error}`);
     }
   }
+
+  logger.debug(`Handled chat input command interaction ${interaction.id} from ${interaction.user.id}: ${interaction}`);
 }
 
 async function handleButton (interaction: ButtonInteraction): Promise<void> {
@@ -174,8 +176,11 @@ async function handleButton (interaction: ButtonInteraction): Promise<void> {
   } else if (command === 'program') {
     await handleProgramButton(interaction, args);
   } else {
-    logger.warn(`Unknown button interaction ${interaction.id}: ${interaction.customId}`);
+    logger.warn(`Received unknown button interaction ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
+    return;
   }
+
+  logger.debug(`Handled button interaction ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
 }
 
 async function handleUserContextMenuCommand (interaction: UserContextMenuCommandInteraction): Promise<void> {
@@ -232,6 +237,8 @@ async function handleUserContextMenuCommand (interaction: UserContextMenuCommand
       logger.warn(`Failed to log user context menu interaction ${interaction.id}: ${interaction.commandName} ${interaction.targetId}\n${error}`);
     }
   }
+
+  logger.debug(`Handled user context menu interaction ${interaction.id} from ${interaction.user.id}: ${interaction.commandName} ${interaction.targetId}`);
 }
 
 async function handleColorButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
@@ -315,6 +322,8 @@ async function handleColorButton (interaction: ButtonInteraction, args: string[]
       logger.warn(`Failed to log button interaction ${interaction.id}: ${interaction.customId}\n${error}`);
     }
   }
+
+  logger.debug(`Handled color button ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
 }
 
 async function handleYearButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
@@ -398,6 +407,8 @@ async function handleYearButton (interaction: ButtonInteraction, args: string[])
       logger.warn(`Failed to log button interaction ${interaction.id}: ${interaction.customId}\n${error}`);
     }
   }
+
+  logger.debug(`Handled year button ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
 }
 
 async function handleActivityButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
@@ -469,6 +480,8 @@ async function handleActivityButton (interaction: ButtonInteraction, args: strin
       logger.warn(`Failed to log button interaction ${interaction.id}: ${interaction.customId}\n${error}`);
     }
   }
+
+  logger.debug(`Handled activity button ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
 }
 
 async function handleSubjectButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
@@ -540,6 +553,8 @@ async function handleSubjectButton (interaction: ButtonInteraction, args: string
       logger.warn(`Failed to log button interaction ${interaction.id}: ${interaction.customId}\n${error}`);
     }
   }
+
+  logger.debug(`Handled subject button ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
 }
 
 async function handleProgramButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
@@ -623,4 +638,6 @@ async function handleProgramButton (interaction: ButtonInteraction, args: string
       logger.warn(`Failed to log button interaction ${interaction.id}: ${interaction.customId}\n${error}`);
     }
   }
+
+  logger.debug(`Handled program button ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
 }
