@@ -41,7 +41,9 @@ client.once('ready', async () => {
     const embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle(`${roleSet.length > 1 ? '' : 'Семестар'} ${roleSet}`)
-      .setDescription(roles.map((role, i) => `${(i + 1).toString().padStart(2, '0')}. ${getSubject(role)}`).join('\n'));
+      .setThumbnail('https://cdn.discordapp.com/attachments/946729216152576020/1016773768938541106/finki-logo.png')
+      .setDescription(roles.map((role, i) => `${(i + 1).toString().padStart(2, '0')}. ${getSubject(role)}`).join('\n'))
+      .setFooter({ text: '(може да изберете повеќе опции)' });
 
     for (let i = 0; i < roles.length; i += 5) {
       const row = new ActionRowBuilder<ButtonBuilder>();

@@ -38,6 +38,7 @@ client.once('ready', async () => {
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle('Смер')
+    .setThumbnail('https://cdn.discordapp.com/attachments/946729216152576020/1016773768938541106/finki-logo.png')
     .setDescription('Изберете го смерот на кој студирате.')
     .setFooter({ text: '(може да изберете само една опција)' });
 

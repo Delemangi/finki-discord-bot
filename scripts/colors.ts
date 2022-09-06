@@ -38,6 +38,7 @@ client.once('ready', async () => {
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle('Боја на име')
+    .setThumbnail('https://cdn.discordapp.com/attachments/946729216152576020/1016773768938541106/finki-logo.png')
     .setDescription('Изберете боја за вашето име со кликање на бројот со кој е означена бојата.')
     .setFooter({ text: '(може да изберете само една опција)' })
     .setImage(image);

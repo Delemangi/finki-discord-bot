@@ -39,6 +39,7 @@ client.once('ready', async () => {
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle('Година на студирање')
+    .setThumbnail('https://cdn.discordapp.com/attachments/946729216152576020/1016773768938541106/finki-logo.png')
     .setDescription('Изберете ја годината на студирање.')
     .setFooter({ text: '(може да изберете само една опција)' });
 
