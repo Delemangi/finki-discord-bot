@@ -27,6 +27,7 @@ const applicationID = getFromBotConfig('applicationID');
 const token = getFromBotConfig('token');
 const logChannel = getFromBotConfig('logChannel');
 const color = getFromBotConfig('color');
+const crosspostChannels = getFromBotConfig('crosspostChannels');
 
 if (applicationID === undefined || applicationID === '') {
   throw new Error('Missing application ID');
@@ -83,6 +84,19 @@ client.on('interactionCreate', async (interaction) => {
     await handleUserContextMenuCommand(interaction);
   } else {
     logger.warn(`Received unknown interaction ${interaction.id} from ${interaction.user.id}: ${interaction.toJSON()}`);
+  }
+});
+
+client.on('messageCreate', async (message) => {
+  if (crosspostChannels === undefined || !crosspostChannels.includes(message.channel.id)) {
+    return;
+  }
+
+  try {
+    await message.crosspost();
+    logger.debug(`Crossposted message ${message.id} from ${message.channel.id}`);
+  } catch (error) {
+    logger.error(`Failed to crosspost message ${message.id} in ${message.channel.id}\n${error}`);
   }
 });
 

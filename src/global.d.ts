@@ -12,6 +12,7 @@ declare global {
   type BotConfig = {
     applicationID: string;
     color: ColorResolvable;
+    crosspostChannels: string[];
     logChannel: string;
     token: string;
   };
