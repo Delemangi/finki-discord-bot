@@ -2,5 +2,6 @@
   "applicationID": "",
   "token": "",
   "logChannel": "",
-  "color": ""
+  "color": "",
+  "crosspostChannels": []
 }
