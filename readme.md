@@ -32,7 +32,8 @@ Currently there are:
 3. `npm run activities <channel ID> [newlines]` - send an activities embed to `channel ID`  with `newlines` number of newlines in the message content  
 4. `npm run subjects <channel ID> <newlines> <...semesters>` - send subjects embeds to `channel ID` for all semesters, as set in `roles.json` with `newlines` number of newlines in the message content
 5. `npm run programs <channel ID> [newlines]` - send a programs embed to `channel ID` with `newlines` number of newlines in the message content
-6. `npm run delete <...command IDs>` - delete the provided application commands
+6. `npm run notifications <channel ID> [newlines]` - send a notifications embed to `channel ID` with `newlines` number of newlines in the message content
+7. `npm run delete <...command IDs>` - delete the provided application commands
 
 The arguments marked with `< >` are required, while the arguments marked with `[ ]` are optional.
 

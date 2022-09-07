@@ -20,6 +20,7 @@ declare global {
   type RoleConfig = {
     activity: string[];
     color: string[];
+    notification: string[];
     program: string[];
     subject: { [index: string]: string[] };
     year: string[];

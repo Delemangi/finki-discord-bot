@@ -10,6 +10,7 @@
     "activities": "tsc && node dist/scripts/activities.js",
     "subjects": "tsc && node dist/scripts/subjects.js",
     "programs": "tsc && node dist/scripts/programs.js",
+    "notifications": "tsc && node dist/scripts/notifications.js",
     "delete": "tsc && node dist/scripts/delete.js"
   },
   "author": "Delemangi",

@@ -189,6 +189,8 @@ async function handleButton (interaction: ButtonInteraction): Promise<void> {
     await handleSubjectButton(interaction, args);
   } else if (command === 'program') {
     await handleProgramButton(interaction, args);
+  } else if (command === 'notification') {
+    await handleNotificationButton(interaction, args);
   } else {
     logger.warn(`Received unknown button interaction ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
     return;
@@ -654,4 +656,77 @@ async function handleProgramButton (interaction: ButtonInteraction, args: string
   }
 
   logger.debug(`Handled program button ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
+}
+
+async function handleNotificationButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
+  const guild = interaction.guild;
+
+  if (guild === null) {
+    logger.warn(`Received button interaction ${interaction.id}: ${interaction.customId} from ${interaction.user.tag} outside of a guild`);
+    return;
+  }
+
+  const role = guild.roles.cache.find((r) => r.name === args[0]);
+  const member = interaction.member;
+
+  if (role === undefined) {
+    logger.warn(`The role was not found for interaction ${interaction.id}: ${interaction.customId}`);
+    return;
+  }
+
+  // @ts-expect-error The member cannot be null
+  const memberRoles = member.roles as GuildMemberRoleManager;
+  let removed = true;
+
+  if (memberRoles.cache.has(role.id)) {
+    await memberRoles.remove(role);
+  } else {
+    await memberRoles.add(role);
+    removed = false;
+  }
+
+  try {
+    await interaction.reply({
+      content: `Ја ${removed ? 'отстранивте' : 'добивте'} улогата ${inlineCode(role.name)}.`,
+      ephemeral: true
+    });
+  } catch (error) {
+    logger.warn(`Failed to respond to button interaction ${interaction.id}: ${interaction.customId}\n${error}`);
+    return;
+  }
+
+  if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
+    const embed = new EmbedBuilder()
+      .setColor(color)
+      .setTitle('Button')
+      .setAuthor({
+        // @ts-expect-error The member cannot be null
+        iconURL: interaction.member.displayAvatarURL(),
+        name: interaction.user.tag
+      })
+      .addFields(
+        {
+          name: 'Author',
+          value: userMention(interaction.user.id)
+        },
+        {
+          name: 'Command',
+          value: 'Notification'
+        },
+        {
+          name: 'Role',
+          value: roleMention(role.id)
+        }
+      )
+      .setFooter({ text: interaction.id })
+      .setTimestamp();
+
+    try {
+      await logTextChannel.send({ embeds: [embed] });
+    } catch (error) {
+      logger.warn(`Failed to log button interaction ${interaction.id}: ${interaction.customId}\n${error}`);
+    }
+  }
+
+  logger.debug(`Handled notification button ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
 }
