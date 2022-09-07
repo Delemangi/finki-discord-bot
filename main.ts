@@ -92,6 +92,8 @@ client.on('messageCreate', async (message) => {
     return;
   }
 
+  logger.debug(`Received crosspostable message ${message.id} from ${message.author.tag}: ${message}`);
+
   try {
     await message.crosspost();
     logger.debug(`Crossposted message ${message.id} from ${message.channel.id}`);
