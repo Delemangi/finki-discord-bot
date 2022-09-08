@@ -11,7 +11,7 @@ import {
 
 const questions = getQuestions();
 
-export function getAllQuetions (): string[] {
+export function getAllQuestions (): string[] {
   return questions.map((q) => q.question);
 }
 
