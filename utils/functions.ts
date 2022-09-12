@@ -12,10 +12,10 @@ import {
 const channelTypes = [
   ChannelType.GuildText,
   ChannelType.GuildVoice,
-  ChannelType.GuildNews,
-  ChannelType.GuildNewsThread,
-  ChannelType.GuildPublicThread,
-  ChannelType.GuildPrivateThread
+  ChannelType.GuildAnnouncement,
+  ChannelType.AnnouncementThread,
+  ChannelType.PublicThread,
+  ChannelType.PrivateThread
 ];
 
 export function isTextGuildBased (channel: APIInteractionDataResolvedChannel | Channel | null | undefined): channel is NewsChannel | PrivateThreadChannel | PublicThreadChannel | TextChannel | VoiceChannel {
