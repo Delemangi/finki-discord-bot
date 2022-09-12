@@ -3,9 +3,9 @@ import {
   EmbedBuilder,
   SlashCommandBuilder
 } from 'discord.js';
-import { getFromBotConfig } from '../src/config.js';
-import { getAllQuetions } from '../src/faq.js';
-import { getAllLinks } from '../src/links.js';
+import { getFromBotConfig } from '../utils/config.js';
+import { getAllQuestions } from '../utils/faq.js';
+import { getAllLinks } from '../utils/links.js';
 
 export const data = new SlashCommandBuilder()
   .setName('list')
@@ -24,7 +24,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle('Questions')
-      .setDescription(getAllQuetions().map((question, index) => `${index + 1}. ${question}`).join('\n\n'));
+      .setDescription(getAllQuestions().map((question, index) => `${index + 1}. ${question}`).join('\n\n'));
   } else {
     embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))

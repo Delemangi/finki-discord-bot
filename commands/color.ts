@@ -1,10 +1,10 @@
 import {
   type ChatInputCommandInteraction,
   type Role,
-  SlashCommandBuilder,
-  ChannelType
+  SlashCommandBuilder
 } from 'discord.js';
-import { getFromRoleConfig } from '../src/config.js';
+import { getFromRoleConfig } from '../utils/config.js';
+import { isTextGuildBased } from '../utils/functions.js';
 
 export const data = new SlashCommandBuilder()
   .setName('color')
@@ -17,7 +17,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   const guild = interaction.guild;
   const colorRoles = getFromRoleConfig('color');
 
-  if (guild === null || interaction.channel === null || interaction.channel.type !== ChannelType.GuildText) {
+  if (!isTextGuildBased(interaction.channel) || guild === null) {
     await interaction.editReply('You cannot use this command here.');
     return;
   }

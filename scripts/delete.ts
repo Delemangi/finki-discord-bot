@@ -2,9 +2,9 @@ import {
   REST,
   Routes
 } from 'discord.js';
-import { client } from '../src/client.js';
-import { getFromBotConfig } from '../src/config.js';
-import { logger } from '../src/logger.js';
+import { client } from '../utils/client.js';
+import { getFromBotConfig } from '../utils/config.js';
+import { logger } from '../utils/logger.js';
 
 const commands = process.argv.slice(2);
 

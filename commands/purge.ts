@@ -1,10 +1,10 @@
 import { setTimeout } from 'node:timers/promises';
 import {
   type ChatInputCommandInteraction,
-  ChannelType,
   PermissionsBitField,
   SlashCommandBuilder
 } from 'discord.js';
+import { isTextGuildBased } from '../utils/functions.js';
 
 export const data = new SlashCommandBuilder()
   .setName('purge')
@@ -15,7 +15,9 @@ export const data = new SlashCommandBuilder()
     .setRequired(true));
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
-  if (interaction.guild === null || interaction.channel === null || interaction.channel?.type !== ChannelType.GuildText) {
+  const channel = interaction.channel;
+
+  if (!isTextGuildBased(channel) || interaction.guild === null) {
     await interaction.editReply('You cannot use this command here.');
     return;
   }
@@ -33,8 +35,8 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     return;
   }
 
-  await interaction.editReply(`Deleting last ${count} messages...`);
+  await interaction.editReply(`Deleting the last ${count} message(s)...`);
   await setTimeout(1_000);
   await interaction.deleteReply();
-  await interaction.channel.bulkDelete(count);
+  await channel?.bulkDelete(count);
 }

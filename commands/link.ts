@@ -7,7 +7,7 @@ import {
   getComponentsFromLink,
   getEmbedFromLink,
   getLink
-} from '../src/links.js';
+} from '../utils/links.js';
 
 export const data = new SlashCommandBuilder()
   .setName('link')

@@ -5,13 +5,13 @@ import {
   ChannelType,
   EmbedBuilder
 } from 'discord.js';
-import { client } from '../src/client.js';
+import { client } from '../utils/client.js';
 import {
   getFromBotConfig,
   getFromRoleConfig,
   getSubject
-} from '../src/config.js';
-import { logger } from '../src/logger.js';
+} from '../utils/config.js';
+import { logger } from '../utils/logger.js';
 
 const [channelID, newlines, ...roleSets] = process.argv.slice(2);
 

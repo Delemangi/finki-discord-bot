@@ -2,9 +2,9 @@ import {
   type ChatInputCommandInteraction,
   type Role,
   roleMention,
-  SlashCommandBuilder,
-  ChannelType
+  SlashCommandBuilder
 } from 'discord.js';
+import { isTextGuildBased } from '../utils/functions.js';
 
 export const data = new SlashCommandBuilder()
   .setName('participants')
@@ -21,7 +21,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   const guild = interaction.guild;
   const role = interaction.options.getRole('role') as Role;
 
-  if (guild === null || interaction.channel === null || interaction.channel.type !== ChannelType.GuildText) {
+  if (!isTextGuildBased(interaction.channel) || guild === null) {
     await interaction.editReply('You cannot use this command here.');
     return;
   }

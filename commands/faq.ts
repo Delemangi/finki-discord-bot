@@ -7,7 +7,7 @@ import {
   getComponentsFromQuestion,
   getEmbedFromQuestion,
   getQuestion
-} from '../src/faq.js';
+} from '../utils/faq.js';
 
 export const data = new SlashCommandBuilder()
   .setName('faq')

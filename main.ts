@@ -16,12 +16,12 @@ import {
   Routes,
   userMention
 } from 'discord.js';
-import { client } from './src/client.js';
+import { client } from './utils/client.js';
 import {
   getFromBotConfig,
   getFromRoleConfig
-} from './src/config.js';
-import { logger } from './src/logger.js';
+} from './utils/config.js';
+import { logger } from './utils/logger.js';
 
 const applicationID = getFromBotConfig('applicationID');
 const token = getFromBotConfig('token');

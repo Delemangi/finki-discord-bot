@@ -5,10 +5,10 @@ import {
   ContextMenuCommandBuilder,
   EmbedBuilder,
   time,
-  TimestampStyles,
-  ChannelType
+  TimestampStyles
 } from 'discord.js';
-import { getFromBotConfig } from '../src/config.js';
+import { getFromBotConfig } from '../utils/config.js';
+import { isTextGuildBased } from '../utils/functions.js';
 
 export const data = new ContextMenuCommandBuilder()
   .setName('User Info')
@@ -17,7 +17,7 @@ export const data = new ContextMenuCommandBuilder()
 export async function execute (interaction: UserContextMenuCommandInteraction): Promise<void> {
   const member = interaction.targetMember as GuildMember;
 
-  if (interaction.guild === null || interaction.channel === null || interaction.channel.type !== ChannelType.GuildText) {
+  if (!isTextGuildBased(interaction.channel) || interaction.guild === null) {
     await interaction.editReply('You cannot use this command here.');
     return;
   }
