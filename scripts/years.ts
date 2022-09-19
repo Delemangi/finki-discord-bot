@@ -55,11 +55,18 @@ client.once('ready', async () => {
   components.addComponents(buttons);
 
   try {
-    await channel.send({
-      components: [components],
-      content: newlines === undefined || Number.isNaN(newlines) ? null : Array.from<string>({ length: Number.parseInt(newlines) + 1 }).fill('_ _', 0, -1).join('\n'),
-      embeds: [embed]
-    });
+    if (newlines === undefined || Number.isNaN(newlines)) {
+      await channel.send({
+        components: [components],
+        embeds: [embed]
+      });
+    } else {
+      await channel.send({
+        components: [components],
+        content: '_ _\n'.repeat(Number(newlines)),
+        embeds: [embed]
+      });
+    }
   } catch (error) {
     throw new Error(`Failed to send embed\n${error}`);
   }
