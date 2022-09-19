@@ -16,6 +16,7 @@ The `config` folder should contain:
 3. `links.json` - an array of links for the `link` command
 4. `roles.json` - roles for the scripts and for the embeds
 5. `subjects.json` - an object mapping the roles to the full subject names
+6. `allSubjects.json` - an array of the names of all subjects
 
 Check the `example` folder for the correct format.
 
@@ -33,7 +34,8 @@ Currently there are:
 4. `npm run subjects <channel ID> <newlines> <...semesters>` - send subjects embeds to `channel ID` for all semesters, as set in `roles.json` with `newlines` number of newlines in the message content
 5. `npm run programs <channel ID> [newlines]` - send a programs embed to `channel ID` with `newlines` number of newlines in the message content
 6. `npm run notifications <channel ID> [newlines]` - send a notifications embed to `channel ID` with `newlines` number of newlines in the message content
-7. `npm run delete <...command IDs>` - delete the provided application commands
+7. `npm run subjectsForum <channel ID>` - creates threads for all subjects in `channel ID` forum
+8. `npm run delete <...command IDs>` - delete the provided application commands
 
 The arguments marked with `< >` are required, while the arguments marked with `[ ]` are optional.
 

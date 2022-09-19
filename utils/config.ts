@@ -5,6 +5,7 @@ const roleConfig: RoleConfig = JSON.parse(readFileSync('./config/roles.json', 'u
 const questionConfig: Question[] = JSON.parse(readFileSync('./config/questions.json', 'utf8'));
 const linkConfig: Link[] = JSON.parse(readFileSync('./config/links.json', 'utf8'));
 const subjectConfig: { [index: string]: string } = JSON.parse(readFileSync('./config/subjects.json', 'utf8'));
+const allSubjectsConfig: string[] = JSON.parse(readFileSync('./config/allSubjects.json', 'utf8'));
 
 export function getFromBotConfig<T extends keyof BotConfig> (key: T): BotConfig[T] {
   return botConfig[key];
@@ -24,4 +25,8 @@ export function getLinks (): Link[] {
 
 export function getSubject (subject: string): string {
   return subjectConfig[subject] ?? 'None';
+}
+
+export function getAllSubjects (): string[] {
+  return allSubjectsConfig;
 }
