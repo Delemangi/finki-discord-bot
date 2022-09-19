@@ -19,7 +19,8 @@ import {
 import { client } from './utils/client.js';
 import {
   getFromBotConfig,
-  getFromRoleConfig
+  getFromRoleConfig,
+  getSubject
 } from './utils/config.js';
 import { logger } from './utils/logger.js';
 
@@ -300,7 +301,7 @@ async function handleColorButton (interaction: ButtonInteraction, args: string[]
 
   try {
     await interaction.reply({
-      content: `Ја ${removed ? 'отстранивте' : 'добивте'} улогата ${inlineCode(role.name)}.`,
+      content: `Ја ${removed ? 'отстранивте' : 'земавте'} бојата ${inlineCode(role.name)}.`,
       ephemeral: true
     });
   } catch (error) {
@@ -385,7 +386,7 @@ async function handleYearButton (interaction: ButtonInteraction, args: string[])
 
   try {
     await interaction.reply({
-      content: `Ја ${removed ? 'отстранивте' : 'добивте'} улогата ${inlineCode(role.name)}.`,
+      content: `Ја ${removed ? 'отстранивте' : 'земавте'} годината ${inlineCode(role.name)}.`,
       ephemeral: true
     });
   } catch (error) {
@@ -458,7 +459,7 @@ async function handleActivityButton (interaction: ButtonInteraction, args: strin
 
   try {
     await interaction.reply({
-      content: `Ја ${removed ? 'отстранивте' : 'добивте'} улогата ${inlineCode(role.name)}.`,
+      content: `Ја ${removed ? 'отстранивте' : 'земавте'} активноста ${inlineCode(role.name)}.`,
       ephemeral: true
     });
   } catch (error) {
@@ -531,7 +532,7 @@ async function handleSubjectButton (interaction: ButtonInteraction, args: string
 
   try {
     await interaction.reply({
-      content: `Ја ${removed ? 'отстранивте' : 'добивте'} улогата ${inlineCode(role.name)}.`,
+      content: `Го ${removed ? 'отстранивте' : 'земавте'} предметот ${inlineCode(getSubject(role.name))}.`,
       ephemeral: true
     });
   } catch (error) {
@@ -616,7 +617,7 @@ async function handleProgramButton (interaction: ButtonInteraction, args: string
 
   try {
     await interaction.reply({
-      content: `Ја ${removed ? 'отстранивте' : 'добивте'} улогата ${inlineCode(role.name)}.`,
+      content: `Го ${removed ? 'отстранивте' : 'земавте'} смерот ${inlineCode(role.name)}.`,
       ephemeral: true
     });
   } catch (error) {
@@ -689,7 +690,7 @@ async function handleNotificationButton (interaction: ButtonInteraction, args: s
 
   try {
     await interaction.reply({
-      content: `Ја ${removed ? 'отстранивте' : 'добивте'} улогата ${inlineCode(role.name)}.`,
+      content: `${removed ? 'Исклучивте' : 'Вклучивте'} нотификации за ${inlineCode(role.name)}.`,
       ephemeral: true
     });
   } catch (error) {
