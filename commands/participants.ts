@@ -39,7 +39,7 @@ export const data = new SlashCommandBuilder()
     .addStringOption((option) => option
       .setName('year')
       .setDescription('The year of the course')
-      .setRequired(true)
+      .setRequired(false)
       .addChoices(...choices.map((choice) => ({
         name: choice,
         value: choice
@@ -63,7 +63,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     });
   } else {
     const course = interaction.options.getString('course', true);
-    const year = interaction.options.getString('year', true);
+    const year = interaction.options.getString('year');
     const info = csv.find((entry) => entry.at(0) === course);
 
     if (info === undefined) {
@@ -71,7 +71,17 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       return;
     }
 
+    if (year === null) {
+      const messages: string[] = [];
+
+      for (const [courseYear, index] of Object.entries(mapping)) {
+        messages.push(`[${courseYear}] ${course}: ${info[index]}`);
+      }
+
+      await interaction.editReply(messages.reverse().join('\n'));
+    } else {
     // @ts-expect-error The key always exists in the object
-    await interaction.editReply(`[${year}] ${course}: ${info[mapping[year]]}`);
+      await interaction.editReply(`[${year}] ${course}: ${info[mapping[year]]}`);
+    }
   }
 }
