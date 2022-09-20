@@ -11,6 +11,8 @@ import { isTextGuildBased } from '../utils/functions.js';
 const choices = ['2022/2023', '2021/2022', '2020/2021', '2019/2020', '2018/2019'];
 const csv: string[][] = parse(await readFile('config/participants.csv', 'utf8'), { delimiter: ';' });
 const mapping = {
+  '2016/2017': 7,
+  '2017/2018': 6,
   '2018/2019': 5,
   '2019/2020': 4,
   '2020/2021': 3,
