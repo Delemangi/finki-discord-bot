@@ -4,7 +4,8 @@ import {
   type ChatInputCommandInteraction,
   type Role,
   roleMention,
-  SlashCommandBuilder
+  SlashCommandBuilder,
+  EmbedBuilder
 } from 'discord.js';
 import { isTextGuildBased } from '../utils/functions.js';
 
@@ -74,16 +75,34 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     }
 
     if (year === null) {
-      const messages: string[] = [];
+      const counts: { [index: string]: string } = {};
 
       for (const [courseYear, index] of Object.entries(mapping)) {
-        messages.push(`[${courseYear}] ${course}: ${info[index]}`);
+        counts[courseYear] = info[index] ?? '?';
       }
 
-      await interaction.editReply(messages.reverse().join('\n'));
+      const embed = new EmbedBuilder()
+        .setTitle(course)
+        .addFields(...Object.entries(counts).map((count) => ({
+          inline: true,
+          name: count[0],
+          value: count[1]
+        })))
+        .setTimestamp();
+
+      await interaction.editReply({ embeds: [embed] });
     } else {
-    // @ts-expect-error The key always exists in the object
-      await interaction.editReply(`[${year}] ${course}: ${info[mapping[year]]}`);
+      const embed = new EmbedBuilder()
+        .setTitle(course)
+        .addFields({
+          inline: true,
+          name: year,
+          // @ts-expect-error The key always exists in the object
+          value: info[mapping[year]] ?? '?'
+        })
+        .setTimestamp();
+
+      await interaction.editReply({ embeds: [embed] });
     }
   }
 }
