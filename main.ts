@@ -1,6 +1,8 @@
 import { readdirSync } from 'node:fs';
 import { REST } from '@discordjs/rest';
 import {
+  type AutocompleteInteraction
+  ,
   type ButtonInteraction,
   type ChatInputCommandInteraction,
   type GuildMemberRoleManager,
@@ -18,6 +20,7 @@ import {
 } from 'discord.js';
 import { client } from './utils/client.js';
 import {
+  getAllSubjects,
   getFromBotConfig,
   getFromRoleConfig,
   getSubject
@@ -83,6 +86,8 @@ client.on('interactionCreate', async (interaction) => {
   } else if (interaction.isUserContextMenuCommand()) {
     logger.debug(`Handling user context menu interaction ${interaction.id} from ${interaction.user.id}: ${interaction.commandName} ${interaction.targetId}`);
     await handleUserContextMenuCommand(interaction);
+  } else if (interaction.isAutocomplete()) {
+    await handleAutocomplete(interaction);
   } else {
     logger.warn(`Received unknown interaction ${interaction.id} from ${interaction.user.id}: ${interaction.toJSON()}`);
   }
@@ -258,6 +263,14 @@ async function handleUserContextMenuCommand (interaction: UserContextMenuCommand
   }
 
   logger.debug(`Handled user context menu interaction ${interaction.id} from ${interaction.user.id}: ${interaction.commandName} ${interaction.targetId}`);
+}
+
+async function handleAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
+  if (interaction.commandName === 'participants' && interaction.options.getSubcommand() === 'course') {
+    await handleParticipantsCourseAutocomplete(interaction);
+  } else {
+    logger.warn(`Received unknown autocomplete interaction ${interaction.id} from ${interaction.user.id}: ${interaction.commandName} ${interaction.options.getSubcommand(false)}`);
+  }
 }
 
 async function handleColorButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
@@ -732,4 +745,24 @@ async function handleNotificationButton (interaction: ButtonInteraction, args: s
   }
 
   logger.debug(`Handled notification button ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
+}
+
+async function handleParticipantsCourseAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
+  const guild = interaction.guild;
+
+  if (guild === null) {
+    logger.warn(`Received autocomplete interaction ${interaction.id}: ${interaction.commandName} ${interaction.options.getSubcommand(false)} from ${interaction.user.tag} outside of a guild`);
+    return;
+  }
+
+  const course = interaction.options.getFocused().toLowerCase();
+
+  await interaction.respond(
+    getAllSubjects()
+      .filter((subject) => subject.toLowerCase().includes(course))
+      .map((subject) => ({
+        name: subject,
+        value: subject
+      })).slice(0, 25)
+  );
 }

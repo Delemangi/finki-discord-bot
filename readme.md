@@ -17,6 +17,7 @@ The `config` folder should contain:
 4. `roles.json` - roles for the scripts and for the embeds
 5. `subjects.json` - an object mapping the roles to the full subject names
 6. `allSubjects.json` - an array of the names of all subjects
+7. `participants.csv` - a csv file containing the participants of all courses during all years, separated by ;
 
 Check the `example` folder for the correct format.
 

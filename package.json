@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@discordjs/rest": "^1.1.0",
+    "csv": "^6.2.0",
     "discord-api-types": "^0.37.9",
     "discord.js": "^14.3.1-dev.1663546265-6d43e26.0",
     "winston": "^3.8.2"
