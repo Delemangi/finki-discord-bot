@@ -266,10 +266,12 @@ async function handleUserContextMenuCommand (interaction: UserContextMenuCommand
 }
 
 async function handleAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
-  if (interaction.commandName === 'participants' && interaction.options.getSubcommand() === 'course') {
-    await handleParticipantsCourseAutocomplete(interaction);
+  const option = interaction.options.getFocused(true);
+
+  if (option.name === 'course') {
+    await handleCourseAutocomplete(interaction);
   } else {
-    logger.warn(`Received unknown autocomplete interaction ${interaction.id} from ${interaction.user.id}: ${interaction.commandName} ${interaction.options.getSubcommand(false)}`);
+    logger.warn(`Received unknown autocomplete interaction ${interaction.id} from ${interaction.user.id}: ${interaction.commandName}, option ${option.name}`);
   }
 }
 
@@ -747,7 +749,7 @@ async function handleNotificationButton (interaction: ButtonInteraction, args: s
   logger.debug(`Handled notification button ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
 }
 
-async function handleParticipantsCourseAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
+async function handleCourseAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
   const guild = interaction.guild;
 
   if (guild === null) {
