@@ -5,6 +5,7 @@ import {
   SlashCommandBuilder,
   EmbedBuilder
 } from 'discord.js';
+import { getFromBotConfig } from '../utils/config.js';
 import { commands } from '../utils/strings.js';
 
 const csv: string[][] = parse(await readFile('config/professors.csv', 'utf8'), { delimiter: ';' });
@@ -30,6 +31,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   }
 
   const embed = new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
     .setTitle(course)
     .addFields({
       inline: true,

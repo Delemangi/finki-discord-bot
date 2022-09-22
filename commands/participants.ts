@@ -7,6 +7,7 @@ import {
   SlashCommandBuilder,
   EmbedBuilder
 } from 'discord.js';
+import { getFromBotConfig } from '../utils/config.js';
 import { isTextGuildBased } from '../utils/functions.js';
 import { commands } from '../utils/strings.js';
 
@@ -83,6 +84,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       }
 
       const embed = new EmbedBuilder()
+        .setColor(getFromBotConfig('color'))
         .setTitle(course)
         .addFields(...Object.entries(counts).map((count) => ({
           inline: true,
