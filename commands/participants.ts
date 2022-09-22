@@ -87,7 +87,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
           inline: true,
           name: count[0],
           value: count[1]
-        })))
+        })).reverse())
         .setTimestamp();
 
       await interaction.editReply({ embeds: [embed] });
