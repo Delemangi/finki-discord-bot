@@ -2,6 +2,7 @@ import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder
 } from 'discord.js';
+import { commands } from '../utils/strings.js';
 
 const facts = [
   'Програма на Анто никогаш нема влезено во јамка.',
@@ -155,9 +156,11 @@ const facts = [
   'Брадата на Анто е во облик на буквата W, што е една од трите W содржани во WWW. Со ова уште еднаш се докажува дека Анто има интегриран Internet Browser.'
 ];
 
+const command = 'anto';
+
 export const data = new SlashCommandBuilder()
-  .setName('anto')
-  .setDescription('Get an Anto fact');
+  .setName(command)
+  .setDescription(commands[command]);
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   const random = Math.floor(Math.random() * facts.length);

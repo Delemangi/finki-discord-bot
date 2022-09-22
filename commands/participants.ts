@@ -8,6 +8,7 @@ import {
   EmbedBuilder
 } from 'discord.js';
 import { isTextGuildBased } from '../utils/functions.js';
+import { commands } from '../utils/strings.js';
 
 const choices = ['2022/2023', '2021/2022', '2020/2021', '2019/2020', '2018/2019'];
 const csv: string[][] = parse(await readFile('config/participants.csv', 'utf8'), { delimiter: ';' });
@@ -26,14 +27,14 @@ export const data = new SlashCommandBuilder()
   .setDescription('Participants')
   .addSubcommand((command) => command
     .setName('role')
-    .setDescription('Get the number of participants of a role')
+    .setDescription(commands['participants role'])
     .addRoleOption((option) => option
       .setName('role')
       .setDescription('Role')
       .setRequired(true)))
   .addSubcommand((command) => command
     .setName('course')
-    .setDescription('Get the number of participants of a course')
+    .setDescription(commands['participants course'])
     .addStringOption((option) => option
       .setName('course')
       .setDescription('The course to get the participants for')

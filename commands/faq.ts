@@ -8,10 +8,13 @@ import {
   getEmbedFromQuestion,
   getQuestion
 } from '../utils/faq.js';
+import { commands } from '../utils/strings.js';
+
+const command = 'faq';
 
 export const data = new SlashCommandBuilder()
-  .setName('faq')
-  .setDescription('Get a question')
+  .setName(command)
+  .setDescription(commands[command])
   .addStringOption((option) => option
     .setName('name')
     .setDescription('Question')
