@@ -25,6 +25,7 @@ import {
   getFromRoleConfig,
   getSubject
 } from './utils/config.js';
+import { isTextGuildBased } from './utils/functions.js';
 import { logger } from './utils/logger.js';
 
 const applicationID = getFromBotConfig('applicationID');
@@ -136,7 +137,7 @@ async function handleChatInputCommand (interaction: ChatInputCommandInteraction)
   }
 
   logger.debug(`Received chat input command interaction ${interaction.id} from ${interaction.user.tag}: ${interaction}`);
-  logger.info(`[Chat] ${interaction.user.tag}: ${interaction} [${interaction.channel?.type === ChannelType.GuildText ? 'Guild' : 'DM'}]`);
+  logger.info(`[Chat] ${interaction.user.tag}: ${interaction} [${isTextGuildBased(interaction.channel) ? 'Guild' : 'DM'}]`);
 
   try {
     await interaction.deferReply();
