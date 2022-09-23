@@ -1,8 +1,7 @@
 import { readdirSync } from 'node:fs';
 import { REST } from '@discordjs/rest';
 import {
-  type AutocompleteInteraction
-  ,
+  type AutocompleteInteraction,
   type ButtonInteraction,
   type ChatInputCommandInteraction,
   type GuildMemberRoleManager,
@@ -76,6 +75,7 @@ let logTextChannel: TextChannel;
 let colorRoles: Role[] = [];
 let yearRoles: Role[] = [];
 let programRoles: Role[] = [];
+const ignoredButtonIDs = ['help'];
 
 client.on('interactionCreate', async (interaction) => {
   if (interaction.isChatInputCommand()) {
@@ -186,7 +186,7 @@ async function handleChatInputCommand (interaction: ChatInputCommandInteraction)
 async function handleButton (interaction: ButtonInteraction): Promise<void> {
   const [command, ...args] = interaction.customId.split(':');
 
-  logger.info(`[Button] ${interaction.user.tag}: ${interaction.customId} [${interaction.channel?.type === ChannelType.GuildText ? 'Guild' : 'DM'}]`);
+  logger.info(`[Button] ${interaction.user.tag}: ${interaction.customId} [${isTextGuildBased(interaction.channel) ? 'Guild' : 'DM'}]`);
 
   if (command === 'color') {
     await handleColorButton(interaction, args);
@@ -200,6 +200,8 @@ async function handleButton (interaction: ButtonInteraction): Promise<void> {
     await handleProgramButton(interaction, args);
   } else if (command === 'notification') {
     await handleNotificationButton(interaction, args);
+  } else if (command !== undefined && ignoredButtonIDs.includes(command)) {
+    return;
   } else {
     logger.warn(`Received unknown button interaction ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
     return;
@@ -216,7 +218,7 @@ async function handleUserContextMenuCommand (interaction: UserContextMenuCommand
     return;
   }
 
-  logger.info(`[User Context Menu] ${interaction.user.tag}: ${interaction.commandName} [${interaction.channel?.type === ChannelType.GuildText ? 'Guild' : 'DM'}]`);
+  logger.info(`[User Context Menu] ${interaction.user.tag}: ${interaction.commandName} [${isTextGuildBased(interaction.channel) ? 'Guild' : 'DM'}]`);
 
   try {
     await interaction.deferReply();
