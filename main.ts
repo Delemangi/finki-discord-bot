@@ -19,6 +19,7 @@ import {
 } from 'discord.js';
 import { client } from './utils/client.js';
 import {
+  getAllEmails,
   getAllSubjects,
   getFromBotConfig,
   getFromRoleConfig,
@@ -273,6 +274,8 @@ async function handleAutocomplete (interaction: AutocompleteInteraction): Promis
 
   if (option.name === 'course') {
     await handleCourseAutocomplete(interaction);
+  } else if (option.name === 'professor') {
+    await handleProfessorAutocomplete(interaction);
   } else {
     logger.warn(`Received unknown autocomplete interaction ${interaction.id} from ${interaction.user.id}: ${interaction.commandName}, option ${option.name}`);
   }
@@ -753,13 +756,6 @@ async function handleNotificationButton (interaction: ButtonInteraction, args: s
 }
 
 async function handleCourseAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
-  const guild = interaction.guild;
-
-  if (guild === null) {
-    logger.warn(`Received autocomplete interaction ${interaction.id}: ${interaction.commandName} ${interaction.options.getSubcommand(false)} from ${interaction.user.tag} outside of a guild`);
-    return;
-  }
-
   const course = interaction.options.getFocused().toLowerCase();
 
   await interaction.respond(
@@ -768,6 +764,19 @@ async function handleCourseAutocomplete (interaction: AutocompleteInteraction): 
       .map((subject) => ({
         name: subject,
         value: subject
+      })).slice(0, 25)
+  );
+}
+
+async function handleProfessorAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
+  const professor = interaction.options.getFocused().toLowerCase();
+
+  await interaction.respond(
+    Object.keys(getAllEmails())
+      .filter((prof) => prof.toLowerCase().includes(professor))
+      .map((prof) => ({
+        name: prof,
+        value: prof
       })).slice(0, 25)
   );
 }

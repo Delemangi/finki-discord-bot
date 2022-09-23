@@ -18,6 +18,8 @@ The `config` folder should contain:
 5. `subjects.json` - an object mapping the roles to the full subject names
 6. `allSubjects.json` - an array of the names of all subjects
 7. `participants.csv` - a csv file containing the participants of all courses during all years, separated by ;
+8. `professors.csv` - a csv file containing the professors of each course
+9. `emails.json` - an object mapping the professors to their email addresses
 
 Check the `example` folder for the correct format.
 

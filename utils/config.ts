@@ -6,6 +6,7 @@ const questionConfig: Question[] = JSON.parse(readFileSync('./config/questions.j
 const linkConfig: Link[] = JSON.parse(readFileSync('./config/links.json', 'utf8'));
 const subjectConfig: { [index: string]: string } = JSON.parse(readFileSync('./config/subjects.json', 'utf8'));
 const allSubjectsConfig: string[] = JSON.parse(readFileSync('./config/allSubjects.json', 'utf8'));
+const emailsConfig: { [index: string]: string } = JSON.parse(readFileSync('./config/emails.json', 'utf8'));
 
 export function getFromBotConfig<T extends keyof BotConfig> (key: T): BotConfig[T] {
   return botConfig[key];
@@ -29,4 +30,8 @@ export function getSubject (subject: string): string {
 
 export function getAllSubjects (): string[] {
   return allSubjectsConfig;
+}
+
+export function getAllEmails (): { [index: string]: string } {
+  return emailsConfig;
 }
