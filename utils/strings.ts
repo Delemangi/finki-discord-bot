@@ -1,6 +1,6 @@
 export const commands = {
   anto: 'Get an Anto fact',
-  embed: 'Create an embed',
+  embed: 'Create an embed (admins only)',
   faq: 'Get a question and answer',
   help: 'Get all available commands',
   link: 'Get a link',
@@ -10,6 +10,6 @@ export const commands = {
   'participants role': 'Get the number of participants of a role',
   ping: 'Pong!',
   professors: 'Get a list of professors for a course',
-  purge: 'Delete the last N messages',
+  purge: 'Delete the last N messages (admins only)',
   'statistics color': 'Get the number of participants per color'
 };
