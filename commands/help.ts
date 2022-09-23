@@ -10,7 +10,92 @@ import {
 import { getFromBotConfig } from '../utils/config.js';
 import { commands } from '../utils/strings.js';
 
-const pages = Math.ceil(Object.keys(commands).length / 8);
+const commandsPerPage = 8;
+const pages = Math.ceil(Object.keys(commands).length / commandsPerPage);
+const middleButtons = new ActionRowBuilder<ButtonBuilder>()
+  .addComponents(
+    new ButtonBuilder()
+      .setCustomId('help:first')
+      .setEmoji('⏪')
+      .setStyle(ButtonStyle.Primary),
+    new ButtonBuilder()
+      .setCustomId('help:previous')
+      .setEmoji('⬅️')
+      .setStyle(ButtonStyle.Primary),
+    new ButtonBuilder()
+      .setCustomId('help:next')
+      .setEmoji('➡️')
+      .setStyle(ButtonStyle.Primary),
+    new ButtonBuilder()
+      .setCustomId('help:last')
+      .setEmoji('⏩')
+      .setStyle(ButtonStyle.Primary)
+  );
+const startButtons = new ActionRowBuilder<ButtonBuilder>()
+  .addComponents(
+    new ButtonBuilder()
+      .setCustomId('help:first')
+      .setEmoji('⏪')
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(true),
+    new ButtonBuilder()
+      .setCustomId('help:previous')
+      .setEmoji('⬅️')
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(true),
+    new ButtonBuilder()
+      .setCustomId('help:next')
+      .setEmoji('➡️')
+      .setStyle(ButtonStyle.Primary),
+    new ButtonBuilder()
+      .setCustomId('help:last')
+      .setEmoji('⏩')
+      .setStyle(ButtonStyle.Primary)
+  );
+const endButtons = new ActionRowBuilder<ButtonBuilder>()
+  .addComponents(
+    new ButtonBuilder()
+      .setCustomId('help:first')
+      .setEmoji('⏪')
+      .setStyle(ButtonStyle.Primary),
+    new ButtonBuilder()
+      .setCustomId('help:previous')
+      .setEmoji('⬅️')
+      .setStyle(ButtonStyle.Primary),
+    new ButtonBuilder()
+      .setCustomId('help:next')
+      .setEmoji('➡️')
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(true),
+    new ButtonBuilder()
+      .setCustomId('help:last')
+      .setEmoji('⏩')
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(true)
+  );
+const disabledButtons = new ActionRowBuilder<ButtonBuilder>()
+  .addComponents(
+    new ButtonBuilder()
+      .setCustomId('help:first')
+      .setEmoji('⏪')
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(true),
+    new ButtonBuilder()
+      .setCustomId('help:previous')
+      .setEmoji('⬅️')
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(true),
+    new ButtonBuilder()
+      .setCustomId('help:next')
+      .setEmoji('➡️')
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(true),
+    new ButtonBuilder()
+      .setCustomId('help:last')
+      .setEmoji('⏩')
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(true)
+  );
 
 const command = 'help';
 
@@ -22,34 +107,14 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle('Commands')
-    .addFields(...Object.entries(commands).slice(0, 8).map(([name, description]) => ({
+    .addFields(...Object.entries(commands).slice(0, commandsPerPage).map(([name, description]) => ({
       name,
       value: description
     })))
     .setFooter({ text: `1 / ${pages}` });
 
-  const buttons = new ActionRowBuilder<ButtonBuilder>()
-    .addComponents(
-      new ButtonBuilder()
-        .setCustomId('help:first')
-        .setEmoji('⏪')
-        .setStyle(ButtonStyle.Primary),
-      new ButtonBuilder()
-        .setCustomId('help:previous')
-        .setEmoji('⬅️')
-        .setStyle(ButtonStyle.Primary),
-      new ButtonBuilder()
-        .setCustomId('help:next')
-        .setEmoji('➡️')
-        .setStyle(ButtonStyle.Primary),
-      new ButtonBuilder()
-        .setCustomId('help:last')
-        .setEmoji('⏩')
-        .setStyle(ButtonStyle.Primary)
-    );
-
   const message = await interaction.editReply({
-    components: [buttons],
+    components: [startButtons],
     embeds: [embed]
   });
 
@@ -73,22 +138,31 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       return;
     }
 
+    let buttons: ActionRowBuilder<ButtonBuilder>;
     let page = Number(buttonInteraction.message.embeds[0]?.footer?.text?.split(' / ')[0]) - 1;
 
     if (id === 'first') {
       page = 0;
     } else if (id === 'last') {
-      page = Math.floor(Object.keys(commands).length / 8);
-    } else if (id === 'previous' && page !== 0) {
+      page = Math.floor(Object.keys(commands).length / commandsPerPage);
+    } else if (id === 'previous') {
       page--;
-    } else if (id === 'next' && page !== pages - 1) {
+    } else if (id === 'next') {
       page++;
+    }
+
+    if (page === 0) {
+      buttons = startButtons;
+    } else if (page === pages - 1) {
+      buttons = endButtons;
+    } else {
+      buttons = middleButtons;
     }
 
     const nextEmbed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle('Commands')
-      .addFields(...Object.entries(commands).slice(8 * page, 8 * (page + 1)).map(([name, description]) => ({
+      .addFields(...Object.entries(commands).slice(commandsPerPage * page, commandsPerPage * (page + 1)).map(([name, description]) => ({
         name,
         value: description
       })))
@@ -102,7 +176,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
 
   collector.on('end', async () => {
     await message.edit({
-      components: [new ActionRowBuilder<ButtonBuilder>().addComponents(buttons.components.map((button) => button.setDisabled(true)))],
+      components: [disabledButtons],
       embeds: [embed]
     });
   });
