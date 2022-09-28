@@ -2,7 +2,7 @@ import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder
 } from 'discord.js';
-import { commands } from '../utils/strings.js';
+import { CommandsDescription } from '../utils/strings.js';
 
 const facts = [
   'Програма на Анто никогаш нема влезено во јамка.',
@@ -160,7 +160,7 @@ const command = 'anto';
 
 export const data = new SlashCommandBuilder()
   .setName(command)
-  .setDescription(commands[command]);
+  .setDescription(CommandsDescription[command]);
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   const random = Math.floor(Math.random() * facts.length);

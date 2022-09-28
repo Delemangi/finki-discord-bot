@@ -8,7 +8,7 @@ import {
   ComponentType
 } from 'discord.js';
 import { getFromBotConfig } from '../utils/config.js';
-import { commands } from '../utils/strings.js';
+import { CommandsDescription as commands } from '../utils/strings.js';
 
 const commandsPerPage = 8;
 const pages = Math.ceil(Object.keys(commands).length / commandsPerPage);

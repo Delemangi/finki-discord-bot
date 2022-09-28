@@ -8,13 +8,13 @@ import {
   getEmbedFromLink,
   getLink
 } from '../utils/links.js';
-import { commands } from '../utils/strings.js';
+import { CommandsDescription } from '../utils/strings.js';
 
 const command = 'link';
 
 export const data = new SlashCommandBuilder()
   .setName(command)
-  .setDescription(commands[command])
+  .setDescription(CommandsDescription[command])
   .addStringOption((option) => option
     .setName('name')
     .setDescription('Link')

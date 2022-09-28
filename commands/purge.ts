@@ -5,13 +5,13 @@ import {
   SlashCommandBuilder
 } from 'discord.js';
 import { isTextGuildBased } from '../utils/functions.js';
-import { commands } from '../utils/strings.js';
+import { CommandsDescription } from '../utils/strings.js';
 
 const command = 'purge';
 
 export const data = new SlashCommandBuilder()
   .setName(command)
-  .setDescription(commands[command])
+  .setDescription(CommandsDescription[command])
   .addNumberOption((option) => option
     .setName('count')
     .setDescription('Number of messages to purge')

@@ -5,7 +5,7 @@ import {
   EmbedBuilder
 } from 'discord.js';
 import { getFromBotConfig } from '../utils/config.js';
-import { commands } from '../utils/strings.js';
+import { CommandsDescription } from '../utils/strings.js';
 
 const emails: { [index: string]: string } = JSON.parse(await readFile('config/emails.json', 'utf8'));
 
@@ -13,7 +13,7 @@ const command = 'email';
 
 export const data = new SlashCommandBuilder()
   .setName(command)
-  .setDescription(commands[command])
+  .setDescription(CommandsDescription[command])
   .addStringOption((option) => option
     .setName('professor')
     .setDescription('The professor to get the email for')

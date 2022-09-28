@@ -5,13 +5,13 @@ import {
 } from 'discord.js';
 import { isTextGuildBased } from '../utils/functions.js';
 import { logger } from '../utils/logger.js';
-import { commands } from '../utils/strings.js';
+import { CommandsDescription } from '../utils/strings.js';
 
 const command = 'embed';
 
 export const data = new SlashCommandBuilder()
   .setName(command)
-  .setDescription(commands[command])
+  .setDescription(CommandsDescription[command])
   .addChannelOption((option) => option
     .setName('channel')
     .setDescription('The channel to send the embed to')

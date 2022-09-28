@@ -9,7 +9,7 @@ import {
 } from 'discord.js';
 import { getFromBotConfig } from '../utils/config.js';
 import { isTextGuildBased } from '../utils/functions.js';
-import { commands } from '../utils/strings.js';
+import { CommandsDescription } from '../utils/strings.js';
 
 const choices = ['2022/2023', '2021/2022', '2020/2021', '2019/2020', '2018/2019'];
 const csv: string[][] = parse(await readFile('config/participants.csv', 'utf8'), { delimiter: ';' });
@@ -28,14 +28,14 @@ export const data = new SlashCommandBuilder()
   .setDescription('Participants')
   .addSubcommand((command) => command
     .setName('role')
-    .setDescription(commands['participants role'])
+    .setDescription(CommandsDescription.participantrole)
     .addRoleOption((option) => option
       .setName('role')
       .setDescription('Role')
       .setRequired(true)))
   .addSubcommand((command) => command
     .setName('course')
-    .setDescription(commands['participants course'])
+    .setDescription(CommandsDescription.participantcourse)
     .addStringOption((option) => option
       .setName('course')
       .setDescription('The course to get the participants for')
