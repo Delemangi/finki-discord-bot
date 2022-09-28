@@ -12,7 +12,6 @@ const command = 'poll';
 export const data = new SlashCommandBuilder()
   .setName(command)
   .setDescription(commands[command])
-  .setThumbnail('https://cdn.discordapp.com/attachments/946729216152576020/1016773768938541106/finki-logo.png')
   .addStringOption(option =>
     option.setName('title')
       .setDescription('Title of the poll.')
@@ -32,6 +31,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     const embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle(title)
+      .setThumbnail('https://cdn.discordapp.com/attachments/946729216152576020/1016773768938541106/finki-logo.png')
       .setDescription('Options:\n' +
         opts?.map((opt, index) => `${emojis[index]} ${opt}\n`).join('')
       )
