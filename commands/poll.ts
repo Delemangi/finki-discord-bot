@@ -12,6 +12,7 @@ const command = 'poll';
 export const data = new SlashCommandBuilder()
   .setName(command)
   .setDescription(commands[command])
+  .setThumbnail('https://cdn.discordapp.com/attachments/946729216152576020/1016773768938541106/finki-logo.png')
   .addStringOption(option =>
     option.setName('title')
       .setDescription('Title of the poll.')
