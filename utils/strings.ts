@@ -10,8 +10,8 @@ export const commands = {
   'participants course': 'Get the number of participants of a course',
   'participants role': 'Get the number of participants of a role',
   ping: 'Pong!',
+  poll: 'Starts a poll',
   professors: 'Get a list of professors for a course',
   purge: 'Delete the last N messages (admins only)',
-  'statistics color': 'Get the number of participants per color',
-  poll: 'Starts a poll'
+  'statistics color': 'Get the number of participants per color'
 };
