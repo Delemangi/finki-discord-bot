@@ -12,5 +12,6 @@ export const commands = {
   ping: 'Pong!',
   professors: 'Get a list of professors for a course',
   purge: 'Delete the last N messages (admins only)',
-  'statistics color': 'Get the number of participants per color'
+  'statistics color': 'Get the number of participants per color',
+  poll: 'Starts a poll'
 };
