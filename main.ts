@@ -27,7 +27,7 @@ import {
   getFromRoleConfig,
   getSubject
 } from './utils/config.js';
-import { isTextGuildBased } from './utils/functions.js';
+import { isNullish, isTextGuildBased } from './utils/functions.js';
 import { logger } from './utils/logger.js';
 
 const applicationID = getFromBotConfig('applicationID');
@@ -36,14 +36,14 @@ const logChannel = getFromBotConfig('logChannel');
 const color = getFromBotConfig('color');
 const crosspostChannels = getFromBotConfig('crosspostChannels');
 
-if (!applicationID)throw new Error('Missing application ID');
+if (isNullish(applicationID))throw new Error('Missing application ID');
 
-if (!token) throw new Error('Missing token');
+if (isNullish(token)) throw new Error('Missing token');
 
-if (!logChannel) throw new Error('Missing log channel');
+if (isNullish(logChannel)) throw new Error('Missing log channel');
 
 // @ts-expect-error This could happen if the property is empty
-if (!color) throw new Error('Missing color');
+if (isNullish(color)) throw new Error('Missing color');
 
 const rest = new REST().setToken(token);
 
