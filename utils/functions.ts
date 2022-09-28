@@ -26,7 +26,7 @@ const channelTypes = [
 ];
 
 export function isTextGuildBased (channel: APIInteractionDataResolvedChannel | Channel | null | undefined): channel is NewsChannel | PrivateThreadChannel | PublicThreadChannel | TextChannel | VoiceChannel {
-  if (channel === null || channel === undefined) {
+  if (isNullish(channel)) {
     return false;
   }
 
