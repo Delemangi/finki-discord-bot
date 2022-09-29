@@ -42,6 +42,8 @@ declare global {
     link: string;
     name: string;
   };
+
+  type Nullish = null | undefined;
 }
 
 export { };

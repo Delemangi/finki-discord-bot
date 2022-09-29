@@ -9,13 +9,6 @@ import {
   type Channel
 } from 'discord.js';
 
-// Type union for the full 2 billion dollar mistake in the Javascript Ecosystem
-type Nullish = null | undefined;
-
-export function isNullish (value: unknown): value is Nullish {
-  return value === undefined || value === null;
-}
-
 const channelTypes = [
   ChannelType.GuildText,
   ChannelType.GuildVoice,
@@ -24,6 +17,10 @@ const channelTypes = [
   ChannelType.PublicThread,
   ChannelType.PrivateThread
 ];
+
+export function isNullish (value: unknown): value is Nullish {
+  return value === undefined || value === null;
+}
 
 export function isTextGuildBased (channel: APIInteractionDataResolvedChannel | Channel | null | undefined): channel is NewsChannel | PrivateThreadChannel | PublicThreadChannel | TextChannel | VoiceChannel {
   if (isNullish(channel)) {
