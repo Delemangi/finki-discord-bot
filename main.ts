@@ -205,7 +205,7 @@ async function handleButton (interaction: ButtonInteraction): Promise<void> {
     await handleProgramButton(interaction, args);
   } else if (command === 'notification') {
     await handleNotificationButton(interaction, args);
-  } else if (!command && ignoredButtonIDs.includes(command)) {
+  } else if (command && ignoredButtonIDs.includes(command)) {
     return;
   } else {
     logger.warn(`Received unknown button interaction ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
