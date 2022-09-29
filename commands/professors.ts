@@ -36,12 +36,12 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     .addFields({
       inline: true,
       name: 'Професори',
-      value: info[1] ?? 'None'
+      value: info[1] === '' ? '?' : info[1] ?? 'None'
     },
     {
       inline: true,
       name: 'Асистенти',
-      value: info[2] ?? 'None'
+      value: info[2] === '' ? '?' : info[2] ?? 'None'
     })
     .setTimestamp();
 
