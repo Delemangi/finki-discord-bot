@@ -9,7 +9,7 @@ import {
   type Channel
 } from 'discord.js';
 
-// Type union for the full 2 billion dolalr mistake in the Javascript Ecosystem
+// Type union for the full 2 billion dollar mistake in the Javascript Ecosystem
 type Nullish = null | undefined;
 
 export function isNullish (value: unknown): value is Nullish {

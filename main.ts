@@ -17,7 +17,7 @@ import {
   inlineCode,
   roleMention,
   Routes,
-  userMention,
+  userMention
 } from 'discord.js';
 import { client } from './utils/client.js';
 import {
@@ -27,7 +27,10 @@ import {
   getFromRoleConfig,
   getSubject
 } from './utils/config.js';
-import { isNullish, isTextGuildBased } from './utils/functions.js';
+import {
+  isNullish,
+  isTextGuildBased
+} from './utils/functions.js';
 import { logger } from './utils/logger.js';
 
 const applicationID = getFromBotConfig('applicationID');
@@ -36,14 +39,21 @@ const logChannel = getFromBotConfig('logChannel');
 const color = getFromBotConfig('color');
 const crosspostChannels = getFromBotConfig('crosspostChannels');
 
-if (isNullish(applicationID))throw new Error('Missing application ID');
+if (isNullish(applicationID)) {
+  throw new Error('Missing application ID');
+}
 
-if (isNullish(token)) throw new Error('Missing token');
+if (isNullish(token)) {
+  throw new Error('Missing token');
+}
 
-if (isNullish(logChannel)) throw new Error('Missing log channel');
+if (isNullish(logChannel)) {
+  throw new Error('Missing log channel');
+}
 
-// @ts-expect-error This could happen if the property is empty
-if (isNullish(color)) throw new Error('Missing color');
+if (isNullish(color)) {
+  throw new Error('Missing color');
+}
 
 const rest = new REST().setToken(token);
 
@@ -126,7 +136,7 @@ try {
 async function handleChatInputCommand (interaction: ChatInputCommandInteraction): Promise<void> {
   const command = commands.get(interaction.commandName);
 
-  if (command === undefined) {
+  if (!command) {
     logger.warn(`No command was found for the chat command ${interaction.id}: ${interaction.commandName}`);
     return;
   }
@@ -195,7 +205,7 @@ async function handleButton (interaction: ButtonInteraction): Promise<void> {
     await handleProgramButton(interaction, args);
   } else if (command === 'notification') {
     await handleNotificationButton(interaction, args);
-  } else if (command !== undefined && ignoredButtonIDs.includes(command)) {
+  } else if (!command && ignoredButtonIDs.includes(command)) {
     return;
   } else {
     logger.warn(`Received unknown button interaction ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
@@ -208,7 +218,7 @@ async function handleButton (interaction: ButtonInteraction): Promise<void> {
 async function handleUserContextMenuCommand (interaction: UserContextMenuCommandInteraction): Promise<void> {
   const command = commands.get(interaction.commandName);
 
-  if (command === undefined) {
+  if (!command) {
     logger.warn(`No command was found for the user context menu command ${interaction.id}: ${interaction.commandName}`);
     return;
   }
@@ -286,7 +296,7 @@ async function handleColorButton (interaction: ButtonInteraction, args: string[]
   if (!colorRoles.length) {
     const roles = getFromRoleConfig('color').map((r) => guild.roles.cache.find((ro) => ro.name === r));
 
-    if (roles === undefined || roles.includes(undefined)) {
+    if (!roles || roles.includes(undefined)) {
       logger.warn(`One or more roles for button interaction ${interaction.id}: ${interaction.customId} were not found`);
       return;
     }
@@ -297,7 +307,7 @@ async function handleColorButton (interaction: ButtonInteraction, args: string[]
   const role = guild.roles.cache.find((r) => r.name === args[0]);
   const member = interaction.member;
 
-  if (role === undefined) {
+  if (!role) {
     logger.warn(`The role for button interaction ${interaction.id}: ${interaction.customId} was not found `);
     return;
   }
@@ -371,7 +381,7 @@ async function handleYearButton (interaction: ButtonInteraction, args: string[])
   if (!yearRoles.length) {
     const roles = getFromRoleConfig('year').map((r) => guild.roles.cache.find((ro) => ro.name === r));
 
-    if (roles === undefined || roles.includes(undefined)) {
+    if (!roles || roles.includes(undefined)) {
       logger.warn(`One or more roles for button interaction ${interaction.id}: ${interaction.customId} were not found`);
       return;
     }
@@ -382,7 +392,7 @@ async function handleYearButton (interaction: ButtonInteraction, args: string[])
   const role = guild.roles.cache.find((r) => r.name === args[0]);
   const member = interaction.member;
 
-  if (role === undefined) {
+  if (!role) {
     logger.warn(`The role was not found for interaction ${interaction.id}: ${interaction.customId}`);
     return;
   }
@@ -456,7 +466,7 @@ async function handleActivityButton (interaction: ButtonInteraction, args: strin
   const role = guild.roles.cache.find((r) => r.name === args[0]);
   const member = interaction.member;
 
-  if (role === undefined) {
+  if (!role) {
     logger.warn(`The role was not found for interaction ${interaction.id}: ${interaction.customId}`);
     return;
   }
@@ -529,7 +539,7 @@ async function handleSubjectButton (interaction: ButtonInteraction, args: string
   const role = guild.roles.cache.find((r) => r.name === args[0]);
   const member = interaction.member;
 
-  if (role === undefined) {
+  if (!role) {
     logger.warn(`The role was not found for interaction ${interaction.id}: ${interaction.customId}`);
     return;
   }
@@ -602,7 +612,7 @@ async function handleProgramButton (interaction: ButtonInteraction, args: string
   if (programRoles.length === 0) {
     const roles = getFromRoleConfig('program').map((r) => guild.roles.cache.find((ro) => ro.name === r));
 
-    if (roles === undefined || roles.includes(undefined)) {
+    if (!roles || roles.includes(undefined)) {
       logger.warn(`One or more roles for button interaction ${interaction.id}: ${interaction.customId} were not found`);
       return;
     }
@@ -613,7 +623,7 @@ async function handleProgramButton (interaction: ButtonInteraction, args: string
   const role = guild.roles.cache.find((r) => r.name === args[0]);
   const member = interaction.member;
 
-  if (role === undefined) {
+  if (!role) {
     logger.warn(`The role was not found for interaction ${interaction.id}: ${interaction.customId}`);
     return;
   }
@@ -687,7 +697,7 @@ async function handleNotificationButton (interaction: ButtonInteraction, args: s
   const role = guild.roles.cache.find((r) => r.name === args[0]);
   const member = interaction.member;
 
-  if (role === undefined) {
+  if (!role) {
     logger.warn(`The role was not found for interaction ${interaction.id}: ${interaction.customId}`);
     return;
   }
