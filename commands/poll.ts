@@ -4,13 +4,13 @@ import {
   EmbedBuilder
 } from 'discord.js';
 import { getFromBotConfig } from '../utils/config.js';
-import { commands } from '../utils/strings.js';
+import { CommandsDescription } from '../utils/strings.js';
 
 const command = 'poll';
 
 export const data = new SlashCommandBuilder()
   .setName(command)
-  .setDescription(commands[command])
+  .setDescription(CommandsDescription[command])
   .addStringOption((option) => option.setName('title')
     .setDescription('Title of the poll.')
     .setRequired(true))

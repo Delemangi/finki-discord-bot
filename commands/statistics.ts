@@ -6,14 +6,14 @@ import {
 } from 'discord.js';
 import { getFromRoleConfig } from '../utils/config.js';
 import { isTextGuildBased } from '../utils/functions.js';
-import { commands } from '../utils/strings.js';
+import { CommandsDescription } from '../utils/strings.js';
 
 export const data = new SlashCommandBuilder()
   .setName('statistics')
   .setDescription('Color')
   .addSubcommand((command) => command
     .setName('color')
-    .setDescription(commands['statistics color']));
+    .setDescription(CommandsDescription.statisticscolor));
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   const guild = interaction.guild;

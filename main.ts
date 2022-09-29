@@ -1,6 +1,7 @@
 import { readdirSync } from 'node:fs';
 import { REST } from '@discordjs/rest';
 import {
+  type BaseInteraction,
   type AutocompleteInteraction,
   type ButtonInteraction,
   type ChatInputCommandInteraction,
@@ -8,6 +9,7 @@ import {
   type Role,
   type TextChannel,
   type UserContextMenuCommandInteraction,
+  type Message,
   channelMention,
   ChannelType,
   Collection,
@@ -25,7 +27,10 @@ import {
   getFromRoleConfig,
   getSubject
 } from './utils/config.js';
-import { isTextGuildBased } from './utils/functions.js';
+import {
+  isNullish,
+  isTextGuildBased
+} from './utils/functions.js';
 import { logger } from './utils/logger.js';
 
 const applicationID = getFromBotConfig('applicationID');
@@ -34,26 +39,25 @@ const logChannel = getFromBotConfig('logChannel');
 const color = getFromBotConfig('color');
 const crosspostChannels = getFromBotConfig('crosspostChannels');
 
-if (applicationID === undefined || applicationID === '') {
+if (isNullish(applicationID)) {
   throw new Error('Missing application ID');
 }
 
-if (token === undefined || token === '') {
+if (isNullish(token)) {
   throw new Error('Missing token');
 }
 
-if (logChannel === undefined || logChannel === '') {
+if (isNullish(logChannel)) {
   throw new Error('Missing log channel');
 }
 
-// @ts-expect-error This could happen if the property is empty
-if (color === undefined || color === '') {
+if (isNullish(color)) {
   throw new Error('Missing color');
 }
 
 const rest = new REST().setToken(token);
 
-const files = readdirSync('./dist/commands').filter((file) => file.endsWith('.js'));
+const files = readdirSync('./dist/commands').filter((file: string) => file.endsWith('.js'));
 const commands = new Collection<string, Command>();
 const commandsJSON: string[] = [];
 
@@ -78,7 +82,7 @@ let yearRoles: Role[] = [];
 let programRoles: Role[] = [];
 const ignoredButtonIDs = ['help'];
 
-client.on('interactionCreate', async (interaction) => {
+client.on('interactionCreate', async (interaction: BaseInteraction) => {
   if (interaction.isChatInputCommand()) {
     logger.debug(`Handling chat input command interaction ${interaction.id} from ${interaction.user.id}: ${interaction}`);
     await handleChatInputCommand(interaction);
@@ -95,8 +99,8 @@ client.on('interactionCreate', async (interaction) => {
   }
 });
 
-client.on('messageCreate', async (message) => {
-  if (crosspostChannels === undefined || !crosspostChannels.includes(message.channel.id)) {
+client.on('messageCreate', async (message: Message) => {
+  if (!crosspostChannels || !crosspostChannels.includes(message.channel.id)) {
     return;
   }
 
@@ -115,7 +119,7 @@ client.once('ready', async () => {
 
   const channel = client.channels.cache.get(logChannel);
 
-  if (channel === undefined || channel?.type !== ChannelType.GuildText) {
+  if (!channel || channel?.type !== ChannelType.GuildText) {
     throw new Error('The log channel must be a guild text channel');
   }
 
@@ -132,7 +136,7 @@ try {
 async function handleChatInputCommand (interaction: ChatInputCommandInteraction): Promise<void> {
   const command = commands.get(interaction.commandName);
 
-  if (command === undefined) {
+  if (!command) {
     logger.warn(`No command was found for the chat command ${interaction.id}: ${interaction.commandName}`);
     return;
   }
@@ -148,7 +152,7 @@ async function handleChatInputCommand (interaction: ChatInputCommandInteraction)
     logger.error(`Failed to handle interaction\n${error}`);
   }
 
-  if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
+  if (interaction.channel?.type === ChannelType.GuildText) {
     const embed = new EmbedBuilder()
       .setColor(color)
       .setTitle('Chat Input Command')
@@ -201,7 +205,7 @@ async function handleButton (interaction: ButtonInteraction): Promise<void> {
     await handleProgramButton(interaction, args);
   } else if (command === 'notification') {
     await handleNotificationButton(interaction, args);
-  } else if (command !== undefined && ignoredButtonIDs.includes(command)) {
+  } else if (command && ignoredButtonIDs.includes(command)) {
     return;
   } else {
     logger.warn(`Received unknown button interaction ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
@@ -214,7 +218,7 @@ async function handleButton (interaction: ButtonInteraction): Promise<void> {
 async function handleUserContextMenuCommand (interaction: UserContextMenuCommandInteraction): Promise<void> {
   const command = commands.get(interaction.commandName);
 
-  if (command === undefined) {
+  if (!command) {
     logger.warn(`No command was found for the user context menu command ${interaction.id}: ${interaction.commandName}`);
     return;
   }
@@ -229,7 +233,7 @@ async function handleUserContextMenuCommand (interaction: UserContextMenuCommand
     logger.error(`Failed to handle interaction\n${error}`);
   }
 
-  if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
+  if (interaction.channel?.type === ChannelType.GuildText) {
     const embed = new EmbedBuilder()
       .setColor(color)
       .setTitle('User Context Menu')
@@ -284,15 +288,15 @@ async function handleAutocomplete (interaction: AutocompleteInteraction): Promis
 async function handleColorButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
   const guild = interaction.guild;
 
-  if (guild === null) {
+  if (!guild) {
     logger.warn(`Received button interaction ${interaction.id}: ${interaction.customId} from ${interaction.user.tag} outside of a guild`);
     return;
   }
 
-  if (colorRoles.length === 0) {
+  if (!colorRoles.length) {
     const roles = getFromRoleConfig('color').map((r) => guild.roles.cache.find((ro) => ro.name === r));
 
-    if (roles === undefined || roles.includes(undefined)) {
+    if (!roles || roles.includes(undefined)) {
       logger.warn(`One or more roles for button interaction ${interaction.id}: ${interaction.customId} were not found`);
       return;
     }
@@ -303,7 +307,7 @@ async function handleColorButton (interaction: ButtonInteraction, args: string[]
   const role = guild.roles.cache.find((r) => r.name === args[0]);
   const member = interaction.member;
 
-  if (role === undefined) {
+  if (!role) {
     logger.warn(`The role for button interaction ${interaction.id}: ${interaction.customId} was not found `);
     return;
   }
@@ -330,7 +334,7 @@ async function handleColorButton (interaction: ButtonInteraction, args: string[]
     return;
   }
 
-  if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
+  if (interaction.channel?.type === ChannelType.GuildText) {
     const embed = new EmbedBuilder()
       .setColor(color)
       .setTitle('Button')
@@ -369,15 +373,15 @@ async function handleColorButton (interaction: ButtonInteraction, args: string[]
 async function handleYearButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
   const guild = interaction.guild;
 
-  if (guild === null) {
+  if (!guild) {
     logger.warn(`Received button interaction ${interaction.id}: ${interaction.customId} from ${interaction.user.tag} outside of a guild`);
     return;
   }
 
-  if (yearRoles.length === 0) {
+  if (!yearRoles.length) {
     const roles = getFromRoleConfig('year').map((r) => guild.roles.cache.find((ro) => ro.name === r));
 
-    if (roles === undefined || roles.includes(undefined)) {
+    if (!roles || roles.includes(undefined)) {
       logger.warn(`One or more roles for button interaction ${interaction.id}: ${interaction.customId} were not found`);
       return;
     }
@@ -388,7 +392,7 @@ async function handleYearButton (interaction: ButtonInteraction, args: string[])
   const role = guild.roles.cache.find((r) => r.name === args[0]);
   const member = interaction.member;
 
-  if (role === undefined) {
+  if (!role) {
     logger.warn(`The role was not found for interaction ${interaction.id}: ${interaction.customId}`);
     return;
   }
@@ -415,7 +419,7 @@ async function handleYearButton (interaction: ButtonInteraction, args: string[])
     return;
   }
 
-  if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
+  if (interaction.channel?.type === ChannelType.GuildText) {
     const embed = new EmbedBuilder()
       .setColor(color)
       .setTitle('Button')
@@ -454,7 +458,7 @@ async function handleYearButton (interaction: ButtonInteraction, args: string[])
 async function handleActivityButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
   const guild = interaction.guild;
 
-  if (guild === null) {
+  if (!guild) {
     logger.warn(`Received button interaction ${interaction.id}: ${interaction.customId} from ${interaction.user.tag} outside of a guild`);
     return;
   }
@@ -462,7 +466,7 @@ async function handleActivityButton (interaction: ButtonInteraction, args: strin
   const role = guild.roles.cache.find((r) => r.name === args[0]);
   const member = interaction.member;
 
-  if (role === undefined) {
+  if (!role) {
     logger.warn(`The role was not found for interaction ${interaction.id}: ${interaction.customId}`);
     return;
   }
@@ -488,7 +492,7 @@ async function handleActivityButton (interaction: ButtonInteraction, args: strin
     return;
   }
 
-  if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
+  if (interaction.channel?.type === ChannelType.GuildText) {
     const embed = new EmbedBuilder()
       .setColor(color)
       .setTitle('Button')
@@ -527,7 +531,7 @@ async function handleActivityButton (interaction: ButtonInteraction, args: strin
 async function handleSubjectButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
   const guild = interaction.guild;
 
-  if (guild === null) {
+  if (!guild) {
     logger.warn(`Received button interaction ${interaction.id}: ${interaction.customId} from ${interaction.user.tag} outside of a guild`);
     return;
   }
@@ -535,7 +539,7 @@ async function handleSubjectButton (interaction: ButtonInteraction, args: string
   const role = guild.roles.cache.find((r) => r.name === args[0]);
   const member = interaction.member;
 
-  if (role === undefined) {
+  if (!role) {
     logger.warn(`The role was not found for interaction ${interaction.id}: ${interaction.customId}`);
     return;
   }
@@ -561,7 +565,7 @@ async function handleSubjectButton (interaction: ButtonInteraction, args: string
     return;
   }
 
-  if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
+  if (interaction.channel?.type === ChannelType.GuildText) {
     const embed = new EmbedBuilder()
       .setColor(color)
       .setTitle('Button')
@@ -600,7 +604,7 @@ async function handleSubjectButton (interaction: ButtonInteraction, args: string
 async function handleProgramButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
   const guild = interaction.guild;
 
-  if (guild === null) {
+  if (!guild) {
     logger.warn(`Received button interaction ${interaction.id}: ${interaction.customId} from ${interaction.user.tag} outside of a guild`);
     return;
   }
@@ -608,7 +612,7 @@ async function handleProgramButton (interaction: ButtonInteraction, args: string
   if (programRoles.length === 0) {
     const roles = getFromRoleConfig('program').map((r) => guild.roles.cache.find((ro) => ro.name === r));
 
-    if (roles === undefined || roles.includes(undefined)) {
+    if (!roles || roles.includes(undefined)) {
       logger.warn(`One or more roles for button interaction ${interaction.id}: ${interaction.customId} were not found`);
       return;
     }
@@ -619,7 +623,7 @@ async function handleProgramButton (interaction: ButtonInteraction, args: string
   const role = guild.roles.cache.find((r) => r.name === args[0]);
   const member = interaction.member;
 
-  if (role === undefined) {
+  if (!role) {
     logger.warn(`The role was not found for interaction ${interaction.id}: ${interaction.customId}`);
     return;
   }
@@ -646,7 +650,7 @@ async function handleProgramButton (interaction: ButtonInteraction, args: string
     return;
   }
 
-  if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
+  if (interaction.channel?.type === ChannelType.GuildText) {
     const embed = new EmbedBuilder()
       .setColor(color)
       .setTitle('Button')
@@ -685,7 +689,7 @@ async function handleProgramButton (interaction: ButtonInteraction, args: string
 async function handleNotificationButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
   const guild = interaction.guild;
 
-  if (guild === null) {
+  if (!guild) {
     logger.warn(`Received button interaction ${interaction.id}: ${interaction.customId} from ${interaction.user.tag} outside of a guild`);
     return;
   }
@@ -693,7 +697,7 @@ async function handleNotificationButton (interaction: ButtonInteraction, args: s
   const role = guild.roles.cache.find((r) => r.name === args[0]);
   const member = interaction.member;
 
-  if (role === undefined) {
+  if (!role) {
     logger.warn(`The role was not found for interaction ${interaction.id}: ${interaction.customId}`);
     return;
   }
@@ -719,7 +723,7 @@ async function handleNotificationButton (interaction: ButtonInteraction, args: s
     return;
   }
 
-  if (interaction.channel !== null && interaction.channel.type === ChannelType.GuildText) {
+  if (interaction.channel?.type === ChannelType.GuildText) {
     const embed = new EmbedBuilder()
       .setColor(color)
       .setTitle('Button')

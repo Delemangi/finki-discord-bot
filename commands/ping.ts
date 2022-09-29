@@ -3,13 +3,13 @@ import {
   SlashCommandBuilder
 } from 'discord.js';
 import { client } from '../utils/client.js';
-import { commands } from '../utils/strings.js';
+import { CommandsDescription } from '../utils/strings.js';
 
 const command = 'ping';
 
 export const data = new SlashCommandBuilder()
   .setName(command)
-  .setDescription(commands[command]);
+  .setDescription(CommandsDescription[command]);
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   await interaction.editReply(`Pong! ${client.ws.ping.toString()} ms`);

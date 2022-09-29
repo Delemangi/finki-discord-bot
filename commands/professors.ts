@@ -6,7 +6,7 @@ import {
   EmbedBuilder
 } from 'discord.js';
 import { getFromBotConfig } from '../utils/config.js';
-import { commands } from '../utils/strings.js';
+import { CommandsDescription } from '../utils/strings.js';
 
 const csv: string[][] = parse(await readFile('config/professors.csv', 'utf8'), { delimiter: ';' });
 
@@ -14,7 +14,7 @@ const command = 'professors';
 
 export const data = new SlashCommandBuilder()
   .setName(command)
-  .setDescription(commands[command])
+  .setDescription(CommandsDescription[command])
   .addStringOption((option) => option
     .setName('course')
     .setDescription('The course to get the professors for')

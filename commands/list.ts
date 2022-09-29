@@ -6,17 +6,17 @@ import {
 import { getFromBotConfig } from '../utils/config.js';
 import { getAllQuestions } from '../utils/faq.js';
 import { getAllLinks } from '../utils/links.js';
-import { commands } from '../utils/strings.js';
+import { CommandsDescription } from '../utils/strings.js';
 
 export const data = new SlashCommandBuilder()
   .setName('list')
   .setDescription('Get all...')
   .addSubcommand((command) => command
     .setName('questions')
-    .setDescription(commands['list questions']))
+    .setDescription(CommandsDescription.listquestions))
   .addSubcommand((command) => command
     .setName('links')
-    .setDescription(commands['list links']));
+    .setDescription(CommandsDescription.listlink));
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   let embed;
