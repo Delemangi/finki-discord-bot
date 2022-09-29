@@ -6,43 +6,38 @@ import {
 import { getFromBotConfig } from '../utils/config.js';
 import { CommandsDescription } from '../utils/strings.js';
 
+const emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
+
 const command = 'poll';
 
 export const data = new SlashCommandBuilder()
   .setName(command)
   .setDescription(CommandsDescription[command])
-  .addStringOption((option) => option.setName('title')
-    .setDescription('Title of the poll.')
+  .addStringOption((option) => option
+    .setName('title')
+    .setDescription('Title of the poll')
     .setRequired(true))
-  .addStringOption((option) => option.setName('options')
-    .setDescription('Poll options. (Use comma and no spaces between options, ex: option1,option2,option3) ')
+  .addStringOption((option) => option
+    .setName('options')
+    .setDescription('Up to 10 poll options, separated by commas')
     .setRequired(true));
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
-  const title = interaction.options.getString('title');
-  const opts = interaction.options.getString('options')?.split(',');
-  const optLength = opts?.length ?? 0;
-  const emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
+  const title = interaction.options.getString('title', true);
+  const options = interaction.options.getString('options', true).split(',');
 
-  if (optLength <= 10) {
+  if (options.length <= 10) {
     const embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle(title)
-      .setThumbnail('https://cdn.discordapp.com/attachments/946729216152576020/1016773768938541106/finki-logo.png')
-      .setDescription('Options:\n' +
-        opts?.map((opt, index) => `${emojis[index]} ${opt}\n`).join(''))
+      .setDescription(options.map((option, index) => `${emojis[index]} ${option.trim()}`).join('\n'))
       .setTimestamp();
 
-    const msg = await interaction.editReply({ embeds: [embed] });
-    for (let i = 0; i < optLength; i++) {
-      await msg.react(`${emojis[i]}`);
+    const message = await interaction.editReply({ embeds: [embed] });
+    for (let i = 0; i < options.length; i++) {
+      await message.react(`${emojis[i]}`);
     }
   } else {
-    const embed = new EmbedBuilder()
-      .setColor(getFromBotConfig('color'))
-      .setDescription('**Error!** Poll can have up to 10 options only.')
-      .setTimestamp();
-
-    await interaction.editReply({ embeds: [embed] });
+    await interaction.editReply('Не може да има повеќе од 10 опции.');
   }
 }
