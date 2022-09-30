@@ -1,5 +1,4 @@
 import { readdirSync } from 'node:fs';
-import { REST } from '@discordjs/rest';
 import {
   type BaseInteraction,
   type AutocompleteInteraction,
@@ -16,7 +15,6 @@ import {
   EmbedBuilder,
   inlineCode,
   roleMention,
-  Routes,
   userMention
 } from 'discord.js';
 import { client } from './utils/client.js';
@@ -55,25 +53,12 @@ if (isEmpty(color)) {
   throw new Error('Missing color');
 }
 
-const rest = new REST().setToken(token);
-
-const files = readdirSync('./dist/commands').filter((file: string) => file.endsWith('.js'));
+const files = readdirSync('./dist/commands').filter((file) => file.endsWith('.js'));
 const commands = new Collection<string, Command>();
-const commandsJSON: string[] = [];
 
 for (const file of files) {
-  const command: Command = await import(`./commands/${file}`);
+  const command: Command = await import(`../commands/${file}`);
   commands.set(command.data.name, command);
-  commandsJSON.push(command.data.toJSON());
-
-  logger.debug(`Command: ${command.data.name}`);
-}
-
-try {
-  await rest.put(Routes.applicationCommands(applicationID), { body: commandsJSON });
-  logger.debug('Successfully registered application commands');
-} catch (error) {
-  throw new Error(`Failed to register application commands\n${error}`);
 }
 
 let logTextChannel: TextChannel;

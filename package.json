@@ -12,6 +12,7 @@
     "programs": "tsc && node dist/scripts/programs.js",
     "notifications": "tsc && node dist/scripts/notifications.js",
     "subjectsForum": "tsc && node dist/scripts/subjectsForum.js",
+    "register": "tsc && node dist/scripts/register.js",
     "delete": "tsc && node dist/scripts/delete.js"
   },
   "author": "Delemangi",

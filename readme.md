@@ -38,7 +38,8 @@ Currently there are:
 5. `npm run programs <channel ID> [newlines]` - send a programs embed to `channel ID` with `newlines` number of newlines in the message content
 6. `npm run notifications <channel ID> [newlines]` - send a notifications embed to `channel ID` with `newlines` number of newlines in the message content
 7. `npm run subjectsForum <channel ID>` - creates threads for all subjects in `channel ID` forum
-8. `npm run delete <...command IDs>` - delete the provided application commands
+8. `npm run register` - registers all commands as global application commands
+9. `npm run delete <...command IDs>` - delete the provided application commands
 
 The arguments marked with `< >` are required, while the arguments marked with `[ ]` are optional.
 
