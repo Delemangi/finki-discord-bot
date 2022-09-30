@@ -28,7 +28,7 @@ import {
   getSubject
 } from './utils/config.js';
 import {
-  isNullish,
+  isEmpty,
   isTextGuildBased
 } from './utils/functions.js';
 import { logger } from './utils/logger.js';
@@ -39,19 +39,19 @@ const logChannel = getFromBotConfig('logChannel');
 const color = getFromBotConfig('color');
 const crosspostChannels = getFromBotConfig('crosspostChannels');
 
-if (isNullish(applicationID)) {
+if (isEmpty(applicationID)) {
   throw new Error('Missing application ID');
 }
 
-if (isNullish(token)) {
+if (isEmpty(token)) {
   throw new Error('Missing token');
 }
 
-if (isNullish(logChannel)) {
+if (isEmpty(logChannel)) {
   throw new Error('Missing log channel');
 }
 
-if (isNullish(color)) {
+if (isEmpty(color)) {
   throw new Error('Missing color');
 }
 

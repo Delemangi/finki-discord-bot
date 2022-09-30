@@ -18,12 +18,12 @@ const channelTypes = [
   ChannelType.PrivateThread
 ];
 
-export function isNullish (value: unknown): value is Nullish {
-  return value === undefined || value === null;
+export function isEmpty (value: unknown): value is '' | undefined {
+  return value === undefined || value === '';
 }
 
 export function isTextGuildBased (channel: APIInteractionDataResolvedChannel | Channel | null | undefined): channel is NewsChannel | PrivateThreadChannel | PublicThreadChannel | TextChannel | VoiceChannel {
-  if (isNullish(channel)) {
+  if (channel === null || channel === undefined) {
     return false;
   }
 
