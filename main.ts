@@ -26,38 +26,23 @@ import {
   getSubject
 } from './utils/config.js';
 import {
-  isEmpty,
+  checkConfig,
   isTextGuildBased
 } from './utils/functions.js';
 import { logger } from './utils/logger.js';
 
-const applicationID = getFromBotConfig('applicationID');
+checkConfig();
+
 const token = getFromBotConfig('token');
 const logChannel = getFromBotConfig('logChannel');
 const color = getFromBotConfig('color');
 const crosspostChannels = getFromBotConfig('crosspostChannels');
 
-if (isEmpty(applicationID)) {
-  throw new Error('Missing application ID');
-}
-
-if (isEmpty(token)) {
-  throw new Error('Missing token');
-}
-
-if (isEmpty(logChannel)) {
-  throw new Error('Missing log channel');
-}
-
-if (isEmpty(color)) {
-  throw new Error('Missing color');
-}
-
 const files = readdirSync('./dist/commands').filter((file) => file.endsWith('.js'));
 const commands = new Collection<string, Command>();
 
 for (const file of files) {
-  const command: Command = await import(`../commands/${file}`);
+  const command: Command = await import(`./commands/${file}`);
   commands.set(command.data.name, command);
 }
 
