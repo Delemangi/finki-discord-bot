@@ -1,6 +1,6 @@
 # FINKI Discord Bot
 
-Discord bot for the `FINKI Students` Discord server, made with [discord.js](https://github.com/discordjs/discord.js) v14.
+Discord bot for the `FINKI Students` Discord server, made with [discord.js](https://github.com/discordjs/discord.js) v14. Requires Node.js 18.
 
 ## Installation
 
