@@ -13,10 +13,10 @@ export const data = new SlashCommandBuilder()
   .setDescription('Get all...')
   .addSubcommand((command) => command
     .setName('questions')
-    .setDescription(CommandsDescription.listquestions))
+    .setDescription(CommandsDescription['list questions']))
   .addSubcommand((command) => command
     .setName('links')
-    .setDescription(CommandsDescription.listlink));
+    .setDescription(CommandsDescription['list links']));
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   let embed;

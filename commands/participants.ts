@@ -28,14 +28,14 @@ export const data = new SlashCommandBuilder()
   .setDescription('Participants')
   .addSubcommand((command) => command
     .setName('role')
-    .setDescription(CommandsDescription.participantrole)
+    .setDescription(CommandsDescription['participant role'])
     .addRoleOption((option) => option
       .setName('role')
       .setDescription('Role')
       .setRequired(true)))
   .addSubcommand((command) => command
     .setName('course')
-    .setDescription(CommandsDescription.participantcourse)
+    .setDescription(CommandsDescription['participant course'])
     .addStringOption((option) => option
       .setName('course')
       .setDescription('The course to get the participants for')

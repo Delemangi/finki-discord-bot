@@ -13,7 +13,7 @@ export const data = new SlashCommandBuilder()
   .setDescription('Color')
   .addSubcommand((command) => command
     .setName('color')
-    .setDescription(CommandsDescription.statisticscolor));
+    .setDescription(CommandsDescription['statistics color']));
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   const guild = interaction.guild;
