@@ -70,7 +70,7 @@ client.on('interactionCreate', async (interaction: BaseInteraction) => {
 });
 
 client.on('messageCreate', async (message: Message) => {
-  if (!crosspostChannels || !crosspostChannels.includes(message.channel.id)) {
+  if (!crosspostChannels.length || !crosspostChannels.includes(message.channel.id)) {
     return;
   }
 
@@ -579,7 +579,7 @@ async function handleProgramButton (interaction: ButtonInteraction, args: string
     return;
   }
 
-  if (programRoles.length === 0) {
+  if (!programRoles.length) {
     const roles = getFromRoleConfig('program').map((r) => guild.roles.cache.find((ro) => ro.name === r));
 
     if (!roles || roles.includes(undefined)) {
