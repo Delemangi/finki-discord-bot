@@ -39,7 +39,7 @@ client.once('ready', async () => {
     .setColor(getFromBotConfig('color'))
     .setTitle('Активности')
     .setThumbnail('https://cdn.discordapp.com/attachments/946729216152576020/1016773768938541106/finki-logo.png')
-    .setDescription('Изберете активности кои ќе ви дадат пристап до соодветните канали на самата активност.')
+    .setDescription('Изберете активности од интерес за пристап до соодветните канали.')
     .setFooter({ text: '(може да изберете повеќе опции)' });
 
   for (let i = 0; i < roles.length; i += 5) {
