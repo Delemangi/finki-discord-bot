@@ -3,5 +3,6 @@
   "token": "",
   "logChannel": "",
   "color": "",
-  "crosspostChannels": []
+  "crosspostChannels": [],
+  "keyvDB": ""
 }

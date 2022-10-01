@@ -1,13 +1,18 @@
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-  EmbedBuilder
+  EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle
 } from 'discord.js';
 import { getFromBotConfig } from '../utils/config.js';
 import { CommandsDescription } from '../utils/strings.js';
 
-const emojis = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
-
+import Keyv from 'keyv';
+const keyv = new Keyv(getFromBotConfig('keyvDB'));
+// percentageValues: 0, 0.25, 0.5, 0.75, 1
+//const percentageValues = ['.', '░', '▒', '▓', '█'];
 const command = 'poll';
 
 export const data = new SlashCommandBuilder()
@@ -19,25 +24,49 @@ export const data = new SlashCommandBuilder()
     .setRequired(true))
   .addStringOption((option) => option
     .setName('options')
-    .setDescription('Up to 10 poll options, separated by commas')
+    .setDescription('Up to 25 poll options, separated by commas')
     .setRequired(true));
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   const title = interaction.options.getString('title', true);
   const options = interaction.options.getString('options', true).split(',');
+  const components: ActionRowBuilder<ButtonBuilder>[] = [];
 
-  if (options.length <= 10) {
+  for(let i = 0; i < options.length; i += 5) {
+    const row = new ActionRowBuilder<ButtonBuilder>();
+    const buttons: ButtonBuilder[] = [];
+
+    for(let j = i; j < i + 5; j++) {
+      if(options[j] === undefined) break;
+
+      const button = new ButtonBuilder()
+        .setCustomId(`poll:${j}`)
+        .setLabel(`${j + 1}`)
+        .setStyle(ButtonStyle.Secondary);
+
+      buttons.push(button);
+    }
+
+    row.addComponents(buttons);
+    components.push(row);
+  }
+  
+  if (options.length <= 25) {
     const embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle(title)
-      .setDescription(options.map((option, index) => `${emojis[index]} ${option.trim()}`).join('\n'))
+      .setDescription(options.map((option, index) => `${index + 1}. ${option.trim()} - **(0%)**`).join('\n'))
       .setTimestamp();
 
-    const message = await interaction.editReply({ embeds: [embed] });
-    for (let i = 0; i < options.length; i++) {
-      await message.react(`${emojis[i]}`);
-    }
+    const message = await interaction.editReply({ embeds: [embed], components });
+    await keyv.set(message.id, {
+      title: title,
+      options: options,
+      votes: 0,
+      optionVotes: new Array<number>(options.length).fill(0),
+      participants: []
+    });
   } else {
-    await interaction.editReply('Не може да има повеќе од 10 опции.');
+    await interaction.editReply('Вашата анкета не може да има повеќе од 25 опции!');
   }
 }
