@@ -6,13 +6,12 @@ import {
   ButtonBuilder,
   ButtonStyle
 } from 'discord.js';
+import Keyv from 'keyv';
 import { getFromBotConfig } from '../utils/config.js';
 import { CommandsDescription } from '../utils/strings.js';
 
-import Keyv from 'keyv';
 const keyv = new Keyv(getFromBotConfig('keyvDB'));
-// percentageValues: 0, 0.25, 0.5, 0.75, 1
-//const percentageValues = ['.', '░', '▒', '▓', '█'];
+
 const command = 'poll';
 
 export const data = new SlashCommandBuilder()
@@ -32,12 +31,14 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   const options = interaction.options.getString('options', true).split(',');
   const components: ActionRowBuilder<ButtonBuilder>[] = [];
 
-  for(let i = 0; i < options.length; i += 5) {
+  for (let i = 0; i < options.length; i += 5) {
     const row = new ActionRowBuilder<ButtonBuilder>();
     const buttons: ButtonBuilder[] = [];
 
-    for(let j = i; j < i + 5; j++) {
-      if(options[j] === undefined) break;
+    for (let j = i; j < i + 5; j++) {
+      if (options[j] === undefined) {
+        break;
+      }
 
       const button = new ButtonBuilder()
         .setCustomId(`poll:${j}`)
@@ -50,7 +51,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     row.addComponents(buttons);
     components.push(row);
   }
-  
+
   if (options.length <= 25) {
     const embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
@@ -58,13 +59,16 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       .setDescription(options.map((option, index) => `${index + 1}. ${option.trim()} - **(0%)**`).join('\n'))
       .setTimestamp();
 
-    const message = await interaction.editReply({ embeds: [embed], components });
+    const message = await interaction.editReply({
+      components,
+      embeds: [embed]
+    });
     await keyv.set(message.id, {
-      title: title,
-      options: options,
-      votes: 0,
-      optionVotes: new Array<number>(options.length).fill(0),
-      participants: []
+      options,
+      optionVotes: Array.from({ length: options.length }).fill(0),
+      participants: [],
+      title,
+      votes: 0
     });
   } else {
     await interaction.editReply('Вашата анкета не може да има повеќе од 25 опции!');

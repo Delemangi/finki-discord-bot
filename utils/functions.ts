@@ -43,7 +43,7 @@ export function checkConfig (): void {
   }
 
   if (isEmpty(keyvDB)) {
-    throw new Error('Missing Database Key');
+    throw new Error('Missing database key');
   }
 }
 

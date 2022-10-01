@@ -17,6 +17,7 @@ import {
   roleMention,
   userMention
 } from 'discord.js';
+import Keyv from 'keyv';
 import { client } from './utils/client.js';
 import {
   getAllEmails,
@@ -30,7 +31,6 @@ import {
   isTextGuildBased
 } from './utils/functions.js';
 import { logger } from './utils/logger.js';
-import Keyv from 'keyv';
 
 checkConfig();
 
@@ -583,52 +583,58 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
     return;
   }
 
-  let poll = await keyv.get(interaction.message.id);
+  const poll = await keyv.get(interaction.message.id);
 
-  let hasVoted = poll.participants.find((person: any) => person.id === interaction.user.id);
-  let newIndex = Number(interaction.customId.split(':')[1]);
+  const hasVoted = poll.participants.find((person: { id: string }) => person.id === interaction.user.id);
+  const newIndex = Number(interaction.customId.split(':')[1]);
   let newVotes = poll.votes;
-  let newOptionVotes = poll.optionVotes;
-  let newParticipants = poll.participants;
-  let userIndex = poll.participants.findIndex((person: any) => person.id === interaction.user.id);
+  const newOptionVotes = poll.optionVotes;
+  const newParticipants = poll.participants;
+  const userIndex = poll.participants.findIndex((person: { id: string }) => person.id === interaction.user.id);
   let replyMessage: string;
 
-  if(hasVoted && poll.participants[userIndex].vote === newIndex) {
-    newVotes = newVotes - 1;
-    newOptionVotes[newIndex] = newOptionVotes[newIndex] - 1;
+  if (hasVoted && poll.participants[userIndex].vote === newIndex) {
+    newVotes -= 1;
+    newOptionVotes[newIndex] -= 1;
     newParticipants.splice(userIndex, 1);
 
-    replyMessage = `Го тргнавте вашиот глас.`;
-  } else if(hasVoted) {
-    newOptionVotes[poll.participants[userIndex].vote] = newOptionVotes[poll.participants[userIndex].vote] - 1;
-    newOptionVotes[newIndex] = newOptionVotes[newIndex] + 1;
+    replyMessage = 'Го тргнавте вашиот глас.';
+  } else if (hasVoted) {
+    newOptionVotes[poll.participants[userIndex].vote] -= 1;
+    newOptionVotes[newIndex] += 1;
     newParticipants[userIndex].vote = newIndex;
 
     replyMessage = `Ја променивте вашата опција во опцијата: ${Number(args[0]) + 1}.`;
   } else {
-    newOptionVotes[newIndex] = newOptionVotes[newIndex] + 1;
-    newParticipants.push({ id: interaction.user.id, vote: newIndex });
-    newVotes = newVotes + 1;
+    newOptionVotes[newIndex] += 1;
+    newParticipants.push({
+      id: interaction.user.id,
+      vote: newIndex
+    });
+    newVotes += 1;
 
     replyMessage = `Гласавте и ја одбравте опцијата: ${Number(args[0]) + 1}.`;
   }
 
   await keyv.set(interaction.message.id, {
-    title: poll.title,
     options: poll.options,
-    votes: newVotes,
     optionVotes: newOptionVotes,
-    participants: newParticipants
+    participants: newParticipants,
+    title: poll.title,
+    votes: newVotes
   });
 
-  await interaction.reply({ content: replyMessage, ephemeral: true });
+  await interaction.reply({
+    content: replyMessage,
+    ephemeral: true
+  });
 
-  let updatedPoll = await keyv.get(interaction.message.id);
+  const updatedPoll = await keyv.get(interaction.message.id);
 
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle(updatedPoll.title)
-    .setDescription(updatedPoll.options.map((option: any, index: any) => `${index + 1}. ${option} - **(${updatedPoll.votes > 0 ? (updatedPoll.optionVotes[index] / updatedPoll.votes) * 100 : '0'}%)**`).join('\n'))
+    .setDescription(updatedPoll.options.map((option: string, index: number) => `${index + 1}. ${option} - **(${updatedPoll.votes > 0 ? updatedPoll.optionVotes[index] / updatedPoll.votes * 100 : '0'}%)**`).join('\n'))
     .setTimestamp();
 
   await interaction.message.edit({ embeds: [embed] });
