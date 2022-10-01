@@ -30,6 +30,7 @@ import {
   isTextGuildBased
 } from './utils/functions.js';
 import { logger } from './utils/logger.js';
+import Keyv from 'keyv';
 
 checkConfig();
 
@@ -37,6 +38,7 @@ const token = getFromBotConfig('token');
 const logChannel = getFromBotConfig('logChannel');
 const color = getFromBotConfig('color');
 const crosspostChannels = getFromBotConfig('crosspostChannels');
+const keyv = new Keyv(getFromBotConfig('keyvDB'));
 
 const files = readdirSync('./dist/commands').filter((file) => file.endsWith('.js'));
 const commands = new Collection<string, Command>();
@@ -175,6 +177,8 @@ async function handleButton (interaction: ButtonInteraction): Promise<void> {
     await handleProgramButton(interaction, args);
   } else if (command === 'notification') {
     await handleNotificationButton(interaction, args);
+  } else if (command === 'poll') {
+    await handlePollButton(interaction, args);
   } else if (command && ignoredButtonIDs.includes(command)) {
     return;
   } else {
@@ -569,6 +573,65 @@ async function handleSubjectButton (interaction: ButtonInteraction, args: string
   }
 
   logger.debug(`Handled subject button ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
+}
+
+async function handlePollButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
+  const guild = interaction.guild;
+
+  if (!guild) {
+    logger.warn(`Received button interaction ${interaction.id}: ${interaction.customId} from ${interaction.user.tag} outside of a guild`);
+    return;
+  }
+
+  let poll = await keyv.get(interaction.message.id);
+
+  let hasVoted = poll.participants.find((person: any) => person.id === interaction.user.id);
+  let newIndex = Number(interaction.customId.split(':')[1]);
+  let newVotes = poll.votes;
+  let newOptionVotes = poll.optionVotes;
+  let newParticipants = poll.participants;
+  let userIndex = poll.participants.findIndex((person: any) => person.id === interaction.user.id);
+  let replyMessage: string;
+
+  if(hasVoted && poll.participants[userIndex].vote === newIndex) {
+    newVotes = newVotes - 1;
+    newOptionVotes[newIndex] = newOptionVotes[newIndex] - 1;
+    newParticipants.splice(userIndex, 1);
+
+    replyMessage = `Го тргнавте вашиот глас.`;
+  } else if(hasVoted) {
+    newOptionVotes[poll.participants[userIndex].vote] = newOptionVotes[poll.participants[userIndex].vote] - 1;
+    newOptionVotes[newIndex] = newOptionVotes[newIndex] + 1;
+    newParticipants[userIndex].vote = newIndex;
+
+    replyMessage = `Ја променивте вашата опција во опцијата: ${Number(args[0]) + 1}.`;
+  } else {
+    newOptionVotes[newIndex] = newOptionVotes[newIndex] + 1;
+    newParticipants.push({ id: interaction.user.id, vote: newIndex });
+    newVotes = newVotes + 1;
+
+    replyMessage = `Гласавте и ја одбравте опцијата: ${Number(args[0]) + 1}.`;
+  }
+
+  await keyv.set(interaction.message.id, {
+    title: poll.title,
+    options: poll.options,
+    votes: newVotes,
+    optionVotes: newOptionVotes,
+    participants: newParticipants
+  });
+
+  await interaction.reply({ content: replyMessage, ephemeral: true });
+
+  let updatedPoll = await keyv.get(interaction.message.id);
+
+  const embed = new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle(updatedPoll.title)
+    .setDescription(updatedPoll.options.map((option: any, index: any) => `${index + 1}. ${option} - **(${updatedPoll.votes > 0 ? (updatedPoll.optionVotes[index] / updatedPoll.votes) * 100 : '0'}%)**`).join('\n'))
+    .setTimestamp();
+
+  await interaction.message.edit({ embeds: [embed] });
 }
 
 async function handleProgramButton (interaction: ButtonInteraction, args: string[]): Promise<void> {

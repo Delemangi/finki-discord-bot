@@ -15,6 +15,7 @@ declare global {
     crosspostChannels: string[];
     logChannel: string;
     token: string;
+    keyvDB: string;
   };
 
   type RoleConfig = {

@@ -24,6 +24,7 @@ export function checkConfig (): void {
   const token = getFromBotConfig('token');
   const logChannel = getFromBotConfig('logChannel');
   const color = getFromBotConfig('color');
+  const keyvDB = getFromBotConfig('keyvDB');
 
   if (isEmpty(applicationID)) {
     throw new Error('Missing application ID');
@@ -39,6 +40,10 @@ export function checkConfig (): void {
 
   if (isEmpty(color)) {
     throw new Error('Missing color');
+  }
+
+  if (isEmpty(keyvDB)) {
+    throw new Error('Missing Database Key');
   }
 }
 
