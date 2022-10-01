@@ -11,6 +11,7 @@
     "subjects": "tsc && node dist/scripts/subjects.js",
     "programs": "tsc && node dist/scripts/programs.js",
     "notifications": "tsc && node dist/scripts/notifications.js",
+    "rules": "tsc && node dist/scripts/rules.js",
     "subjectsForum": "tsc && node dist/scripts/subjectsForum.js",
     "register": "tsc && node dist/scripts/register.js",
     "delete": "tsc && node dist/scripts/delete.js"

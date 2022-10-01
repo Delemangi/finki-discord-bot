@@ -15,11 +15,12 @@ The `config` folder should contain:
 2. `questions.json` - an array questions and answers for the `faq` command
 3. `links.json` - an array of links for the `link` command
 4. `roles.json` - roles for the scripts and for the embeds
-5. `subjects.json` - an object mapping the roles to the full subject names
-6. `allSubjects.json` - an array of the names of all subjects
-7. `participants.csv` - a csv file containing the participants of all courses during all years, separated by ;
-8. `professors.csv` - a csv file containing the professors of each course
-9. `emails.json` - an object mapping the professors to their email addresses
+5. `rules.json` - an array of the server rules
+6. `subjects.json` - an object mapping the roles to the full subject names
+7. `allSubjects.json` - an array of the names of all subjects
+8. `participants.csv` - a csv file containing the participants of all courses during all years, separated by ;
+9. `professors.csv` - a csv file containing the professors of each course
+10. `emails.json` - an object mapping the professors to their email addresses
 
 Check the `example` folder for the correct format.
 
@@ -37,9 +38,10 @@ Currently there are:
 4. `npm run subjects <channel ID> <newlines> <...semesters>` - send subjects embeds to `channel ID` for all semesters, as set in `roles.json` with `newlines` number of newlines in the message content
 5. `npm run programs <channel ID> [newlines]` - send a programs embed to `channel ID` with `newlines` number of newlines in the message content
 6. `npm run notifications <channel ID> [newlines]` - send a notifications embed to `channel ID` with `newlines` number of newlines in the message content
-7. `npm run subjectsForum <channel ID>` - creates threads for all subjects in `channel ID` forum
-8. `npm run register` - registers all commands as global application commands
-9. `npm run delete <...command IDs>` - delete the provided application commands
+7. `npm run rules <channel ID>` - sends the rules embed to `channel ID`
+8. `npm run subjectsForum <channel ID>` - creates threads for all subjects in `channel ID` forum
+9. `npm run register` - registers all commands as global application commands
+10. `npm run delete <...command IDs>` - delete the provided application commands
 
 The arguments marked with `< >` are required, while the arguments marked with `[ ]` are optional.
 
