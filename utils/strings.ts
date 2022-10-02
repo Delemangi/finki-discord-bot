@@ -13,5 +13,5 @@ export enum CommandsDescription {
   poll = 'Анкета',
   purge = 'Бришење пораки',
   'staff' = 'Информации за професор',
-  'statistics color' = 'Get the number of participants per color'
+  'statistics color' = 'Статистика за улогите за бои'
 }
