@@ -28,7 +28,7 @@ export const data = new SlashCommandBuilder()
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   const title = interaction.options.getString('title', true);
-  const options = interaction.options.getString('options', true).split(',');
+  const options = interaction.options.getString('options', true).split(',').filter(element => element);
   const components: ActionRowBuilder<ButtonBuilder>[] = [];
 
   for (let i = 0; i < options.length; i += 5) {
@@ -56,7 +56,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     const embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle(title)
-      .setDescription(options.map((option, index) => `${index + 1}. ${option.trim()} - **(0%)**`).join('\n'))
+      .setDescription(options.map((option, index) => `${index + 1}. ${option.trim()} - \`[....................]\` **(0%)**`).join('\n'))
       .setTimestamp();
 
     const message = await interaction.editReply({

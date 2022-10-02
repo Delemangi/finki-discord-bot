@@ -635,10 +635,17 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle(updatedPoll.title)
-    .setDescription(updatedPoll.options.map((option: string, index: number) => `${index + 1}. ${option} - **(${updatedPoll.votes > 0 ? updatedPoll.optionVotes[index] / updatedPoll.votes * 100 : '0'}%)**`).join('\n'))
+    .setDescription(updatedPoll.options.map((option: any, index: any) => `${index + 1}. ${option} - \`[${updatedPoll.votes > 0 ? generatePercentageBar((updatedPoll.optionVotes[index] / updatedPoll.votes) * 100) : generatePercentageBar(0)}]\` **(${updatedPoll.votes > 0 ? (updatedPoll.optionVotes[index] / updatedPoll.votes) * 100 : '0'}%)**`).join('\n'))
     .setTimestamp();
 
   await interaction.message.edit({ embeds: [embed] });
+}
+
+function generatePercentageBar(percentage: number) {
+  if(percentage === 0)
+    return '.'.repeat(20);
+
+  return '█'.repeat(percentage / 5) + '▌'.repeat((percentage % 5) / 2.5);
 }
 
 async function handleProgramButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
