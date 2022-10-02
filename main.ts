@@ -20,11 +20,10 @@ import {
 import Keyv from 'keyv';
 import { client } from './utils/client.js';
 import {
-  getAllEmails,
-  getAllSubjects,
+  getCourses,
   getFromBotConfig,
   getFromRoleConfig,
-  getSubject
+  getStaff
 } from './utils/config.js';
 import {
   checkConfig,
@@ -171,8 +170,8 @@ async function handleButton (interaction: ButtonInteraction): Promise<void> {
     await handleYearButton(interaction, args);
   } else if (command === 'activity') {
     await handleActivityButton(interaction, args);
-  } else if (command === 'subject') {
-    await handleSubjectButton(interaction, args);
+  } else if (command === 'course') {
+    await handleCourseButton(interaction, args);
   } else if (command === 'program') {
     await handleProgramButton(interaction, args);
   } else if (command === 'notification') {
@@ -254,6 +253,8 @@ async function handleAutocomplete (interaction: AutocompleteInteraction): Promis
     await handleCourseAutocomplete(interaction);
   } else if (option.name === 'professor') {
     await handleProfessorAutocomplete(interaction);
+  } else if (option.name === 'courserole') {
+    await handleCourseRoleAutocomplete(interaction);
   } else {
     logger.warn(`Received unknown autocomplete interaction ${interaction.id} from ${interaction.user.id}: ${interaction.commandName}, option ${option.name}`);
   }
@@ -502,7 +503,7 @@ async function handleActivityButton (interaction: ButtonInteraction, args: strin
   logger.debug(`Handled activity button ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
 }
 
-async function handleSubjectButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
+async function handleCourseButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
   const guild = interaction.guild;
 
   if (!guild) {
@@ -531,7 +532,7 @@ async function handleSubjectButton (interaction: ButtonInteraction, args: string
 
   try {
     await interaction.reply({
-      content: `Го ${removed ? 'отстранивте' : 'земавте'} предметот ${inlineCode(getSubject(role.name))}.`,
+      content: `Го ${removed ? 'отстранивте' : 'земавте'} предметот ${inlineCode(getFromRoleConfig('courses')[role.name] ?? 'None')}.`,
       ephemeral: true
     });
   } catch (error) {
@@ -555,7 +556,7 @@ async function handleSubjectButton (interaction: ButtonInteraction, args: string
         },
         {
           name: 'Command',
-          value: 'Subject'
+          value: 'Course'
         },
         {
           name: 'Role',
@@ -572,7 +573,7 @@ async function handleSubjectButton (interaction: ButtonInteraction, args: string
     }
   }
 
-  logger.debug(`Handled subject button ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
+  logger.debug(`Handled course button ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
 }
 
 async function handlePollButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
@@ -802,11 +803,11 @@ async function handleCourseAutocomplete (interaction: AutocompleteInteraction): 
   const course = interaction.options.getFocused().toLowerCase();
 
   await interaction.respond(
-    getAllSubjects()
-      .filter((subject) => subject.toLowerCase().includes(course))
-      .map((subject) => ({
-        name: subject,
-        value: subject
+    getCourses()
+      .filter((c) => c.toLowerCase().includes(course))
+      .map((c) => ({
+        name: c,
+        value: c
       })).slice(0, 25)
   );
 }
@@ -815,11 +816,24 @@ async function handleProfessorAutocomplete (interaction: AutocompleteInteraction
   const professor = interaction.options.getFocused().toLowerCase();
 
   await interaction.respond(
-    Object.keys(getAllEmails())
-      .filter((prof) => prof.toLowerCase().includes(professor))
-      .map((prof) => ({
-        name: prof,
-        value: prof
+    getStaff()
+      .filter((p) => p.name.toLowerCase().includes(professor))
+      .map((p) => ({
+        name: p.name,
+        value: p.name
+      })).slice(0, 25)
+  );
+}
+
+async function handleCourseRoleAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
+  const course = interaction.options.getFocused().toLowerCase();
+
+  await interaction.respond(
+    Object.entries(getFromRoleConfig('courses'))
+      .filter(([, c]) => c.toLowerCase().includes(course))
+      .map(([, c]) => ({
+        name: c,
+        value: c
       })).slice(0, 25)
   );
 }

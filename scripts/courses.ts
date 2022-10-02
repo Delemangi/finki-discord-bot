@@ -8,8 +8,7 @@ import {
 import { client } from '../utils/client.js';
 import {
   getFromBotConfig,
-  getFromRoleConfig,
-  getSubject
+  getFromRoleConfig
 } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
 
@@ -31,7 +30,7 @@ client.once('ready', async () => {
   }
 
   for (const [index, roleSet] of roleSets.entries()) {
-    const roles = getFromRoleConfig('subject')[roleSet];
+    const roles = getFromRoleConfig('course')[roleSet];
 
     if (roles === undefined) {
       throw new Error(`Invalid role set provided: ${roleSet}`);
@@ -42,7 +41,7 @@ client.once('ready', async () => {
       .setColor(getFromBotConfig('color'))
       .setTitle(`${roleSet.length > 1 ? '' : 'Семестар'} ${roleSet}`)
       .setThumbnail('https://cdn.discordapp.com/attachments/946729216152576020/1016773768938541106/finki-logo.png')
-      .setDescription(roles.map((role, i) => `${(i + 1).toString().padStart(2, '0')}. ${getSubject(role)}`).join('\n'))
+      .setDescription(roles.map((role, i) => `${(i + 1).toString().padStart(2, '0')}. ${getFromRoleConfig('courses')[role]}`).join('\n'))
       .setFooter({ text: '(може да изберете повеќе опции)' });
 
     for (let i = 0; i < roles.length; i += 5) {
@@ -55,7 +54,7 @@ client.once('ready', async () => {
         }
 
         const button = new ButtonBuilder()
-          .setCustomId(`subject:${roles[j]}`)
+          .setCustomId(`course:${roles[j]}`)
           .setLabel(`${j + 1}`)
           .setStyle(ButtonStyle.Secondary);
 

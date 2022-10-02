@@ -1,8 +1,8 @@
 {
   "applicationID": "",
-  "token": "",
-  "logChannel": "",
   "color": "",
   "crosspostChannels": [],
-  "keyvDB": ""
+  "keyvDB": "",
+  "logChannel": "",
+  "token": ""
 }

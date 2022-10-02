@@ -4,7 +4,7 @@ import {
 } from 'discord.js';
 import { client } from '../utils/client.js';
 import {
-  getAllSubjects,
+  getCourses,
   getFromBotConfig
 } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
@@ -26,12 +26,12 @@ client.once('ready', async () => {
     throw new Error('The provided channel must be a guild forum channel');
   }
 
-  for (const subject of getAllSubjects()) {
+  for (const course of getCourses()) {
     await channel.threads.create({
       message: {
-        content: `Овој канал е за предметот ${inlineCode(subject)}.`
+        content: `Овој канал е за предметот ${inlineCode(course)}.`
       },
-      name: subject
+      name: course
     });
   }
 

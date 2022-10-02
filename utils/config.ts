@@ -1,42 +1,47 @@
 import { readFileSync } from 'node:fs';
 
-const botConfig: BotConfig = JSON.parse(readFileSync('./config/config.json', 'utf8'));
-const roleConfig: RoleConfig = JSON.parse(readFileSync('./config/roles.json', 'utf8'));
-const questionConfig: Question[] = JSON.parse(readFileSync('./config/questions.json', 'utf8'));
-const linkConfig: Link[] = JSON.parse(readFileSync('./config/links.json', 'utf8'));
-const subjectConfig: { [index: string]: string } = JSON.parse(readFileSync('./config/subjects.json', 'utf8'));
-const allSubjectsConfig: string[] = JSON.parse(readFileSync('./config/allSubjects.json', 'utf8'));
-const emailsConfig: { [index: string]: string } = JSON.parse(readFileSync('./config/emails.json', 'utf8'));
-const rulesConfig: string[] = JSON.parse(readFileSync('./config/rules.json', 'utf8'));
+const config: BotConfig = JSON.parse(readFileSync('./config/config.json', 'utf8'));
+const courses: string[] = JSON.parse(readFileSync('./config/courses.json', 'utf8'));
+const links: Link[] = JSON.parse(readFileSync('./config/links.json', 'utf8'));
+const participants: CourseParticipants[] = JSON.parse(readFileSync('./config/participants.json', 'utf8'));
+const professors: CourseInformation[] = JSON.parse(readFileSync('./config/professors.json', 'utf8'));
+const questions: Question[] = JSON.parse(readFileSync('./config/questions.json', 'utf8'));
+const roles: RoleConfig = JSON.parse(readFileSync('./config/roles.json', 'utf8'));
+const rules: string[] = JSON.parse(readFileSync('./config/rules.json', 'utf8'));
+const staff: Staff[] = JSON.parse(readFileSync('./config/staff.json', 'utf8'));
 
 export function getFromBotConfig<T extends keyof BotConfig> (key: T): BotConfig[T] {
-  return botConfig[key];
+  return config[key];
 }
 
-export function getFromRoleConfig<T extends keyof RoleConfig> (key: T): RoleConfig[T] {
-  return roleConfig[key];
-}
-
-export function getQuestions (): Question[] {
-  return questionConfig;
+export function getCourses (): string[] {
+  return courses;
 }
 
 export function getLinks (): Link[] {
-  return linkConfig;
+  return links;
 }
 
-export function getSubject (subject: string): string {
-  return subjectConfig[subject] ?? 'None';
+export function getParticipants (): CourseParticipants[] {
+  return participants;
 }
 
-export function getAllSubjects (): string[] {
-  return allSubjectsConfig;
+export function getProfessors (): CourseInformation[] {
+  return professors;
 }
 
-export function getAllEmails (): { [index: string]: string } {
-  return emailsConfig;
+export function getQuestions (): Question[] {
+  return questions;
+}
+
+export function getFromRoleConfig<T extends keyof RoleConfig> (key: T): RoleConfig[T] {
+  return roles[key];
 }
 
 export function getRules (): string[] {
-  return rulesConfig;
+  return rules;
+}
+
+export function getStaff (): Staff[] {
+  return staff;
 }

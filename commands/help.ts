@@ -144,7 +144,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     if (id === 'first') {
       page = 0;
     } else if (id === 'last') {
-      page = Math.floor(Object.keys(commands).length / commandsPerPage);
+      page = pages - 1;
     } else if (id === 'previous') {
       page--;
     } else if (id === 'next') {
