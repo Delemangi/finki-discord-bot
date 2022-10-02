@@ -15,7 +15,8 @@ import {
   EmbedBuilder,
   inlineCode,
   roleMention,
-  userMention
+  userMention,
+  codeBlock
 } from 'discord.js';
 import Keyv from 'keyv';
 import { client } from './utils/client.js';
@@ -27,6 +28,7 @@ import {
 } from './utils/config.js';
 import {
   checkConfig,
+  generatePercentageBar,
   isTextGuildBased
 } from './utils/functions.js';
 import { logger } from './utils/logger.js';
@@ -635,17 +637,10 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle(updatedPoll.title)
-    .setDescription(updatedPoll.options.map((option: any, index: any) => `${index + 1}. ${option} - \`[${updatedPoll.votes > 0 ? generatePercentageBar((updatedPoll.optionVotes[index] / updatedPoll.votes) * 100) : generatePercentageBar(0)}]\` **(${updatedPoll.votes > 0 ? (updatedPoll.optionVotes[index] / updatedPoll.votes) * 100 : '0'}%)**`).join('\n'))
+    .setDescription(codeBlock(updatedPoll.options.map((option: string, index: number) => `${(index + 1).toString().padStart(2, '0')}. ${option.padEnd(Math.max(...updatedPoll.options.map((o: string) => o.length)))} - [${updatedPoll.votes > 0 ? generatePercentageBar(updatedPoll.optionVotes[index] / updatedPoll.votes * 100) : generatePercentageBar(0)}] - ${updatedPoll.votes > 0 ? (updatedPoll.optionVotes[index] / updatedPoll.votes * 100).toFixed(2).toString().padStart(5, '0') : '00'}%`).join('\n')))
     .setTimestamp();
 
   await interaction.message.edit({ embeds: [embed] });
-}
-
-function generatePercentageBar(percentage: number) {
-  if(percentage === 0)
-    return '.'.repeat(20);
-
-  return '█'.repeat(percentage / 5) + '▌'.repeat((percentage % 5) / 2.5);
 }
 
 async function handleProgramButton (interaction: ButtonInteraction, args: string[]): Promise<void> {

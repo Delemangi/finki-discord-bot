@@ -58,3 +58,11 @@ export function isTextGuildBased (channel: APIInteractionDataResolvedChannel | C
 
   return channelTypes.includes(channel.type);
 }
+
+export function generatePercentageBar (percentage: number) {
+  if (percentage === 0) {
+    return '.'.repeat(20);
+  }
+
+  return '█'.repeat(percentage / 5) + '▌'.repeat(percentage % 5 / 2.5) + '.'.repeat(20 - percentage / 5 - percentage % 5 / 2.5);
+}
