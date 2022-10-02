@@ -29,3 +29,6 @@ try {
 } catch (error) {
   throw new Error(`Failed to register application commands\n${error}`);
 }
+
+// eslint-disable-next-line node/no-process-exit
+process.exit();
