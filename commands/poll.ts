@@ -29,7 +29,7 @@ export const data = new SlashCommandBuilder()
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   const title = interaction.options.getString('title', true);
-  const options = interaction.options.getString('options', true).split(',').filter(Boolean);
+  const options = interaction.options.getString('options', true).split(',').filter(Boolean).map((option) => option.trim());
   const components: ActionRowBuilder<ButtonBuilder>[] = [];
 
   for (let i = 0; i < options.length; i += 5) {
@@ -57,7 +57,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     const embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle(title)
-      .setDescription(codeBlock(options.map((option, index) => `${(index + 1).toString().padStart(2, '0')}. ${option.trim().padEnd(Math.max(...options.map((o: string) => o.length)))} - [....................] - 00.00%`).join('\n')))
+      .setDescription(codeBlock(options.map((option, index) => `${(index + 1).toString().padStart(2, '0')}. ${option.padEnd(Math.max(...options.map((o: string) => o.length)))} - [....................] - 00.00%`).join('\n')))
       .setTimestamp();
 
     const message = await interaction.editReply({
