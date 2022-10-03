@@ -64,5 +64,5 @@ export function generatePercentageBar (percentage: number) {
     return '.'.repeat(20);
   }
 
-  return '█'.repeat(percentage / 5) + '▌'.repeat(percentage % 5 / 2.5) + '.'.repeat(Math.floor(20 - percentage / 5 - percentage % 5 / 2.5) + 1);
+  return ('█'.repeat(percentage / 5) + '▌'.repeat(percentage % 5 / 2.5) + '.'.repeat(Math.floor(20 - percentage / 5 - percentage % 5 / 2.5) + 1)).slice(0, 20);
 }
