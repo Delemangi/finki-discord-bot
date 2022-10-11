@@ -8,6 +8,7 @@ import {
   ComponentType
 } from 'discord.js';
 import { getFromBotConfig } from '../utils/config.js';
+import { logger } from '../utils/logger.js';
 import { CommandsDescription as commands } from '../utils/strings.js';
 
 const commandsPerPage = 8;
@@ -168,16 +169,26 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       })))
       .setFooter({ text: `${page + 1} / ${pages}` });
 
-    await buttonInteraction.update({
-      components: [buttons],
-      embeds: [nextEmbed]
-    });
+    try {
+      await buttonInteraction.update({
+        components: [buttons],
+        embeds: [nextEmbed]
+      });
+    } catch (error) {
+      logger.error(`Failed to update help command\n${error}`);
+    }
   });
 
   collector.on('end', async () => {
-    await message.edit({
-      components: [disabledButtons],
-      embeds: [embed]
-    });
+    try {
+      if (message.editable) {
+        await message.edit({
+          components: [disabledButtons],
+          embeds: [embed]
+        });
+      }
+    } catch (error) {
+      logger.error(`Failed to end help command\n${error}`);
+    }
   });
 }
