@@ -26,6 +26,7 @@ import {
   getFromRoleConfig,
   getStaff
 } from './utils/config.js';
+import { getAllQuestions } from './utils/faq.js';
 import {
   checkConfig,
   generatePercentageBar,
@@ -257,6 +258,8 @@ async function handleAutocomplete (interaction: AutocompleteInteraction): Promis
     await handleProfessorAutocomplete(interaction);
   } else if (option.name === 'courserole') {
     await handleCourseRoleAutocomplete(interaction);
+  } else if (option.name === 'question') {
+    await handleQuestionAutocomplete(interaction);
   } else {
     logger.warn(`Received unknown autocomplete interaction ${interaction.id} from ${interaction.user.id}: ${interaction.commandName}, option ${option.name}`);
   }
@@ -836,6 +839,19 @@ async function handleCourseRoleAutocomplete (interaction: AutocompleteInteractio
       .map(([, c]) => ({
         name: c,
         value: c
+      })).slice(0, 25)
+  );
+}
+
+async function handleQuestionAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
+  const question = interaction.options.getFocused().toLowerCase();
+
+  await interaction.respond(
+    getAllQuestions()
+      .filter((q) => q.toLowerCase().includes(question))
+      .map((q) => ({
+        name: q,
+        value: q
       })).slice(0, 25)
   );
 }

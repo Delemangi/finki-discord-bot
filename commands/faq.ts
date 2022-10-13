@@ -3,7 +3,6 @@ import {
   SlashCommandBuilder
 } from 'discord.js';
 import {
-  getAllOptions,
   getComponentsFromQuestion,
   getEmbedFromQuestion,
   getQuestion
@@ -16,14 +15,20 @@ export const data = new SlashCommandBuilder()
   .setName(command)
   .setDescription(CommandsDescription[command])
   .addStringOption((option) => option
-    .setName('name')
+    .setName('question')
     .setDescription('Question')
     .setRequired(true)
-    .addChoices(...getAllOptions()));
+    .setAutocomplete(true));
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
-  const keyword = interaction.options.getString('name') ?? '';
+  const keyword = interaction.options.getString('question') ?? '';
   const question = getQuestion(keyword);
+
+  if (question === undefined) {
+    await interaction.editReply('Не постои такво прашање.');
+    return;
+  }
+
   const embed = getEmbedFromQuestion(question);
   const components = getComponentsFromQuestion(question);
 

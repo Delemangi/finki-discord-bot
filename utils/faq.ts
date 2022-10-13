@@ -15,18 +15,8 @@ export function getAllQuestions (): string[] {
   return questions.map((q) => q.question);
 }
 
-export function getAllOptions (): Option[] {
-  return questions.map((q) => ({
-    name: q.question.replaceAll('`', ''),
-    value: q.question
-  }));
-}
-
-export function getQuestion (name: string): Question {
-  return questions.find((q) => q.question === name) ?? {
-    answer: 'No question found',
-    question: 'No question found'
-  };
+export function getQuestion (name: string): Question | undefined {
+  return questions.find((q) => q.question === name);
 }
 
 export function getEmbedFromQuestion (question: Question): EmbedBuilder {
