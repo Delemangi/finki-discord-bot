@@ -181,6 +181,8 @@ async function handleButton (interaction: ButtonInteraction): Promise<void> {
     await handleNotificationButton(interaction, args);
   } else if (command === 'poll') {
     await handlePollButton(interaction, args);
+  } else if (command === 'pollstats') {
+    await handlePollStatsButton(interaction, args);
   } else if (command && ignoredButtonIDs.includes(command)) {
     return;
   } else {
@@ -589,10 +591,11 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
     return;
   }
 
-  const poll = await keyv.get(interaction.message.id);
+  const pollId = String(args[0]);
+  const poll = await keyv.get(pollId);
 
   const hasVoted = poll.participants.find((person: { id: string }) => person.id === interaction.user.id);
-  const newIndex = Number(interaction.customId.split(':')[1]);
+  const newIndex = Number(interaction.customId.split(':')[2]);
   let newVotes = poll.votes;
   const newOptionVotes = poll.optionVotes;
   const newParticipants = poll.participants;
@@ -610,19 +613,24 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
     newOptionVotes[newIndex] += 1;
     newParticipants[userIndex].vote = newIndex;
 
-    replyMessage = `Ја променивте вашата опција во опцијата: ${Number(args[0]) + 1}.`;
+    replyMessage = `Ја променивте вашата опција во опцијата: ${Number(args[1]) + 1}.`;
   } else {
     newOptionVotes[newIndex] += 1;
     newParticipants.push({
       id: interaction.user.id,
+      tag: interaction.user.tag,
       vote: newIndex
     });
     newVotes += 1;
 
-    replyMessage = `Гласавте и ја одбравте опцијата: ${Number(args[0]) + 1}.`;
+    console.log(interaction.user.tag);
+
+    replyMessage = `Гласавте и ја одбравте опцијата: ${Number(args[1]) + 1}.`;
   }
 
-  await keyv.set(interaction.message.id, {
+  console.log(args);
+
+  await keyv.set(pollId, {
     options: poll.options,
     optionVotes: newOptionVotes,
     participants: newParticipants,
@@ -635,15 +643,57 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
     ephemeral: true
   });
 
-  const updatedPoll = await keyv.get(interaction.message.id);
+  const updatedPoll = await keyv.get(pollId);
 
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle(updatedPoll.title)
     .setDescription(codeBlock(updatedPoll.options.map((option: string, index: number) => `${(index + 1).toString().padStart(2, '0')}. ${option.padEnd(Math.max(...updatedPoll.options.map((o: string) => o.length)))} - [${updatedPoll.votes > 0 ? generatePercentageBar(updatedPoll.optionVotes[index] / updatedPoll.votes * 100) : generatePercentageBar(0)}] - ${updatedPoll.votes > 0 ? (updatedPoll.optionVotes[index] / updatedPoll.votes * 100).toFixed(2).toString().padStart(5, '0') : '00'}%`).join('\n')))
-    .setTimestamp();
+    .setTimestamp()
+    .setFooter({ text: `Poll ID: ${pollId}` });
 
   await interaction.message.edit({ embeds: [embed] });
+}
+
+async function handlePollStatsButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
+  const guild = interaction.guild;
+
+  if (!guild) {
+    logger.warn(`Received button interaction ${interaction.id}: ${interaction.customId} from ${interaction.user.tag} outside of a guild`);
+    return;
+  }
+
+  const pollId = String(args[0]);
+  const pollOption = Number(args[1]);
+  const poll = await keyv.get(pollId);
+
+  const pollVoters:string[] = [];
+
+  poll.participants.forEach((el: any) => {
+    if(el.vote === pollOption) pollVoters.push(el.tag);
+  });
+
+  let embed;
+  
+  if(pollVoters.length > 0) {
+    embed = new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
+      .setTitle('Poll Statistics')
+      .setDescription(`People who voted for option ${pollOption + 1}:\n` + codeBlock(pollVoters.join('\n')))
+      .setTimestamp()
+      .setFooter({ text: `Poll ID: ${pollId}` });
+  } else {
+    embed = new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
+      .setTitle('Poll Statistics')
+      .setDescription(`No one voted for option ${pollOption + 1}`)
+      .setTimestamp()
+      .setFooter({ text: `Poll ID: ${pollId}` });
+  }
+  
+  await interaction.reply({
+    embeds: [embed]
+  });
 }
 
 async function handleProgramButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
