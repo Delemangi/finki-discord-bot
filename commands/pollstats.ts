@@ -31,7 +31,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     const embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle(`Poll Statistics`)
-      .setDescription(codeBlock(`Poll ID: ${pollId}\nNumber of Options: ${poll.optionsLen}\nTotal Votes: ${poll.votes}\n`))
+      .setDescription(codeBlock(`Poll ID: ${pollId}\nNumber of Options: ${poll.options.length}\nTotal Votes: ${poll.votes}\n`))
       .setTimestamp();
 
     for (let i = 0; i < poll.options.length; i += 5) {
