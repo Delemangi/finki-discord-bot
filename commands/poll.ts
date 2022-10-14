@@ -10,6 +10,7 @@ import {
 import Keyv from 'keyv';
 import { getFromBotConfig } from '../utils/config.js';
 import { CommandsDescription } from '../utils/strings.js';
+import { createCustomPollId } from '../utils/functions.js';
 
 const keyv = new Keyv(getFromBotConfig('keyvDB'));
 
@@ -31,6 +32,18 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   const title = interaction.options.getString('title', true);
   const options = interaction.options.getString('options', true).split(',').filter(Boolean).map((option) => option.trim());
   const components: ActionRowBuilder<ButtonBuilder>[] = [];
+  let pollId = createCustomPollId(8);
+
+  let checkPollId = await keyv.get(pollId);
+  while(checkPollId !== undefined) {
+    pollId = createCustomPollId(8);
+    checkPollId = await keyv.get(pollId);
+  }
+
+  if(options.length <= 1) {
+    await interaction.editReply('Анкетата мора да има барем две опции!');
+    return;
+  }
 
   for (let i = 0; i < options.length; i += 5) {
     const row = new ActionRowBuilder<ButtonBuilder>();
@@ -42,7 +55,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       }
 
       const button = new ButtonBuilder()
-        .setCustomId(`poll:${j}`)
+        .setCustomId(`poll:${pollId}:${j}`)
         .setLabel(`${j + 1}`)
         .setStyle(ButtonStyle.Secondary);
 
@@ -58,14 +71,17 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       .setColor(getFromBotConfig('color'))
       .setTitle(title)
       .setDescription(codeBlock(options.map((option, index) => `${(index + 1).toString().padStart(2, '0')}. ${option.padEnd(Math.max(...options.map((o: string) => o.length)))} - [....................] - 00.00%`).join('\n')))
-      .setTimestamp();
+      .setTimestamp()
+      .setFooter({ text: `Poll ID: ${pollId}` });
 
-    const message = await interaction.editReply({
+    await interaction.editReply({
       components,
       embeds: [embed]
     });
-    await keyv.set(message.id, {
+
+    await keyv.set(pollId, {
       options,
+      optionsLen: options.length,
       optionVotes: Array.from({ length: options.length }).fill(0),
       participants: [],
       title,

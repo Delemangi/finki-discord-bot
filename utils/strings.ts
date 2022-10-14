@@ -11,6 +11,7 @@ export enum CommandsDescription {
   'list questions' = 'Листа од сите прашања',
   ping = 'Понг!',
   poll = 'Анкета',
+  pollstats = 'Статистика за анкета',
   purge = 'Бришење пораки',
   'staff' = 'Информации за професор',
   'statistics color' = 'Статистика за улогите за бои'
