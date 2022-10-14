@@ -623,12 +623,8 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
     });
     newVotes += 1;
 
-    console.log(interaction.user.tag);
-
     replyMessage = `Гласавте и ја одбравте опцијата: ${Number(args[1]) + 1}.`;
   }
-
-  console.log(args);
 
   await keyv.set(pollId, {
     options: poll.options,
@@ -667,15 +663,17 @@ async function handlePollStatsButton (interaction: ButtonInteraction, args: stri
   const pollOption = Number(args[1]);
   const poll = await keyv.get(pollId);
 
-  const pollVoters:string[] = [];
+  const pollVoters: string[] = [];
 
-  poll.participants.forEach((el: any) => {
-    if(el.vote === pollOption) pollVoters.push(el.tag);
-  });
+  for (const el of poll.participants) {
+    if (el.vote === pollOption) {
+      pollVoters.push(el.tag);
+    }
+  }
 
   let embed;
-  
-  if(pollVoters.length > 0) {
+
+  if (pollVoters.length > 0) {
     embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle('Poll Statistics')
@@ -690,7 +688,7 @@ async function handlePollStatsButton (interaction: ButtonInteraction, args: stri
       .setTimestamp()
       .setFooter({ text: `Poll ID: ${pollId}` });
   }
-  
+
   await interaction.reply({
     embeds: [embed]
   });

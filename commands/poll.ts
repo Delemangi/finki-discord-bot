@@ -9,8 +9,8 @@ import {
 } from 'discord.js';
 import Keyv from 'keyv';
 import { getFromBotConfig } from '../utils/config.js';
-import { CommandsDescription } from '../utils/strings.js';
 import { createCustomPollId } from '../utils/functions.js';
+import { CommandsDescription } from '../utils/strings.js';
 
 const keyv = new Keyv(getFromBotConfig('keyvDB'));
 
@@ -33,14 +33,14 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   const options = interaction.options.getString('options', true).split(',').filter(Boolean).map((option) => option.trim());
   const components: ActionRowBuilder<ButtonBuilder>[] = [];
   let pollId = createCustomPollId(8);
-
   let checkPollId = await keyv.get(pollId);
-  while(checkPollId !== undefined) {
+
+  while (checkPollId !== undefined) {
     pollId = createCustomPollId(8);
     checkPollId = await keyv.get(pollId);
   }
 
-  if(options.length <= 1) {
+  if (options.length <= 1) {
     await interaction.editReply('Анкетата мора да има барем две опции!');
     return;
   }

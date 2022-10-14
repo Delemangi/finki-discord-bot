@@ -61,9 +61,10 @@ export function isTextGuildBased (channel: APIInteractionDataResolvedChannel | C
 
 export function createCustomPollId (len: number, characters = '0123456789abcdef') {
   let id = '';
-  
-  for(let i = 0; i < len; i++)
+
+  for (let i = 0; i < len; i++) {
     id += characters[Math.floor(Math.random() * characters.length)];
+  }
 
   return id;
 }
