@@ -785,13 +785,13 @@ async function handleQuizStartButton (interaction: ButtonInteraction, args: stri
   const buttons: ButtonBuilder[] = [];
   
   buttons.push(new ButtonBuilder()
-    .setCustomId(`quizgame:${interaction.user.id}:y:00:0:0:0:0`)
+    .setCustomId(`quizgame:${interaction.user.id}:y:option:answer:0:0:0:0`)
     .setLabel(`Да`)
     .setStyle(ButtonStyle.Primary)
   );
 
   buttons.push(new ButtonBuilder()
-    .setCustomId(`quizgame:${interaction.user.id}:n:01:0:0:0:0`)
+    .setCustomId(`quizgame:${interaction.user.id}:n`)
     .setLabel(`Не`)
     .setStyle(ButtonStyle.Danger)
   );
@@ -805,8 +805,9 @@ async function handleQuizStartButton (interaction: ButtonInteraction, args: stri
     components
   })
 
+  await interaction.message.delete();
   await interaction.reply({
-    content: `Направена е соба за вас. Со среќа! :smile:`,
+    content: `<@${interaction.user.id}>, направена е соба за вас. Со среќа! :smile:`,
     ephemeral: true
   });
 }
@@ -824,12 +825,45 @@ async function handleQuizGameButton (interaction: ButtonInteraction, args: strin
     await interaction.message.channel.delete();
     return;
   }
+
+  if(args[1] === 's') {
+    
+    let checkLevel = Number(args[4]);
+
+    if(args[2] === args[3]) {
+      args[4] = String(checkLevel + 1);
+    }
+
+    if(args[2] !== args[3]) {
+      await interaction.message.delete();
+      await interaction.channel?.send({
+        content: `<@${interaction.user.id}>, не го поминавте квизот... Повеќе среќа следен пат.`
+      });
+      setTimeout(async () => {
+        await interaction.channel?.delete();
+      }, 60000);
+
+      return;
+    }
+
+    if(checkLevel + 1 >= 15) {
+      await interaction.message.delete();
+      await interaction.channel?.send({
+        content: `<@${interaction.user.id}>, честитки! :smile:\nУспешно го поминавте квизот, контактирајте администрација за вашите награди.`
+      });
+      setTimeout(async () => {
+        await interaction.channel?.delete();
+      }, 60000);
+
+      return;
+    }
+  }
   
-  const lvl = Number(args[3]);
+  let lvl = Number(args[4]);
   const questionsList = getQuizQuestion();
-  const getLevelQuestions = questionsList[lvl <= 5 ? "easy" : lvl <= 10 ? "medium" : "hard"];
+  const getLevelQuestions = questionsList[lvl < 5 ? "easy" : lvl < 10 ? "medium" : "hard"];
   const currentQuestion = getLevelQuestions[Math.floor(Math.random() * getLevelQuestions.length)];
-  
+
   const quizEmbed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle('Кој сака да биде морален победник?')
@@ -843,38 +877,35 @@ async function handleQuizGameButton (interaction: ButtonInteraction, args: strin
 
   for (let i = 0; i < 4; i++) {
     const button = new ButtonBuilder()
-      .setCustomId(`quizgame:${interaction.user.id}:y:${i}:0:0:0:0`)
+      .setCustomId(`quizgame:${args[0]}:s:${currentQuestion.answers[i]}:${currentQuestion.correctAnswer}:${lvl}:${args[5]}:${args[6]}:${args[7]}`)
       .setLabel(`${i + 1}`)
       .setStyle(ButtonStyle.Primary);
-
     buttons.push(button);
   }
 
   row.addComponents(buttons);
   components.push(row);
+
+  /*
   row = new ActionRowBuilder<ButtonBuilder>();
   buttons = [];
 
-  buttons.push(new ButtonBuilder()
-    .setCustomId(`quizgame:${interaction.user.id}:y:a:0:0:0:0`)
-    .setLabel(`50:50`)
-    .setStyle(ButtonStyle.Secondary)
-  );
+  const helpers = [
+    { label: '50:50', action: 'a' },
+    { label: 'Замена на прашање', action: 'b' },
+    { label: 'Помош од Компјутер', action: 'c' },
+  ];
 
-  buttons.push(new ButtonBuilder()
-    .setCustomId(`quizgame:${interaction.user.id}:y:b:0:0:0:0`)
-    .setLabel(`Замена на прашање`)
-    .setStyle(ButtonStyle.Secondary)
-  );
-
-  buttons.push(new ButtonBuilder()
-    .setCustomId(`quizgame:${interaction.user.id}:y:c:0:0:0:0`)
-    .setLabel(`Помош од Компјутер`)
-    .setStyle(ButtonStyle.Secondary)
-  );
+  helpers.forEach((obj) => {
+    buttons.push(new ButtonBuilder()
+      .setCustomId(`quizgame:${interaction.user.id}:${obj.action}:null:${currentQuestion.correctAnswer}:${lvl}:${args[5]}:${args[6]}:${args[7]}`)
+      .setLabel(obj.label)
+      .setStyle(ButtonStyle.Secondary)
+    );
+  });
 
   row.addComponents(buttons);
-  components.push(row);
+  components.push(row);*/
 
   await interaction.deferUpdate();
   await interaction.message.edit({
