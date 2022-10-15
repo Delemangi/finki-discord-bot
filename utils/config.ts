@@ -9,6 +9,7 @@ const questions: Question[] = JSON.parse(readFileSync('./config/questions.json',
 const roles: RoleConfig = JSON.parse(readFileSync('./config/roles.json', 'utf8'));
 const rules: string[] = JSON.parse(readFileSync('./config/rules.json', 'utf8'));
 const staff: Staff[] = JSON.parse(readFileSync('./config/staff.json', 'utf8'));
+const quizQuestions = JSON.parse(readFileSync('./config/quizQuestions.json', 'utf8'));
 
 export function getFromBotConfig<T extends keyof BotConfig> (key: T): BotConfig[T] {
   return config[key];
@@ -44,4 +45,8 @@ export function getRules (): string[] {
 
 export function getStaff (): Staff[] {
   return staff;
+}
+
+export function getQuizQuestion () {
+  return quizQuestions;
 }

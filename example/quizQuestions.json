@@ -1,0 +1,53 @@
+{
+  "easy": [
+    {
+      "question": "Easy Question 1",
+      "answers": ["answer1", "answer2", "answer3", "answer4"],
+      "correctAnswer": "answer2"
+    },
+    {
+      "question": "Easy Question 2",
+      "answers": ["answer1", "answer2", "answer3", "answer4"],
+      "correctAnswer": "answer4"
+    },
+    {
+      "question": "Easy Question 3",
+      "answers": ["answer1", "answer2", "answer3", "answer4"],
+      "correctAnswer": "answer1"
+    }
+  ],
+  "medium": [
+    {
+      "question": "Medium Question 1",
+      "answers": ["answer1", "answer2", "answer3", "answer4"],
+      "correctAnswer": "answer1"
+    },
+    {
+      "question": "Medium Question 2",
+      "answers": ["answer1", "answer2", "answer3", "answer4"],
+      "correctAnswer": "answer2"
+    },
+    {
+      "question": "Medium Question 3",
+      "answers": ["answer1", "answer2", "answer3", "answer4"],
+      "correctAnswer": "answer3"
+    }
+  ],
+  "hard": [
+    {
+      "question": "Hard Question 1",
+      "answers": ["answer1", "answer2", "answer3", "answer4"],
+      "correctAnswer": "answer4"
+    },
+    {
+      "question": "Hard Question 2",
+      "answers": ["answer1", "answer2", "answer3", "answer4"],
+      "correctAnswer": "answer2"
+    },
+    {
+      "question": "Hard Question 3",
+      "answers": ["answer1", "answer2", "answer3", "answer4"],
+      "correctAnswer": "answer2"
+    }
+  ]
+}

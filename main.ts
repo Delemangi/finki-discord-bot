@@ -16,7 +16,11 @@ import {
   inlineCode,
   roleMention,
   userMention,
-  codeBlock
+  codeBlock,
+  PermissionsBitField,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle
 } from 'discord.js';
 import Keyv from 'keyv';
 import { client } from './utils/client.js';
@@ -24,6 +28,7 @@ import {
   getCourses,
   getFromBotConfig,
   getFromRoleConfig,
+  getQuizQuestion,
   getStaff
 } from './utils/config.js';
 import { getAllQuestions } from './utils/faq.js';
@@ -183,6 +188,10 @@ async function handleButton (interaction: ButtonInteraction): Promise<void> {
     await handlePollButton(interaction, args);
   } else if (command === 'pollstats') {
     await handlePollStatsButton(interaction, args);
+  } else if (command === 'quiz') {
+    await handleQuizStartButton(interaction, args);
+  } else if (command === 'quizgame') {
+    await handleQuizGameButton(interaction, args);
   } else if (command && ignoredButtonIDs.includes(command)) {
     return;
   } else {
@@ -696,6 +705,211 @@ async function handlePollStatsButton (interaction: ButtonInteraction, args: stri
   await interaction.reply({
     embeds: [embed],
     ephemeral: true
+  });
+}
+
+async function handleQuizStartButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
+  if(interaction.user.id !== args[0]) {
+    await interaction.reply({
+      content: `<@${interaction.user.id}>, вие не го започнавте квизот!`,
+      ephemeral: true
+    });
+    return;
+  }
+
+  if(args[1] === 'n') {
+    await interaction.message.delete();
+    return;
+  }
+
+  if(args[1] === 'h') {
+    let hmsg = 'Добредојдовте во **\'помош\'** делот на квизот на ФИНКИ дискорд серверот!\n\n';
+    hmsg += '**Како се игра?**\n';
+    hmsg += 'Во текот на квизот ќе ви бидат поставени 15 прашања\nповрзани со темата и областа на **ФИНКИ** и **серверот**.\n';
+    hmsg += 'Одговорете на сите 15 прашања и ќе добиете *две награди*.\n';
+    hmsg += 'Една од наградите е сопствена боја на серверот а другата за сега е тајна. :face_with_hand_over_mouth:\n\n';
+    hmsg += 'Во текот на квизот ќе имате 3 алатки за помош:\n- **50-50**;\n- **друго прашање**;\n- **помош од компјутер**;\n\n';
+    hmsg += 'Овие алатки ќе може да ги искористите само\nдо 12-то прашање, после тоа **НЕ СЕ ДОЗВОЛЕНИ!**\n\n';
+    hmsg += 'Квизот нема бесконечно број на обиди, **смеете да го играте само 3 пати!**\n\n';
+    hmsg += '*Доколку се случи да изгубите еден обид и мислите\nдека неправедно сте го изгубиле, контактирајте\nнекој од администација за да решите овој проблем.*\n';
+    hmsg += 'Ви посакуваме **среќна** и **забавна** игра! :smile:'
+
+    const embed = new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
+      .setTitle('Кој сака да биде морален победник?')
+      .setDescription(hmsg)
+      .setTimestamp()
+      .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2022' });
+
+    await interaction.reply({
+      embeds: [embed],
+      ephemeral: true
+    });
+
+    return;
+  }
+
+  if(interaction.guild?.channels.cache.find((c: any) => c.name === `quiz-${interaction.user.username}${interaction.user.discriminator}`)) {
+    await interaction.reply({
+      content: `<@${interaction.user.id}>, веќе имате отворено соба за квиз!\nДоколку имате проблеми, контактирајте администација.`,
+      ephemeral: true
+    });
+
+    return;
+  }
+
+  const quizChannel = await interaction.guild?.channels.create({
+    name: `quiz-${interaction.user.username}${interaction.user.discriminator}`,
+    type: ChannelType.GuildText,
+    permissionOverwrites: [
+      {
+        id: interaction.guild.id,
+        deny: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+      },
+      {
+        id: interaction.user.id,
+        allow: [PermissionsBitField.Flags.ViewChannel],
+      },
+    ],
+  });
+
+  const quizEmbed = new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Кој сака да биде морален победник?')
+    .setDescription('**Започни?**')
+    .setTimestamp()
+    .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2022' });
+
+  const components: ActionRowBuilder<ButtonBuilder>[] = [];
+  const row = new ActionRowBuilder<ButtonBuilder>();
+  const buttons: ButtonBuilder[] = [];
+  
+  buttons.push(new ButtonBuilder()
+    .setCustomId(`quizgame:${interaction.user.id}:y:option:answer:0:0:0:0`)
+    .setLabel(`Да`)
+    .setStyle(ButtonStyle.Primary)
+  );
+
+  buttons.push(new ButtonBuilder()
+    .setCustomId(`quizgame:${interaction.user.id}:n`)
+    .setLabel(`Не`)
+    .setStyle(ButtonStyle.Danger)
+  );
+
+  row.addComponents(buttons);
+  components.push(row);
+
+  await quizChannel?.send({
+    content: `<@${interaction.user.id}>`,
+    embeds: [quizEmbed],
+    components
+  })
+
+  await interaction.message.delete();
+  await interaction.reply({
+    content: `<@${interaction.user.id}>, направена е соба за вас. Со среќа! :smile:`,
+    ephemeral: true
+  });
+}
+
+async function handleQuizGameButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
+  if(interaction.user.id !== args[0]) {
+    await interaction.reply({
+      content: `<@${interaction.user.id}>, вие не го започнавте квизот!`,
+      ephemeral: true
+    });
+    return;
+  }
+
+  if(args[1] === 'n') {
+    await interaction.message.channel.delete();
+    return;
+  }
+
+  if(args[1] === 's') {
+    let checkLevel = Number(args[4]);
+
+    if(args[2] === args[3]) {
+      args[4] = String(checkLevel + 1);
+    }
+
+    if(args[2] !== args[3]) {
+      await interaction.message.delete();
+      await interaction.channel?.send({
+        content: `<@${interaction.user.id}>, не го поминавте квизот... Повеќе среќа следен пат.`
+      });
+      setTimeout(async () => {
+        await interaction.channel?.delete();
+      }, 60000);
+
+      return;
+    }
+
+    if(checkLevel + 1 >= 15) {
+      await interaction.message.delete();
+      await interaction.channel?.send({
+        content: `<@${interaction.user.id}>, честитки! :smile:\nУспешно го поминавте квизот, контактирајте администрација за вашите награди.`
+      });
+      setTimeout(async () => {
+        await interaction.channel?.delete();
+      }, 60000);
+
+      return;
+    }
+  }
+  
+  let lvl = Number(args[4]);
+  const questionsList = getQuizQuestion();
+  const getLevelQuestions = questionsList[lvl < 5 ? "easy" : lvl < 10 ? "medium" : "hard"];
+  const currentQuestion = getLevelQuestions[Math.floor(Math.random() * getLevelQuestions.length)];
+
+  const quizEmbed = new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Кој сака да биде морален победник?')
+    .setDescription(codeBlock(`Question No. ${lvl + 1}\n\nQ: ${currentQuestion.question}\n${currentQuestion.answers.map((q: string, index: number) => `${index + 1}. ${q}`).join('\n')}`))
+    .setTimestamp()
+    .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2022' });
+
+  const components: ActionRowBuilder<ButtonBuilder>[] = [];
+  let row = new ActionRowBuilder<ButtonBuilder>();
+  let buttons: ButtonBuilder[] = [];
+
+  for (let i = 0; i < 4; i++) {
+    const button = new ButtonBuilder()
+      .setCustomId(`quizgame:${args[0]}:s:${currentQuestion.answers[i]}:${currentQuestion.correctAnswer}:${lvl}:${args[5]}:${args[6]}:${args[7]}`)
+      .setLabel(`${i + 1}`)
+      .setStyle(ButtonStyle.Primary);
+    buttons.push(button);
+  }
+
+  row.addComponents(buttons);
+  components.push(row);
+
+  /*
+  row = new ActionRowBuilder<ButtonBuilder>();
+  buttons = [];
+
+  const helpers = [
+    { label: '50:50', action: 'a' },
+    { label: 'Замена на прашање', action: 'b' },
+    { label: 'Помош од Компјутер', action: 'c' },
+  ];
+
+  helpers.forEach((obj) => {
+    buttons.push(new ButtonBuilder()
+      .setCustomId(`quizgame:${interaction.user.id}:${obj.action}:null:${currentQuestion.correctAnswer}:${lvl}:${args[5]}:${args[6]}:${args[7]}`)
+      .setLabel(obj.label)
+      .setStyle(ButtonStyle.Secondary)
+    );
+  });
+
+  row.addComponents(buttons);
+  components.push(row);*/
+
+  await interaction.deferUpdate();
+  await interaction.message.edit({
+    embeds: [quizEmbed],
+    components
   });
 }
 
