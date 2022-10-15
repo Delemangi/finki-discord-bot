@@ -827,7 +827,6 @@ async function handleQuizGameButton (interaction: ButtonInteraction, args: strin
   }
 
   if(args[1] === 's') {
-    
     let checkLevel = Number(args[4]);
 
     if(args[2] === args[3]) {
