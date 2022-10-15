@@ -645,7 +645,10 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
     .setColor(getFromBotConfig('color'))
     .setTitle(updatedPoll.title)
     .setDescription(codeBlock(updatedPoll.options.map((option: string, index: number) => `${(index + 1).toString().padStart(2, '0')}. ${option.padEnd(Math.max(...updatedPoll.options.map((o: string) => o.length)))} - [${updatedPoll.votes > 0 ? generatePercentageBar(updatedPoll.optionVotes[index] / updatedPoll.votes * 100) : generatePercentageBar(0)}] - ${updatedPoll.votes > 0 ? (updatedPoll.optionVotes[index] / updatedPoll.votes * 100).toFixed(2).toString().padStart(5, '0') : '00'}%`).join('\n')))
-    .addFields({ name: 'No. of Votes', value: updatedPoll.votes.toString() })
+    .addFields({
+      name: 'No. of Votes',
+      value: updatedPoll.votes.toString()
+    })
     .setTimestamp()
     .setFooter({ text: `Poll ID: ${pollId}` });
 

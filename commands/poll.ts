@@ -71,7 +71,10 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       .setColor(getFromBotConfig('color'))
       .setTitle(title)
       .setDescription(codeBlock(options.map((option, index) => `${(index + 1).toString().padStart(2, '0')}. ${option.padEnd(Math.max(...options.map((o: string) => o.length)))} - [....................] - 00.00%`).join('\n')))
-      .addFields({ name: 'No. of Votes', value: '0' })
+      .addFields({
+        name: 'No. of Votes',
+        value: '0'
+      })
       .setTimestamp()
       .setFooter({ text: `Poll ID: ${pollId}` });
 
