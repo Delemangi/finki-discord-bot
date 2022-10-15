@@ -32,7 +32,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     const embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle('Poll Statistics')
-      .setDescription(codeBlock(`Poll ID: ${pollId}\nNumber of Options: ${poll.options.length}\nTotal Votes: ${poll.votes}\n`))
+      .setDescription(codeBlock(`Poll ID: ${pollId}\nNumber of Options: ${poll.options.length}\nTotal Votes: ${poll.votes}\n\nOptions:\n${ poll.options.map((opt: string, index: number) => `${index + 1}. ${opt} (${ poll.participants.filter((obj: any) => obj.vote === index).length })`).join('\n') }`))
       .setTimestamp();
 
     for (let i = 0; i < poll.options.length; i += 5) {
