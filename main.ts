@@ -605,7 +605,7 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
   const pollId = String(args[0]);
   const poll = await keyv.get(pollId);
 
-  const hasVoted = poll.participants.find((person: { id: string }) => person.id === interaction.user.id);
+  const hasVoted = poll.participants === undefined ? false : poll.participants.find((person: { id: string }) => person.id === interaction.user.id);
   const newIndex = Number(interaction.customId.split(':')[2]);
   let newVotes = poll.votes;
   const newOptionVotes = poll.optionVotes;
