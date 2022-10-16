@@ -5,6 +5,7 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
+  userMention
 } from 'discord.js';
 import { getFromBotConfig } from '../utils/config.js';
 import { CommandsDescription } from '../utils/strings.js';
@@ -22,21 +23,18 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
 
   buttons.push(new ButtonBuilder()
     .setCustomId(`quiz:${interaction.user.id}:y`)
-    .setLabel(`Да`)
-    .setStyle(ButtonStyle.Primary)
-  );
+    .setLabel('Да')
+    .setStyle(ButtonStyle.Primary));
 
   buttons.push(new ButtonBuilder()
     .setCustomId(`quiz:${interaction.user.id}:n`)
-    .setLabel(`Не`)
-    .setStyle(ButtonStyle.Danger)
-  );
+    .setLabel('Не')
+    .setStyle(ButtonStyle.Danger));
 
   buttons.push(new ButtonBuilder()
     .setCustomId(`quiz:${interaction.user.id}:h`)
-    .setLabel(`Помош за квизот`)
-    .setStyle(ButtonStyle.Secondary)
-  );
+    .setLabel('Помош за квизот')
+    .setStyle(ButtonStyle.Secondary));
 
   row.addComponents(buttons);
   components.push(row);
@@ -44,13 +42,13 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle('Кој сака да биде морален победник?')
-    .setDescription(`Добредојдовте во квизот на ФИНКИ дискорд серверот.\nДали сакате да започнете?`)
+    .setDescription('Добредојдовте во квизот на ФИНКИ Discord серверот.\nДали сакате да започнете?')
     .setTimestamp()
-    .setFooter({ text: `Кој Сака Да Биде Морален Победник? © 2022` });
+    .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2022' });
 
   await interaction.editReply({
-    content: `<@${interaction.user.id}>`,
     components,
+    content: userMention(interaction.user.id),
     embeds: [embed]
   });
 }

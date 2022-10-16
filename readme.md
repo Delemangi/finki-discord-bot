@@ -17,9 +17,10 @@ The `config` folder should contain:
 4. `participants.json` - an array of all courses and their number of participants
 5. `professors.json` - an array of all courses and their professors and assistants
 6. `questions.json` - an array questions and answers for the `faq` command
-7. `roles.json` - roles for the scripts and for the embeds
-8. `rules.json` - an array of the server rules
-9. `staff.json` - an array of the staff
+7. `quiz.json` - an array of the quiz questions
+8. `roles.json` - roles for the scripts and for the embeds
+9. `rules.json` - an array of the server rules
+10. `staff.json` - an array of the staff
 
 Check the `example` folder for the correct format.
 

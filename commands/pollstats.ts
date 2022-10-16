@@ -61,6 +61,6 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       embeds: [embed]
     });
   } else {
-    await interaction.editReply('You entered an invalid Poll ID or something went wrong on our end.');
+    await interaction.editReply('Не постои таква анкета.');
   }
 }

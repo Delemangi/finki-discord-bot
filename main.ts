@@ -1,4 +1,5 @@
 import { readdirSync } from 'node:fs';
+import { setTimeout } from 'node:timers/promises';
 import {
   type BaseInteraction,
   type AutocompleteInteraction,
@@ -28,7 +29,7 @@ import {
   getCourses,
   getFromBotConfig,
   getFromRoleConfig,
-  getQuizQuestion,
+  getQuiz,
   getStaff
 } from './utils/config.js';
 import { getAllQuestions } from './utils/faq.js';
@@ -60,6 +61,7 @@ let colorRoles: Role[] = [];
 let yearRoles: Role[] = [];
 let programRoles: Role[] = [];
 const ignoredButtonIDs = ['help'];
+const quizHelp = 'Добредојдовте во **помош** делот на квизот на ФИНКИ дискорд серверот!\n\n**Како се игра?**\nВо текот на квизот ќе ви бидат поставени 15 прашања\nповрзани со темата и областа на **ФИНКИ** и **серверот**.\nОдговорете на сите 15 прашања и ќе добиете *две награди*.\nЕдна од наградите е сопствена боја на серверот а другата за сега е тајна. :face_with_hand_over_mouth:\n\nВо текот на квизот ќе имате 3 алатки за помош:\n- **50-50**;\n- **друго прашање**;\n- **помош од компјутер**;\n\nОвие алатки ќе може да ги искористите само\nдо 12-то прашање, после тоа **НЕ СЕ ДОЗВОЛЕНИ!**\n\nКвизот нема бесконечно број на обиди, **смеете да го играте само 3 пати!**\n\n*Доколку се случи да изгубите еден обид и мислите\nдека неправедно сте го изгубиле, контактирајте\nнекој од администација за да решите овој проблем.*\nВи посакуваме **среќна** и **забавна** игра! :smile:';
 
 client.on('interactionCreate', async (interaction: BaseInteraction) => {
   if (interaction.isChatInputCommand()) {
@@ -709,35 +711,24 @@ async function handlePollStatsButton (interaction: ButtonInteraction, args: stri
 }
 
 async function handleQuizStartButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
-  if(interaction.user.id !== args[0]) {
+  if (interaction.user.id !== args[0]) {
     await interaction.reply({
-      content: `<@${interaction.user.id}>, вие не го започнавте квизот!`,
+      content: `${userMention(interaction.user.id)}, вие не го започнавте квизот!`,
       ephemeral: true
     });
     return;
   }
 
-  if(args[1] === 'n') {
+  if (args[1] === 'n') {
     await interaction.message.delete();
     return;
   }
 
-  if(args[1] === 'h') {
-    let hmsg = 'Добредојдовте во **\'помош\'** делот на квизот на ФИНКИ дискорд серверот!\n\n';
-    hmsg += '**Како се игра?**\n';
-    hmsg += 'Во текот на квизот ќе ви бидат поставени 15 прашања\nповрзани со темата и областа на **ФИНКИ** и **серверот**.\n';
-    hmsg += 'Одговорете на сите 15 прашања и ќе добиете *две награди*.\n';
-    hmsg += 'Една од наградите е сопствена боја на серверот а другата за сега е тајна. :face_with_hand_over_mouth:\n\n';
-    hmsg += 'Во текот на квизот ќе имате 3 алатки за помош:\n- **50-50**;\n- **друго прашање**;\n- **помош од компјутер**;\n\n';
-    hmsg += 'Овие алатки ќе може да ги искористите само\nдо 12-то прашање, после тоа **НЕ СЕ ДОЗВОЛЕНИ!**\n\n';
-    hmsg += 'Квизот нема бесконечно број на обиди, **смеете да го играте само 3 пати!**\n\n';
-    hmsg += '*Доколку се случи да изгубите еден обид и мислите\nдека неправедно сте го изгубиле, контактирајте\nнекој од администација за да решите овој проблем.*\n';
-    hmsg += 'Ви посакуваме **среќна** и **забавна** игра! :smile:'
-
+  if (args[1] === 'h') {
     const embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle('Кој сака да биде морален победник?')
-      .setDescription(hmsg)
+      .setDescription(quizHelp)
       .setTimestamp()
       .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2022' });
 
@@ -745,13 +736,12 @@ async function handleQuizStartButton (interaction: ButtonInteraction, args: stri
       embeds: [embed],
       ephemeral: true
     });
-
     return;
   }
 
-  if(interaction.guild?.channels.cache.find((c: any) => c.name === `quiz-${interaction.user.username}${interaction.user.discriminator}`)) {
+  if (interaction.guild?.channels.cache.find((c) => c.name === `quiz-${interaction.user.username}${interaction.user.discriminator}`)) {
     await interaction.reply({
-      content: `<@${interaction.user.id}>, веќе имате отворено соба за квиз!\nДоколку имате проблеми, контактирајте администација.`,
+      content: `${userMention(interaction.user.id)}, веќе имате отворено соба за квиз!`,
       ephemeral: true
     });
 
@@ -760,17 +750,17 @@ async function handleQuizStartButton (interaction: ButtonInteraction, args: stri
 
   const quizChannel = await interaction.guild?.channels.create({
     name: `quiz-${interaction.user.username}${interaction.user.discriminator}`,
-    type: ChannelType.GuildText,
     permissionOverwrites: [
       {
-        id: interaction.guild.id,
         deny: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
+        id: interaction.guild.id
       },
       {
-        id: interaction.user.id,
         allow: [PermissionsBitField.Flags.ViewChannel],
-      },
+        id: interaction.user.id
+      }
     ],
+    type: ChannelType.GuildText
   });
 
   const quizEmbed = new EmbedBuilder()
@@ -783,84 +773,77 @@ async function handleQuizStartButton (interaction: ButtonInteraction, args: stri
   const components: ActionRowBuilder<ButtonBuilder>[] = [];
   const row = new ActionRowBuilder<ButtonBuilder>();
   const buttons: ButtonBuilder[] = [];
-  
+
   buttons.push(new ButtonBuilder()
     .setCustomId(`quizgame:${interaction.user.id}:y:option:answer:0:0:0:0`)
-    .setLabel(`Да`)
-    .setStyle(ButtonStyle.Primary)
-  );
+    .setLabel('Да')
+    .setStyle(ButtonStyle.Primary));
 
   buttons.push(new ButtonBuilder()
     .setCustomId(`quizgame:${interaction.user.id}:n`)
-    .setLabel(`Не`)
-    .setStyle(ButtonStyle.Danger)
-  );
+    .setLabel('Не')
+    .setStyle(ButtonStyle.Danger));
 
   row.addComponents(buttons);
   components.push(row);
 
   await quizChannel?.send({
-    content: `<@${interaction.user.id}>`,
-    embeds: [quizEmbed],
-    components
-  })
-
+    components,
+    content: userMention(interaction.user.id),
+    embeds: [quizEmbed]
+  });
   await interaction.message.delete();
   await interaction.reply({
-    content: `<@${interaction.user.id}>, направена е соба за вас. Со среќа! :smile:`,
+    content: `${userMention(interaction.user.id)}, направена е соба за вас. Со среќа! :smile:`,
     ephemeral: true
   });
 }
 
 async function handleQuizGameButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
-  if(interaction.user.id !== args[0]) {
+  if (interaction.user.id !== args[0]) {
     await interaction.reply({
-      content: `<@${interaction.user.id}>, вие не го започнавте квизот!`,
+      content: `${userMention(interaction.user.id)}, вие не го започнавте квизот!`,
       ephemeral: true
     });
     return;
   }
 
-  if(args[1] === 'n') {
+  if (args[1] === 'n') {
     await interaction.message.channel.delete();
     return;
   }
 
-  if(args[1] === 's') {
-    let checkLevel = Number(args[4]);
+  if (args[1] === 's') {
+    const checkLevel = Number(args[4]);
 
-    if(args[2] === args[3]) {
+    if (args[2] === args[3]) {
       args[4] = String(checkLevel + 1);
     }
 
-    if(args[2] !== args[3]) {
+    if (args[2] !== args[3]) {
       await interaction.message.delete();
       await interaction.channel?.send({
-        content: `<@${interaction.user.id}>, не го поминавте квизот... Повеќе среќа следен пат.`
+        content: `${userMention(interaction.user.id)}, не го поминавте квизот... Повеќе среќа следен пат.`
       });
-      setTimeout(async () => {
-        await interaction.channel?.delete();
-      }, 60000);
-
+      await setTimeout(60_000);
+      await interaction.channel?.delete();
       return;
     }
 
-    if(checkLevel + 1 >= 15) {
+    if (checkLevel + 1 >= 15) {
       await interaction.message.delete();
       await interaction.channel?.send({
-        content: `<@${interaction.user.id}>, честитки! :smile:\nУспешно го поминавте квизот, контактирајте администрација за вашите награди.`
+        content: `${userMention(interaction.user.id)}, честитки! :grin:`
       });
-      setTimeout(async () => {
-        await interaction.channel?.delete();
-      }, 60000);
-
+      await setTimeout(60_000);
+      await interaction.channel?.delete();
       return;
     }
   }
-  
-  let lvl = Number(args[4]);
-  const questionsList = getQuizQuestion();
-  const getLevelQuestions = questionsList[lvl < 5 ? "easy" : lvl < 10 ? "medium" : "hard"];
+
+  const lvl = Number(args[4]);
+  const questionsList = getQuiz();
+  const getLevelQuestions = questionsList[lvl < 5 ? 'easy' : lvl < 10 ? 'medium' : 'hard'];
   const currentQuestion = getLevelQuestions[Math.floor(Math.random() * getLevelQuestions.length)];
 
   const quizEmbed = new EmbedBuilder()
@@ -871,8 +854,8 @@ async function handleQuizGameButton (interaction: ButtonInteraction, args: strin
     .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2022' });
 
   const components: ActionRowBuilder<ButtonBuilder>[] = [];
-  let row = new ActionRowBuilder<ButtonBuilder>();
-  let buttons: ButtonBuilder[] = [];
+  const row = new ActionRowBuilder<ButtonBuilder>();
+  const buttons: ButtonBuilder[] = [];
 
   for (let i = 0; i < 4; i++) {
     const button = new ButtonBuilder()
@@ -890,26 +873,35 @@ async function handleQuizGameButton (interaction: ButtonInteraction, args: strin
   buttons = [];
 
   const helpers = [
-    { label: '50:50', action: 'a' },
-    { label: 'Замена на прашање', action: 'b' },
-    { label: 'Помош од Компјутер', action: 'c' },
+    {
+      action: 'a',
+      label: '50:50'
+    },
+    {
+      action: 'b',
+      label: 'Замена на прашање'
+    },
+    {
+      action: 'c',
+      label: 'Помош од Компјутер'
+    }
   ];
 
-  helpers.forEach((obj) => {
+  for (const obj of helpers) {
     buttons.push(new ButtonBuilder()
       .setCustomId(`quizgame:${interaction.user.id}:${obj.action}:null:${currentQuestion.correctAnswer}:${lvl}:${args[5]}:${args[6]}:${args[7]}`)
       .setLabel(obj.label)
-      .setStyle(ButtonStyle.Secondary)
-    );
-  });
+      .setStyle(ButtonStyle.Secondary));
+  }
 
   row.addComponents(buttons);
-  components.push(row);*/
+  components.push(row);
+  */
 
   await interaction.deferUpdate();
   await interaction.message.edit({
-    embeds: [quizEmbed],
-    components
+    components,
+    embeds: [quizEmbed]
   });
 }
 
