@@ -605,7 +605,13 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
   const pollId = String(args[0]);
   const poll = await keyv.get(pollId);
 
-  const hasVoted = poll.participants === undefined ? false : poll.participants.find((person: { id: string }) => person.id === interaction.user.id);
+  if (!('participants' in poll)) {
+    logger.warn(`User ${interaction.user.tag} clicked on an old poll`);
+    await interaction.deferUpdate();
+    return;
+  }
+
+  const hasVoted = poll.participants.find((person: { id: string }) => person.id === interaction.user.id);
   const newIndex = Number(interaction.customId.split(':')[2]);
   let newVotes = poll.votes;
   const newOptionVotes = poll.optionVotes;
