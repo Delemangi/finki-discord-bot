@@ -605,7 +605,7 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
   const pollId = String(args[0]);
   const poll = await keyv.get(pollId);
 
-  if (!('participants' in poll)) {
+  if (poll === undefined || poll.participants === undefined) {
     logger.warn(`User ${interaction.user.tag} clicked on an old poll`);
     await interaction.deferUpdate();
     return;
