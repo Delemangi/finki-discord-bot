@@ -72,6 +72,18 @@ declare global {
     '2022/2023': number;
     course: string;
   };
+
+  type Poll = {
+    optionVotes: number[];
+    options: string[];
+    participants: {
+      id: string;
+      tag: string;
+      vote: number;
+    }[];
+    title: string;
+    votes: number;
+  };
 }
 
 export { };

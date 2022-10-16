@@ -602,8 +602,8 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
     return;
   }
 
-  const pollId = String(args[0]);
-  const poll = await keyv.get(pollId);
+  const pollID = String(args[0]);
+  const poll: Poll = await keyv.get(pollID);
 
   if (poll === undefined || poll.participants === undefined) {
     logger.warn(`User ${interaction.user.tag} clicked on an old poll`);
@@ -611,23 +611,25 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
     return;
   }
 
-  const hasVoted = poll.participants.find((person: { id: string }) => person.id === interaction.user.id);
-  const newIndex = Number(interaction.customId.split(':')[2]);
+  const hasVoted = poll.participants.find((person) => person.id === interaction.user.id);
+  const newIndex = Number(args[2]);
   let newVotes = poll.votes;
   const newOptionVotes = poll.optionVotes;
   const newParticipants = poll.participants;
-  const userIndex = poll.participants.findIndex((person: { id: string }) => person.id === interaction.user.id);
+  const userIndex = poll.participants.findIndex((person) => person.id === interaction.user.id);
   let replyMessage: string;
 
-  if (hasVoted && poll.participants[userIndex].vote === newIndex) {
+  if (hasVoted && poll.participants[userIndex]?.vote === newIndex) {
     newVotes -= 1;
     newOptionVotes[newIndex] -= 1;
     newParticipants.splice(userIndex, 1);
 
     replyMessage = 'Го тргнавте вашиот глас.';
   } else if (hasVoted) {
+    // @ts-expect-error This cannot happen
     newOptionVotes[poll.participants[userIndex].vote] -= 1;
     newOptionVotes[newIndex] += 1;
+    // @ts-expect-error This cannot happen
     newParticipants[userIndex].vote = newIndex;
 
     replyMessage = `Ја променивте вашата опција во опцијата: ${Number(args[1]) + 1}.`;
@@ -643,7 +645,7 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
     replyMessage = `Гласавте и ја одбравте опцијата: ${Number(args[1]) + 1}.`;
   }
 
-  await keyv.set(pollId, {
+  await keyv.set(pollID, {
     options: poll.options,
     optionVotes: newOptionVotes,
     participants: newParticipants,
@@ -656,18 +658,18 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
     ephemeral: true
   });
 
-  const updatedPoll = await keyv.get(pollId);
+  const updatedPoll: Poll = await keyv.get(pollID);
 
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle(updatedPoll.title)
-    .setDescription(codeBlock(updatedPoll.options.map((option: string, index: number) => `${(index + 1).toString().padStart(2, '0')}. ${option.padEnd(Math.max(...updatedPoll.options.map((o: string) => o.length)))} - [${updatedPoll.votes > 0 ? generatePercentageBar(updatedPoll.optionVotes[index] / updatedPoll.votes * 100) : generatePercentageBar(0)}] - ${updatedPoll.votes > 0 ? (updatedPoll.optionVotes[index] / updatedPoll.votes * 100).toFixed(2).toString().padStart(5, '0') : '00'}%`).join('\n')))
+    .setDescription(codeBlock(updatedPoll.options.map((option, index) => `${String(index + 1).padStart(2, '0')}. ${option.padEnd(Math.max(...updatedPoll.options.map((o) => o.length)))} - [${updatedPoll.votes > 0 ? generatePercentageBar(updatedPoll.optionVotes[index] ?? 0 / updatedPoll.votes * 100) : generatePercentageBar(0)}] - ${updatedPoll.optionVotes[index]} [${updatedPoll.votes > 0 ? (updatedPoll.optionVotes[index] ?? 0 / updatedPoll.votes * 100).toFixed(2).padStart(5, '0') : '00'}%]`).join('\n')))
     .addFields({
-      name: 'No. of Votes',
-      value: updatedPoll.votes.toString()
+      name: 'Гласови',
+      value: String(updatedPoll.votes)
     })
     .setTimestamp()
-    .setFooter({ text: `Poll ID: ${pollId}` });
+    .setFooter({ text: `Анкета: ${pollID}` });
 
   await interaction.message.edit({ embeds: [embed] });
 }
@@ -682,7 +684,7 @@ async function handlePollStatsButton (interaction: ButtonInteraction, args: stri
 
   const pollId = String(args[0]);
   const pollOption = Number(args[1]);
-  const poll = await keyv.get(pollId);
+  const poll: Poll = await keyv.get(pollId);
 
   const pollVoters: string[] = [];
 
@@ -698,7 +700,7 @@ async function handlePollStatsButton (interaction: ButtonInteraction, args: stri
     embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle('Poll Statistics')
-      .setDescription(`People who voted for option ${pollOption + 1}:\n` + codeBlock(pollVoters.join('\n')))
+      .setDescription(`People who voted for option ${pollOption + 1}:\n${codeBlock(pollVoters.join('\n'))}`)
       .setTimestamp()
       .setFooter({ text: `Poll ID: ${pollId}` });
   } else {
