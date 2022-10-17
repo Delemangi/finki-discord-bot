@@ -11,6 +11,7 @@ export enum CommandsDescription {
   'list questions' = 'Листа од сите прашања',
   ping = 'Понг!',
   'poll create' = 'Креирај анкета',
+  'poll show' = 'Прикажи некоја анкета',
   'poll stats' = 'Статистика за анкета',
   purge = 'Бришење пораки',
   quiz = 'Започнете го квизот Кој Сака Да Биде Морален Победник',

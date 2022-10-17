@@ -9,7 +9,10 @@ import {
 } from 'discord.js';
 import Keyv from 'keyv';
 import { getFromBotConfig } from '../utils/config.js';
-import { createCustomPollId } from '../utils/functions.js';
+import {
+  createCustomPollId,
+  generatePercentageBar
+} from '../utils/functions.js';
 import { CommandsDescription } from '../utils/strings.js';
 
 const keyv = new Keyv(getFromBotConfig('keyvDB'));
@@ -34,6 +37,13 @@ export const data = new SlashCommandBuilder()
     .addStringOption((option) => option
       .setName('id')
       .setDescription('ID of the poll you want to get stats from')
+      .setRequired(true)))
+  .addSubcommand((command) => command
+    .setName('show')
+    .setDescription(CommandsDescription['poll show'])
+    .addStringOption((option) => option
+      .setName('id')
+      .setDescription('ID of the poll you want to show')
       .setRequired(true)));
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
@@ -43,6 +53,9 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     const components: ActionRowBuilder<ButtonBuilder>[] = [];
     let ID = createCustomPollId(8);
     let firstID: Poll = await keyv.get(ID);
+
+    // eslint-disable-next-line no-console
+    console.log(ID);
 
     while (firstID !== undefined) {
       ID = createCustomPollId(8);
@@ -146,5 +159,51 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     } else {
       await interaction.editReply('Не постои таква анкета.');
     }
+  } else if (interaction.options.getSubcommand() === 'show') {
+    const id = interaction.options.getString('id', true);
+    const components: ActionRowBuilder<ButtonBuilder>[] = [];
+    const poll: Poll = await keyv.get(id);
+
+    // eslint-disable-next-line no-console
+    console.log('show');
+    // eslint-disable-next-line no-console
+    console.log(poll);
+
+    for (let i = 0; i < poll.options.length; i += 5) {
+      const row = new ActionRowBuilder<ButtonBuilder>();
+      const buttons: ButtonBuilder[] = [];
+
+      for (let j = i; j < i + 5; j++) {
+        if (poll.options[j] === undefined) {
+          break;
+        }
+
+        const button = new ButtonBuilder()
+          .setCustomId(`poll:${id}:${j}`)
+          .setLabel(`${j + 1}`)
+          .setStyle(ButtonStyle.Secondary);
+
+        buttons.push(button);
+      }
+
+      row.addComponents(buttons);
+      components.push(row);
+    }
+
+    const embed = new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
+      .setTitle(poll.title)
+      .setDescription(codeBlock(poll.options.map((option, index) => `${String(index + 1).padStart(2, '0')}. ${option.padEnd(Math.max(...poll.options.map((o) => o.length)))} - [${poll.votes > 0 ? generatePercentageBar((poll.optionVotes[index] ?? 0 / poll.votes) * 100) : generatePercentageBar(0)}] - ${poll.optionVotes[index]} [${poll.votes > 0 ? ((poll.optionVotes[index] ?? 0 / poll.votes) * 100).toFixed(2).toString().padStart(5, '0') : '00'}%]`).join('\n')))
+      .addFields({
+        name: 'Гласови',
+        value: String(poll.votes)
+      })
+      .setTimestamp()
+      .setFooter({ text: `Анкета: ${id}` });
+
+    await interaction.editReply({
+      components,
+      embeds: [embed]
+    });
   }
 }
