@@ -75,5 +75,5 @@ export function generatePercentageBar (percentage: number) {
   }
 
   const pb = '█'.repeat(Math.floor(percentage / 5)) + (percentage - Math.floor(percentage) >= 0.5 ? '▌' : '');
-  return pb + '.'.repeat(20 - pb.length);
+  return pb + '.'.repeat(Math.max(0, 20 - pb.length));
 }
