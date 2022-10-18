@@ -10,7 +10,7 @@ import {
 import Keyv from 'keyv';
 import { getFromBotConfig } from '../utils/config.js';
 import {
-  createCustomPollId,
+  generatePollID,
   generatePercentageBar
 } from '../utils/functions.js';
 import { CommandsDescription } from '../utils/strings.js';
@@ -51,14 +51,14 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     const title = interaction.options.getString('title', true);
     const options = interaction.options.getString('options', true).split(',').filter(Boolean).map((option) => option.trim());
     const components: ActionRowBuilder<ButtonBuilder>[] = [];
-    let ID = createCustomPollId(8);
+    let ID = generatePollID(8);
     let firstID: Poll = await keyv.get(ID);
 
     // eslint-disable-next-line no-console
     console.log(ID);
 
     while (firstID !== undefined) {
-      ID = createCustomPollId(8);
+      ID = generatePollID(8);
       firstID = await keyv.get(ID);
     }
 
