@@ -663,7 +663,7 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle(updatedPoll.title)
-    .setDescription(codeBlock(updatedPoll.options.map((option, index) => `${String(index + 1).padStart(2, '0')}. ${option.padEnd(Math.max(...updatedPoll.options.map((o) => o.length)))} - [${updatedPoll.votes > 0 ? generatePercentageBar((updatedPoll.optionVotes[index] ?? 0 / updatedPoll.votes) * 100) : generatePercentageBar(0)}] - ${updatedPoll.optionVotes[index]} [${updatedPoll.votes > 0 ? ((updatedPoll.optionVotes[index] ?? 0 / updatedPoll.votes) * 100).toFixed(2).padStart(5, '0') : '00'}%]`).join('\n')))
+    .setDescription(codeBlock(updatedPoll.options.map((option, index) => `${String(index + 1).padStart(2, '0')}. ${option.padEnd(Math.max(...updatedPoll.options.map((o) => o.length)))} - [${updatedPoll.votes > 0 ? generatePercentageBar(Number(updatedPoll.optionVotes[index]) / updatedPoll.votes * 100) : generatePercentageBar(0)}] - ${updatedPoll.optionVotes[index]} [${updatedPoll.votes > 0 ? (Number(updatedPoll.optionVotes[index]) / updatedPoll.votes * 100).toFixed(2).padStart(5, '0') : '00'}%]`).join('\n')))
     .addFields({
       name: 'Гласови',
       value: String(updatedPoll.votes)
