@@ -74,8 +74,10 @@ declare global {
   };
 
   type Poll = {
+    isPublic: boolean;
     optionVotes: number[];
     options: string[];
+    owner: string;
     participants: {
       id: string;
       tag: string;
