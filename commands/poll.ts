@@ -1,3 +1,4 @@
+/* eslint-disable complexity */
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -5,7 +6,8 @@ import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  codeBlock
+  codeBlock,
+  PermissionsBitField
 } from 'discord.js';
 import Keyv from 'keyv';
 import { getFromBotConfig } from '../utils/config.js';
@@ -30,7 +32,10 @@ export const data = new SlashCommandBuilder()
     .addStringOption((option) => option
       .setName('options')
       .setDescription('Up to 25 poll options, separated by commas')
-      .setRequired(true)))
+      .setRequired(true))
+    .addBooleanOption((option) => option
+      .setName('public')
+      .setDescription('Option for everyone to contribute to a poll (Default is false)')))
   .addSubcommand((command) => command
     .setName('stats')
     .setDescription(CommandsDescription['poll stats'])
@@ -44,18 +49,56 @@ export const data = new SlashCommandBuilder()
     .addStringOption((option) => option
       .setName('id')
       .setDescription('ID of the poll you want to show')
+      .setRequired(true)))
+  .addSubcommand((command) => command
+    .setName('add')
+    .setDescription(CommandsDescription['poll add'])
+    .addStringOption((option) => option
+      .setName('id')
+      .setDescription('ID of the poll you want to add options to')
+      .setRequired(true))
+    .addStringOption((option) => option
+      .setName('options')
+      .setDescription('Options to add to the poll (Max: 25 total options)')
+      .setRequired(true)))
+  .addSubcommand((command) => command
+    .setName('remove')
+    .setDescription(CommandsDescription['poll remove'])
+    .addStringOption((option) => option
+      .setName('id')
+      .setDescription('ID of the poll you want to remove options from')
+      .setRequired(true))
+    .addStringOption((option) => option
+      .setName('options')
+      .setDescription('Indices of options to remove from the poll (ex: 1,3,7...)')
+      .setRequired(true)))
+  .addSubcommand((command) => command
+    .setName('public')
+    .setDescription(CommandsDescription['poll public'])
+    .addStringOption((option) => option
+      .setName('id')
+      .setDescription('ID of the poll you want to change it\'s accessibility')
+      .setRequired(true))
+    .addBooleanOption((option) => option
+      .setName('public')
+      .setDescription('Change the \'public\' status of a poll')
+      .setRequired(true)))
+  .addSubcommand((command) => command
+    .setName('delete')
+    .setDescription(CommandsDescription['poll delete'])
+    .addStringOption((option) => option
+      .setName('id')
+      .setDescription('ID of the poll you want to delete')
       .setRequired(true)));
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   if (interaction.options.getSubcommand() === 'create') {
     const title = interaction.options.getString('title', true);
     const options = interaction.options.getString('options', true).split(',').filter(Boolean).map((option) => option.trim());
+    const isPublic = interaction.options.getBoolean('public', false) ?? false;
     const components: ActionRowBuilder<ButtonBuilder>[] = [];
     let ID = generatePollID(8);
     let firstID: Poll = await keyv.get(ID);
-
-    // eslint-disable-next-line no-console
-    console.log(ID);
 
     while (firstID !== undefined) {
       ID = generatePollID(8);
@@ -93,10 +136,18 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
         .setColor(getFromBotConfig('color'))
         .setTitle(title)
         .setDescription(codeBlock(options.map((option, index) => `${(index + 1).toString().padStart(2, '0')}. ${option.padEnd(Math.max(...options.map((o: string) => o.length)))} - [....................] - 0 [00.00%]`).join('\n')))
-        .addFields({
-          name: 'Гласови',
-          value: '0'
-        })
+        .addFields(
+          {
+            inline: true,
+            name: 'Гласови',
+            value: '0'
+          },
+          {
+            inline: true,
+            name: 'Public',
+            value: String(isPublic)
+          }
+        )
         .setTimestamp()
         .setFooter({ text: `Анкета: ${ID}` });
 
@@ -106,8 +157,10 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       });
 
       await keyv.set(ID, {
+        isPublic,
         options,
         optionVotes: Array.from({ length: options.length }).fill(0),
+        owner: interaction.user.id,
         participants: [],
         title,
         votes: 0
@@ -119,6 +172,11 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     const id = interaction.options.getString('id', true);
     const components: ActionRowBuilder<ButtonBuilder>[] = [];
     const poll: Poll = await keyv.get(id);
+
+    if (!poll) {
+      await interaction.editReply('Грешка при наоѓање на анкетата.');
+      return;
+    }
 
     if (id.length > 0 && id !== undefined) {
       const embed = new EmbedBuilder()
@@ -157,17 +215,17 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
         embeds: [embed]
       });
     } else {
-      await interaction.editReply('Не постои таква анкета.');
+      await interaction.editReply('Грешка при наоѓање на анкетата.');
     }
   } else if (interaction.options.getSubcommand() === 'show') {
     const id = interaction.options.getString('id', true);
     const components: ActionRowBuilder<ButtonBuilder>[] = [];
     const poll: Poll = await keyv.get(id);
 
-    // eslint-disable-next-line no-console
-    console.log('show');
-    // eslint-disable-next-line no-console
-    console.log(poll);
+    if (!poll) {
+      await interaction.editReply('Грешка при наоѓање на анкетата.');
+      return;
+    }
 
     for (let i = 0; i < poll.options.length; i += 5) {
       const row = new ActionRowBuilder<ButtonBuilder>();
@@ -193,11 +251,19 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     const embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle(poll.title)
-      .setDescription(codeBlock(poll.options.map((option, index) => `${String(index + 1).padStart(2, '0')}. ${option.padEnd(Math.max(...poll.options.map((o) => o.length)))} - [${poll.votes > 0 ? generatePercentageBar((poll.optionVotes[index] ?? 0 / poll.votes) * 100) : generatePercentageBar(0)}] - ${poll.optionVotes[index]} [${poll.votes > 0 ? ((poll.optionVotes[index] ?? 0 / poll.votes) * 100).toFixed(2).toString().padStart(5, '0') : '00'}%]`).join('\n')))
-      .addFields({
-        name: 'Гласови',
-        value: String(poll.votes)
-      })
+      .setDescription(codeBlock(poll.options.map((option, index) => `${String(index + 1).padStart(2, '0')}. ${option.padEnd(Math.max(...poll.options.map((o) => o.length)))} - [${poll.votes > 0 ? generatePercentageBar(Number(poll.optionVotes[index]) / poll.votes * 100) : generatePercentageBar(0)}] - ${poll.optionVotes[index]} [${poll.votes > 0 ? (Number(poll.optionVotes[index]) / poll.votes * 100).toFixed(2).padStart(5, '0') : '00'}%]`).join('\n')))
+      .addFields(
+        {
+          inline: true,
+          name: 'Гласови',
+          value: String(poll.votes)
+        },
+        {
+          inline: true,
+          name: 'Public',
+          value: String(poll.isPublic)
+        }
+      )
       .setTimestamp()
       .setFooter({ text: `Анкета: ${id}` });
 
@@ -205,5 +271,138 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       components,
       embeds: [embed]
     });
+  } else if (interaction.options.getSubcommand() === 'public') {
+    const id = interaction.options.getString('id', true);
+    const isPublic = interaction.options.getBoolean('public', true);
+    const poll: Poll = await keyv.get(id);
+
+    if (!poll) {
+      await interaction.editReply('Грешка при наоѓање на анкетата.');
+      return;
+    }
+
+    if (poll.owner !== interaction.user.id) {
+      await interaction.editReply('Вие НЕ ја започнавте оваа анкета!');
+      return;
+    }
+
+    await keyv.set(id, {
+      isPublic,
+      options: poll.options,
+      optionVotes: poll.optionVotes,
+      owner: poll.owner,
+      participants: poll.participants,
+      title: poll.title,
+      votes: poll.votes
+    });
+
+    await interaction.editReply(`Успешно го изменивте 'public' статусот на анкета ${id} во **${isPublic}**.`);
+  } else if (interaction.options.getSubcommand() === 'add') {
+    const id = interaction.options.getString('id', true);
+    const options = interaction.options.getString('options', true).split(',').filter(Boolean).map((option) => option.trim());
+    const poll: Poll = await keyv.get(id);
+
+    if (!poll) {
+      await interaction.editReply('Грешка при наоѓање на анкетата.');
+      return;
+    }
+
+    if (poll.isPublic === false && poll.owner !== interaction.user.id) {
+      await interaction.editReply('Оваа анкета не е public и вие НЕ ја започнавте оваа анкета што значи не може да додавате елементи во истата!');
+      return;
+    }
+
+    if (options.length < 1) {
+      await interaction.editReply('Мора да имате барем една опција во аргументот **options!');
+      return;
+    }
+
+    const newOptions = poll.options;
+    const newOptionVotes = poll.optionVotes;
+
+    for (const option of options) {
+      if (newOptions.length <= 25) {
+        newOptions.push(option);
+        newOptionVotes.push(0);
+      }
+    }
+
+    await keyv.set(id, {
+      isPublic: poll.isPublic,
+      options: newOptions,
+      optionVotes: newOptionVotes,
+      owner: poll.owner,
+      participants: poll.participants,
+      title: poll.title,
+      votes: poll.votes
+    });
+
+    await interaction.editReply('Успешно додадовте опции во анкетата. Користете **/poll show** за да ги видите промените.');
+  } else if (interaction.options.getSubcommand() === 'remove') {
+    const id = interaction.options.getString('id', true);
+    const options = interaction.options.getString('options', true).split(',').filter(Boolean).map((option) => option.trim());
+    const poll: Poll = await keyv.get(id);
+
+    if (!poll) {
+      await interaction.editReply('Грешка при наоѓање на анкетата.');
+      return;
+    }
+
+    if (poll.owner !== interaction.user.id) {
+      await interaction.editReply('Вие НЕ ја започнавте оваа анкета и не може да бришете елементи од истата!');
+      return;
+    }
+
+    options.filter((option, index) => option.indexOf(option) === index);
+    const newOptions = poll.options;
+    const newOptionVotes = poll.optionVotes;
+
+    for (const option of options) {
+      const op = Number(option);
+      if (op > 0 && op < poll.options.length) {
+        newOptions.splice(op - 1, 1);
+        newOptionVotes.splice(op - 1, 1);
+      }
+    }
+
+    if (newOptionVotes.length < 1) {
+      await keyv.delete(id);
+      await interaction.editReply('Ги тргнавте сите опции и со тоа анкетата се избриша.');
+      return;
+    }
+
+    await keyv.set(id, {
+      isPublic: poll.isPublic,
+      options: newOptions,
+      optionVotes: newOptionVotes,
+      owner: poll.owner,
+      participants: poll.participants,
+      title: poll.title,
+      votes: poll.votes
+    });
+
+    await interaction.editReply('Успешно тргнавте опции од анкетата. Користете **/poll show** за да ги видите промените.');
+  } else if (interaction.options.getSubcommand() === 'delete') {
+    const id = interaction.options.getString('id', true);
+    const poll: Poll = await keyv.get(id);
+
+    if (!poll) {
+      await interaction.editReply('Грешка при наоѓање на анкетата.');
+      return;
+    }
+
+    const permissions = interaction.member?.permissions as PermissionsBitField;
+    if (!permissions.has(PermissionsBitField.Flags.Administrator) && !permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+      await interaction.editReply('Грешка, не сте администратор.');
+      return;
+    }
+
+    const deletePoll = await keyv.delete(id);
+
+    if (deletePoll) {
+      await interaction.editReply(`Успешно ја избришавте анкетата ${id}.`);
+    } else {
+      await interaction.editReply(`Имаше проблем при бришење на анкетата ${id}. Обидете се повторно.`);
+    }
   }
 }

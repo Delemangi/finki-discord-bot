@@ -646,8 +646,10 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
   }
 
   await keyv.set(pollID, {
+    isPublic: poll.isPublic,
     options: poll.options,
     optionVotes: newOptionVotes,
+    owner: poll.owner,
     participants: newParticipants,
     title: poll.title,
     votes: newVotes
@@ -664,10 +666,18 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
     .setColor(getFromBotConfig('color'))
     .setTitle(updatedPoll.title)
     .setDescription(codeBlock(updatedPoll.options.map((option, index) => `${String(index + 1).padStart(2, '0')}. ${option.padEnd(Math.max(...updatedPoll.options.map((o) => o.length)))} - [${updatedPoll.votes > 0 ? generatePercentageBar(Number(updatedPoll.optionVotes[index]) / updatedPoll.votes * 100) : generatePercentageBar(0)}] - ${updatedPoll.optionVotes[index]} [${updatedPoll.votes > 0 ? (Number(updatedPoll.optionVotes[index]) / updatedPoll.votes * 100).toFixed(2).padStart(5, '0') : '00'}%]`).join('\n')))
-    .addFields({
-      name: 'Гласови',
-      value: String(updatedPoll.votes)
-    })
+    .addFields(
+      {
+        inline: true,
+        name: 'Гласови',
+        value: String(updatedPoll.votes)
+      },
+      {
+        inline: true,
+        name: 'Public',
+        value: String(updatedPoll.isPublic)
+      }
+    )
     .setTimestamp()
     .setFooter({ text: `Анкета: ${pollID}` });
 
