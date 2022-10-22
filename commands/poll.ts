@@ -340,7 +340,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     await interaction.editReply('Успешно додадовте опции во анкетата. Користете **/poll show** за да ги видите промените.');
   } else if (interaction.options.getSubcommand() === 'remove') {
     const id = interaction.options.getString('id', true);
-    const options = interaction.options.getString('options', true).split(',').filter(Boolean).map((option) => option.trim());
+    const options = interaction.options.getString('options', true).split(',').filter(Boolean).map((option) => option.trim()).map(Number).sort((a, b) => b - a);
     const poll: Poll = await keyv.get(id);
 
     if (!poll) {
@@ -353,22 +353,32 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       return;
     }
 
-    options.filter((option, index) => option.indexOf(option) === index);
+    for (let i = 1; i < options.length; i++) {
+      if (options[i] === options[i - 1]) {
+        options.splice(i, 1);
+      }
+    }
+
     const newOptions = poll.options;
     const newOptionVotes = poll.optionVotes;
 
     for (const option of options) {
-      const op = Number(option);
-      if (op > 0 && op < poll.options.length) {
-        newOptions.splice(op - 1, 1);
-        newOptionVotes.splice(op - 1, 1);
+      const op = Number(option) - 1;
+      if (op >= 0 && op < poll.options.length) {
+        newOptions.splice(op, 1);
+        newOptionVotes.splice(op, 1);
       }
     }
 
     if (newOptionVotes.length < 1) {
       await keyv.delete(id);
-      await interaction.editReply('Ги тргнавте сите опции и со тоа анкетата се избриша.');
+      await interaction.editReply('Ги тргнавте сите опции и со тоа ја избришавте анкетата.');
       return;
+    }
+
+    let newVotes = 0;
+    for (const optionVote of newOptionVotes) {
+      newVotes += optionVote;
     }
 
     await keyv.set(id, {
@@ -378,7 +388,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       owner: poll.owner,
       participants: poll.participants,
       title: poll.title,
-      votes: poll.votes
+      votes: newVotes
     });
 
     await interaction.editReply('Успешно тргнавте опции од анкетата. Користете **/poll show** за да ги видите промените.');
