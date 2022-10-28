@@ -26,6 +26,10 @@ The `config` folder should contain:
 
 Check the `example` folder for the correct format.
 
+### Sessions
+
+Create a folder `sessions` and put all the session files in there.
+
 ## Running
 
 The bot can be run with `npm run start`.
