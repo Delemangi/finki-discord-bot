@@ -10,6 +10,7 @@ const questions: Question[] = JSON.parse(readFileSync('./config/questions.json',
 const quiz = JSON.parse(readFileSync('./config/quiz.json', 'utf8'));
 const roles: RoleConfig = JSON.parse(readFileSync('./config/roles.json', 'utf8'));
 const rules: string[] = JSON.parse(readFileSync('./config/rules.json', 'utf8'));
+const sessions: { [index: string]: string } = JSON.parse(readFileSync('./config/sessions.json', 'utf8'));
 const staff: Staff[] = JSON.parse(readFileSync('./config/staff.json', 'utf8'));
 
 export function getFromBotConfig<T extends keyof BotConfig> (key: T): BotConfig[T] {
@@ -50,6 +51,10 @@ export function getFromRoleConfig<T extends keyof RoleConfig> (key: T): RoleConf
 
 export function getRules (): string[] {
   return rules;
+}
+
+export function getSessions (): { [index: string]: string } {
+  return sessions;
 }
 
 export function getStaff (): Staff[] {

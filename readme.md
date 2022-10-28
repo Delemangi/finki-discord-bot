@@ -21,7 +21,8 @@ The `config` folder should contain:
 8. `quiz.json` - an array of the quiz questions
 9. `roles.json` - roles for the scripts and for the embeds
 10. `rules.json` - an array of the server rules
-11. `staff.json` - an array of the staff
+11. `sessions.json` - an object of all exam sessions
+12. `staff.json` - an array of the staff
 
 Check the `example` folder for the correct format.
 

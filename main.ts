@@ -30,6 +30,7 @@ import {
   getFromBotConfig,
   getFromRoleConfig,
   getQuiz,
+  getSessions,
   getStaff
 } from './utils/config.js';
 import { getAllQuestions } from './utils/faq.js';
@@ -273,6 +274,8 @@ async function handleAutocomplete (interaction: AutocompleteInteraction): Promis
     await handleCourseRoleAutocomplete(interaction);
   } else if (option.name === 'question') {
     await handleQuestionAutocomplete(interaction);
+  } else if (option.name === 'session') {
+    await handleSessionAutocomplete(interaction);
   } else {
     logger.warn(`Received unknown autocomplete interaction ${interaction.id} from ${interaction.user.id}: ${interaction.commandName}, option ${option.name}`);
   }
@@ -1129,6 +1132,19 @@ async function handleQuestionAutocomplete (interaction: AutocompleteInteraction)
       .map((q) => ({
         name: q,
         value: q
+      })).slice(0, 25)
+  );
+}
+
+async function handleSessionAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
+  const session = interaction.options.getFocused().toLowerCase();
+
+  await interaction.respond(
+    Object.keys(getSessions())
+      .filter((s) => s.toLowerCase().includes(session))
+      .map((s) => ({
+        name: s,
+        value: s
       })).slice(0, 25)
   );
 }
