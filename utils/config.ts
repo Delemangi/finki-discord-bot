@@ -4,7 +4,8 @@ const config: BotConfig = JSON.parse(readFileSync('./config/config.json', 'utf8'
 const courses: string[] = JSON.parse(readFileSync('./config/courses.json', 'utf8'));
 const links: Link[] = JSON.parse(readFileSync('./config/links.json', 'utf8'));
 const participants: CourseParticipants[] = JSON.parse(readFileSync('./config/participants.json', 'utf8'));
-const professors: CourseInformation[] = JSON.parse(readFileSync('./config/professors.json', 'utf8'));
+const prerequisites: CoursePrerequisites[] = JSON.parse(readFileSync('./config/prerequisites.json', 'utf8'));
+const professors: CourseStaff[] = JSON.parse(readFileSync('./config/professors.json', 'utf8'));
 const questions: Question[] = JSON.parse(readFileSync('./config/questions.json', 'utf8'));
 const quiz = JSON.parse(readFileSync('./config/quiz.json', 'utf8'));
 const roles: RoleConfig = JSON.parse(readFileSync('./config/roles.json', 'utf8'));
@@ -27,8 +28,12 @@ export function getParticipants (): CourseParticipants[] {
   return participants;
 }
 
-export function getProfessors (): CourseInformation[] {
+export function getProfessors (): CourseStaff[] {
   return professors;
+}
+
+export function getPrerequisites (): CoursePrerequisites[] {
+  return prerequisites;
 }
 
 export function getQuestions (): Question[] {

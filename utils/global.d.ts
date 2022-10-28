@@ -56,7 +56,7 @@ declare global {
     title: string;
   };
 
-  type CourseInformation = {
+  type CourseStaff = {
     assistants: string;
     course: string;
     professors: string;
@@ -71,6 +71,11 @@ declare global {
     '2021/2022': number;
     '2022/2023': number;
     course: string;
+  };
+
+  type CoursePrerequisites = {
+    course: string;
+    prerequisite: string;
   };
 
   type Poll = {

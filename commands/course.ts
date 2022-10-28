@@ -8,6 +8,7 @@ import {
   getFromBotConfig,
   getFromRoleConfig,
   getParticipants,
+  getPrerequisites,
   getProfessors
 } from '../utils/config.js';
 import { CommandsDescription } from '../utils/strings.js';
@@ -37,6 +38,14 @@ export const data = new SlashCommandBuilder()
     .addStringOption((option) => option
       .setName('courserole')
       .setDescription('Course to get the role participants for')
+      .setRequired(true)
+      .setAutocomplete(true)))
+  .addSubcommand((command) => command
+    .setName('prerequisite')
+    .setDescription(CommandsDescription['course prerequisite'])
+    .addStringOption((option) => option
+      .setName('course')
+      .setDescription('Course to get the prerequisite for')
       .setRequired(true)
       .setAutocomplete(true)));
 
@@ -87,7 +96,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       .setTimestamp();
 
     await interaction.editReply({ embeds: [embed] });
-  } else {
+  } else if (interaction.options.getSubcommand(true) === 'role') {
     if (interaction.guild === null) {
       await interaction.editReply('Оваа команда се повикува само во сервер.');
       return;
@@ -113,6 +122,25 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       allowedMentions: { parse: [] },
       content: `${roleMention(role.id)}: ${role.members.size}`
     });
+  } else if (interaction.options.getSubcommand(true) === 'prerequisite') {
+    const information = getPrerequisites().find((p) => p.course === course);
+
+    if (information === undefined) {
+      await interaction.editReply('Не постои таков предмет.');
+      return;
+    }
+
+    const embed = new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
+      .setTitle(course)
+      .addFields({
+        inline: true,
+        name: 'Предуслови',
+        value: information.prerequisite === '' ? 'Нема' : information.prerequisite ?? 'Нема'
+      })
+      .setTimestamp();
+
+    await interaction.editReply({ embeds: [embed] });
   }
 }
 

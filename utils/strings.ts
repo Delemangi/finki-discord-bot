@@ -1,6 +1,7 @@
 export enum CommandsDescription {
   anto = 'Анто факт',
   'course participants' = 'Број на слушатели на предмет',
+  'course prerequisite' = 'Предуслов за предметот',
   'course professors' = 'Наставен кадар на предмет',
   'course role' = 'Број на корисници во каналот за предметот',
   embed = 'Креирај "embed"',
