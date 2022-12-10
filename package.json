@@ -5,6 +5,8 @@
   "main": "src/main.js",
   "scripts": {
     "start": "tsc && node dist/main.js",
+    "lint": "eslint . --ext .ts",
+    "build": "tsc",
     "embed:colors": "tsc && node dist/scripts/colors.js",
     "embed:years": "tsc && node dist/scripts/years.js",
     "embed:activities": "tsc && node dist/scripts/activities.js",
