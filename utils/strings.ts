@@ -1,4 +1,5 @@
 export enum CommandsDescription {
+  about = 'Информации за ботот',
   anto = 'Анто факт',
   'course participants' = 'Број на слушатели на предмет',
   'course prerequisite' = 'Предуслов за предметот',
@@ -7,6 +8,7 @@ export enum CommandsDescription {
   embed = 'Креирај "embed"',
   faq = 'Најчесто поставувани прашања',
   help = 'Помош за командите',
+  home = 'Изворен код на ботот',
   link = 'Превземете линк до одреден сервис',
   'list links' = 'Листа од сите линкови',
   'list questions' = 'Листа од сите прашања',
