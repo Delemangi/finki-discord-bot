@@ -11,18 +11,19 @@ Discord bot for the `FINKI Students` Discord server, made with [discord.js](http
 
 The `config` folder should contain:
 
-1. `config.json` - the basic bot configuration
-2. `courses.json` - an array of the names of all courses
-3. `links.json` - an array of links for the `link` command
-4. `participants.json` - an array of all courses and their number of participants
-5. `prerequisites.json` - an array of course prerequisites
-6. `professors.json` - an array of all courses and their professors and assistants
-7. `questions.json` - an array questions and answers for the `faq` command
-8. `quiz.json` - an array of the quiz questions
-9. `roles.json` - roles for the scripts and for the embeds
-10. `rules.json` - an array of the server rules
-11. `sessions.json` - an object of all exam sessions
-12. `staff.json` - an array of the staff
+1. `anto.json` - Anto quotes
+2. `config.json` - the basic bot configuration
+3. `courses.json` - an array of the names of all courses
+4. `links.json` - an array of links for the `link` command
+5. `participants.json` - an array of all courses and their number of participants
+6. `prerequisites.json` - an array of course prerequisites
+7. `professors.json` - an array of all courses and their professors and assistants
+8. `questions.json` - an array questions and answers for the `faq` command
+9. `quiz.json` - an array of the quiz questions
+10. `roles.json` - roles for the scripts and for the embeds
+11. `rules.json` - an array of the server rules
+12. `sessions.json` - an object of all exam sessions
+13. `staff.json` - an array of the staff
 
 Check the `example` folder for the correct format.
 
