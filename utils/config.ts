@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 
+const anto: string[] = JSON.parse(readFileSync('./config/anto.json', 'utf8'));
 const config: BotConfig = JSON.parse(readFileSync('./config/config.json', 'utf8'));
 const courses: string[] = JSON.parse(readFileSync('./config/courses.json', 'utf8'));
 const links: Link[] = JSON.parse(readFileSync('./config/links.json', 'utf8'));
@@ -12,6 +13,10 @@ const roles: RoleConfig = JSON.parse(readFileSync('./config/roles.json', 'utf8')
 const rules: string[] = JSON.parse(readFileSync('./config/rules.json', 'utf8'));
 const sessions: { [index: string]: string } = JSON.parse(readFileSync('./config/sessions.json', 'utf8'));
 const staff: Staff[] = JSON.parse(readFileSync('./config/staff.json', 'utf8'));
+
+export function getAnto (): string[] {
+  return anto;
+}
 
 export function getFromBotConfig<T extends keyof BotConfig> (key: T): BotConfig[T] {
   return config[key];
