@@ -77,3 +77,18 @@ export function generatePercentageBar (percentage: number) {
   const pb = '█'.repeat(Math.floor(percentage / 5)) + (percentage - Math.floor(percentage) >= 0.5 ? '▌' : '');
   return pb + '.'.repeat(Math.max(0, 20 - pb.length));
 }
+
+export function createOptions (options: [string, string][], term: string, capitalizeAll: boolean = false): { name: string; value: string }[] {
+  return options
+    .filter(([i]) => i.includes(term))
+    .map(([, c]) => ({
+      name: capitalizeWord(c, capitalizeAll),
+      value: capitalizeWord(c, capitalizeAll)
+    }))
+    .filter((e, i, a) => a.findIndex((t) => t.name === e.name) === i)
+    .slice(0, 25);
+}
+
+export function capitalizeWord (word: string, capitalizeAll: boolean = false): string {
+  return capitalizeAll ? word.split(' ').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : word.charAt(0).toUpperCase() + word.slice(1);
+}

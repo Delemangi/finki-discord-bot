@@ -36,10 +36,12 @@ import {
 import { getAllQuestions } from './utils/faq.js';
 import {
   checkConfig,
+  createOptions,
   generatePercentageBar,
   isTextGuildBased
 } from './utils/functions.js';
 import { logger } from './utils/logger.js';
+import { transformOptions } from './utils/options.js';
 
 checkConfig();
 
@@ -1084,67 +1086,61 @@ async function handleNotificationButton (interaction: ButtonInteraction, args: s
   logger.debug(`Handled notification button ${interaction.id} from ${interaction.user.id}: ${interaction.customId}`);
 }
 
+// Autocomplete interactions
+
+let transformedCourses: [string, string][] | null = null;
+let transformedProfessors: [string, string][] | null = null;
+let transformedCourseRoles: [string, string][] | null = null;
+let transformedQuestions: [string, string][] | null = null;
+let transformedSessions: [string, string][] | null = null;
+
 async function handleCourseAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
   const course = interaction.options.getFocused().toLowerCase();
 
-  await interaction.respond(
-    getCourses()
-      .filter((c) => c.toLowerCase().includes(course))
-      .map((c) => ({
-        name: c,
-        value: c
-      })).slice(0, 25)
-  );
+  if (transformedCourses === null) {
+    transformedCourses = Object.entries(transformOptions(getCourses().map((c) => c.toLowerCase())));
+  }
+
+  await interaction.respond(createOptions(transformedCourses, course));
 }
 
 async function handleProfessorAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
   const professor = interaction.options.getFocused().toLowerCase();
 
-  await interaction.respond(
-    getStaff()
-      .filter((p) => p.name.toLowerCase().includes(professor))
-      .map((p) => ({
-        name: p.name,
-        value: p.name
-      })).slice(0, 25)
-  );
+  if (transformedProfessors === null) {
+    transformedProfessors = Object.entries(transformOptions(getStaff().map((p) => p.name.toLowerCase())));
+  }
+
+  await interaction.respond(createOptions(transformedProfessors, professor, true));
 }
 
 async function handleCourseRoleAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
-  const course = interaction.options.getFocused().toLowerCase();
+  const courseRole = interaction.options.getFocused().toLowerCase();
 
-  await interaction.respond(
-    Object.entries(getFromRoleConfig('courses'))
-      .filter(([, c]) => c.toLowerCase().includes(course))
-      .map(([, c]) => ({
-        name: c,
-        value: c
-      })).slice(0, 25)
-  );
+  if (transformedCourseRoles === null) {
+    transformedCourseRoles = Object.entries(transformOptions(Object.values(getFromRoleConfig('courses')).map((c) => c.toLowerCase())));
+    logger.info(transformedCourseRoles);
+  }
+
+  await interaction.respond(createOptions(transformedCourseRoles, courseRole));
 }
 
 async function handleQuestionAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
   const question = interaction.options.getFocused().toLowerCase();
 
-  await interaction.respond(
-    getAllQuestions()
-      .filter((q) => q.toLowerCase().includes(question))
-      .map((q) => ({
-        name: q,
-        value: q
-      })).slice(0, 25)
-  );
+  if (transformedQuestions === null) {
+    transformedQuestions = Object.entries(transformOptions(getAllQuestions().map((q) => q.toLowerCase())));
+  }
+
+  await interaction.respond(createOptions(transformedQuestions, question));
 }
 
 async function handleSessionAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
   const session = interaction.options.getFocused().toLowerCase();
 
-  await interaction.respond(
-    Object.keys(getSessions())
-      .filter((s) => s.toLowerCase().includes(session))
-      .map((s) => ({
-        name: s,
-        value: s
-      })).slice(0, 25)
-  );
+  if (transformedSessions === null) {
+    transformedSessions = Object.entries(transformOptions(Object.keys(getSessions()).map((s) => s.toLowerCase())));
+  }
+
+  await interaction.respond(createOptions(transformedSessions, session, true));
 }
