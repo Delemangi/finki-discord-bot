@@ -59,17 +59,17 @@ export function isTextGuildBased (channel: APIInteractionDataResolvedChannel | C
   return channelTypes.includes(channel.type);
 }
 
-export function generatePollID (len: number, characters = '0123456789abcdef') {
-  let id = '';
+export function generatePollID (len: number, characters = '0123456789abcdef'): string {
+  let ID = '';
 
   for (let i = 0; i < len; i++) {
-    id += characters[Math.floor(Math.random() * characters.length)];
+    ID += characters[Math.floor(Math.random() * characters.length)];
   }
 
-  return id;
+  return ID;
 }
 
-export function generatePercentageBar (percentage: number) {
+export function generatePercentageBar (percentage: number): string {
   if (percentage === 0) {
     return '.'.repeat(20);
   }
