@@ -51,7 +51,12 @@ export const data = new SlashCommandBuilder()
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   const course = interaction.options.getString('course');
-  const courserole = interaction.options.getString('courserole');
+  const courseRole = interaction.options.getString('courserole');
+
+  if (course === 'Спорт и здравје' || courseRole === 'Спорт и здравје') {
+    await interaction.editReply('Добар обид.');
+    return;
+  }
 
   if (interaction.options.getSubcommand(true) === 'participants') {
     const information = getParticipants().find((p) => p.course === course);
@@ -104,7 +109,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
 
     await interaction.guild.members.fetch();
 
-    const roleEntry = Object.entries(getFromRoleConfig('courses')).find(([, c]) => c === courserole);
+    const roleEntry = Object.entries(getFromRoleConfig('courses')).find(([, c]) => c === courseRole);
 
     if (roleEntry === undefined) {
       await interaction.editReply('Не постои таков предмет.');
