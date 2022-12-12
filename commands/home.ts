@@ -5,6 +5,7 @@ import {
 import { CommandsDescription } from '../utils/strings.js';
 
 const command = 'home';
+
 export const data = new SlashCommandBuilder()
   .setName(command)
   .setDescription(CommandsDescription[command]);
