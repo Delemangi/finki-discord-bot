@@ -59,13 +59,10 @@ for (const file of files) {
   commands.set(command.data.name, command);
 }
 
-let logTextChannel: TextChannel;
-let colorRoles: Role[] = [];
-let yearRoles: Role[] = [];
-let programRoles: Role[] = [];
-const ignoredButtonIDs = ['help'];
-const quizHelp = 'Добредојдовте во **помош** делот на квизот на ФИНКИ дискорд серверот!\n\n**Како се игра?**\nВо текот на квизот ќе ви бидат поставени 15 прашања\nповрзани со темата и областа на **ФИНКИ** и **серверот**.\nОдговорете на сите 15 прашања и ќе добиете *две награди*.\nЕдна од наградите е сопствена боја на серверот а другата за сега е тајна. :face_with_hand_over_mouth:\n\nВо текот на квизот ќе имате 3 алатки за помош:\n- **50-50**;\n- **друго прашање**;\n- **помош од компјутер**;\n\nОвие алатки ќе може да ги искористите само\nдо 12-то прашање, после тоа **НЕ СЕ ДОЗВОЛЕНИ!**\n\nКвизот нема бесконечно број на обиди, **смеете да го играте само 3 пати!**\n\n*Доколку се случи да изгубите еден обид и мислите\nдека неправедно сте го изгубиле, контактирајте\nнекој од администација за да решите овој проблем.*\nВи посакуваме **среќна** и **забавна** игра! :smile:';
+// Events
+
 let crossposting = true;
+let logTextChannel: TextChannel;
 
 client.on('interactionCreate', async (interaction: BaseInteraction) => {
   if (interaction.isChatInputCommand()) {
@@ -122,6 +119,10 @@ try {
 } catch (error) {
   throw new Error(`Bot failed to login\n${error}`);
 }
+
+// Handle commands
+
+const ignoredButtonIDs = ['help'];
 
 async function handleChatInputCommand (interaction: ChatInputCommandInteraction): Promise<void> {
   const command = commands.get(interaction.commandName);
@@ -288,6 +289,13 @@ async function handleAutocomplete (interaction: AutocompleteInteraction): Promis
     logger.warn(`Received unknown autocomplete interaction ${interaction.id} from ${interaction.user.id}: ${interaction.commandName}, option ${option.name}`);
   }
 }
+
+// Buttons interactions
+
+let colorRoles: Role[] = [];
+let yearRoles: Role[] = [];
+let programRoles: Role[] = [];
+const quizHelp = 'Добредојдовте во **помош** делот на квизот на ФИНКИ дискорд серверот!\n\n**Како се игра?**\nВо текот на квизот ќе ви бидат поставени 15 прашања\nповрзани со темата и областа на **ФИНКИ** и **серверот**.\nОдговорете на сите 15 прашања и ќе добиете *две награди*.\nЕдна од наградите е сопствена боја на серверот а другата за сега е тајна. :face_with_hand_over_mouth:\n\nВо текот на квизот ќе имате 3 алатки за помош:\n- **50-50**;\n- **друго прашање**;\n- **помош од компјутер**;\n\nОвие алатки ќе може да ги искористите само\nдо 12-то прашање, после тоа **НЕ СЕ ДОЗВОЛЕНИ!**\n\nКвизот нема бесконечно број на обиди, **смеете да го играте само 3 пати!**\n\n*Доколку се случи да изгубите еден обид и мислите\nдека неправедно сте го изгубиле, контактирајте\nнекој од администација за да решите овој проблем.*\nВи посакуваме **среќна** и **забавна** игра! :smile:';
 
 async function handleColorButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
   const guild = interaction.guild;
