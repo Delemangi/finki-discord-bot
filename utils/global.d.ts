@@ -91,6 +91,14 @@ declare global {
     title: string;
     votes: number;
   };
+
+  type Classroom = {
+    capacity: number;
+    classroom: number | string;
+    floor: number;
+    location: string;
+    type: string;
+  };
 }
 
 export { };

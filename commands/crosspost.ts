@@ -2,7 +2,7 @@ import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder
 } from 'discord.js';
-import { toggleCrossposting } from '../main.js';
+import { toggleCrossposting } from '../utils/crossposting.js';
 import { CommandsDescription } from '../utils/strings.js';
 
 const command = 'crosspost';

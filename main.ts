@@ -26,6 +26,7 @@ import {
 import Keyv from 'keyv';
 import { client } from './utils/client.js';
 import {
+  getClassrooms,
   getCourses,
   getFromBotConfig,
   getFromRoleConfig,
@@ -33,6 +34,7 @@ import {
   getSessions,
   getStaff
 } from './utils/config.js';
+import { getCrossposting } from './utils/crossposting.js';
 import { getAllQuestions } from './utils/faq.js';
 import {
   checkConfig,
@@ -61,7 +63,6 @@ for (const file of files) {
 
 // Events
 
-let crossposting = true;
 let logTextChannel: TextChannel;
 
 client.on('interactionCreate', async (interaction: BaseInteraction) => {
@@ -86,7 +87,7 @@ client.on('messageCreate', async (message: Message) => {
     return;
   }
 
-  if (!crossposting) {
+  if (!getCrossposting()) {
     logger.warn(`Crossposting is disabled, ignoring message ${message.id} from ${message.author.tag} in ${message.channel.id}`);
     return;
   }
@@ -285,6 +286,8 @@ async function handleAutocomplete (interaction: AutocompleteInteraction): Promis
     await handleQuestionAutocomplete(interaction);
   } else if (option.name === 'session') {
     await handleSessionAutocomplete(interaction);
+  } else if (option.name === 'classroom') {
+    await handleClassroomAutocomplete(interaction);
   } else {
     logger.warn(`Received unknown autocomplete interaction ${interaction.id} from ${interaction.user.id}: ${interaction.commandName}, option ${option.name}`);
   }
@@ -1107,6 +1110,7 @@ let transformedProfessors: [string, string][] | null = null;
 let transformedCourseRoles: [string, string][] | null = null;
 let transformedQuestions: [string, string][] | null = null;
 let transformedSessions: [string, string][] | null = null;
+let transformedClassrooms: [string, string][] | null = null;
 
 async function handleCourseAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
   const course = interaction.options.getFocused().toLowerCase();
@@ -1159,10 +1163,12 @@ async function handleSessionAutocomplete (interaction: AutocompleteInteraction):
   await interaction.respond(createOptions(transformedSessions, session, true));
 }
 
-// Other
+async function handleClassroomAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
+  const classroom = interaction.options.getFocused().toLowerCase();
 
-export function toggleCrossposting (): boolean {
-  crossposting = !crossposting;
+  if (transformedClassrooms === null) {
+    transformedClassrooms = Object.entries(transformOptions(getClassrooms().map((c) => c.classroom.toString().toLowerCase())));
+  }
 
-  return crossposting;
+  await interaction.respond(createOptions(transformedClassrooms, classroom));
 }

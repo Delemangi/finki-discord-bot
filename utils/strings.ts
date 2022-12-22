@@ -1,6 +1,7 @@
 export enum CommandsDescription {
   about = 'Информации за ботот',
   anto = 'Анто факт',
+  classroom = 'Информации за простории',
   'course participants' = 'Број на слушатели на предмет',
   'course prerequisite' = 'Предуслов за предметот',
   'course professors' = 'Наставен кадар на предмет',

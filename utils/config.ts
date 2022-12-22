@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 
 const anto: string[] = JSON.parse(readFileSync('./config/anto.json', 'utf8'));
+const classrooms: Classroom[] = JSON.parse(readFileSync('./config/classrooms.json', 'utf8'));
 const config: BotConfig = JSON.parse(readFileSync('./config/config.json', 'utf8'));
 const courses: string[] = JSON.parse(readFileSync('./config/courses.json', 'utf8'));
 const links: Link[] = JSON.parse(readFileSync('./config/links.json', 'utf8'));
@@ -16,6 +17,10 @@ const staff: Staff[] = JSON.parse(readFileSync('./config/staff.json', 'utf8'));
 
 export function getAnto (): string[] {
   return anto;
+}
+
+export function getClassrooms (): Classroom[] {
+  return classrooms;
 }
 
 export function getFromBotConfig<T extends keyof BotConfig> (key: T): BotConfig[T] {
