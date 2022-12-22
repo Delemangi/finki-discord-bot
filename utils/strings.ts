@@ -13,6 +13,7 @@ export enum CommandsDescription {
   link = 'Превземете линк до одреден сервис',
   'list links' = 'Листа од сите линкови',
   'list questions' = 'Листа од сите прашања',
+  'members' = 'Број на членови на серверот',
   ping = 'Понг!',
   'poll add' = 'Додадете опции во анкета',
   'poll create' = 'Креирај анкета',
