@@ -5,6 +5,7 @@ export enum CommandsDescription {
   'course prerequisite' = 'Предуслов за предметот',
   'course professors' = 'Наставен кадар на предмет',
   'course role' = 'Број на корисници во каналот за предметот',
+  'crosspost' = 'Вклучи или исклучи crossposting',
   embed = 'Креирај "embed"',
   faq = 'Најчесто поставувани прашања',
   help = 'Помош за командите',

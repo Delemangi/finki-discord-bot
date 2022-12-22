@@ -65,6 +65,7 @@ let yearRoles: Role[] = [];
 let programRoles: Role[] = [];
 const ignoredButtonIDs = ['help'];
 const quizHelp = 'Добредојдовте во **помош** делот на квизот на ФИНКИ дискорд серверот!\n\n**Како се игра?**\nВо текот на квизот ќе ви бидат поставени 15 прашања\nповрзани со темата и областа на **ФИНКИ** и **серверот**.\nОдговорете на сите 15 прашања и ќе добиете *две награди*.\nЕдна од наградите е сопствена боја на серверот а другата за сега е тајна. :face_with_hand_over_mouth:\n\nВо текот на квизот ќе имате 3 алатки за помош:\n- **50-50**;\n- **друго прашање**;\n- **помош од компјутер**;\n\nОвие алатки ќе може да ги искористите само\nдо 12-то прашање, после тоа **НЕ СЕ ДОЗВОЛЕНИ!**\n\nКвизот нема бесконечно број на обиди, **смеете да го играте само 3 пати!**\n\n*Доколку се случи да изгубите еден обид и мислите\nдека неправедно сте го изгубиле, контактирајте\nнекој од администација за да решите овој проблем.*\nВи посакуваме **среќна** и **забавна** игра! :smile:';
+let crossposting = true;
 
 client.on('interactionCreate', async (interaction: BaseInteraction) => {
   if (interaction.isChatInputCommand()) {
@@ -85,6 +86,11 @@ client.on('interactionCreate', async (interaction: BaseInteraction) => {
 
 client.on('messageCreate', async (message: Message) => {
   if (crosspostChannels.length === 0 || !crosspostChannels.includes(message.channel.id)) {
+    return;
+  }
+
+  if (!crossposting) {
+    logger.warn(`Crossposting is disabled, ignoring message ${message.id} from ${message.author.tag} in ${message.channel.id}`);
     return;
   }
 
@@ -1143,4 +1149,12 @@ async function handleSessionAutocomplete (interaction: AutocompleteInteraction):
   }
 
   await interaction.respond(createOptions(transformedSessions, session, true));
+}
+
+// Other
+
+export function toggleCrossposting (): boolean {
+  crossposting = !crossposting;
+
+  return crossposting;
 }
