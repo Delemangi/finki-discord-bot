@@ -18,6 +18,10 @@ const channelTypes = [
   ChannelType.PublicThread,
   ChannelType.PrivateThread
 ];
+const wordCapitalizations = [
+  'ИКТ',
+  'ИС'
+];
 
 export function checkConfig (): void {
   const applicationID = getFromBotConfig('applicationID');
@@ -90,5 +94,7 @@ export function createOptions (options: [string, string][], term: string, capita
 }
 
 export function capitalizeWord (word: string, capitalizeAll: boolean = false): string {
+  word = word.split(' ').map((w) => wordCapitalizations.includes(w.toUpperCase()) ? w.toUpperCase() : w).join(' ');
+
   return capitalizeAll ? word.split(' ').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : word.charAt(0).toUpperCase() + word.slice(1);
 }
