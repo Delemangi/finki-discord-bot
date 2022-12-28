@@ -1113,62 +1113,49 @@ let transformedSessions: [string, string][] | null = null;
 let transformedClassrooms: [string, string][] | null = null;
 
 async function handleCourseAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
-  const course = interaction.options.getFocused().toLowerCase();
-
   if (transformedCourses === null) {
-    transformedCourses = Object.entries(transformOptions(getCourses().map((c) => c.toLowerCase())));
+    transformedCourses = Object.entries(transformOptions(getCourses()));
   }
 
-  await interaction.respond(createOptions(transformedCourses, course));
+  await interaction.respond(createOptions(transformedCourses, interaction.options.getFocused()));
 }
 
 async function handleProfessorAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
-  const professor = interaction.options.getFocused().toLowerCase();
-
   if (transformedProfessors === null) {
-    transformedProfessors = Object.entries(transformOptions(getStaff().map((p) => p.name.toLowerCase())));
+    transformedProfessors = Object.entries(transformOptions(getStaff().map((p) => p.name)));
   }
 
-  await interaction.respond(createOptions(transformedProfessors, professor, true));
+  await interaction.respond(createOptions(transformedProfessors, interaction.options.getFocused()));
 }
 
 async function handleCourseRoleAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
-  const courseRole = interaction.options.getFocused().toLowerCase();
-
   if (transformedCourseRoles === null) {
-    transformedCourseRoles = Object.entries(transformOptions(Object.values(getFromRoleConfig('courses')).map((c) => c.toLowerCase())));
-    logger.info(transformedCourseRoles);
+    transformedCourseRoles = Object.entries(transformOptions(Object.values(getFromRoleConfig('courses'))));
   }
 
-  await interaction.respond(createOptions(transformedCourseRoles, courseRole));
+  await interaction.respond(createOptions(transformedCourseRoles, interaction.options.getFocused()));
 }
 
 async function handleQuestionAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
-  const question = interaction.options.getFocused().toLowerCase();
-
   if (transformedQuestions === null) {
-    transformedQuestions = Object.entries(transformOptions(getAllQuestions().map((q) => q.toLowerCase())));
+    transformedQuestions = Object.entries(transformOptions(getAllQuestions()));
   }
 
-  await interaction.respond(createOptions(transformedQuestions, question));
+  await interaction.respond(createOptions(transformedQuestions, interaction.options.getFocused()));
 }
 
 async function handleSessionAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
-  const session = interaction.options.getFocused().toLowerCase();
-
   if (transformedSessions === null) {
-    transformedSessions = Object.entries(transformOptions(Object.keys(getSessions()).map((s) => s.toLowerCase())));
+    transformedSessions = Object.entries(transformOptions(Object.keys(getSessions())));
   }
 
-  await interaction.respond(createOptions(transformedSessions, session, true));
+  await interaction.respond(createOptions(transformedSessions, interaction.options.getFocused()));
 }
 
 async function handleClassroomAutocomplete (interaction: AutocompleteInteraction): Promise<void> {
-  const classroom = interaction.options.getFocused().toLowerCase();
-
   if (transformedClassrooms === null) {
-    transformedClassrooms = Object.entries(transformOptions(getClassrooms().map((c) => c.classroom.toString().toLowerCase())));
+    transformedClassrooms = Object.entries(transformOptions(getClassrooms().map((c) => c.classroom.toString())));
   }
 
-  await interaction.respond(createOptions(transformedClassrooms, classroom));
+  await interaction.respond(createOptions(transformedClassrooms, interaction.options.getFocused()));
 }

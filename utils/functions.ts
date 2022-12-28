@@ -18,10 +18,6 @@ const channelTypes = [
   ChannelType.PublicThread,
   ChannelType.PrivateThread
 ];
-const wordCapitalizations = [
-  'ИКТ',
-  'ИС'
-];
 
 export function checkConfig (): void {
   const applicationID = getFromBotConfig('applicationID');
@@ -82,19 +78,13 @@ export function generatePercentageBar (percentage: number): string {
   return pb + '.'.repeat(Math.max(0, 20 - pb.length));
 }
 
-export function createOptions (options: [string, string][], term: string, capitalizeAll: boolean = false): { name: string; value: string }[] {
+export function createOptions (options: [string, string][], term: string): { name: string; value: string }[] {
   return options
-    .filter(([i]) => i.includes(term))
+    .filter(([i]) => i.toLowerCase().includes(term.toLowerCase()))
     .map(([, c]) => ({
-      name: capitalizeWord(c, capitalizeAll),
-      value: capitalizeWord(c, capitalizeAll)
+      name: c,
+      value: c
     }))
     .filter((e, i, a) => a.findIndex((t) => t.name === e.name) === i)
     .slice(0, 25);
-}
-
-export function capitalizeWord (word: string, capitalizeAll: boolean = false): string {
-  word = word.split(' ').map((w) => wordCapitalizations.includes(w.toUpperCase()) ? w.toUpperCase() : w).join(' ');
-
-  return capitalizeAll ? word.split(' ').map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' ') : word.charAt(0).toUpperCase() + word.slice(1);
 }

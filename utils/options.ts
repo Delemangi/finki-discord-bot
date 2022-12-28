@@ -1,35 +1,66 @@
 const transformations: { [index: string]: string[] } = {
   а: ['a'],
+  А: ['A'],
   б: ['b'],
+  Б: ['B'],
   в: ['v'],
+  В: ['V'],
   г: ['g'],
+  Г: ['G'],
   д: ['d'],
+  Д: ['D'],
   е: ['e'],
+  Е: ['E'],
   ж: ['z', 'zh'],
+  Ж: ['Z', 'ZH'],
   з: ['z'],
+  З: ['Z'],
   и: ['i'],
+  И: ['I'],
   к: ['k'],
+  К: ['K'],
   л: ['l'],
+  Л: ['L'],
   м: ['m'],
+  М: ['M'],
   н: ['n'],
+  Н: ['N'],
   о: ['o'],
+  О: ['O'],
   п: ['p'],
+  П: ['P'],
   р: ['r'],
+  Р: ['R'],
   с: ['s'],
+  С: ['S'],
   т: ['t'],
+  Т: ['T'],
   у: ['u'],
+  У: ['U'],
   ф: ['f'],
+  Ф: ['F'],
   х: ['h'],
+  Х: ['H'],
   ц: ['c'],
+  Ц: ['C'],
   ч: ['c', 'ch'],
+  Ч: ['C', 'CH'],
   ш: ['s', 'sh'],
+  Ш: ['S', 'SH'],
   ѓ: ['g', 'gj'],
+  Ѓ: ['G', 'GJ'],
   ѕ: ['z', 'dz'],
+  Ѕ: ['Z', 'DZ'],
   ј: ['j'],
+  Ј: ['J'],
   љ: ['l', 'lj'],
+  Љ: ['L', 'LJ'],
   њ: ['n', 'nj'],
+  Њ: ['N', 'NJ'],
   ќ: ['k', 'kj'],
-  џ: ['d', 'dz', 'dzh', 'dj']
+  Ќ: ['K', 'KJ'],
+  џ: ['d', 'dz', 'dzh', 'dj'],
+  Џ: ['D', 'DZ', 'DZH', 'DJ']
 };
 
 export function transformOptions (options: string[]): { [index: string]: string } {
@@ -39,6 +70,8 @@ export function transformOptions (options: string[]): { [index: string]: string 
     for (const transformedOption of transform(option)) {
       results[transformedOption] = option;
     }
+
+    results[option] = option;
   }
 
   return results;
