@@ -25,12 +25,12 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle('Questions')
-      .setDescription(getAllQuestions().map((question, index) => `${index + 1}. ${question}`).join('\n\n'));
+      .setDescription(getAllQuestions().map((question, index) => `${index + 1}. ${question}`).join('\n'));
   } else {
     embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle('Links')
-      .setDescription(getAllLinks().map((link, index) => `${index + 1}. ${link}`).join('\n\n'));
+      .setDescription(getAllLinks().map((link, index) => `${index + 1}. ${link}`).join('\n'));
   }
 
   await interaction.editReply({ embeds: [embed] });
