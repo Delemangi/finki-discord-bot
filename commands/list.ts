@@ -24,12 +24,12 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   if (interaction.options.getSubcommand() === 'questions') {
     embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
-      .setTitle('Questions')
+      .setTitle('Прашања')
       .setDescription(getAllQuestions().map((question, index) => `${index + 1}. ${question}`).join('\n'));
   } else {
     embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
-      .setTitle('Links')
+      .setTitle('Линкови')
       .setDescription(getAllLinks().map((link, index) => `${index + 1}. ${link}`).join('\n'));
   }
 

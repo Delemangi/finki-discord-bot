@@ -20,7 +20,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   const colorRoles = getFromRoleConfig('color');
 
   if (!isTextGuildBased(interaction.channel) || guild === null) {
-    await interaction.editReply('You cannot use this command here.');
+    await interaction.editReply('Оваа команда се повикува само во сервер.');
     return;
   }
 

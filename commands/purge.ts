@@ -21,24 +21,24 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   const channel = interaction.channel;
 
   if (!isTextGuildBased(channel) || interaction.guild === null) {
-    await interaction.editReply('You cannot use this command here.');
+    await interaction.editReply('Оваа команда се повикува само во сервер.');
     return;
   }
 
   const count = interaction.options.getNumber('count') ?? 0;
 
   if (count < 1) {
-    await interaction.editReply('You must specify a positive number of messages to purge.');
+    await interaction.editReply('Невалиден број на пораки за бришење.');
     return;
   }
 
   const permissions = interaction.member?.permissions as PermissionsBitField;
   if (!permissions.has(PermissionsBitField.Flags.Administrator) && !permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-    await interaction.editReply('You cannot run this command.');
+    await interaction.editReply('Оваа команда е само за администратори.');
     return;
   }
 
-  await interaction.editReply(`Deleting the last ${count} message(s)...`);
+  await interaction.editReply(`Бришам ${count} пораки...`);
   await setTimeout(1_000);
   await interaction.deleteReply();
   await channel?.bulkDelete(count);

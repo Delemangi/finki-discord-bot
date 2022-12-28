@@ -18,7 +18,7 @@ export async function execute (interaction: UserContextMenuCommandInteraction): 
   const member = interaction.targetMember as GuildMember;
 
   if (!isTextGuildBased(interaction.channel) || interaction.guild === null) {
-    await interaction.editReply('You cannot use this command here.');
+    await interaction.editReply('Оваа команда се повикува само во сервер.');
     return;
   }
 
@@ -28,16 +28,16 @@ export async function execute (interaction: UserContextMenuCommandInteraction): 
       iconURL: member.displayAvatarURL(),
       name: member.user.tag
     })
-    .setTitle('User Info')
+    .setTitle('Информации за корисникот')
     .addFields(
       {
         inline: true,
-        name: 'Created At',
+        name: 'Регистриран',
         value: time(member.user.createdAt, TimestampStyles.RelativeTime)
       },
       {
         inline: true,
-        name: 'Joined At',
+        name: 'Додаден во серверот',
         value: time(member.joinedAt ?? new Date(), TimestampStyles.RelativeTime)
       }
     );

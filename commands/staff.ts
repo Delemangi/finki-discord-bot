@@ -25,7 +25,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   const information = getStaff().find((staff) => staff.name.toLowerCase() === professor.toLowerCase());
 
   if (information === undefined) {
-    await interaction.editReply('No such professor exists.');
+    await interaction.editReply('Не постои таков професор.');
     return;
   }
 

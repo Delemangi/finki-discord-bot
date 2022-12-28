@@ -12,5 +12,5 @@ export const data = new SlashCommandBuilder()
   .setDescription(CommandsDescription[command]);
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
-  await interaction.editReply(`Pong! ${client.ws.ping.toString()} ms`);
+  await interaction.editReply(`Понг! ${client.ws.ping.toString()} ms`);
 }

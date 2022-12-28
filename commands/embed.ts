@@ -31,7 +31,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   const timestamp = interaction.options.getBoolean('timestamp') ?? false;
 
   if (!isTextGuildBased(channel)) {
-    await interaction.editReply('Invalid channel provided.');
+    await interaction.editReply('Невалиден канал.');
     return;
   }
 
@@ -49,17 +49,17 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   } catch (error) {
     logger.error(`Failed to set color\n${error}`);
 
-    await interaction.editReply('Invalid color provided.');
+    await interaction.editReply('Невалидна боја.');
     return;
   }
 
   try {
     await channel.send({ embeds: [embed] });
 
-    await interaction.editReply('Embed sent.');
+    await interaction.editReply('Креиран е embed.');
   } catch (error) {
     logger.error(`Error sending embed\n${error}`);
 
-    await interaction.editReply('Couldn\'t send embed..');
+    await interaction.editReply('Креирањето embed беше неуспешно.');
   }
 }

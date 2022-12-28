@@ -110,7 +110,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
 
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
-    .setTitle('Commands')
+    .setTitle('Команди')
     .addFields(...Object.entries(commands).slice(0, commandsPerPage).map(([name, description]) => ({
       name: `</${name}:${client.application?.commands.cache.find((c) => c.name === name.split(' ').at(0))?.id}>`,
       value: description
@@ -165,7 +165,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
 
     const nextEmbed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
-      .setTitle('Commands')
+      .setTitle('Команди')
       .addFields(...Object.entries(commands).slice(commandsPerPage * page, commandsPerPage * (page + 1)).map(([name, description]) => ({
         name: `</${name}:${client.application?.commands.cache.find((c) => c.name === name.split(' ').at(0))?.id}>`,
         value: description
