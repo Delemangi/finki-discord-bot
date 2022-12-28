@@ -53,13 +53,13 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   const course = interaction.options.getString('course');
   const courseRole = interaction.options.getString('courserole');
 
-  if (course === 'Спорт и здравје' || courseRole === 'Спорт и здравје') {
+  if (course?.toLowerCase() === 'спорт и здравје' || courseRole?.toLowerCase() === 'спорт и здравје') {
     await interaction.editReply('Добар обид.');
     return;
   }
 
   if (interaction.options.getSubcommand(true) === 'participants') {
-    const information = getParticipants().find((p) => p.course === course);
+    const information = getParticipants().find((p) => p.course.toLowerCase() === course?.toLowerCase());
 
     if (information === undefined) {
       await interaction.editReply('Не постои таков предмет.');
@@ -68,7 +68,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
 
     const embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
-      .setTitle(course)
+      .setTitle(information.course)
       .addFields(...Object.entries(information).filter(([year]) => year !== 'course').map(([year, participants]) => ({
         inline: true,
         name: year,
@@ -78,7 +78,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
 
     await interaction.editReply({ embeds: [embed] });
   } else if (interaction.options.getSubcommand(true) === 'professors') {
-    const information = getProfessors().find((p) => p.course === course);
+    const information = getProfessors().find((p) => p.course.toLowerCase() === course?.toLowerCase());
 
     if (information === undefined) {
       await interaction.editReply('Не постои таков предмет.');
@@ -87,7 +87,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
 
     const embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
-      .setTitle(course)
+      .setTitle(information.course)
       .addFields({
         inline: true,
         name: 'Професори',
@@ -109,14 +109,14 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
 
     await interaction.guild.members.fetch();
 
-    const roleEntry = Object.entries(getFromRoleConfig('courses')).find(([, c]) => c === courseRole);
+    const roleEntry = Object.entries(getFromRoleConfig('courses')).find(([, c]) => c.toLowerCase() === courseRole?.toLowerCase());
 
     if (roleEntry === undefined) {
       await interaction.editReply('Не постои таков предмет.');
       return;
     }
 
-    const role = interaction.guild.roles.cache.find((r) => r.name === roleEntry[0]);
+    const role = interaction.guild.roles.cache.find((r) => r.name.toLowerCase() === roleEntry[0].toLowerCase());
 
     if (role === undefined) {
       await interaction.editReply('Не постои таков предмет.');
@@ -128,7 +128,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       content: `${roleMention(role.id)}: ${role.members.size}`
     });
   } else if (interaction.options.getSubcommand(true) === 'prerequisite') {
-    const information = getPrerequisites().find((p) => p.course === course);
+    const information = getPrerequisites().find((p) => p.course.toLowerCase() === course?.toLowerCase());
 
     if (information === undefined) {
       await interaction.editReply('Не постои таков предмет.');
@@ -137,7 +137,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
 
     const embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
-      .setTitle(course)
+      .setTitle(information.course)
       .addFields({
         inline: true,
         name: 'Предуслови',
@@ -148,4 +148,3 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     await interaction.editReply({ embeds: [embed] });
   }
 }
-

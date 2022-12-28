@@ -16,7 +16,7 @@ export function getAllQuestions (): string[] {
 }
 
 export function getQuestion (name: string): Question | undefined {
-  return questions.find((q) => q.question === name);
+  return questions.find((q) => q.question.toLowerCase() === name.toLowerCase());
 }
 
 export function getEmbedFromQuestion (question: Question): EmbedBuilder {

@@ -31,7 +31,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
 
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
-    .setTitle(classroom.toUpperCase())
+    .setTitle(information.classroom.toString())
     .addFields(
       {
         name: 'Тип',

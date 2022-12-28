@@ -18,7 +18,7 @@ export const data = new SlashCommandBuilder()
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   const session = interaction.options.getString('session', true);
-  const information = getSessions()[session];
+  const information = Object.entries(getSessions()).find(([key]) => key.toLowerCase() === session.toLowerCase());
 
   if (information === undefined) {
     await interaction.editReply('Не постои таа сесија.');
@@ -26,7 +26,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   }
 
   await interaction.editReply({
-    content: `Сесија: ${session}`,
-    files: [`./sessions/${information}`]
+    content: `Сесија: ${information.at(0)}`,
+    files: [`./sessions/${information.at(-1)}`]
   });
 }

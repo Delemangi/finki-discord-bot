@@ -22,7 +22,7 @@ export const data = new SlashCommandBuilder()
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   const professor = interaction.options.getString('professor', true);
-  const information = getStaff().find((staff) => staff.name === professor);
+  const information = getStaff().find((staff) => staff.name.toLowerCase() === professor.toLowerCase());
 
   if (information === undefined) {
     await interaction.editReply('No such professor exists.');
@@ -31,7 +31,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
 
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
-    .setTitle(professor)
+    .setTitle(information.name)
     .addFields(
       {
         name: 'Титула',

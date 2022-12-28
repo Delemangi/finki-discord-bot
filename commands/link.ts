@@ -24,6 +24,12 @@ export const data = new SlashCommandBuilder()
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
   const name = interaction.options.getString('name') ?? '';
   const link = getLink(name);
+
+  if (link === undefined) {
+    await interaction.editReply('Не постои таков линк.');
+    return;
+  }
+
   const embed = getEmbedFromLink(link);
   const components = getComponentsFromLink(link);
 

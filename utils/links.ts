@@ -22,11 +22,8 @@ export function getAllOptions (): Option[] {
   }));
 }
 
-export function getLink (name: string): Link {
-  return links.find((link) => link.name === name) ?? {
-    link: 'No link found',
-    name: 'No link found'
-  };
+export function getLink (name: string): Link | undefined {
+  return links.find((link) => link.name.toLowerCase() === name.toLowerCase());
 }
 
 export function getEmbedFromLink (link: Link): EmbedBuilder {
