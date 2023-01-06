@@ -323,7 +323,7 @@ async function handleColorButton (interaction: ButtonInteraction, args: string[]
   const member = interaction.member;
 
   if (role === undefined) {
-    logger.warn(`The role for button interaction ${interaction.id}: ${interaction.customId} was not found `);
+    logger.warn(`The role for button interaction ${interaction.id}: ${interaction.customId} was not found`);
     return;
   }
 
