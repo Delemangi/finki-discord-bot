@@ -789,7 +789,8 @@ async function handleQuizStartButton (interaction: ButtonInteraction, args: stri
   }
 
   const quizChannel = await interaction.guild?.channels.create({
-    name: `quiz-${interaction.user.username}${interaction.user.discriminator}`,
+    name: `quiz-${interaction.user.tag}`,
+    parent: '813137952900513892',
     permissionOverwrites: [
       {
         deny: [PermissionsBitField.Flags.ViewChannel, PermissionsBitField.Flags.SendMessages],
