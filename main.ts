@@ -298,7 +298,7 @@ async function handleAutocomplete (interaction: AutocompleteInteraction): Promis
 let colorRoles: Role[] = [];
 let yearRoles: Role[] = [];
 let programRoles: Role[] = [];
-const quizHelp = 'Добредојдовте во **помош** делот на квизот на ФИНКИ дискорд серверот!\n\n**Како се игра?**\nВо текот на квизот ќе ви бидат поставени 15 прашања\nповрзани со темата и областа на **ФИНКИ** и **серверот**.\nОдговорете на сите 15 прашања и ќе добиете *две награди*.\nЕдна од наградите е сопствена боја на серверот а другата за сега е тајна. :face_with_hand_over_mouth:\n\nВо текот на квизот ќе имате 3 алатки за помош:\n- **50-50**;\n- **друго прашање**;\n- **помош од компјутер**;\n\nОвие алатки ќе може да ги искористите само\nдо 12-то прашање, после тоа **НЕ СЕ ДОЗВОЛЕНИ!**\n\nКвизот нема бесконечно број на обиди, **смеете да го играте само 3 пати!**\n\n*Доколку се случи да изгубите еден обид и мислите\nдека неправедно сте го изгубиле, контактирајте\nнекој од администација за да решите овој проблем.*\nВи посакуваме **среќна** и **забавна** игра! :smile:';
+const quizHelp = 'Добредојдовте во **помош** делот на квизот!\n\n**Како се игра?**\nВо текот на квизот ќе ви бидат поставени 15 прашања поврзани со темата и областа на **ФИНКИ** и **серверот**.\nОдговорете на сите 15 прашања и ќе добиете *две награди*.\nЕдна од наградите е сопствена боја на серверот, а другата за сега е тајна. :face_with_hand_over_mouth:\n\nВо текот на квизот ќе имате 3 алатки за помош:\n- **50 - 50**\n- **друго прашање**\n- **помош од компјутер**\n\nОвие алатки ќе може да ги искористите само до 12-тото прашање, после тоа **НЕ СЕ ДОЗВОЛЕНИ!**\n\nКвизот нема бесконечен број на обиди, **смеете да го играте само 3 пати!**\n\n*Доколку се случи да изгубите еден обид и мислите дека неправедно сте го изгубиле, контактирајте нè за да решиме овој проблем.*\nВи посакуваме **среќна** и **забавна** игра! :smile:';
 
 async function handleColorButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
   const guild = interaction.guild;
@@ -753,7 +753,7 @@ async function handlePollStatsButton (interaction: ButtonInteraction, args: stri
 async function handleQuizStartButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
   if (interaction.user.id !== args[0]) {
     await interaction.reply({
-      content: `${userMention(interaction.user.id)}, вие не го започнавте квизот!`,
+      content: 'Квизот не е ваш!',
       ephemeral: true
     });
     return;
@@ -769,8 +769,8 @@ async function handleQuizStartButton (interaction: ButtonInteraction, args: stri
       .setColor(getFromBotConfig('color'))
       .setTitle('Кој сака да биде морален победник?')
       .setDescription(quizHelp)
-      .setTimestamp()
-      .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2022' });
+      .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2022' })
+      .setTimestamp();
 
     await interaction.reply({
       embeds: [embed],
@@ -779,9 +779,9 @@ async function handleQuizStartButton (interaction: ButtonInteraction, args: stri
     return;
   }
 
-  if (interaction.guild?.channels.cache.find((c) => c.name === `quiz-${interaction.user.username}${interaction.user.discriminator}`)) {
+  if (interaction.guild?.channels.cache.find((c) => c.name === `quiz-${interaction.user.tag}`)) {
     await interaction.reply({
-      content: `${userMention(interaction.user.id)}, веќе имате отворено соба за квиз!`,
+      content: 'Веќе имате друг квиз отворено!',
       ephemeral: true
     });
 
@@ -808,8 +808,8 @@ async function handleQuizStartButton (interaction: ButtonInteraction, args: stri
     .setColor(getFromBotConfig('color'))
     .setTitle('Кој сака да биде морален победник?')
     .setDescription('**Започни?**')
-    .setTimestamp()
-    .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2022' });
+    .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2022' })
+    .setTimestamp();
 
   const components: ActionRowBuilder<ButtonBuilder>[] = [];
   const row = new ActionRowBuilder<ButtonBuilder>();
@@ -835,7 +835,7 @@ async function handleQuizStartButton (interaction: ButtonInteraction, args: stri
   });
   await interaction.message.delete();
   await interaction.reply({
-    content: `${userMention(interaction.user.id)}, направена е соба за вас. Со среќа! :smile:`,
+    content: 'Направен е канал за вас. Со среќа! :smile:',
     ephemeral: true
   });
 }
@@ -843,7 +843,7 @@ async function handleQuizStartButton (interaction: ButtonInteraction, args: stri
 async function handleQuizGameButton (interaction: ButtonInteraction, args: string[]): Promise<void> {
   if (interaction.user.id !== args[0]) {
     await interaction.reply({
-      content: `${userMention(interaction.user.id)}, вие не го започнавте квизот!`,
+      content: 'Квизот не е ваш!',
       ephemeral: true
     });
     return;
@@ -864,7 +864,7 @@ async function handleQuizGameButton (interaction: ButtonInteraction, args: strin
     if (args[2] !== args[3]) {
       await interaction.message.delete();
       await interaction.channel?.send({
-        content: `${userMention(interaction.user.id)}, не го поминавте квизот... Повеќе среќа следен пат.`
+        content: 'Не го поминавте квизот... Повеќе среќа следен пат.'
       });
       await setTimeout(60_000);
       await interaction.channel?.delete();
@@ -874,7 +874,7 @@ async function handleQuizGameButton (interaction: ButtonInteraction, args: strin
     if (checkLevel + 1 >= 15) {
       await interaction.message.delete();
       await interaction.channel?.send({
-        content: `${userMention(interaction.user.id)}, честитки! :grin:`
+        content: 'Честитки! :grin:'
       });
       await setTimeout(60_000);
       await interaction.channel?.delete();
@@ -890,7 +890,7 @@ async function handleQuizGameButton (interaction: ButtonInteraction, args: strin
   const quizEmbed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle('Кој сака да биде морален победник?')
-    .setDescription(codeBlock(`Question No. ${lvl + 1}\n\nQ: ${currentQuestion.question}\n${currentQuestion.answers.map((q: string, index: number) => `${index + 1}. ${q}`).join('\n')}`))
+    .setDescription(codeBlock(`Прашање бр. ${lvl + 1}\n\nQ: ${currentQuestion.question}\n${currentQuestion.answers.map((q: string, index: number) => `${index + 1}. ${q}`).join('\n')}`))
     .setTimestamp()
     .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2022' });
 

@@ -4,8 +4,7 @@ import {
   EmbedBuilder,
   ActionRowBuilder,
   ButtonBuilder,
-  ButtonStyle,
-  userMention
+  ButtonStyle
 } from 'discord.js';
 import { getFromBotConfig } from '../utils/config.js';
 import { CommandsDescription } from '../utils/strings.js';
@@ -42,13 +41,12 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle('Кој сака да биде морален победник?')
-    .setDescription('Добредојдовте во квизот на ФИНКИ Discord серверот.\nДали сакате да започнете?')
+    .setDescription('Добредојдовте на квизот.\nДали сакате да започнете?')
     .setTimestamp()
     .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2022' });
 
   await interaction.editReply({
     components,
-    content: userMention(interaction.user.id),
     embeds: [embed]
   });
 }
