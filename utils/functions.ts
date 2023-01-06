@@ -8,7 +8,10 @@ import {
   ChannelType,
   type Channel
 } from 'discord.js';
-import { getFromBotConfig } from './config.js';
+import {
+  getFromBotConfig,
+  getStaff
+} from './config.js';
 
 const channelTypes = [
   ChannelType.GuildText,
@@ -87,4 +90,16 @@ export function createOptions (options: [string, string][], term: string): { nam
     }))
     .filter((e, i, a) => a.findIndex((t) => t.name === e.name) === i)
     .slice(0, 25);
+}
+
+export function linkProfessors (professors: string): string {
+  if (professors === '') {
+    return '?';
+  }
+
+  return professors
+    .split('\n')
+    .map((professor) => [professor, getStaff().find((p) => professor.includes(p.name))?.finki])
+    .map(([professor, finki]) => finki ? `[${professor}](${finki})` : professor)
+    .join('\n');
 }

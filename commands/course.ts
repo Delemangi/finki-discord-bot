@@ -11,6 +11,7 @@ import {
   getPrerequisites,
   getProfessors
 } from '../utils/config.js';
+import { linkProfessors } from '../utils/functions.js';
 import { CommandsDescription } from '../utils/strings.js';
 
 export const data = new SlashCommandBuilder()
@@ -91,12 +92,12 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       .addFields({
         inline: true,
         name: 'Професори',
-        value: information.professors === '' ? '?' : information.professors ?? '?'
+        value: linkProfessors(information.professors)
       },
       {
         inline: true,
         name: 'Асистенти',
-        value: information.assistants === '' ? '?' : information.assistants ?? '?'
+        value: linkProfessors(information.assistants)
       })
       .setTimestamp();
 
