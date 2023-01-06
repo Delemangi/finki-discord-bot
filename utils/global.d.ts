@@ -47,7 +47,6 @@ declare global {
 
   type Staff = {
     courses: string;
-    courses: string;
     email: string;
     finki: string;
     konsultacii: string;
