@@ -9,6 +9,7 @@ import {
 } from 'discord.js';
 import { client } from '../utils/client.js';
 import { getFromBotConfig } from '../utils/config.js';
+import { commandMention } from '../utils/functions.js';
 import { logger } from '../utils/logger.js';
 import { CommandsDescription as commands } from '../utils/strings.js';
 
@@ -112,7 +113,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     .setColor(getFromBotConfig('color'))
     .setTitle('Команди')
     .addFields(...Object.entries(commands).slice(0, commandsPerPage).map(([name, description]) => ({
-      name: `</${name}:${client.application?.commands.cache.find((c) => c.name === name.split(' ').at(0))?.id}>`,
+      name: commandMention(name),
       value: description
     })))
     .setFooter({ text: `1 / ${pages}` });
@@ -167,7 +168,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       .setColor(getFromBotConfig('color'))
       .setTitle('Команди')
       .addFields(...Object.entries(commands).slice(commandsPerPage * page, commandsPerPage * (page + 1)).map(([name, description]) => ({
-        name: `</${name}:${client.application?.commands.cache.find((c) => c.name === name.split(' ').at(0))?.id}>`,
+        name: commandMention(name),
         value: description
       })))
       .setFooter({ text: `${page + 1} / ${pages}` });

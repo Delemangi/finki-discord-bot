@@ -8,6 +8,7 @@ import {
   ChannelType,
   type Channel
 } from 'discord.js';
+import { client } from './client.js';
 import {
   getFromBotConfig,
   getStaff
@@ -102,4 +103,18 @@ export function linkProfessors (professors: string): string {
     .map((professor) => [professor, getStaff().find((p) => professor.includes(p.name))?.finki])
     .map(([professor, finki]) => finki ? `[${professor}](${finki})` : professor)
     .join('\n');
+}
+
+export function commandMention (name: string | undefined): string {
+  if (name === undefined) {
+    return '';
+  }
+
+  const command = client.application?.commands.cache.find((c) => c.name === (name?.includes(' ') ? name.split(' ').at(0) : name));
+
+  if (command === undefined) {
+    return name;
+  }
+
+  return `</${name}:${command.id}>`;
 }

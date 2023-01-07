@@ -13,7 +13,8 @@ import Keyv from 'keyv';
 import { getFromBotConfig } from '../utils/config.js';
 import {
   generatePollID,
-  generatePercentageBar
+  generatePercentageBar,
+  commandMention
 } from '../utils/functions.js';
 import { CommandsDescription } from '../utils/strings.js';
 
@@ -337,7 +338,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       votes: poll.votes
     });
 
-    await interaction.editReply('Успешно додадовте опции во анкетата. Користете **/poll show** за да ги видите промените.');
+    await interaction.editReply(`Успешно додадовте опции во анкетата. Користете ${commandMention('poll show')} за да ги видите промените.`);
   } else if (interaction.options.getSubcommand() === 'remove') {
     const id = interaction.options.getString('id', true);
     const options = interaction.options.getString('options', true).split(',').filter(Boolean).map((option) => option.trim()).map(Number).sort((a, b) => b - a);
@@ -391,7 +392,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
       votes: newVotes
     });
 
-    await interaction.editReply('Успешно тргнавте опции од анкетата. Користете **/poll show** за да ги видите промените.');
+    await interaction.editReply(`Успешно тргнавте опции од анкетата. Користете ${commandMention('poll show')} за да ги видите промените.`);
   } else if (interaction.options.getSubcommand() === 'delete') {
     const id = interaction.options.getString('id', true);
     const poll: Poll = await keyv.get(id);
