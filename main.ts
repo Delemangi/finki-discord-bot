@@ -779,7 +779,7 @@ async function handleQuizStartButton (interaction: ButtonInteraction, args: stri
     return;
   }
 
-  if (interaction.guild?.channels.cache.find((c) => c.name === `quiz-${interaction.user.tag}`)) {
+  if (interaction.guild?.channels.cache.find((c) => c.name === `🎲︱квиз-${interaction.user.tag}`)) {
     await interaction.reply({
       content: 'Веќе имате друг квиз отворено!',
       ephemeral: true
@@ -789,7 +789,7 @@ async function handleQuizStartButton (interaction: ButtonInteraction, args: stri
   }
 
   const quizChannel = await interaction.guild?.channels.create({
-    name: `quiz-${interaction.user.tag}`,
+    name: `🎲︱квиз-${interaction.user.tag}`,
     parent: '813137952900513892',
     permissionOverwrites: [
       {
