@@ -696,8 +696,8 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
       },
       {
         inline: true,
-        name: 'Public',
-        value: String(updatedPoll.isPublic)
+        name: 'Јавна анкета',
+        value: updatedPoll.isPublic ? 'Да' : 'Не'
       }
     )
     .setTimestamp()
@@ -731,17 +731,17 @@ async function handlePollStatsButton (interaction: ButtonInteraction, args: stri
   if (pollVoters.length > 0) {
     embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
-      .setTitle('Poll Statistics')
-      .setDescription(`People who voted for option ${pollOption + 1}:\n${codeBlock(pollVoters.join('\n'))}`)
+      .setTitle('Резултати од анкета')
+      .setDescription(`Гласачи за ${pollOption + 1}:\n${codeBlock(pollVoters.join('\n'))}`)
       .setTimestamp()
-      .setFooter({ text: `Poll ID: ${pollId}` });
+      .setFooter({ text: `ID: ${pollId}` });
   } else {
     embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
-      .setTitle('Poll Statistics')
-      .setDescription(`No one voted for option ${pollOption + 1}`)
+      .setTitle('Резултати од анкета')
+      .setDescription(`Никој не гласал за ${pollOption + 1}`)
       .setTimestamp()
-      .setFooter({ text: `Poll ID: ${pollId}` });
+      .setFooter({ text: `ID: ${pollId}` });
   }
 
   await interaction.reply({

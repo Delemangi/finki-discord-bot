@@ -144,8 +144,8 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
           },
           {
             inline: true,
-            name: 'Public',
-            value: String(isPublic)
+            name: 'Јавна анкета',
+            value: isPublic ? 'Да' : 'Не'
           }
         )
         .setTimestamp()
@@ -260,8 +260,8 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
         },
         {
           inline: true,
-          name: 'Public',
-          value: String(poll.isPublic)
+          name: 'Јавна анкета',
+          value: poll.isPublic ? 'Да' : 'Не'
         }
       )
       .setTimestamp()
@@ -282,7 +282,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     }
 
     if (poll.owner !== interaction.user.id) {
-      await interaction.editReply('Вие НЕ ја започнавте оваа анкета!');
+      await interaction.editReply('Ова не е ваша анкета.');
       return;
     }
 
@@ -308,12 +308,12 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     }
 
     if (poll.isPublic === false && poll.owner !== interaction.user.id) {
-      await interaction.editReply('Оваа анкета не е public и вие НЕ ја започнавте оваа анкета што значи не може да додавате елементи во истата!');
+      await interaction.editReply('Ова не е ваша анкета.');
       return;
     }
 
     if (options.length < 1) {
-      await interaction.editReply('Мора да имате барем една опција во аргументот **options!');
+      await interaction.editReply('Мора да дадете барем една опција!');
       return;
     }
 
@@ -349,7 +349,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     }
 
     if (poll.owner !== interaction.user.id) {
-      await interaction.editReply('Вие НЕ ја започнавте оваа анкета и не може да бришете елементи од истата!');
+      await interaction.editReply('Ова не е ваша анкета.');
       return;
     }
 
@@ -403,7 +403,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
 
     const permissions = interaction.member?.permissions as PermissionsBitField;
     if (!permissions.has(PermissionsBitField.Flags.Administrator) && !permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-      await interaction.editReply('Грешка, не сте администратор.');
+      await interaction.editReply('Оваа команда е само за администратори.');
       return;
     }
 
