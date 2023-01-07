@@ -4,6 +4,7 @@ const anto: string[] = JSON.parse(readFileSync('./config/anto.json', 'utf8'));
 const classrooms: Classroom[] = JSON.parse(readFileSync('./config/classrooms.json', 'utf8'));
 const config: BotConfig = JSON.parse(readFileSync('./config/config.json', 'utf8'));
 const courses: string[] = JSON.parse(readFileSync('./config/courses.json', 'utf8'));
+const information: Information[] = JSON.parse(readFileSync('./config/information.json', 'utf8'));
 const links: Link[] = JSON.parse(readFileSync('./config/links.json', 'utf8'));
 const participants: CourseParticipants[] = JSON.parse(readFileSync('./config/participants.json', 'utf8'));
 const prerequisites: CoursePrerequisites[] = JSON.parse(readFileSync('./config/prerequisites.json', 'utf8'));
@@ -29,6 +30,10 @@ export function getFromBotConfig<T extends keyof BotConfig> (key: T): BotConfig[
 
 export function getCourses (): string[] {
   return courses;
+}
+
+export function getInformation (): Information[] {
+  return information;
 }
 
 export function getLinks (): Link[] {

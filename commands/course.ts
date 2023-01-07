@@ -7,6 +7,7 @@ import {
 import {
   getFromBotConfig,
   getFromRoleConfig,
+  getInformation,
   getParticipants,
   getPrerequisites,
   getProfessors
@@ -47,6 +48,14 @@ export const data = new SlashCommandBuilder()
     .addStringOption((option) => option
       .setName('course')
       .setDescription('Course to get the prerequisite for')
+      .setRequired(true)
+      .setAutocomplete(true)))
+  .addSubcommand((command) => command
+    .setName('info')
+    .setDescription(CommandsDescription['course info'])
+    .addStringOption((option) => option
+      .setName('course')
+      .setDescription('Course to get the information for')
       .setRequired(true)
       .setAutocomplete(true)));
 
@@ -143,6 +152,25 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
         inline: true,
         name: 'Предуслови',
         value: information.prerequisite === '' ? 'Нема' : information.prerequisite ?? 'Нема'
+      })
+      .setTimestamp();
+
+    await interaction.editReply({ embeds: [embed] });
+  } else if (interaction.options.getSubcommand(true) === 'info') {
+    const information = getInformation().find((p) => p.course.toLowerCase() === course?.toLowerCase());
+
+    if (information === undefined) {
+      await interaction.editReply('Не постои таков предмет.');
+      return;
+    }
+
+    const embed = new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
+      .setTitle(information.course)
+      .addFields({
+        inline: true,
+        name: 'Информации',
+        value: `[Линк](${information.link})`
       })
       .setTimestamp();
 

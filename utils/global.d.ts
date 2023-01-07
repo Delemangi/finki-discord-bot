@@ -98,6 +98,11 @@ declare global {
     location: string;
     type: string;
   };
+
+  type Information = {
+    course: string;
+    link: string;
+  };
 }
 
 export { };
