@@ -51,6 +51,7 @@ declare global {
     finki: string;
     konsultacii: string;
     name: string;
+    position: string;
     raspored: string;
     title: string;
   };

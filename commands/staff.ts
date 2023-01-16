@@ -31,31 +31,41 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
 
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
-    .setTitle(information.name)
+    .setTitle(`${information.name}`)
     .addFields(
       {
-        name: 'Титула',
+        inline: true,
+        name: 'Звање',
         value: information.title
+      },
+      {
+        inline: true,
+        name: 'Позиција',
+        value: information.position
       },
       {
         name: 'Електронска пошта',
         value: information.email
       },
       {
+        inline: true,
         name: 'ФИНКИ',
-        value: `[Линк](${information.finki})`
+        value: information.finki === '' ? '-' : `[Линк](${information.finki})`
       },
       {
+        inline: true,
         name: 'Courses',
-        value: `[Линк](${information.courses})`
+        value: information.courses === '' ? '-' : `[Линк](${information.courses})`
       },
       {
+        inline: true,
         name: 'Распоред',
-        value: `[Линк](${information.raspored})`
+        value: information.raspored === '' ? '-' : `[Линк](${information.raspored})`
       },
       {
+        inline: true,
         name: 'Консултации',
-        value: `[Линк](${information.konsultacii})`
+        value: information.konsultacii === '' ? '-' : `[Линк](${information.konsultacii})`
       }
     )
     .setTimestamp();
