@@ -3,7 +3,6 @@ import {
   SlashCommandBuilder,
   EmbedBuilder
 } from 'discord.js';
-import { client } from '../utils/client.js';
 import { getFromBotConfig } from '../utils/config.js';
 import { commandMention } from '../utils/functions.js';
 import { CommandsDescription } from '../utils/strings.js';
@@ -15,8 +14,6 @@ export const data = new SlashCommandBuilder()
   .setDescription(CommandsDescription[command]);
 
 export async function execute (interaction: ChatInputCommandInteraction): Promise<void> {
-  await client.application?.commands.fetch();
-
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle('ФИНКИ Discord бот')

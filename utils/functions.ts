@@ -110,7 +110,7 @@ export function commandMention (name: string | undefined): string {
     return '';
   }
 
-  const command = client.application?.commands.cache.find((c) => c.name === (name?.includes(' ') ? name.split(' ').at(0) : name));
+  const command = client.application?.commands.cache.find((c) => c.name === (name.includes(' ') ? name.split(' ').at(0) : name));
 
   if (command === undefined) {
     return name;

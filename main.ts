@@ -103,8 +103,6 @@ client.on('messageCreate', async (message: Message) => {
 });
 
 client.once('ready', async () => {
-  logger.info('Bot is ready');
-
   const channel = client.channels.cache.get(logChannel);
 
   if (channel === undefined || channel.type !== ChannelType.GuildText) {
@@ -112,6 +110,10 @@ client.once('ready', async () => {
   }
 
   logTextChannel = channel;
+
+  await client.application?.commands.fetch();
+
+  logger.info('Bot is ready');
 });
 
 try {

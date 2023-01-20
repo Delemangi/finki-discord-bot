@@ -5,6 +5,7 @@ import {
 } from 'discord.js';
 import { getFromBotConfig } from '../utils/config.js';
 import { getAllQuestions } from '../utils/faq.js';
+import { commandMention } from '../utils/functions.js';
 import { getAllLinks } from '../utils/links.js';
 import { CommandsDescription } from '../utils/strings.js';
 
@@ -25,7 +26,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle('Прашања')
-      .setDescription(getAllQuestions().map((question, index) => `${index + 1}. ${question}`).join('\n'))
+      .setDescription(`Ова се сите достапни прашања. Користете ${commandMention('faq')} за да ги добиете одговорите.\n\n${getAllQuestions().map((question, index) => `${(index + 1).toString().padStart(2, '0')}. ${question}`).join('\n')}`)
       .setTimestamp();
   } else {
     embed = new EmbedBuilder()
