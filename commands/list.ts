@@ -32,7 +32,7 @@ export async function execute (interaction: ChatInputCommandInteraction): Promis
     embed = new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle('Линкови')
-      .setDescription(getAllLinks().map((link, index) => `${index + 1}. ${link}`).join('\n'))
+      .setDescription(`Ова се сите достапни линкови. Користете ${commandMention('link')} за да ги добиете линковите.\n\n${getAllLinks().map((link, index) => `${(index + 1).toString().padStart(2, '0')}. ${link}`).join('\n')}`)
       .setTimestamp();
   }
 
