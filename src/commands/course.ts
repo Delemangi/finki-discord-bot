@@ -73,15 +73,17 @@ export async function execute (interaction: ChatInputCommandInteraction) {
     return;
   }
 
-  if (interaction.options.getSubcommand(true) === 'participants') {
+  const subcommand = interaction.options.getSubcommand(true);
+
+  if (subcommand === 'participants') {
     await handleCourseParticipants(interaction, course);
-  } else if (interaction.options.getSubcommand(true) === 'professors') {
+  } else if (subcommand === 'professors') {
     await handleCourseProfessors(interaction, course);
-  } else if (interaction.options.getSubcommand(true) === 'role') {
+  } else if (subcommand === 'role') {
     await handleCourseRole(interaction, courseRole);
-  } else if (interaction.options.getSubcommand(true) === 'prerequisite') {
+  } else if (subcommand === 'prerequisite') {
     await handleCoursePrerequisite(interaction, course);
-  } else if (interaction.options.getSubcommand(true) === 'info') {
+  } else if (subcommand === 'info') {
     await handleCourseInfo(interaction, course);
   }
 }

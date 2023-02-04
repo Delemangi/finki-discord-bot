@@ -94,19 +94,21 @@ export const data = new SlashCommandBuilder()
       .setRequired(true)));
 
 export async function execute (interaction: ChatInputCommandInteraction) {
-  if (interaction.options.getSubcommand() === 'create') {
+  const subcommand = interaction.options.getSubcommand(true);
+
+  if (subcommand === 'create') {
     await handlePollCreate(interaction);
-  } else if (interaction.options.getSubcommand() === 'stats') {
+  } else if (subcommand === 'stats') {
     await handlePollStats(interaction);
-  } else if (interaction.options.getSubcommand() === 'show') {
+  } else if (subcommand === 'show') {
     await handlePollShow(interaction);
-  } else if (interaction.options.getSubcommand() === 'public') {
+  } else if (subcommand === 'public') {
     await handlePollPublic(interaction);
-  } else if (interaction.options.getSubcommand() === 'add') {
+  } else if (subcommand === 'add') {
     await handlePollAdd(interaction);
-  } else if (interaction.options.getSubcommand() === 'remove') {
+  } else if (subcommand === 'remove') {
     await handlePollRemove(interaction);
-  } else if (interaction.options.getSubcommand() === 'delete') {
+  } else if (subcommand === 'delete') {
     await handlePollDelete(interaction);
   }
 }

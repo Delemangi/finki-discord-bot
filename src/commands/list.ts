@@ -21,9 +21,11 @@ export const data = new SlashCommandBuilder()
     .setDescription(commands['list links']));
 
 export async function execute (interaction: ChatInputCommandInteraction) {
-  if (interaction.options.getSubcommand(true) === 'questions') {
+  const subcommand = interaction.options.getSubcommand(true);
+
+  if (subcommand === 'questions') {
     await handleListQuestions(interaction);
-  } else if (interaction.options.getSubcommand(true) === 'links') {
+  } else if (subcommand === 'links') {
     await handleListLinks(interaction);
   }
 }
