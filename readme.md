@@ -4,8 +4,10 @@ Discord bot for the [`FINKI Students`](https://discord.gg/finki-studenti-8109971
 
 ## Installation
 
-1. `git clone git@github.com:Delemangi/finki-discord-bot.git # (or https://github.com/Delemangi/finki-discord-bot.git)`
-2. `npm i`
+```shell
+git clone git@github.com:Delemangi/finki-discord-bot.git # (or https://github.com/Delemangi/finki-discord-bot.git)
+npm i
+```
 
 ## Config
 
