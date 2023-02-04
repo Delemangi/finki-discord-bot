@@ -1,0 +1,38 @@
+import { getQuestions } from '../utils/config.js';
+import {
+  getQuestionComponents,
+  getQuestionEmbed
+} from '../utils/embeds.js';
+import { commands } from '../utils/strings.js';
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder
+} from 'discord.js';
+
+const name = 'faq';
+
+export const data = new SlashCommandBuilder()
+  .setName(name)
+  .setDescription(commands[name])
+  .addStringOption((option) => option
+    .setName('question')
+    .setDescription('Question')
+    .setRequired(true)
+    .setAutocomplete(true));
+
+export async function execute (interaction: ChatInputCommandInteraction) {
+  const keyword = interaction.options.getString('question', true);
+  const question = getQuestions().find((q) => q.question === keyword);
+
+  if (question === undefined) {
+    await interaction.editReply('Не постои такво прашање.');
+    return;
+  }
+
+  const embed = getQuestionEmbed(question);
+  const components = getQuestionComponents(question);
+  await interaction.editReply({
+    components,
+    embeds: [embed]
+  });
+}

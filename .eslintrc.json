@@ -1,8 +1,7 @@
 {
   "env": {
-    "browser": true,
-    "node": true,
-    "es2022": true
+    "es2022": true,
+    "node": true
   },
   "extends": [
     "canonical"
@@ -10,15 +9,27 @@
   "overrides": [
     {
       "extends": [
-        "canonical/typescript",
+        "canonical/json"
+      ],
+      "files": "*.json"
+    },
+    {
+      "extends": [
+        "canonical/module",
         "canonical/node",
-        "canonical/module"
+        "canonical/typescript"
       ],
       "files": "*.ts",
       "parserOptions": {
         "project": "./tsconfig.json"
       },
       "rules": {
+        "@typescript-eslint/array-type": [
+          "error",
+          {
+            "default": "array"
+          }
+        ],
         "@typescript-eslint/comma-dangle": [
           "error",
           "never"
@@ -37,29 +48,13 @@
             }
           }
         ],
-        "@typescript-eslint/no-base-to-string": [
-          "error"
-        ],
-        "@typescript-eslint/array-type": [
-          "error",
-          {
-            "default": "array"
-          }
-        ],
         "@typescript-eslint/object-curly-spacing": [
           "error",
           "always"
         ]
       }
-    },
-    {
-      "extends": [
-        "canonical/json"
-      ],
-      "files": "*.json"
     }
   ],
-  "root": true,
   "rules": {
     "array-bracket-newline": [
       "error",
@@ -73,24 +68,48 @@
       "error",
       "as-needed"
     ],
-    "comma-dangle": [
+    "canonical/destructuring-property-newline": [
       "error",
-      "never"
+      {
+        "allowAllPropertiesOnSameLine": true
+      }
     ],
     "func-style": [
       "error",
       "declaration"
     ],
+    "id-length": [
+      "off"
+    ],
+    "import/extensions": [
+      "error",
+      "always"
+    ],
     "linebreak-style": [
       "error",
       "windows"
     ],
+    "no-bitwise": [
+      "error",
+      {
+        "allow": [
+          "|"
+        ]
+      }
+    ],
+    "no-confusing-arrow": [
+      "error",
+      {
+        "allowParens": true,
+        "onlyOneSimpleParam": true
+      }
+    ],
     "object-curly-newline": [
       "error",
       {
-        "multiline": true,
+        "consistent": true,
         "minProperties": 2,
-        "consistent": true
+        "multiline": true
       }
     ],
     "object-curly-spacing": [
@@ -101,29 +120,10 @@
       "error",
       "as-needed"
     ],
-    "complexity": [
-      "error",
-      30
-    ],
-    "no-param-reassign": [
-      "off"
-    ],
-    "id-length": [
-      "off"
-    ],
-    "canonical/destructuring-property-newline": [
-      "off"
-    ],
-    "import/extensions": [
-      "off"
-    ],
-    "unicorn/prevent-abbreviations": [
-      "off"
-    ],
     "unicorn/no-nested-ternary": [
       "off"
     ],
-    "no-confusing-arrow": [
+    "unicorn/prevent-abbreviations": [
       "off"
     ]
   }

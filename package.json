@@ -1,44 +1,45 @@
 {
-  "name": "finki-discord-bot",
-  "version": "1.0.0",
-  "description": "FINKI Discord bot",
-  "main": "src/main.js",
-  "scripts": {
-    "start": "tsc && node dist/main.js",
-    "lint": "eslint . --ext .ts",
-    "build": "tsc",
-    "embed:colors": "tsc && node dist/scripts/colors.js",
-    "embed:years": "tsc && node dist/scripts/years.js",
-    "embed:activities": "tsc && node dist/scripts/activities.js",
-    "embed:courses": "tsc && node dist/scripts/courses.js",
-    "embed:programs": "tsc && node dist/scripts/programs.js",
-    "embed:notifications": "tsc && node dist/scripts/notifications.js",
-    "embed:rules": "tsc && node dist/scripts/rules.js",
-    "forum:courses": "tsc && node dist/scripts/coursesForum.js",
-    "command:register": "tsc && node dist/scripts/register.js",
-    "command:delete": "tsc && node dist/scripts/delete.js"
-  },
   "author": "Delemangi",
-  "homepage": "https://github.com/Delemangi/finki-discord-bot",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Delemangi/finki-discord-bot.git"
-  },
   "bugs": {
     "url": "https://github.com/Delemangi/finki-discord-bot/issues"
   },
   "dependencies": {
     "@discordjs/rest": "^1.5.0",
     "@keyv/mongo": "^2.1.8",
-    "discord-api-types": "^0.37.28",
+    "discord-api-types": "^0.37.31",
     "discord.js": "^14.7.1",
     "keyv": "^4.5.2",
     "winston": "^3.8.2"
   },
+  "description": "FINKI Discord bot",
   "devDependencies": {
-    "eslint": "^8.31.0",
-    "eslint-config-canonical": "^39.1.4",
-    "typescript": "^4.9.4"
+    "@types/node": "^18.11.18",
+    "eslint": "^8.33.0",
+    "eslint-config-canonical": "^40.0.1",
+    "typescript": "^4.9.5"
   },
-  "type": "module"
+  "homepage": "https://github.com/Delemangi/finki-discord-bot",
+  "main": "src/main.js",
+  "name": "finki-discord-bot",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Delemangi/finki-discord-bot.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "command:delete": "tsc && node dist/scripts/delete.js",
+    "command:register": "tsc && node dist/scripts/register.js",
+    "embed:activities": "tsc && node dist/scripts/activities.js",
+    "embed:colors": "tsc && node dist/scripts/colors.js",
+    "embed:courses": "tsc && node dist/scripts/courses.js",
+    "embed:notifications": "tsc && node dist/scripts/notifications.js",
+    "embed:programs": "tsc && node dist/scripts/programs.js",
+    "embed:rules": "tsc && node dist/scripts/rules.js",
+    "embed:years": "tsc && node dist/scripts/years.js",
+    "forum:courses": "tsc && node dist/scripts/coursesForum.js",
+    "lint": "eslint . --ext .ts",
+    "start": "tsc && node dist/main.js"
+  },
+  "type": "module",
+  "version": "2.0.0"
 }
