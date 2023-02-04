@@ -93,6 +93,11 @@ export async function handleUserContextMenuCommand (interaction: UserContextMenu
 export async function handleButton (interaction: ButtonInteraction) {
   const [command, ...args] = interaction.customId.split(':');
 
+  if (command === undefined) {
+    logger.warn(`Received bad button interaction ${interaction.customId} by ${interaction.user.tag}`);
+    return;
+  }
+
   if (command === 'course') {
     await handleCourseButton(interaction, args);
   } else if (command === 'year') {
@@ -113,6 +118,8 @@ export async function handleButton (interaction: ButtonInteraction) {
     await handleQuizButton(interaction, args);
   } else if (command === 'quizgame') {
     await handleQuizGameButton(interaction, args);
+  } else if (ignoredButtons.includes(command)) {
+    // Do nothing
   } else {
     logger.warn(`Received unknown button interaction ${interaction.customId} by ${interaction.user.tag}`);
   }
@@ -138,8 +145,6 @@ export async function handleAutocomplete (interaction: AutocompleteInteraction) 
     await handleSessionAutocomplete(interaction);
   } else if (option.name === 'classroom') {
     await handleClassroomAutocomplete(interaction);
-  } else if (ignoredButtons.includes(option.name)) {
-    // Do nothing
   } else {
     logger.warn(`Received unknown autocomplete interaction ${option.name} by ${interaction.user.tag}`);
   }
