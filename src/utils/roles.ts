@@ -13,8 +13,8 @@ const roles: { [K in RoleSets]: Role[] } = {
   year: []
 };
 
-export function refreshRoles (guild: Guild, type: RoleSets) {
-  if (roles[type].length === 0) {
+export function refreshRoles (guild: Guild | null, type: RoleSets) {
+  if (roles[type].length === 0 && guild !== null) {
     let list;
 
     if (type === 'courses') {
@@ -43,7 +43,7 @@ export function getRole (guild: Guild | null, type: RoleSets, role?: string) {
   return roles[type].find((r) => r.name === role);
 }
 
-export function getRoles (guild: Guild, type: RoleSets) {
+export function getRoles (guild: Guild | null, type: RoleSets) {
   if (roles[type].length === 0) {
     refreshRoles(guild, type);
   }
