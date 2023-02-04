@@ -241,8 +241,8 @@ export function getStaffEmbed (information: Staff) {
     .setTimestamp();
 }
 
-export function getStudentInfoEmbed (member: GuildMember | null) {
-  if (member === null) {
+export function getStudentInfoEmbed (member: GuildMember | null | undefined) {
+  if (member === null || member === undefined) {
     return new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle('Информации за студентот')
