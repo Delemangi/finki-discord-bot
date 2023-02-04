@@ -476,6 +476,7 @@ function getButtonInfo (interaction: ButtonInteraction, command: string, args: s
         name: getButtonCommand(command),
         value: roleMention(getRole(interaction.guild, command, args[0])?.id ?? 'Unknown')
       };
+    case 'help':
     case 'poll':
     case 'pollstats':
     case 'quiz':
