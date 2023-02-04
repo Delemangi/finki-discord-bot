@@ -40,7 +40,7 @@ client.once('ready', async () => {
     .setTitle('Смер')
     .setThumbnail(getFromBotConfig('logo'))
     .setDescription('Изберете го смерот на кој студирате.')
-    .setFooter({ text: '(може да изберете само една опција)' });
+    .setFooter({ text: '(може да изберете само една опција, секоја нова опција ја заменува старата)' });
 
   for (let i = 0; i < roles.length; i += 5) {
     const row = new ActionRowBuilder<ButtonBuilder>();
