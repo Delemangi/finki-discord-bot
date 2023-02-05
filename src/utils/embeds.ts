@@ -473,11 +473,7 @@ export function getAutocompleteEmbed (interaction: AutocompleteInteraction) {
 // Helpers
 
 function getChannel (interaction: Interaction) {
-  if (interaction.channel === null) {
-    return 'Unknown';
-  }
-
-  if (interaction.channel.isDMBased()) {
+  if (interaction.channel === null || interaction.channel.isDMBased()) {
     return 'DM';
   }
 
@@ -565,15 +561,14 @@ export function getCommandsWithPermission (member: GuildMember | null) {
 }
 
 async function fetchMessageUrl (interaction: ChatInputCommandInteraction | UserContextMenuCommandInteraction) {
-  if (interaction.channel?.isDMBased()) {
+  if (interaction.channel === null || !interaction.channel.isTextBased() || interaction.channel.isDMBased()) {
     return {};
   }
 
   try {
     return { url: (await interaction.fetchReply()).url };
   } catch {
-    // @ts-expect-error The channel is a guild text channel
-    logger.warn(`Failed to fetch message URL for interaction by ${interaction.user.tag} in ${interaction.channel?.name}`);
+    logger.warn(`Failed to fetch message URL for interaction by ${interaction.user.tag} in ${interaction.channel.name}`);
     return {};
   }
 }

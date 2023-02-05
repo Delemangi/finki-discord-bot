@@ -26,7 +26,7 @@ client.once('ready', async () => {
   const channel = client.channels.cache.get(channelID);
   const roles = getFromRoleConfig('color');
 
-  if (channel === undefined || channel.isDMBased() || !channel.isTextBased()) {
+  if (channel === undefined || !channel.isTextBased() || channel.isDMBased()) {
     throw new Error('The provided channel must be a guild text channel');
   }
 

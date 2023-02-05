@@ -26,7 +26,7 @@ export async function execute (interaction: ChatInputCommandInteraction) {
     return;
   }
 
-  if (!interaction.channel?.isTextBased() || interaction.channel.isDMBased()) {
+  if (interaction.channel === null || !interaction.channel.isTextBased() || interaction.channel.isDMBased()) {
     await interaction.editReply('Оваа команда се повикува само во сервер.');
     return;
   }
