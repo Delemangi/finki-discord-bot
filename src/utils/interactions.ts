@@ -67,7 +67,7 @@ export async function handleChatInputCommand (interaction: ChatInputCommandInter
     logger.error(`Failed to handle chat input command ${interaction} by ${interaction.user.tag}\n${error}`);
   }
 
-  logger.info(`[Chat] ${interaction.user.tag}: ${interaction} [${interaction.channel?.isDMBased() ? 'DM' : 'Guild'}]`);
+  logger.info(`[Chat] ${interaction.user.tag}: ${interaction} [${interaction.channel === null || interaction.channel.isDMBased() ? 'DM' : 'Guild'}]`);
   await log(await getChatInputCommandEmbed(interaction), interaction, 'commands');
 }
 
@@ -86,7 +86,7 @@ export async function handleUserContextMenuCommand (interaction: UserContextMenu
     logger.error(`Failed to handle user context menu command ${interaction.commandName} by ${interaction.user.tag}\n${error}`);
   }
 
-  logger.info(`[User] ${interaction.user.tag}: ${interaction.commandName} [${interaction.channel?.isDMBased() ? 'DM' : 'Guild'}]`);
+  logger.info(`[User] ${interaction.user.tag}: ${interaction.commandName} [${interaction.channel === null || interaction.channel.isDMBased() ? 'DM' : 'Guild'}]`);
   await log(await getUserContextMenuCommandEmbed(interaction), interaction, 'commands');
 }
 
@@ -124,7 +124,7 @@ export async function handleButton (interaction: ButtonInteraction) {
     logger.warn(`Received unknown button interaction ${interaction.customId} by ${interaction.user.tag}`);
   }
 
-  logger.info(`[Button] ${interaction.user.tag}: ${interaction.customId} [${interaction.channel?.isDMBased() ? 'DM' : 'Guild'}]`);
+  logger.info(`[Button] ${interaction.user.tag}: ${interaction.customId} [${interaction.channel === null || interaction.channel.isDMBased() ? 'DM' : 'Guild'}]`);
   await log(getButtonEmbed(interaction, command, args), interaction, 'commands');
 }
 
@@ -149,7 +149,7 @@ export async function handleAutocomplete (interaction: AutocompleteInteraction) 
     logger.warn(`Received unknown autocomplete interaction ${option.name} by ${interaction.user.tag}`);
   }
 
-  logger.info(`[Auto] ${interaction.user.tag}: ${option.name} [${interaction.channel?.isDMBased() ? 'DM' : 'Guild'}]`);
+  logger.info(`[Auto] ${interaction.user.tag}: ${option.name} [${interaction.channel === null || interaction.channel.isDMBased() ? 'DM' : 'Guild'}]`);
   await log(getAutocompleteEmbed(interaction), interaction, 'commands');
 }
 
