@@ -33,6 +33,7 @@ export async function execute (interaction: ChatInputCommandInteraction) {
   const components = getQuestionComponents(question);
   await interaction.editReply({
     components,
-    embeds: [embed]
+    embeds: [embed],
+    files: question.files?.map((f) => `./files/${f}`) ?? []
   });
 }

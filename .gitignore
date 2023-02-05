@@ -193,5 +193,6 @@ fabric.properties
 *.js
 *.map
 sessions
+files
 config
 .vscode
