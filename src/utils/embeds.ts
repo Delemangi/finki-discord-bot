@@ -549,7 +549,7 @@ function checkCommandPermission (member: GuildMember | null, command: string) {
     return true;
   }
 
-  return permissions.any(member.permissions.bitfield);
+  return member.permissions.any(permissions.bitfield);
 }
 
 export function getCommandsWithPermission (member: GuildMember | null) {
