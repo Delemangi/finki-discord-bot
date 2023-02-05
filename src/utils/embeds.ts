@@ -565,11 +565,15 @@ export function getCommandsWithPermission (member: GuildMember | null) {
 }
 
 async function fetchMessageUrl (interaction: ChatInputCommandInteraction | UserContextMenuCommandInteraction) {
+  if (interaction.channel?.isDMBased()) {
+    return {};
+  }
+
   try {
     return { url: (await interaction.fetchReply()).url };
   } catch {
     // @ts-expect-error The channel is a guild text channel
-    logger.warn(`Failed to fetch message URL for interaction by ${interaction.user.tag} in ${interaction.channel?.isDMBased() ? 'DM' : interaction.channel?.name}`);
+    logger.warn(`Failed to fetch message URL for interaction by ${interaction.user.tag} in ${interaction.channel?.name}`);
     return {};
   }
 }
