@@ -1,3 +1,4 @@
+import { client } from './client.js';
 import {
   getFromBotConfig,
   getFromRoleConfig,
@@ -7,6 +8,7 @@ import {
 } from './config.js';
 import { commandMention } from './functions.js';
 import { getRole } from './roles.js';
+import { commands } from './strings.js';
 import {
   ActionRowBuilder,
   type AutocompleteInteraction,
@@ -112,89 +114,6 @@ export function getCourseInfoEmbed (information: CourseInformation) {
       name: 'Информации',
       value: `[Линк](${information.link})`
     })
-    .setTimestamp();
-}
-
-// Questions & links
-
-export function getQuestionEmbed (question: Question) {
-  return new EmbedBuilder()
-    .setColor(getFromBotConfig('color'))
-    .setTitle(question.question)
-    .setDescription(question.answer)
-    .setTimestamp();
-}
-
-export function getQuestionComponents (question: Question) {
-  const components = [];
-
-  if (question.links === undefined) {
-    return [];
-  }
-
-  const entries = Object.entries(question.links);
-
-  for (let i = 0; i < entries.length; i += 5) {
-    const row = new ActionRowBuilder<ButtonBuilder>();
-    const buttons = [];
-
-    for (let j = i; j < i + 5; j++) {
-      const [label, link] = entries[j] ?? ['', ''];
-      if (label === undefined || link === undefined || label === '' || link === '') {
-        break;
-      }
-
-      const button = new ButtonBuilder()
-        .setURL(link)
-        .setLabel(label)
-        .setStyle(ButtonStyle.Link);
-
-      buttons.push(button);
-    }
-
-    row.addComponents(buttons);
-    components.push(row);
-  }
-
-  return components;
-}
-
-export function getLinkEmbed (link: Link) {
-  const embed = new EmbedBuilder()
-    .setColor(getFromBotConfig('color'))
-    .setTitle(link.name)
-    .setTimestamp();
-
-  if (link.description !== undefined) {
-    embed.setDescription(link.description);
-  }
-
-  return embed;
-}
-
-export function getLinkComponents (link: Link) {
-  return [
-    new ActionRowBuilder<ButtonBuilder>()
-      .addComponents(new ButtonBuilder()
-        .setURL(link.link)
-        .setLabel('Линк')
-        .setStyle(ButtonStyle.Link))
-  ];
-}
-
-export function getListQuestionsEmbed () {
-  return new EmbedBuilder()
-    .setColor(getFromBotConfig('color'))
-    .setTitle('Прашања')
-    .setDescription(`Ова се сите достапни прашања. Користете ${commandMention('faq')} за да ги добиете одговорите.\n\n${getQuestions().map((question, index) => `${(index + 1).toString().padStart(2, '0')}. ${question.question}`).join('\n')}`)
-    .setTimestamp();
-}
-
-export function getListLinksEmbed () {
-  return new EmbedBuilder()
-    .setColor(getFromBotConfig('color'))
-    .setTitle('Линкови')
-    .setDescription(`Ова се сите достапни линкови. Користете ${commandMention('link')} за да ги добиете линковите.\n\n${getLinks().map((link, index) => `${(index + 1).toString().padStart(2, '0')}. [${link.name}](${link.link})`).join('\n')}`)
     .setTimestamp();
 }
 
@@ -306,6 +225,115 @@ export function getStudentInfoEmbed (member: GuildMember | null | undefined) {
       }
     )
     .setTimestamp();
+}
+
+// Questions & links
+
+export function getQuestionEmbed (question: Question) {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle(question.question)
+    .setDescription(question.answer)
+    .setTimestamp();
+}
+
+export function getQuestionComponents (question: Question) {
+  const components = [];
+
+  if (question.links === undefined) {
+    return [];
+  }
+
+  const entries = Object.entries(question.links);
+
+  for (let i = 0; i < entries.length; i += 5) {
+    const row = new ActionRowBuilder<ButtonBuilder>();
+    const buttons = [];
+
+    for (let j = i; j < i + 5; j++) {
+      const [label, link] = entries[j] ?? ['', ''];
+      if (label === undefined || link === undefined || label === '' || link === '') {
+        break;
+      }
+
+      const button = new ButtonBuilder()
+        .setURL(link)
+        .setLabel(label)
+        .setStyle(ButtonStyle.Link);
+
+      buttons.push(button);
+    }
+
+    row.addComponents(buttons);
+    components.push(row);
+  }
+
+  return components;
+}
+
+export function getLinkEmbed (link: Link) {
+  const embed = new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle(link.name)
+    .setTimestamp();
+
+  if (link.description !== undefined) {
+    embed.setDescription(link.description);
+  }
+
+  return embed;
+}
+
+export function getLinkComponents (link: Link) {
+  return [
+    new ActionRowBuilder<ButtonBuilder>()
+      .addComponents(new ButtonBuilder()
+        .setURL(link.link)
+        .setLabel('Линк')
+        .setStyle(ButtonStyle.Link))
+  ];
+}
+
+export function getListQuestionsEmbed () {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Прашања')
+    .setDescription(`Ова се сите достапни прашања. Користете ${commandMention('faq')} за да ги добиете одговорите.\n\n${getQuestions().map((question, index) => `${(index + 1).toString().padStart(2, '0')}. ${question.question}`).join('\n')}`)
+    .setTimestamp();
+}
+
+export function getListLinksEmbed () {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Линкови')
+    .setDescription(`Ова се сите достапни линкови. Користете ${commandMention('link')} за да ги добиете линковите.\n\n${getLinks().map((link, index) => `${(index + 1).toString().padStart(2, '0')}. [${link.name}](${link.link})`).join('\n')}`)
+    .setTimestamp();
+}
+
+// Help
+
+export function getHelpFirstPageEmbed (member: GuildMember | null, commandsPerPage: number = 8) {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Команди')
+    .setDescription('Ова се сите достапни команди за вас.')
+    .addFields(...Object.entries(commands).filter((c) => checkCommandPermission(member, c[0])).slice(0, commandsPerPage).map(([command, description]) => ({
+      name: commandMention(command),
+      value: description
+    })))
+    .setFooter({ text: `1 / ${Math.ceil(getCommandsWithPermission(member).length / commandsPerPage)}` });
+}
+
+export function getHelpNextEmbed (member: GuildMember | null, page: number, commandsPerPage: number = 8) {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Команди')
+    .setDescription('Ова се сите достапни команди за вас.')
+    .addFields(...Object.entries(commands).filter((c) => checkCommandPermission(member, c[0])).slice(commandsPerPage * page, commandsPerPage * (page + 1)).map(([command, description]) => ({
+      name: commandMention(command),
+      value: description
+    })))
+    .setFooter({ text: `${page + 1} / ${Math.ceil(getCommandsWithPermission(member).length / commandsPerPage)}` });
 }
 
 // Logs
@@ -503,4 +531,26 @@ function linkProfessors (professors: string) {
     .map((professor) => [professor, getStaff().find((p) => professor.includes(p.name))?.finki])
     .map(([professor, finki]) => finki ? `[${professor}](${finki})` : professor)
     .join('\n');
+}
+
+function checkCommandPermission (member: GuildMember | null, command: string) {
+  if (member === null) {
+    return true;
+  }
+
+  const permissions = client.application?.commands.cache.find((c) => c.name === (command.includes(' ') ? command.split(' ')[0] : command))?.defaultMemberPermissions;
+
+  if (permissions === null || permissions === undefined) {
+    return true;
+  }
+
+  return permissions.any(member.permissions.bitfield);
+}
+
+export function getCommandsWithPermission (member: GuildMember | null) {
+  if (client.application === null) {
+    return [];
+  }
+
+  return Object.keys(commands).filter((command) => checkCommandPermission(member, command));
 }

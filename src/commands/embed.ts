@@ -4,11 +4,13 @@ import {
   type Channel,
   type ChatInputCommandInteraction,
   EmbedBuilder,
-  PermissionsBitField,
+  PermissionFlagsBits,
+  type PermissionsBitField,
   SlashCommandBuilder
 } from 'discord.js';
 
 const name = 'embed';
+const permission = PermissionFlagsBits.ManageMessages;
 
 export const data = new SlashCommandBuilder()
   .setName(name)
@@ -25,9 +27,15 @@ export const data = new SlashCommandBuilder()
     .setName('timestamp')
     .setDescription('Whether to add a timestamp to the embed')
     .setRequired(false))
-  .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator | PermissionsBitField.Flags.ManageMessages);
+  .setDefaultMemberPermissions(permission);
 
 export async function execute (interaction: ChatInputCommandInteraction) {
+  const permissions = interaction.member?.permissions as PermissionsBitField | undefined;
+  if (permissions === undefined || !permissions.has(permission)) {
+    await interaction.editReply('Оваа команда е само за администратори.');
+    return;
+  }
+
   const channel = interaction.options.getChannel('channel', true) as Channel;
   const json = interaction.options.getString('json', true);
   const timestamp = interaction.options.getBoolean('timestamp') ?? false;
@@ -48,9 +56,7 @@ export async function execute (interaction: ChatInputCommandInteraction) {
     if (parsed.color !== undefined) {
       embed.setColor(parsed.color);
     }
-  } catch (error) {
-    logger.error(`Failed to set color\n${error}`);
-
+  } catch {
     await interaction.editReply('Невалидна боја.');
     return;
   }

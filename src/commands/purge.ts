@@ -1,6 +1,7 @@
 import { commands } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
+  PermissionFlagsBits,
   PermissionsBitField,
   SlashCommandBuilder
 } from 'discord.js';
@@ -16,25 +17,24 @@ export const data = new SlashCommandBuilder()
     .setDescription('Number of messages to purge')
     .setRequired(true))
   .setDMPermission(false)
-  .setDefaultMemberPermissions(PermissionsBitField.Flags.Administrator | PermissionsBitField.Flags.ManageMessages);
+  .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages);
 
 export async function execute (interaction: ChatInputCommandInteraction) {
+  const permissions = interaction.member?.permissions as PermissionsBitField | undefined;
+  if (permissions === undefined || !permissions.has(PermissionsBitField.Flags.ManageMessages)) {
+    await interaction.editReply('Оваа команда е само за администратори.');
+    return;
+  }
+
   if (!interaction.channel?.isTextBased() || interaction.channel.isDMBased()) {
     await interaction.editReply('Оваа команда се повикува само во сервер.');
     return;
   }
 
-  const count = interaction.options.getNumber('count') ?? 0;
+  const count = interaction.options.getNumber('count', true);
 
   if (count < 1) {
     await interaction.editReply('Невалиден број на пораки за бришење.');
-    return;
-  }
-
-  const permissions = interaction.member?.permissions as PermissionsBitField;
-
-  if (!permissions.has(PermissionsBitField.Flags.Administrator) && !permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-    await interaction.editReply('Оваа команда е само за администратори.');
     return;
   }
 

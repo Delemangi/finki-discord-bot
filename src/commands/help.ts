@@ -1,6 +1,9 @@
 import { client } from '../utils/client.js';
-import { getFromBotConfig } from '../utils/config.js';
-import { commandMention } from '../utils/functions.js';
+import {
+  getCommandsWithPermission,
+  getHelpFirstPageEmbed,
+  getHelpNextEmbed
+} from '../utils/embeds.js';
 import { logger } from '../utils/logger.js';
 import { commands } from '../utils/strings.js';
 import {
@@ -9,13 +12,11 @@ import {
   ButtonStyle,
   type ChatInputCommandInteraction,
   ComponentType,
-  EmbedBuilder,
+  type GuildMember,
   SlashCommandBuilder
 } from 'discord.js';
 
 const name = 'help';
-const commandsPerPage = 8;
-const pages = Math.ceil(Object.keys(commands).length / commandsPerPage);
 const middleButtons = new ActionRowBuilder<ButtonBuilder>()
   .addComponents(
     new ButtonBuilder()
@@ -108,20 +109,13 @@ export const data = new SlashCommandBuilder()
 export async function execute (interaction: ChatInputCommandInteraction) {
   await client.application?.commands.fetch();
 
-  const embed = new EmbedBuilder()
-    .setColor(getFromBotConfig('color'))
-    .setTitle('Команди')
-    .addFields(...Object.entries(commands).slice(0, commandsPerPage).map(([command, description]) => ({
-      name: commandMention(command),
-      value: description
-    })))
-    .setFooter({ text: `1 / ${pages}` });
-
+  const commandsPerPage = 8;
+  const pages = Math.ceil(getCommandsWithPermission(interaction.member as GuildMember | null).length / commandsPerPage);
+  const embed = getHelpFirstPageEmbed(interaction.member as GuildMember | null, commandsPerPage);
   const message = await interaction.editReply({
     components: [startButtons],
     embeds: [embed]
   });
-
   const collector = message.createMessageComponentCollector({
     componentType: ComponentType.Button,
     idle: 30_000
@@ -163,14 +157,7 @@ export async function execute (interaction: ChatInputCommandInteraction) {
       buttons = middleButtons;
     }
 
-    const nextEmbed = new EmbedBuilder()
-      .setColor(getFromBotConfig('color'))
-      .setTitle('Команди')
-      .addFields(...Object.entries(commands).slice(commandsPerPage * page, commandsPerPage * (page + 1)).map(([command, description]) => ({
-        name: commandMention(command),
-        value: description
-      })))
-      .setFooter({ text: `${page + 1} / ${pages}` });
+    const nextEmbed = getHelpNextEmbed(interaction.member as GuildMember | null, page, commandsPerPage);
 
     try {
       await buttonInteraction.update({
