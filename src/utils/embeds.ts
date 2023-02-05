@@ -7,6 +7,7 @@ import {
   getStaff
 } from './config.js';
 import { commandMention } from './functions.js';
+import { logger } from './logger.js';
 import { getRole } from './roles.js';
 import { commands } from './strings.js';
 import {
@@ -345,7 +346,7 @@ export async function getChatInputCommandEmbed (interaction: ChatInputCommandInt
     .setAuthor({
       iconURL: interaction.user.displayAvatarURL(),
       name: interaction.user.tag,
-      url: (await interaction.fetchReply()).url
+      ...await fetchMessageUrl(interaction)
     })
     .addFields(
       {
@@ -376,7 +377,7 @@ export async function getUserContextMenuCommandEmbed (interaction: UserContextMe
     .setAuthor({
       iconURL: interaction.user.displayAvatarURL(),
       name: interaction.user.tag,
-      url: (await interaction.fetchReply()).url
+      ...await fetchMessageUrl(interaction)
     })
     .addFields(
       {
@@ -472,7 +473,15 @@ export function getAutocompleteEmbed (interaction: AutocompleteInteraction) {
 // Helpers
 
 function getChannel (interaction: Interaction) {
-  return interaction.channel === null ? 'Unknown' : channelMention(interaction.channel.id);
+  if (interaction.channel === null) {
+    return 'Unknown';
+  }
+
+  if (interaction.channel.isDMBased()) {
+    return 'DM';
+  }
+
+  return channelMention(interaction.channel.id);
 }
 
 function getButtonCommand (command?: string) {
@@ -553,4 +562,14 @@ export function getCommandsWithPermission (member: GuildMember | null) {
   }
 
   return Object.keys(commands).filter((command) => checkCommandPermission(member, command));
+}
+
+async function fetchMessageUrl (interaction: ChatInputCommandInteraction | UserContextMenuCommandInteraction) {
+  try {
+    return { url: (await interaction.fetchReply()).url };
+  } catch {
+    // @ts-expect-error The channel is a guild text channel
+    logger.warn(`Failed to fetch message URL for interaction by ${interaction.user.tag} in ${interaction.channel?.isDMBased() ? 'DM' : interaction.channel?.name}`);
+    return {};
+  }
 }
