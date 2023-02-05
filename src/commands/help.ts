@@ -171,12 +171,10 @@ export async function execute (interaction: ChatInputCommandInteraction) {
 
   collector.on('end', async () => {
     try {
-      if (message.editable) {
-        await message.edit({
-          components: [disabledButtons],
-          embeds: [embed]
-        });
-      }
+      await interaction.editReply({
+        components: [disabledButtons],
+        embeds: [embed]
+      });
     } catch (error) {
       logger.error(`Failed to end help command\n${error}`);
     }
