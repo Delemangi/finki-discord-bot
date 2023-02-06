@@ -176,6 +176,6 @@ async function handleCourseInfo (interaction: ChatInputCommandInteraction, cours
 }
 
 async function handleCourseSummary (interaction: ChatInputCommandInteraction, course: string | null) {
-  const embed = getCourseSummaryEmbed(course);
-  await interaction.editReply({ embeds: [embed] });
+  const embeds = getCourseSummaryEmbed(course);
+  await interaction.editReply({ embeds });
 }
