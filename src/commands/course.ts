@@ -9,7 +9,8 @@ import {
   getCourseInfoEmbed,
   getCourseParticipantsEmbed,
   getCoursePrerequisiteEmbed,
-  getCourseProfessorsEmbed
+  getCourseProfessorsEmbed,
+  getCourseSummaryEmbed
 } from '../utils/embeds.js';
 import { commands } from '../utils/strings.js';
 import {
@@ -62,6 +63,14 @@ export const data = new SlashCommandBuilder()
       .setName('course')
       .setDescription('Предмет')
       .setRequired(true)
+      .setAutocomplete(true)))
+  .addSubcommand((command) => command
+    .setName('summary')
+    .setDescription(commands['course summary'])
+    .addStringOption((option) => option
+      .setName('course')
+      .setDescription('Предмет')
+      .setRequired(true)
       .setAutocomplete(true)));
 
 export async function execute (interaction: ChatInputCommandInteraction) {
@@ -85,6 +94,8 @@ export async function execute (interaction: ChatInputCommandInteraction) {
     await handleCoursePrerequisite(interaction, course);
   } else if (subcommand === 'info') {
     await handleCourseInfo(interaction, course);
+  } else if (subcommand === 'summary') {
+    await handleCourseSummary(interaction, course);
   }
 }
 
@@ -161,5 +172,10 @@ async function handleCourseInfo (interaction: ChatInputCommandInteraction, cours
   }
 
   const embed = getCourseInfoEmbed(information);
+  await interaction.editReply({ embeds: [embed] });
+}
+
+async function handleCourseSummary (interaction: ChatInputCommandInteraction, course: string | null) {
+  const embed = getCourseSummaryEmbed(course);
   await interaction.editReply({ embeds: [embed] });
 }

@@ -2,7 +2,11 @@ import { client } from './client.js';
 import {
   getFromBotConfig,
   getFromRoleConfig,
+  getInformation,
   getLinks,
+  getParticipants,
+  getPrerequisites,
+  getProfessors,
   getQuestions,
   getStaff
 } from './config.js';
@@ -101,7 +105,7 @@ export function getCoursePrerequisiteEmbed (information: CoursePrerequisites) {
     .addFields({
       inline: true,
       name: 'Предуслови',
-      value: information.prerequisite === '' ? 'Нема' : information.prerequisite ?? 'Нема'
+      value: information.prerequisite === '' ? 'Нема' : information.prerequisite
     })
     .setTimestamp();
 }
@@ -116,6 +120,58 @@ export function getCourseInfoEmbed (information: CourseInformation) {
       value: `[Линк](${information.link})`
     })
     .setTimestamp();
+}
+
+export function getCourseSummaryEmbed (course: string | null) {
+  if (course === null) {
+    return new EmbedBuilder()
+      .setDescription('Нема информации за овој предмет.');
+  }
+
+  const info = getInformation().find((p) => p.course.toLowerCase() === course?.toLowerCase());
+  const prerequisite = getPrerequisites().find((p) => p.course.toLowerCase() === course?.toLowerCase());
+  const professors = getProfessors().find((p) => p.course.toLowerCase() === course?.toLowerCase());
+  const participants = getParticipants().find((p) => p.course.toLowerCase() === course?.toLowerCase());
+
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle(course)
+    .setDescription('Ова се сите достапни информации за предметот.')
+    .addFields(
+      {
+        inline: true,
+        name: 'Информации',
+        value: info === undefined ? '-' : `[Линк](${info.link})`
+      },
+      {
+        inline: true,
+        name: 'Предуслови',
+        value: prerequisite === undefined ? '-' : prerequisite.prerequisite === '' ? 'Нема' : prerequisite.prerequisite
+      },
+      {
+        name: '\u200B',
+        value: '\u200B'
+      },
+      {
+        inline: true,
+        name: 'Професори',
+        value: professors === undefined ? '-' : linkProfessors(professors.professors)
+      },
+      {
+        inline: true,
+        name: 'Асистенти',
+        value: professors === undefined ? '-' : linkProfessors(professors.assistants)
+      },
+      {
+        name: '\u200B',
+        value: '\u200B'
+      },
+      ...Object.entries(participants ?? {}).filter(([year]) => year !== 'course').map(([y, p]) => ({
+        inline: true,
+        name: y,
+        value: p.toString()
+      }))
+    );
 }
 
 export function getStaffEmbed (information: Staff) {
