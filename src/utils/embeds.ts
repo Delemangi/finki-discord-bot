@@ -114,11 +114,23 @@ export function getCourseInfoEmbed (information: CourseInformation) {
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle(information.course)
-    .addFields({
-      inline: true,
-      name: 'Информации',
-      value: `[Линк](${information.link})`
-    })
+    .addFields(
+      {
+        inline: true,
+        name: 'Информации',
+        value: `[Линк](${information.link})`
+      },
+      {
+        inline: true,
+        name: 'Код',
+        value: information.code
+      },
+      {
+        inline: true,
+        name: 'Ниво',
+        value: information.level.toString()
+      }
+    )
     .setTimestamp();
 }
 
@@ -148,8 +160,19 @@ export function getCourseSummaryEmbed (course: string | null) {
           value: prerequisite === undefined ? '-' : prerequisite.prerequisite === '' ? 'Нема' : prerequisite.prerequisite
         },
         {
+          inline: true,
           name: 'Информации',
           value: info === undefined ? '-' : `[Линк](${info.link})`
+        },
+        {
+          inline: true,
+          name: 'Код',
+          value: info === undefined ? '-' : info.code
+        },
+        {
+          inline: true,
+          name: 'Ниво',
+          value: info === undefined ? '-' : info.level.toString()
         }
       ),
     new EmbedBuilder()
@@ -169,6 +192,10 @@ export function getCourseSummaryEmbed (course: string | null) {
     new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .addFields(
+        {
+          name: 'Број на запишани студенти',
+          value: '\u200B'
+        },
         ...Object.entries(participants ?? {}).filter(([year]) => year !== 'course').map(([y, p]) => ({
           inline: true,
           name: y,
