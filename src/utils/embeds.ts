@@ -314,27 +314,33 @@ export function getListLinksEmbed () {
 // Help
 
 export function getHelpFirstPageEmbed (member: GuildMember | null, commandsPerPage: number = 8) {
+  const totalCommands = getCommandsWithPermission(member).length;
+
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle('Команди')
-    .setDescription('Ова се сите достапни команди за вас.')
+    .setDescription('Ова се сите достапни команди за вас. Командите може да ги повикате во овој сервер, или во приватна порака.')
     .addFields(...Object.entries(commands).filter((c) => checkCommandPermission(member, c[0])).slice(0, commandsPerPage).map(([command, description]) => ({
       name: commandMention(command),
       value: description
     })))
-    .setFooter({ text: `1 / ${Math.ceil(getCommandsWithPermission(member).length / commandsPerPage)}` });
+    .setFooter({ text: `Страна: 1 / ${Math.ceil(totalCommands / commandsPerPage)} (Команди: ${totalCommands})` })
+    .setTimestamp();
 }
 
 export function getHelpNextEmbed (member: GuildMember | null, page: number, commandsPerPage: number = 8) {
+  const totalCommands = getCommandsWithPermission(member).length;
+
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle('Команди')
-    .setDescription('Ова се сите достапни команди за вас.')
+    .setDescription('Ова се сите достапни команди за вас. Командите може да ги повикате во овој сервер, или во приватна порака.')
     .addFields(...Object.entries(commands).filter((c) => checkCommandPermission(member, c[0])).slice(commandsPerPage * page, commandsPerPage * (page + 1)).map(([command, description]) => ({
       name: commandMention(command),
       value: description
     })))
-    .setFooter({ text: `${page + 1} / ${Math.ceil(getCommandsWithPermission(member).length / commandsPerPage)}` });
+    .setFooter({ text: `Страна: ${page + 1} / ${Math.ceil(totalCommands / commandsPerPage)} (Команди: ${totalCommands})` })
+    .setTimestamp();
 }
 
 // Logs

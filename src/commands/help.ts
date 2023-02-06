@@ -137,7 +137,7 @@ export async function execute (interaction: ChatInputCommandInteraction) {
     }
 
     let buttons;
-    let page = Number(buttonInteraction.message.embeds[0]?.footer?.text?.split(' / ')[0]) - 1;
+    let page = Number(buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.at(0)) - 1;
 
     if (ID === 'first') {
       page = 0;
@@ -172,8 +172,7 @@ export async function execute (interaction: ChatInputCommandInteraction) {
   collector.on('end', async () => {
     try {
       await interaction.editReply({
-        components: [disabledButtons],
-        embeds: [embed]
+        components: [disabledButtons]
       });
     } catch (error) {
       logger.error(`Failed to end help command\n${error}`);
