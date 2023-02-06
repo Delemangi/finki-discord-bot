@@ -13,7 +13,7 @@ export const data = new SlashCommandBuilder()
   .setDescription(commands[name])
   .addStringOption((option) => option
     .setName('classroom')
-    .setDescription('Classroom')
+    .setDescription('Просторија')
     .setRequired(true)
     .setAutocomplete(true));
 

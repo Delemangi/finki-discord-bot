@@ -17,15 +17,15 @@ export const data = new SlashCommandBuilder()
   .setDescription(commands[name])
   .addChannelOption((option) => option
     .setName('channel')
-    .setDescription('The channel to send the embed to')
+    .setDescription('Канал')
     .setRequired(true))
   .addStringOption((option) => option
     .setName('json')
-    .setDescription('Embed JSON')
+    .setDescription('JSON')
     .setRequired(true))
   .addBooleanOption((option) => option
     .setName('timestamp')
-    .setDescription('Whether to add a timestamp to the embed')
+    .setDescription('Дали да се додаде време?')
     .setRequired(false))
   .setDefaultMemberPermissions(permission);
 

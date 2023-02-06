@@ -28,7 +28,7 @@ export const data = new SlashCommandBuilder()
     .setDescription(commands['course participants'])
     .addStringOption((option) => option
       .setName('course')
-      .setDescription('Course to get the participants for')
+      .setDescription('Предмет')
       .setRequired(true)
       .setAutocomplete(true)))
   .addSubcommand((command) => command
@@ -36,7 +36,7 @@ export const data = new SlashCommandBuilder()
     .setDescription(commands['course professors'])
     .addStringOption((option) => option
       .setName('course')
-      .setDescription('Course to get the professors for')
+      .setDescription('Предмет')
       .setRequired(true)
       .setAutocomplete(true)))
   .addSubcommand((command) => command
@@ -44,7 +44,7 @@ export const data = new SlashCommandBuilder()
     .setDescription(commands['course role'])
     .addStringOption((option) => option
       .setName('courserole')
-      .setDescription('Course to get the role participants for')
+      .setDescription('Предмет')
       .setRequired(true)
       .setAutocomplete(true)))
   .addSubcommand((command) => command
@@ -52,7 +52,7 @@ export const data = new SlashCommandBuilder()
     .setDescription(commands['course prerequisite'])
     .addStringOption((option) => option
       .setName('course')
-      .setDescription('Course to get the prerequisite for')
+      .setDescription('Предмет')
       .setRequired(true)
       .setAutocomplete(true)))
   .addSubcommand((command) => command
@@ -60,7 +60,7 @@ export const data = new SlashCommandBuilder()
     .setDescription(commands['course info'])
     .addStringOption((option) => option
       .setName('course')
-      .setDescription('Course to get the information for')
+      .setDescription('Предмет')
       .setRequired(true)
       .setAutocomplete(true)));
 

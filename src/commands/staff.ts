@@ -15,7 +15,7 @@ export const data = new SlashCommandBuilder()
   .setDescription(commands[name])
   .addStringOption((option) => option
     .setName('professor')
-    .setDescription('The professor to get the information for')
+    .setDescription('Професор')
     .setRequired(true)
     .setAutocomplete(true));
 

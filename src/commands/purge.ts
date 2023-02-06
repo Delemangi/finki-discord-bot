@@ -14,7 +14,7 @@ export const data = new SlashCommandBuilder()
   .setDescription(commands[name])
   .addNumberOption((option) => option
     .setName('count')
-    .setDescription('Number of messages to purge')
+    .setDescription('Број на пораки')
     .setRequired(true))
   .setDMPermission(false)
   .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages);

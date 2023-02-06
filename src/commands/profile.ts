@@ -12,7 +12,7 @@ export const data = new SlashCommandBuilder()
   .setDescription(commands[name])
   .addUserOption((option) => option
     .setName('user')
-    .setDescription('The user to get the profile of')
+    .setDescription('Корисник')
     .setRequired(false))
   .setDMPermission(false);
 

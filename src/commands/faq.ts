@@ -16,7 +16,7 @@ export const data = new SlashCommandBuilder()
   .setDescription(commands[name])
   .addStringOption((option) => option
     .setName('question')
-    .setDescription('Question')
+    .setDescription('Прашање')
     .setRequired(true)
     .setAutocomplete(true));
 
