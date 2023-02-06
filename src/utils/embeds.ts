@@ -324,7 +324,7 @@ export function getHelpFirstPageEmbed (member: GuildMember | null, commandsPerPa
       name: commandMention(command),
       value: description
     })))
-    .setFooter({ text: `Страна: 1 / ${Math.ceil(totalCommands / commandsPerPage)} (Команди: ${totalCommands})` })
+    .setFooter({ text: `Страна: 1 / ${Math.ceil(totalCommands / commandsPerPage)}  •  Команди: ${totalCommands}` })
     .setTimestamp();
 }
 
@@ -339,7 +339,7 @@ export function getHelpNextEmbed (member: GuildMember | null, page: number, comm
       name: commandMention(command),
       value: description
     })))
-    .setFooter({ text: `Страна: ${page + 1} / ${Math.ceil(totalCommands / commandsPerPage)} (Команди: ${totalCommands})` })
+    .setFooter({ text: `Страна: ${page + 1} / ${Math.ceil(totalCommands / commandsPerPage)}  •  Команди: ${totalCommands}` })
     .setTimestamp();
 }
 
