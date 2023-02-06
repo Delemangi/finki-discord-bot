@@ -30,7 +30,11 @@ Create a `config` folder in the root directory. It should contain:
 15. `sessions.json` - an object of all exam sessions
 16. `staff.json` - an array of the staff
 
-### Sessions
+## Files
+
+Create a `files` folder in the root directory. Any files that should be attached to the FAQ should be here.
+
+## Sessions
 
 Create a `sessions` folder in the root directory. All the session schedule files should go there. The files names should match the respective names in the `sessions.json` config file.
 
