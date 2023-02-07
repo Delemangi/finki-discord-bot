@@ -9,6 +9,8 @@ export const commands = {
   'course professors': 'Наставен кадар на предмети',
   'course role': 'Број на корисници во канали на предмети',
   'course summary': 'Сите информации за предмети',
+  'courses prerequisite': 'Сите предмети според предуслов',
+  'courses programs': 'Сите предмети според смер',
   crosspost: 'Вклучи или исклучи crossposting',
   embed: 'Креирај ембед',
   faq: 'Најчесто поставувани прашања',
@@ -38,4 +40,13 @@ export const commands = {
   'statistics program': 'Статистика за улогите за програми',
   'statistics year': 'Статистика за улогите за години',
   timetable: 'Распоред на часови'
+};
+
+export const programMapping: { [index in ProgramKeys]: ProgramValues } = {
+  ИМБ: 'imb',
+  КЕ: 'ke',
+  КИ: 'ki',
+  КН: 'kn',
+  ПИТ: 'pit',
+  СИИС: 'siis'
 };

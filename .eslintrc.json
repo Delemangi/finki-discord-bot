@@ -48,6 +48,13 @@
             }
           }
         ],
+        "@typescript-eslint/no-extra-parens": [
+          "error",
+          "all",
+          {
+            "enforceForArrowConditionals": false
+          }
+        ],
         "@typescript-eslint/object-curly-spacing": [
           "error",
           "always"

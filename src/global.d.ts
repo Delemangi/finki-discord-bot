@@ -16,6 +16,12 @@ declare global {
 
   type RoleSets = 'activity' | 'color' | 'courses' | 'notification' | 'program' | 'year';
 
+  type CourseType = 'задолжителен (изб.)' | 'задолжителен' | 'изборен' | 'нема' | `задолжителен (${number})` | `изборен (${number})`;
+
+  type ProgramKeys = 'ИМБ' | 'КЕ' | 'КИ' | 'КН' | 'ПИТ' | 'СИИС';
+
+  type ProgramValues = 'imb' | 'ke' | 'ki' | 'kn' | 'pit' | 'siis';
+
   type BotConfig = {
     color?: ColorResolvable;
     crosspostChannels?: string[];
@@ -82,7 +88,8 @@ declare global {
   type CoursePrerequisites = {
     course: string;
     prerequisite: string;
-  };
+    semester: number;
+  } & { [K in ProgramValues]: CourseType };
 
   type CourseInformation = {
     code: string;

@@ -13,7 +13,10 @@ import {
 import { commandMention } from './functions.js';
 import { logger } from './logger.js';
 import { getRole } from './roles.js';
-import { commands } from './strings.js';
+import {
+  commands,
+  programMapping
+} from './strings.js';
 import {
   ActionRowBuilder,
   type AutocompleteInteraction,
@@ -202,6 +205,28 @@ export function getCourseSummaryEmbed (course: string | null) {
           value: p.toString()
         }))
       )
+  ];
+}
+
+export function getCoursesProgramEmbed (program: ProgramKeys, semester: number) {
+  const courses = transformCoursePrerequisites(programMapping[program], semester);
+  const elective = courses.filter((c) => c.type === 'изборен');
+  const mandatory = courses.filter((c) => c.type === 'задолжителен' || c.type === 'задолжителен (изб.)');
+
+  return [
+    new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
+      .setTitle(`Предмети за ${program}, семестар ${semester}`)
+      .setDescription('Ова се пресметани предуслови за сите предмети, според смерот.\n\nПредметите се означени во формат:\n [Број]. [Име] [Предуслов]'),
+    new EmbedBuilder()
+      .setTitle('Задолжителни')
+      .setColor(getFromBotConfig('color'))
+      .setDescription(mandatory.length === 0 ? 'Нема' : mandatory.map((c, i) => `${(i + 1).toString().padStart(2, '0')}. ${c.course} [${c.prerequisite === '' ? 'Нема' : c.prerequisite}]`).join('\n')),
+    new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
+      .setTitle('Изборни')
+      .setDescription(elective.length === 0 ? 'Нема' : elective.map((c, i) => `${(i + 1).toString().padStart(2, '0')}. ${c.course} [${c.prerequisite === '' ? 'Нема' : c.prerequisite}]`).join('\n'))
+      .setTimestamp()
   ];
 }
 
@@ -664,4 +689,19 @@ async function fetchMessageUrl (interaction: ChatInputCommandInteraction | UserC
     logger.warn(`Failed to fetch message URL for interaction by ${interaction.user.tag} in ${interaction.channel.name}`);
     return {};
   }
+}
+
+function transformCoursePrerequisites (program: ProgramValues, semester: number) {
+  return getPrerequisites()
+    .filter((p) => p.semester === semester)
+    .filter((p) => p[program] === 'задолжителен' || p[program] === 'изборен' || p[program] === 'нема' || p[program] === 'задолжителен (изб.)')
+    .map((p) => (p[program] === 'нема' ? {
+      course: p.course,
+      prerequisite: 'Нема',
+      type: 'изборен'
+    } : {
+      course: p.course,
+      prerequisite: p.prerequisite,
+      type: p[program]
+    }));
 }
