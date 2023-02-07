@@ -217,17 +217,34 @@ export function getCoursesProgramEmbed (program: ProgramKeys, semester: number) 
     new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle(`Предмети за ${program}, семестар ${semester}`)
-      .setDescription('Ова се пресметани предуслови за сите предмети, според смерот.\n\nПредметите се означени во формат:\n [Број]. [Име] [Предуслов]'),
+      .setDescription('Предусловите за предметите се под истиот реден број.'),
     new EmbedBuilder()
-      .setTitle('Задолжителни')
       .setColor(getFromBotConfig('color'))
-      .setDescription(mandatory.length === 0 ? 'Нема' : mandatory.map((c, i) => `${(i + 1).toString().padStart(2, '0')}. ${c.course} [${c.prerequisite === '' ? 'Нема' : c.prerequisite}]`).join('\n')),
+      .setTitle('Задолжителни')
+      .setDescription(mandatory.length === 0 ? 'Нема' : mandatory.map((c, i) => `${(i + 1).toString().padStart(2, '0')}. ${c.course}`).join('\n')),
+    new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
+      .setTitle('Задолжителни - предуслови')
+      .setDescription(mandatory.length === 0 ? 'Нема' : mandatory.map((c, i) => `${(i + 1).toString().padStart(2, '0')}. ${c.prerequisite === '' ? 'Нема' : c.prerequisite}`).join('\n')),
     new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle('Изборни')
-      .setDescription(elective.length === 0 ? 'Нема' : elective.map((c, i) => `${(i + 1).toString().padStart(2, '0')}. ${c.course} [${c.prerequisite === '' ? 'Нема' : c.prerequisite}]`).join('\n'))
+      .setDescription(elective.length === 0 ? 'Нема' : elective.map((c, i) => `${(i + 1).toString().padStart(2, '0')}. ${c.course}`).join('\n')),
+    new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
+      .setTitle('Изборни - предуслови')
+      .setDescription(elective.length === 0 ? 'Нема' : elective.map((c, i) => `${(i + 1).toString().padStart(2, '0')}. ${c.prerequisite === '' ? 'Нема' : c.prerequisite}`).join('\n'))
       .setTimestamp()
   ];
+}
+
+export function getCoursesPrerequisiteEmbed (course: string) {
+  const courses = getPrerequisites().filter((p) => p.prerequisite.toLowerCase().includes(course.toLowerCase()));
+
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle(`Предмети со предуслов ${course}`)
+    .setDescription(courses.length === 0 ? 'Нема' : courses.map((c, i) => `${(i + 1).toString().padStart(2, '0')}. ${c.course}`).join('\n'));
 }
 
 export function getStaffEmbed (information: Staff) {

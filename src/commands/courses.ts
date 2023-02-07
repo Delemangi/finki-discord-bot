@@ -1,4 +1,7 @@
-import { getCoursesProgramEmbed } from '../utils/embeds.js';
+import {
+  getCoursesPrerequisiteEmbed,
+  getCoursesProgramEmbed
+} from '../utils/embeds.js';
 import {
   commands,
   programMapping
@@ -53,11 +56,14 @@ async function handleCoursesProgram (interaction: ChatInputCommandInteraction) {
   const program = interaction.options.getString('program', true) as ProgramKeys;
   const semester = interaction.options.getNumber('semester', true);
 
-  const embed = getCoursesProgramEmbed(program, semester);
-  await interaction.editReply({ embeds: embed });
+  const embeds = getCoursesProgramEmbed(program, semester);
+  await interaction.editReply({ embeds });
 }
 
 async function handleCoursesPrerequisite (interaction: ChatInputCommandInteraction) {
-  return interaction;
+  const course = interaction.options.getString('course', true);
+
+  const embed = getCoursesPrerequisiteEmbed(course);
+  await interaction.editReply({ embeds: [embed] });
 }
 
