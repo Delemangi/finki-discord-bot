@@ -227,7 +227,7 @@ export function getCoursesProgramEmbed (program: ProgramKeys, semester: number) 
     new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle('Задолжителни')
-      .setDescription(mandatory.length === 0 ? 'Нема' : mandatory.map((c, i) => `${(i + 1).toString().padStart(2, '0')}. ${c.course}`).join('\n')),
+      .setDescription(mandatory.length === 0 ? 'Нема' : mandatory.map((c, i) => `${(i + 1).toString().padStart(2, '0')}. ${c.course} ${c.type === 'задолжителен (изб.)' ? '(изборен за 3 год. студии)' : ''}`).join('\n')),
     new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setTitle('Задолжителни - предуслови')
