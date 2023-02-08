@@ -76,11 +76,17 @@ export function getCourseParticipantsEmbed (information: CourseParticipants) {
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle(information.course)
-    .addFields(...Object.entries(information).filter(([year]) => year !== 'course').map(([year, participants]) => ({
-      inline: true,
-      name: year,
-      value: participants.toString()
-    })))
+    .addFields(
+      {
+        name: 'Број на запишани студенти',
+        value: '\u200B'
+      },
+      ...Object.entries(information).filter(([year]) => year !== 'course').map(([year, participants]) => ({
+        inline: true,
+        name: year,
+        value: participants.toString()
+      }))
+    )
     .setTimestamp();
 }
 
