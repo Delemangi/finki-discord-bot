@@ -89,8 +89,7 @@
       "off"
     ],
     "import/extensions": [
-      "error",
-      "always"
+      "off"
     ],
     "linebreak-style": [
       "error",
