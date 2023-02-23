@@ -19,7 +19,8 @@ export const data = new SlashCommandBuilder()
 
 export async function execute (interaction: ChatInputCommandInteraction) {
   const classroom = interaction.options.getString('classroom', true);
-  const information = getClassrooms().find((c) => c.classroom.toString().toLowerCase() === classroom.toLowerCase());
+  const [classroomName, classroomLocation] = classroom.split(' ');
+  const information = getClassrooms().find((c) => c.classroom.toString().toLowerCase() === classroomName?.toLowerCase() && c.location.toString().toLowerCase() === classroomLocation?.slice(1, -1).toLowerCase());
 
   if (information === undefined) {
     await interaction.editReply('Не постои таа просторија.');

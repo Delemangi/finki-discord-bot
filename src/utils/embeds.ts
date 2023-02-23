@@ -50,21 +50,25 @@ export function getAboutEmbed () {
 export function getClassroomEmbed (information: Classroom) {
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
-    .setTitle(information.classroom.toString())
+    .setTitle(`${information.classroom.toString()} (${information.location})`)
     .addFields(
       {
+        inline: true,
         name: 'Тип',
         value: information.type
       },
       {
+        inline: true,
         name: 'Локација',
         value: information.location
       },
       {
+        inline: true,
         name: 'Спрат',
         value: information.floor.toString()
       },
       {
+        inline: true,
         name: 'Капацитет',
         value: information.capacity.toString()
       }

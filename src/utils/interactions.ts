@@ -749,7 +749,7 @@ async function handleSessionAutocomplete (interaction: AutocompleteInteraction) 
 
 async function handleClassroomAutocomplete (interaction: AutocompleteInteraction) {
   if (transformedClassrooms === null) {
-    transformedClassrooms = Object.entries(transformOptions(getClassrooms().map((c) => c.classroom.toString())));
+    transformedClassrooms = Object.entries(transformOptions(getClassrooms().map((c) => `${c.classroom} (${c.location})`)));
   }
 
   await interaction.respond(createOptions(transformedClassrooms, interaction.options.getFocused()));
