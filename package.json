@@ -6,7 +6,7 @@
   "dependencies": {
     "@discordjs/rest": "^1.5.0",
     "@keyv/mongo": "^2.1.8",
-    "discord-api-types": "^0.37.35",
+    "discord-api-types": "0.37.20",
     "discord.js": "^14.7.1",
     "keyv": "^4.5.2",
     "winston": "^3.8.2"
