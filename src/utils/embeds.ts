@@ -98,16 +98,18 @@ export function getCourseProfessorsEmbed (information: CourseStaff) {
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle(information.course)
-    .addFields({
-      inline: true,
-      name: 'Професори',
-      value: linkProfessors(information.professors)
-    },
-    {
-      inline: true,
-      name: 'Асистенти',
-      value: linkProfessors(information.assistants)
-    })
+    .addFields(
+      {
+        inline: true,
+        name: 'Професори',
+        value: linkProfessors(information.professors)
+      },
+      {
+        inline: true,
+        name: 'Асистенти',
+        value: linkProfessors(information.assistants)
+      }
+    )
     .setTimestamp();
 }
 
