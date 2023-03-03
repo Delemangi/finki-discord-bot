@@ -679,15 +679,15 @@ export function getQuizQuestionEmbed (question: QuizQuestion, level: number) {
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle('Кој Сака Да Биде Морален Победник?')
-    .setDescription(codeBlock(`Прашање бр. ${level + 1}\n\nQ: ${question.question}\n${question.answers.map((q, i) => `${inlineCode((i + 1).toString().padStart(2, '0'))} ${q}`).join('\n')}`))
+    .setDescription(codeBlock(`Прашање бр. ${level + 1}\n\nQ: ${question.question}\n${question.answers.map((q, i) => `${(i + 1).toString().padStart(2, '0')} ${q}`).join('\n')}`))
     .setTimestamp()
     .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2023' });
 }
 
 export function getQuizQuestionComponents (question: QuizQuestion, level: number, userId: string) {
-  const components: ActionRowBuilder<ButtonBuilder>[] = [];
+  const components = [];
   const row = new ActionRowBuilder<ButtonBuilder>();
-  const buttons: ButtonBuilder[] = [];
+  const buttons = [];
 
   for (let i = 0; i < 4; i++) {
     const button = new ButtonBuilder()
@@ -715,7 +715,7 @@ export function getQuizBeginEmbed () {
 export function getQuizBeginComponents (interaction: ButtonInteraction) {
   const components: ActionRowBuilder<ButtonBuilder>[] = [];
   const row = new ActionRowBuilder<ButtonBuilder>();
-  const buttons: ButtonBuilder[] = [];
+  const buttons = [];
 
   buttons.push(new ButtonBuilder()
     .setCustomId(`quizGame:${interaction.user.id}:y:option:answer:0`)
