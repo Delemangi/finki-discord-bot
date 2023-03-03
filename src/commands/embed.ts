@@ -1,5 +1,8 @@
 import { logger } from '../utils/logger.js';
-import { commands } from '../utils/strings.js';
+import {
+  commands,
+  errors
+} from '../utils/strings.js';
 import {
   type Channel,
   type ChatInputCommandInteraction,
@@ -32,7 +35,7 @@ export const data = new SlashCommandBuilder()
 export async function execute (interaction: ChatInputCommandInteraction) {
   const permissions = interaction.member?.permissions as PermissionsBitField | undefined;
   if (permissions === undefined || !permissions.has(permission)) {
-    await interaction.editReply('Оваа команда е само за администратори.');
+    await interaction.editReply(errors['adminOnlyCommand']);
     return;
   }
 
@@ -41,7 +44,7 @@ export async function execute (interaction: ChatInputCommandInteraction) {
   const timestamp = interaction.options.getBoolean('timestamp') ?? false;
 
   if (!channel.isTextBased() || channel.isDMBased()) {
-    await interaction.editReply('Невалиден канал.');
+    await interaction.editReply(errors['invalidChannel']);
     return;
   }
 

@@ -12,7 +12,10 @@ import {
   getCourseProfessorsEmbed,
   getCourseSummaryEmbed
 } from '../utils/embeds.js';
-import { commands } from '../utils/strings.js';
+import {
+  commands,
+  errors
+} from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   roleMention,
@@ -103,7 +106,7 @@ async function handleCourseParticipants (interaction: ChatInputCommandInteractio
   const information = getParticipants().find((p) => p.course.toLowerCase() === course?.toLowerCase());
 
   if (information === undefined) {
-    await interaction.editReply('Не постои таков предмет.');
+    await interaction.editReply(errors['courseNotFound']);
     return;
   }
 
@@ -115,7 +118,7 @@ async function handleCourseProfessors (interaction: ChatInputCommandInteraction,
   const information = getProfessors().find((p) => p.course.toLowerCase() === course?.toLowerCase());
 
   if (information === undefined) {
-    await interaction.editReply('Не постои таков предмет.');
+    await interaction.editReply(errors['courseNotFound']);
     return;
   }
 
@@ -125,7 +128,7 @@ async function handleCourseProfessors (interaction: ChatInputCommandInteraction,
 
 async function handleCourseRole (interaction: ChatInputCommandInteraction, courseRole: string | null) {
   if (interaction.guild === null) {
-    await interaction.editReply('Оваа команда се повикува само во сервер.');
+    await interaction.editReply(errors['serverOnlyCommand']);
     return;
   }
 
@@ -134,14 +137,14 @@ async function handleCourseRole (interaction: ChatInputCommandInteraction, cours
   const roleEntry = Object.entries(getFromRoleConfig('courses')).find(([, c]) => c.toLowerCase() === courseRole?.toLowerCase());
 
   if (roleEntry === undefined) {
-    await interaction.editReply('Не постои таков предмет.');
+    await interaction.editReply(errors['courseNotFound']);
     return;
   }
 
   const role = interaction.guild.roles.cache.find((r) => r.name.toLowerCase() === roleEntry[0].toLowerCase());
 
   if (role === undefined) {
-    await interaction.editReply('Не постои таков предмет.');
+    await interaction.editReply(errors['courseNotFound']);
     return;
   }
 
@@ -155,7 +158,7 @@ async function handleCoursePrerequisite (interaction: ChatInputCommandInteractio
   const information = getPrerequisites().find((p) => p.course.toLowerCase() === course?.toLowerCase());
 
   if (information === undefined) {
-    await interaction.editReply('Не постои таков предмет.');
+    await interaction.editReply(errors['courseNotFound']);
     return;
   }
 
@@ -167,7 +170,7 @@ async function handleCourseInfo (interaction: ChatInputCommandInteraction, cours
   const information = getInformation().find((p) => p.course.toLowerCase() === course?.toLowerCase());
 
   if (information === undefined) {
-    await interaction.editReply('Не постои таков предмет.');
+    await interaction.editReply(errors['courseNotFound']);
     return;
   }
 

@@ -1,4 +1,7 @@
-import { commands } from '../utils/strings.js';
+import {
+  commands,
+  errors
+} from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   PermissionFlagsBits,
@@ -14,7 +17,9 @@ export const data = new SlashCommandBuilder()
   .setDescription(commands[name])
   .addNumberOption((option) => option
     .setName('count')
-    .setDescription('Број на пораки')
+    .setDescription('Број на пораки (меѓу 1 и 100)')
+    .setMinValue(1)
+    .setMaxValue(100)
     .setRequired(true))
   .setDMPermission(false)
   .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages);
@@ -22,24 +27,19 @@ export const data = new SlashCommandBuilder()
 export async function execute (interaction: ChatInputCommandInteraction) {
   const permissions = interaction.member?.permissions as PermissionsBitField | undefined;
   if (permissions === undefined || !permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-    await interaction.editReply('Оваа команда е само за администратори.');
+    await interaction.editReply(errors['adminOnlyCommand']);
     return;
   }
 
   if (interaction.channel === null || !interaction.channel.isTextBased() || interaction.channel.isDMBased()) {
-    await interaction.editReply('Оваа команда се повикува само во сервер.');
+    await interaction.editReply(errors['serverOnlyCommand']);
     return;
   }
 
-  const count = interaction.options.getNumber('count', true);
-
-  if (count < 1) {
-    await interaction.editReply('Невалиден број на пораки за бришење.');
-    return;
-  }
+  const count = Math.round(interaction.options.getNumber('count', true));
 
   await interaction.editReply(`Бришам ${count} пораки...`);
-  await setTimeout(1_000);
+  await setTimeout(500);
   await interaction.deleteReply();
   await interaction.channel?.bulkDelete(count);
 }

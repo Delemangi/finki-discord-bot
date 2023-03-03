@@ -13,7 +13,10 @@ import {
   getPollStatsEmbed
 } from '../utils/embeds.js';
 import { commandMention } from '../utils/functions.js';
-import { commands } from '../utils/strings.js';
+import {
+  commands,
+  errors
+} from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   PermissionsBitField,
@@ -174,7 +177,7 @@ async function handlePollEdit (interaction: ChatInputCommandInteraction) {
   const poll = await getPoll(id);
 
   if (poll === null) {
-    await interaction.editReply('Анкетата не постои.');
+    await interaction.editReply(errors['pollNotFound']);
     return;
   }
 
@@ -198,7 +201,7 @@ async function handlePollStats (interaction: ChatInputCommandInteraction) {
   const poll = await getPoll(id);
 
   if (poll === null) {
-    await interaction.editReply('Анкетата не постои.');
+    await interaction.editReply(errors['pollNotFound']);
     return;
   }
 
@@ -220,7 +223,7 @@ async function handlePollShow (interaction: ChatInputCommandInteraction) {
   const poll = await getPoll(id);
 
   if (poll === null) {
-    await interaction.editReply('Анкетата не постои.');
+    await interaction.editReply(errors['pollNotFound']);
     return;
   }
 
@@ -239,12 +242,12 @@ async function handlePollAdd (interaction: ChatInputCommandInteraction) {
   const poll = await getPoll(id);
 
   if (poll === null) {
-    await interaction.editReply('Анкетата не постои.');
+    await interaction.editReply(errors['pollNotFound']);
     return;
   }
 
   if (poll.open === false && poll.owner !== interaction.user.id) {
-    await interaction.editReply('Ова не е ваша анкета.');
+    await interaction.editReply(errors['pollNoPermission']);
     return;
   }
 
@@ -275,12 +278,12 @@ async function handlePollRemove (interaction: ChatInputCommandInteraction) {
   const poll = await getPoll(id);
 
   if (poll === null) {
-    await interaction.editReply('Анкетата не постои.');
+    await interaction.editReply(errors['pollNotFound']);
     return;
   }
 
   if (poll.owner !== interaction.user.id) {
-    await interaction.editReply('Ова не е ваша анкета.');
+    await interaction.editReply(errors['pollNoPermission']);
     return;
   }
 
@@ -302,13 +305,13 @@ async function handlePollDelete (interaction: ChatInputCommandInteraction) {
   const poll = await getPoll(id);
 
   if (poll === null) {
-    await interaction.reply('Анкетата не постои.');
+    await interaction.reply(errors['pollNotFound']);
     return;
   }
 
   const permissions = interaction.member?.permissions as PermissionsBitField | undefined;
   if (permissions === undefined || !permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-    await interaction.reply('Оваа команда е само за администратори.');
+    await interaction.reply(errors['adminOnlyCommand']);
     return;
   }
 
