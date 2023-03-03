@@ -22,6 +22,8 @@ declare global {
 
   type ProgramValues = 'imb' | 'ke' | 'ki' | 'kn' | 'pit' | 'siis';
 
+  type QuizDifficulties = 'easy' | 'hard' | 'medium';
+
   type BotConfig = {
     color?: ColorResolvable;
     crosspostChannels?: string[];
@@ -124,6 +126,16 @@ declare global {
     execute: (...args: ClientEvents[K]) => Awaitable<void>;
     name: K;
     once?: boolean;
+  };
+
+  type QuizQuestion = {
+    answers: string[];
+    correctAnswer: string;
+    question: string;
+  };
+
+  type QuizQuestions = {
+    [index in QuizDifficulties]: QuizQuestion[];
   };
 }
 

@@ -3,7 +3,6 @@ import { getCommand } from './commands.js';
 import {
   getClassrooms,
   getCourses,
-  getFromBotConfig,
   getFromRoleConfig,
   getLinks,
   getQuestions,
@@ -28,6 +27,11 @@ import {
   getPollStatsButtonEmbed,
   getPollStatsComponents,
   getPollStatsEmbed,
+  getQuizBeginComponents,
+  getQuizBeginEmbed,
+  getQuizHelpEmbed,
+  getQuizQuestionComponents,
+  getQuizQuestionEmbed,
   getUserContextMenuCommandEmbed
 } from './embeds.js';
 import { createOptions } from './functions.js';
@@ -37,16 +41,13 @@ import {
   getRole,
   getRoles
 } from './roles.js';
+import { errors } from './strings.js';
 import {
-  ActionRowBuilder,
   type AutocompleteInteraction,
-  ButtonBuilder,
   type ButtonInteraction,
-  ButtonStyle,
+  channelMention,
   ChannelType,
   type ChatInputCommandInteraction,
-  codeBlock,
-  EmbedBuilder,
   type GuildMemberRoleManager,
   inlineCode,
   PermissionsBitField,
@@ -123,7 +124,7 @@ export async function handleButton (interaction: ButtonInteraction) {
     await handlePollStatsButton(interaction, args);
   } else if (command === 'quiz') {
     await handleQuizButton(interaction, args);
-  } else if (command === 'quizgame') {
+  } else if (command === 'quizGame') {
     await handleQuizGameButton(interaction, args);
   } else if (ignoredButtons.includes(command)) {
     // Do nothing
@@ -161,8 +162,6 @@ export async function handleAutocomplete (interaction: AutocompleteInteraction) 
 }
 
 // Buttons
-
-const quizHelp = 'Добредојдовте во **помош** делот на квизот!\n\n**Како се игра?**\nВо текот на квизот ќе ви бидат поставени 15 прашања поврзани со темата и областа на **ФИНКИ** и **серверот**.\nОдговорете на сите 15 прашања и ќе добиете *две награди*.\nЕдна од наградите е сопствена боја на серверот, а другата за сега е тајна. :face_with_hand_over_mouth:\n\nВо текот на квизот ќе имате 3 алатки за помош:\n- **50 - 50**\n- **друго прашање**\n- **помош од компјутер**\n\nОвие алатки ќе може да ги искористите само до 12-тото прашање, после тоа **НЕ СЕ ДОЗВОЛЕНИ!**\n\nКвизот нема бесконечен број на обиди, **смеете да го играте само 3 пати!**\n\n*Доколку се случи да изгубите еден обид и мислите дека неправедно сте го изгубиле, контактирајте нè за да решиме овој проблем.*\nВи посакуваме **среќна** и **забавна** игра! :smile:';
 
 async function handleCourseButton (interaction: ButtonInteraction, args: string[]) {
   if (interaction.guild === null) {
@@ -478,7 +477,7 @@ async function handlePollStatsButton (interaction: ButtonInteraction, args: stri
 async function handleQuizButton (interaction: ButtonInteraction, args: string[]) {
   if (interaction.user.id !== args[0]) {
     await interaction.reply({
-      content: 'Квизот не е ваш!',
+      content: errors['quizNoPermission'],
       ephemeral: true
     });
     return;
@@ -490,13 +489,7 @@ async function handleQuizButton (interaction: ButtonInteraction, args: string[])
   }
 
   if (args[1] === 'h') {
-    const embed = new EmbedBuilder()
-      .setColor(getFromBotConfig('color'))
-      .setTitle('Кој сака да биде морален победник?')
-      .setDescription(quizHelp)
-      .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2022' })
-      .setTimestamp();
-
+    const embed = getQuizHelpEmbed();
     await interaction.reply({
       embeds: [embed],
       ephemeral: true
@@ -504,12 +497,13 @@ async function handleQuizButton (interaction: ButtonInteraction, args: string[])
     return;
   }
 
-  if (interaction.guild?.channels.cache.find((c) => c.name === `🎲︱квиз-${interaction.user.tag}`)) {
+  const channel = interaction.guild?.channels.cache.find((c) => c.name === `🎲︱квиз-${interaction.user.tag}`);
+
+  if (channel !== undefined) {
     await interaction.reply({
-      content: 'Веќе имате друг квиз отворено!',
+      content: `Веќе имате друг квиз отворено: ${channelMention(channel.id)}`,
       ephemeral: true
     });
-
     return;
   }
 
@@ -529,30 +523,8 @@ async function handleQuizButton (interaction: ButtonInteraction, args: string[])
     type: ChannelType.GuildText
   });
 
-  const quizEmbed = new EmbedBuilder()
-    .setColor(getFromBotConfig('color'))
-    .setTitle('Кој сака да биде морален победник?')
-    .setDescription('**Започни?**')
-    .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2022' })
-    .setTimestamp();
-
-  const components: ActionRowBuilder<ButtonBuilder>[] = [];
-  const row = new ActionRowBuilder<ButtonBuilder>();
-  const buttons: ButtonBuilder[] = [];
-
-  buttons.push(new ButtonBuilder()
-    .setCustomId(`quizgame:${interaction.user.id}:y:option:answer:0:0:0:0`)
-    .setLabel('Да')
-    .setStyle(ButtonStyle.Primary));
-
-  buttons.push(new ButtonBuilder()
-    .setCustomId(`quizgame:${interaction.user.id}:n`)
-    .setLabel('Не')
-    .setStyle(ButtonStyle.Danger));
-
-  row.addComponents(buttons);
-  components.push(row);
-
+  const quizEmbed = getQuizBeginEmbed();
+  const components = getQuizBeginComponents(interaction);
   await quizChannel?.send({
     components,
     content: userMention(interaction.user.id),
@@ -560,7 +532,7 @@ async function handleQuizButton (interaction: ButtonInteraction, args: string[])
   });
   await interaction.message.delete();
   await interaction.reply({
-    content: 'Направен е канал за вас. Со среќа! :smile:',
+    content: 'Направен е канал за вас. Со среќа!',
     ephemeral: true
   });
 }
@@ -568,7 +540,7 @@ async function handleQuizButton (interaction: ButtonInteraction, args: string[])
 async function handleQuizGameButton (interaction: ButtonInteraction, args: string[]) {
   if (interaction.user.id !== args[0]) {
     await interaction.reply({
-      content: 'Квизот не е ваш!',
+      content: errors['quizNoPermission'],
       ephemeral: true
     });
     return;
@@ -588,86 +560,32 @@ async function handleQuizGameButton (interaction: ButtonInteraction, args: strin
 
     if (args[2] !== args[3]) {
       await interaction.message.delete();
-      await interaction.channel?.send({
-        content: 'Не го поминавте квизот... Повеќе среќа следен пат.'
-      });
-      await setTimeout(60_000);
+      await interaction.channel?.send('Не го поминавте квизот... Повеќе среќа следен пат.');
+      await setTimeout(20_000);
       await interaction.channel?.delete();
       return;
     }
 
     if (checkLevel + 1 >= 15) {
       await interaction.message.delete();
-      await interaction.channel?.send({
-        content: 'Честитки! :grin:'
-      });
-      await setTimeout(60_000);
+      await interaction.channel?.send('Честитки! :grin:');
+      await setTimeout(20_000);
       await interaction.channel?.delete();
       return;
     }
   }
 
-  const lvl = Number(args[4]);
-  const questionsList = getQuiz();
-  const getLevelQuestions = questionsList[lvl < 5 ? 'easy' : lvl < 10 ? 'medium' : 'hard'];
-  const currentQuestion = getLevelQuestions[Math.floor(Math.random() * getLevelQuestions.length)];
-
-  const quizEmbed = new EmbedBuilder()
-    .setColor(getFromBotConfig('color'))
-    .setTitle('Кој сака да биде морален победник?')
-    .setDescription(codeBlock(`Прашање бр. ${lvl + 1}\n\nQ: ${currentQuestion.question}\n${currentQuestion.answers.map((question: string, index: number) => `${inlineCode((index + 1).toString().padStart(2, '0'))} ${question}`).join('\n')}`))
-    .setTimestamp()
-    .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2022' });
-
-  const components: ActionRowBuilder<ButtonBuilder>[] = [];
-  const row = new ActionRowBuilder<ButtonBuilder>();
-  const buttons: ButtonBuilder[] = [];
-
-  for (let i = 0; i < 4; i++) {
-    const button = new ButtonBuilder()
-      .setCustomId(`quizgame:${args[0]}:s:${currentQuestion.answers[i]}:${currentQuestion.correctAnswer}:${lvl}:${args[5]}:${args[6]}:${args[7]}`)
-      .setLabel(`${i + 1}`)
-      .setStyle(ButtonStyle.Primary);
-    buttons.push(button);
-  }
-
-  row.addComponents(buttons);
-  components.push(row);
-
-  /*
-  row = new ActionRowBuilder<ButtonBuilder>();
-  buttons = [];
-
-  const helpers = [
-    {
-      action: 'a',
-      label: '50:50'
-    },
-    {
-      action: 'b',
-      label: 'Замена на прашање'
-    },
-    {
-      action: 'c',
-      label: 'Помош од Компјутер'
-    }
-  ];
-
-  for (const obj of helpers) {
-    buttons.push(new ButtonBuilder()
-      .setCustomId(`quizgame:${interaction.user.id}:${obj.action}:null:${currentQuestion.correctAnswer}:${lvl}:${args[5]}:${args[6]}:${args[7]}`)
-      .setLabel(obj.label)
-      .setStyle(ButtonStyle.Secondary));
-  }
-
-  row.addComponents(buttons);
-  components.push(row);
-  */
+  const level = Number(args[4]);
+  const getLevelQuestions = getQuiz()[level < 5 ? 'easy' : level < 10 ? 'medium' : 'hard'];
+  const currentQuestion = getLevelQuestions[Math.floor(Math.random() * getLevelQuestions.length)] as QuizQuestion;
 
   await interaction.deferUpdate();
+
+  const embed = getQuizQuestionEmbed(currentQuestion, level);
+  const components = getQuizQuestionComponents(currentQuestion, level, interaction.user.id);
   await interaction.message.edit({
     components,
-    embeds: [quizEmbed]
+    embeds: [embed]
   });
 }
 

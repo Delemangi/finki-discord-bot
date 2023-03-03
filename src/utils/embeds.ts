@@ -21,7 +21,8 @@ import { logger } from './logger.js';
 import { getRole } from './roles.js';
 import {
   commands,
-  programMapping
+  programMapping,
+  quizHelp
 } from './strings.js';
 import {
   ActionRowBuilder,
@@ -34,6 +35,7 @@ import {
   codeBlock,
   EmbedBuilder,
   type GuildMember,
+  hyperlink,
   inlineCode,
   type Interaction,
   italic,
@@ -51,7 +53,7 @@ export function getAboutEmbed () {
     .setColor(getFromBotConfig('color'))
     .setTitle('ФИНКИ Discord бот')
     .setThumbnail(getFromBotConfig('logo'))
-    .setDescription(`Овој бот е развиен од ${userMention('198249751001563136')} за потребите на Discord серверот на студентите на ФИНКИ. Ботот е open source и може да се најде на [GitHub](https://github.com/Delemangi/finki-discord-bot). Ако имате било какви прашања, предлози или проблеми, контактирајте нè на Discord или на GitHub. \n\nНапишете ${commandMention('help')} за да ги видите сите достапни команди, или ${commandMention('list questions')} за да ги видите сите достапни прашања.`)
+    .setDescription(`Овој бот е развиен од ${userMention('198249751001563136')} за потребите на Discord серверот на студентите на ФИНКИ. Ботот е open source и може да се најде на ${hyperlink('GitHub', 'https://github.com/Delemangi/finki-discord-bot')}. Ако имате било какви прашања, предлози или проблеми, контактирајте нè на Discord или на GitHub. \n\nНапишете ${commandMention('help')} за да ги видите сите достапни команди, или ${commandMention('list questions')} за да ги видите сите достапни прашања.`)
     .setTimestamp();
 }
 
@@ -636,6 +638,110 @@ export async function getPollStatsButtonEmbed (id: string, option: string, votes
       .setFooter({ text: `Анкета: ${id}` });
 }
 
+// Quiz
+
+export function getQuizEmbed () {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Кој Сака Да Биде Морален Победник?')
+    .setDescription('Добредојдовте на квизот.\nДали сакате да започнете?')
+    .setTimestamp()
+    .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2023' });
+}
+
+export function getQuizComponents (interaction: ChatInputCommandInteraction) {
+  const components = [];
+  const row = new ActionRowBuilder<ButtonBuilder>();
+  const buttons = [];
+
+  buttons.push(new ButtonBuilder()
+    .setCustomId(`quiz:${interaction.user.id}:y`)
+    .setLabel('Да')
+    .setStyle(ButtonStyle.Primary));
+
+  buttons.push(new ButtonBuilder()
+    .setCustomId(`quiz:${interaction.user.id}:n`)
+    .setLabel('Не')
+    .setStyle(ButtonStyle.Danger));
+
+  buttons.push(new ButtonBuilder()
+    .setCustomId(`quiz:${interaction.user.id}:h`)
+    .setLabel('Помош за квизот')
+    .setStyle(ButtonStyle.Secondary));
+
+  row.addComponents(buttons);
+  components.push(row);
+
+  return components;
+}
+
+export function getQuizQuestionEmbed (question: QuizQuestion, level: number) {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Кој Сака Да Биде Морален Победник?')
+    .setDescription(codeBlock(`Прашање бр. ${level + 1}\n\nQ: ${question.question}\n${question.answers.map((q, i) => `${inlineCode((i + 1).toString().padStart(2, '0'))} ${q}`).join('\n')}`))
+    .setTimestamp()
+    .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2023' });
+}
+
+export function getQuizQuestionComponents (question: QuizQuestion, level: number, userId: string) {
+  const components: ActionRowBuilder<ButtonBuilder>[] = [];
+  const row = new ActionRowBuilder<ButtonBuilder>();
+  const buttons: ButtonBuilder[] = [];
+
+  for (let i = 0; i < 4; i++) {
+    const button = new ButtonBuilder()
+      .setCustomId(`quizGame:${userId}:s:${question.answers[i]}:${question.correctAnswer}:${level}`)
+      .setLabel(`${i + 1}`)
+      .setStyle(ButtonStyle.Primary);
+    buttons.push(button);
+  }
+
+  row.addComponents(buttons);
+  components.push(row);
+
+  return components;
+}
+
+export function getQuizBeginEmbed () {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Кој Сака Да Биде Морален Победник?')
+    .setDescription(italic('Започни?'))
+    .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2023' })
+    .setTimestamp();
+}
+
+export function getQuizBeginComponents (interaction: ButtonInteraction) {
+  const components: ActionRowBuilder<ButtonBuilder>[] = [];
+  const row = new ActionRowBuilder<ButtonBuilder>();
+  const buttons: ButtonBuilder[] = [];
+
+  buttons.push(new ButtonBuilder()
+    .setCustomId(`quizGame:${interaction.user.id}:y:option:answer:0`)
+    .setLabel('Да')
+    .setStyle(ButtonStyle.Primary));
+
+  buttons.push(new ButtonBuilder()
+    .setCustomId(`quizGame:${interaction.user.id}:n`)
+    .setLabel('Не')
+    .setStyle(ButtonStyle.Danger));
+
+  row.addComponents(buttons);
+  components.push(row);
+
+  return components;
+}
+
+export function getQuizHelpEmbed () {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Кој Сака Да Биде Морален Победник?')
+    .setDescription(quizHelp)
+    .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2023' })
+    .setTimestamp();
+}
+
 // Logs
 
 export async function getChatInputCommandEmbed (interaction: ChatInputCommandInteraction) {
@@ -785,7 +891,7 @@ function getButtonCommand (command?: string) {
       return 'Unknown';
     case 'pollStats':
       return 'Poll Stats';
-    case 'quizgame':
+    case 'quizGame':
       return 'Quiz Game';
     default:
       return command.at(0)?.toUpperCase() + command.slice(1);
@@ -812,7 +918,7 @@ function getButtonInfo (interaction: ButtonInteraction, command: string, args: s
     case 'poll':
     case 'pollStats':
     case 'quiz':
-    case 'quizgame':
+    case 'quizGame':
       return {
         name: getButtonCommand(command),
         value: args[0] === undefined ? 'Unknown' : inlineCode(args[0])
