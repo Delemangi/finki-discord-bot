@@ -249,7 +249,7 @@ export async function deleteReminders (...reminders: Reminder[]) {
   for (const reminder of reminders) {
     await database
       .getRepository(Reminder)
-      .delete(reminder);
+      .delete({ id: reminder.id });
   }
 
   return true;

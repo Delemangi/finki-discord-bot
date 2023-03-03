@@ -25,10 +25,10 @@ export async function remind () {
             await channel.send(`${userMention(reminder.owner)} Потсетник: ${reminder.description}`);
           }
         }
+
+        await deleteReminders(reminder);
       }
     }
-
-    await deleteReminders(...reminders);
 
     await setTimeout(15_000);
   }
