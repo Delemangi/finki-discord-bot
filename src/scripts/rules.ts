@@ -6,11 +6,14 @@ import {
   getToken
 } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
-import { EmbedBuilder } from 'discord.js';
+import {
+  EmbedBuilder,
+  inlineCode
+} from 'discord.js';
 
-const channelID = process.argv[2];
+const channelId = process.argv[2];
 
-if (channelID === undefined) {
+if (channelId === undefined) {
   throw new Error('Missing channel ID argument');
 }
 
@@ -19,7 +22,7 @@ await client.login(getToken());
 client.once('ready', async () => {
   logger.info('Bot is ready');
 
-  const channel = client.channels.cache.get(channelID);
+  const channel = client.channels.cache.get(channelId);
   const roles = getFromRoleConfig('year');
 
   if (channel === undefined || !channel.isTextBased() || channel.isDMBased()) {
@@ -34,7 +37,7 @@ client.once('ready', async () => {
     .setColor(getFromBotConfig('color'))
     .setTitle('Правила')
     .setThumbnail(getFromBotConfig('logo'))
-    .setDescription(`${getRules().map((value, index) => `${index + 1}. ${value}`).join('\n\n')} \n\n **Евентуално кршење на правилата може да доведе до санкции**.`);
+    .setDescription(`${getRules().map((value, index) => `${inlineCode((index + 1).toString().padStart(2, '0'))} ${value}`).join('\n\n')} \n\n **Евентуално кршење на правилата може да доведе до санкции**.`);
 
   try {
     await channel.send({

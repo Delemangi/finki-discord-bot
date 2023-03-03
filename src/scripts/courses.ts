@@ -12,9 +12,9 @@ import {
   EmbedBuilder
 } from 'discord.js';
 
-const [channelID, newlines, ...roleSets] = process.argv.slice(2);
+const [channelId, newlines, ...roleSets] = process.argv.slice(2);
 
-if (channelID === undefined || roleSets === undefined || roleSets.length === 0) {
+if (channelId === undefined || roleSets === undefined || roleSets.length === 0) {
   throw new Error('Missing channel ID or role sets arguments');
 }
 
@@ -23,7 +23,7 @@ await client.login(getToken());
 client.once('ready', async () => {
   logger.info('Bot is ready');
 
-  const channel = client.channels.cache.get(channelID);
+  const channel = client.channels.cache.get(channelId);
 
   if (channel === undefined || !channel.isTextBased() || channel.isDMBased()) {
     throw new Error('The provided channel must be a guild text channel');

@@ -12,7 +12,7 @@ const name = 'list';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription('Get all...')
+  .setDescription('List')
   .addSubcommand((command) => command
     .setName('questions')
     .setDescription(commands['list questions']))

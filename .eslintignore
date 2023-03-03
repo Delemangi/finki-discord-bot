@@ -1,0 +1,6 @@
+# NPM
+package*.json
+
+# Output
+dist
+*.js

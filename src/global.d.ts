@@ -25,11 +25,10 @@ declare global {
   type BotConfig = {
     color?: ColorResolvable;
     crosspostChannels?: string[];
-    database: string;
     logo: string;
     logs?: { [K in Logs]: string };
     mode: Mode;
-    profiles: { [K in Mode]: { applicationID: string; token: string } };
+    profiles: { [K in Mode]: { applicationId: string; token: string } };
   };
 
   type RoleConfig = {
@@ -101,20 +100,6 @@ declare global {
     course: string;
     level: number;
     link: string;
-  };
-
-  type Poll = {
-    isPublic: boolean;
-    optionVotes: number[];
-    options: string[];
-    owner: string;
-    participants: {
-      id: string;
-      tag: string;
-      vote: number;
-    }[];
-    title: string;
-    votes: number;
   };
 
   type Classroom = {

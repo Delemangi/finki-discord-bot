@@ -1,6 +1,6 @@
 import { getCommands } from '../utils/commands.js';
 import {
-  getApplicationID,
+  getApplicationId,
   getToken
 } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
@@ -17,7 +17,7 @@ for (const [, command] of await getCommands()) {
 }
 
 try {
-  await rest.put(Routes.applicationCommands(getApplicationID()), { body: commands });
+  await rest.put(Routes.applicationCommands(getApplicationId()), { body: commands });
   logger.info('Done');
 } catch (error) {
   throw new Error(`Failed to register application commands\n${error}`);

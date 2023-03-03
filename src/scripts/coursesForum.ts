@@ -9,9 +9,9 @@ import {
   inlineCode
 } from 'discord.js';
 
-const [channelID] = process.argv.slice(2);
+const [channelId] = process.argv.slice(2);
 
-if (channelID === undefined) {
+if (channelId === undefined) {
   throw new Error('Missing channel ID argument');
 }
 
@@ -20,7 +20,7 @@ await client.login(getToken());
 client.once('ready', async () => {
   logger.info('Bot is ready');
 
-  const channel = client.channels.cache.get(channelID);
+  const channel = client.channels.cache.get(channelId);
 
   if (channel === undefined || channel.type !== ChannelType.GuildForum) {
     throw new Error('The provided channel must be a guild forum channel');

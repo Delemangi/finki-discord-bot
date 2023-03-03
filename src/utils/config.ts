@@ -6,7 +6,6 @@ import {
 const defaultConfig: Required<BotConfig> = {
   color: '#000000',
   crosspostChannels: [],
-  database: '',
   logo: '',
   logs: {
     actions: '',
@@ -15,11 +14,11 @@ const defaultConfig: Required<BotConfig> = {
   mode: 'prod',
   profiles: {
     dev: {
-      applicationID: '',
+      applicationId: '',
       token: ''
     },
     prod: {
-      applicationID: '',
+      applicationId: '',
       token: ''
     }
   }
@@ -111,15 +110,10 @@ export function checkConfig () {
     throw new Error('Missing config folder');
   }
 
-  const database = getFromBotConfig('database');
   const mode = getFromBotConfig('mode');
   const profiles = getFromBotConfig('profiles');
 
-  if (database === '') {
-    throw new Error('Missing database');
-  }
-
-  if (profiles[mode]['applicationID'] === '' || profiles[mode]['token'] === '') {
+  if (profiles[mode]['applicationId'] === '' || profiles[mode]['token'] === '') {
     throw new Error('Missing profiles');
   }
 }
@@ -128,6 +122,6 @@ export function getToken () {
   return getFromBotConfig('profiles')[getFromBotConfig('mode')]['token'];
 }
 
-export function getApplicationID () {
-  return getFromBotConfig('profiles')[getFromBotConfig('mode')]['applicationID'];
+export function getApplicationId () {
+  return getFromBotConfig('profiles')[getFromBotConfig('mode')]['applicationId'];
 }

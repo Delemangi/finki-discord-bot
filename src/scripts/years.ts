@@ -12,9 +12,9 @@ import {
   EmbedBuilder
 } from 'discord.js';
 
-const [channelID, newlines] = process.argv.slice(2);
+const [channelId, newlines] = process.argv.slice(2);
 
-if (channelID === undefined) {
+if (channelId === undefined) {
   throw new Error('Missing channel ID argument');
 }
 
@@ -23,7 +23,7 @@ await client.login(getToken());
 client.once('ready', async () => {
   logger.info('Bot is ready');
 
-  const channel = client.channels.cache.get(channelID);
+  const channel = client.channels.cache.get(channelId);
   const roles = getFromRoleConfig('year');
 
   if (channel === undefined || !channel.isTextBased() || channel.isDMBased()) {

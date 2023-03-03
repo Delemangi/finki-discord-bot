@@ -91,6 +91,14 @@
     "import/extensions": [
       "off"
     ],
+    "import/no-unassigned-import": [
+      "error",
+      {
+        "allow": [
+          "reflect-metadata"
+        ]
+      }
+    ],
     "linebreak-style": [
       "error",
       "windows"

@@ -1,3 +1,5 @@
+import { type Poll } from '../entities/Poll.js';
+import { type PollVote } from '../entities/PollVote.js';
 import { client } from './client.js';
 import {
   getFromBotConfig,
@@ -10,6 +12,10 @@ import {
   getQuestions,
   getStaff
 } from './config.js';
+import {
+  getPollVotes,
+  getPollVotesByOption
+} from './database.js';
 import { commandMention } from './functions.js';
 import { logger } from './logger.js';
 import { getRole } from './roles.js';
@@ -25,10 +31,12 @@ import {
   ButtonStyle,
   channelMention,
   type ChatInputCommandInteraction,
+  codeBlock,
   EmbedBuilder,
   type GuildMember,
   inlineCode,
   type Interaction,
+  italic,
   roleMention,
   type UserContextMenuCommandInteraction,
   userMention
@@ -43,7 +51,7 @@ export function getAboutEmbed () {
     .setColor(getFromBotConfig('color'))
     .setTitle('ФИНКИ Discord бот')
     .setThumbnail(getFromBotConfig('logo'))
-    .setDescription(`Овој бот е развиен од <@198249751001563136> за потребите на Discord серверот на студентите на ФИНКИ. Ботот е open source и може да се најде на [GitHub](https://github.com/Delemangi/finki-discord-bot). Ако имате било какви прашања, предлози или проблеми, контактирајте нè на Discord или на GitHub. \n\nНапишете ${commandMention('help')} за да ги видите сите достапни команди, или ${commandMention('list questions')} за да ги видите сите достапни прашања.`)
+    .setDescription(`Овој бот е развиен од ${userMention('198249751001563136')} за потребите на Discord серверот на студентите на ФИНКИ. Ботот е open source и може да се најде на [GitHub](https://github.com/Delemangi/finki-discord-bot). Ако имате било какви прашања, предлози или проблеми, контактирајте нè на Discord или на GitHub. \n\nНапишете ${commandMention('help')} за да ги видите сите достапни команди, или ${commandMention('list questions')} за да ги видите сите достапни прашања.`)
     .setTimestamp();
 }
 
@@ -440,7 +448,7 @@ export function getListQuestionsEmbed () {
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle('Прашања')
-    .setDescription(`Ова се сите достапни прашања. Користете ${commandMention('faq')} за да ги добиете одговорите.\n\n${getQuestions().map((question, index) => `${(index + 1).toString().padStart(2, '0')}. ${question.question}`).join('\n')}`)
+    .setDescription(`Ова се сите достапни прашања. Користете ${commandMention('faq')} за да ги добиете одговорите.\n\n${getQuestions().map((question, index) => `${inlineCode((index + 1).toString().padStart(2, '0'))} ${question.question}`).join('\n')}`)
     .setTimestamp();
 }
 
@@ -448,7 +456,7 @@ export function getListLinksEmbed () {
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle('Линкови')
-    .setDescription(`Ова се сите достапни линкови. Користете ${commandMention('link')} за да ги добиете линковите.\n\n${getLinks().map((link, index) => `${(index + 1).toString().padStart(2, '0')}. [${link.name}](${link.link})`).join('\n')}`)
+    .setDescription(`Ова се сите достапни линкови. Користете ${commandMention('link')} за да ги добиете линковите.\n\n${getLinks().map((link, index) => `${inlineCode((index + 1).toString().padStart(2, '0'))} [${link.name}](${link.link})`).join('\n')}`)
     .setTimestamp();
 }
 
@@ -475,13 +483,157 @@ export function getHelpNextEmbed (member: GuildMember | null, page: number, comm
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle('Команди')
-    .setDescription('Ова се сите достапни команди за вас. Командите може да ги повикате во овој сервер, или во приватна порака.')
+    .setDescription('Ова се сите достапни команди за вас. Командите може да ги извршите во овој сервер, или во приватна порака.')
     .addFields(...Object.entries(commands).filter((c) => checkCommandPermission(member, c[0])).slice(commandsPerPage * page, commandsPerPage * (page + 1)).map(([command, description]) => ({
       name: commandMention(command),
       value: description
     })))
     .setFooter({ text: `Страна: ${page + 1} / ${Math.ceil(totalCommands / commandsPerPage)}  •  Команди: ${totalCommands}` })
     .setTimestamp();
+}
+
+// Polls
+
+export async function getPollEmbed (poll: Poll) {
+  const votes = (await getPollVotes(poll))?.length ?? 0;
+
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle(poll.title)
+    .setDescription(`${italic(poll.description)}\n${codeBlock((await Promise.all(poll.options.map(async (option, index) => {
+      const optionVotes = (await getPollVotesByOption(option))?.length ?? 0;
+      const fraction = optionVotes / votes * 100;
+      const bar = votes === 0 ? generatePollPercentageBar(0) : generatePollPercentageBar(fraction);
+
+      return `${(index + 1).toString().padStart(2, '0')} ${option.name.padEnd(Math.max(...poll.options.map((o) => o.name.length)))} - [${bar}] - ${optionVotes} [${votes > 0 ? fraction.toFixed(2).padStart(5, '0') : '00'}%]`;
+    }))).join('\n'))}\nИнформации и подесувања за анкетата:`)
+    .addFields(
+      {
+        inline: true,
+        name: 'Повеќекратна?',
+        value: poll.multiple ? 'Да' : 'Не'
+      },
+      {
+        inline: true,
+        name: 'Анонимна?',
+        value: poll.anonymous ? 'Да' : 'Не'
+      },
+      {
+        inline: true,
+        name: 'Отворена?',
+        value: poll.open ? 'Да' : 'Не'
+      },
+      {
+        inline: true,
+        name: 'Автор',
+        value: userMention(poll.owner)
+      },
+      {
+        inline: true,
+        name: 'Гласови',
+        value: votes.toString()
+      },
+      {
+        inline: true,
+        name: '\u200B',
+        value: '\u200B'
+      }
+    )
+    .setFooter({ text: `Анкета: ${poll.id}` })
+    .setTimestamp();
+}
+
+export function getPollComponents (poll: Poll) {
+  const components = [];
+
+  for (let i = 0; i < poll.options.length; i += 5) {
+    const row = new ActionRowBuilder<ButtonBuilder>();
+    const buttons = [];
+
+    for (let j = i; j < i + 5; j++) {
+      if (poll.options[j] === undefined) {
+        break;
+      }
+
+      const button = new ButtonBuilder()
+        .setCustomId(`poll:${poll.id}:${poll.options[j]?.name}`)
+        .setLabel(`${poll.options[j]?.name}`)
+        .setStyle(j % 4 === 0 ? ButtonStyle.Primary : j % 4 === 1 ? ButtonStyle.Secondary : j % 4 === 2 ? ButtonStyle.Success : ButtonStyle.Danger);
+
+      buttons.push(button);
+    }
+
+    row.addComponents(buttons);
+    components.push(row);
+  }
+
+  return components;
+}
+
+export async function getPollStatsEmbed (poll: Poll) {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle(poll.title)
+    .setDescription(`Гласови: ${(await getPollVotes(poll))?.length}`)
+    .addFields(
+      {
+        inline: true,
+        name: 'Опции',
+        value: (await Promise.all(poll.options.map(async (option, index) => `${inlineCode((index + 1).toString().padStart(2, '0'))} ${option.name}`))).join('\n')
+      },
+      {
+        inline: true,
+        name: 'Гласови',
+        value: (await Promise.all(poll.options.map(async (option, index) => `${inlineCode((index + 1).toString().padStart(2, '0'))} ${(await getPollVotesByOption(option))?.length ?? 0}`))).join('\n')
+      }
+    )
+    .setFooter({ text: `Анкета: ${poll.id}` })
+    .setTimestamp();
+}
+
+export function getPollStatsComponents (poll: Poll) {
+  const components = [];
+
+  for (let i = 0; i < poll.options.length; i += 5) {
+    const row = new ActionRowBuilder<ButtonBuilder>();
+    const buttons = [];
+
+    for (let j = i; j < i + 5; j++) {
+      if (poll.options[j] === undefined) {
+        break;
+      }
+
+      const button = new ButtonBuilder()
+        .setCustomId(`pollStats:${poll.id}:${poll.options[j]?.name}`)
+        .setLabel(`${poll.options[j]?.name}`)
+        .setStyle(ButtonStyle.Secondary);
+
+      buttons.push(button);
+    }
+
+    row.addComponents(buttons);
+    components.push(row);
+  }
+
+  return components;
+}
+
+export async function getPollStatsButtonEmbed (id: string, option: string, votes: PollVote[]) {
+  const users = await Promise.all(votes.map(async (vote) => (await client.users.fetch(vote.user)).tag));
+
+  return votes.length > 0 ?
+    new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
+      .setTitle('Резултати од анкета')
+      .setDescription(`Гласачи за ${inlineCode(option)}:\n${codeBlock(users.join('\n'))}`)
+      .setTimestamp()
+      .setFooter({ text: `Анкета: ${id}` }) :
+    new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
+      .setTitle('Резултати од анкета')
+      .setDescription(`Никој не гласал за ${inlineCode(option)}`)
+      .setTimestamp()
+      .setFooter({ text: `Анкета: ${id}` });
 }
 
 // Logs
@@ -631,7 +783,7 @@ function getButtonCommand (command?: string) {
   switch (command) {
     case undefined:
       return 'Unknown';
-    case 'pollstats':
+    case 'pollStats':
       return 'Poll Stats';
     case 'quizgame':
       return 'Quiz Game';
@@ -658,7 +810,7 @@ function getButtonInfo (interaction: ButtonInteraction, command: string, args: s
       };
     case 'help':
     case 'poll':
-    case 'pollstats':
+    case 'pollStats':
     case 'quiz':
     case 'quizgame':
       return {
@@ -733,4 +885,13 @@ function transformCoursePrerequisites (program: ProgramValues, semester: number)
       prerequisite: p.prerequisite,
       type: p[program]
     }));
+}
+
+export function generatePollPercentageBar (percentage: number) {
+  if (percentage === 0) {
+    return '.'.repeat(20);
+  }
+
+  const pb = '█'.repeat(Math.floor(percentage / 5)) + (percentage - Math.floor(percentage) >= 0.5 ? '▌' : '');
+  return pb + '.'.repeat(Math.max(0, 20 - pb.length));
 }

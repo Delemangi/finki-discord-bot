@@ -12,9 +12,9 @@ import {
   EmbedBuilder
 } from 'discord.js';
 
-const [channelID, image, newlines] = process.argv.slice(2);
+const [channelId, image, newlines] = process.argv.slice(2);
 
-if (channelID === undefined || image === undefined) {
+if (channelId === undefined || image === undefined) {
   throw new Error('Missing channel ID or image argument');
 }
 
@@ -23,7 +23,7 @@ await client.login(getToken());
 client.once('ready', async () => {
   logger.info('Bot is ready');
 
-  const channel = client.channels.cache.get(channelID);
+  const channel = client.channels.cache.get(channelId);
   const roles = getFromRoleConfig('color');
 
   if (channel === undefined || !channel.isTextBased() || channel.isDMBased()) {

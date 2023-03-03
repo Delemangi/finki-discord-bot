@@ -130,22 +130,22 @@ export async function execute (interaction: ChatInputCommandInteraction) {
       return;
     }
 
-    const ID = buttonInteraction.customId.split(':')[1];
+    const id = buttonInteraction.customId.split(':')[1];
 
-    if (ID === undefined) {
+    if (id === undefined) {
       return;
     }
 
     let buttons;
     let page = Number(buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.at(0)) - 1;
 
-    if (ID === 'first') {
+    if (id === 'first') {
       page = 0;
-    } else if (ID === 'last') {
+    } else if (id === 'last') {
       page = pages - 1;
-    } else if (ID === 'previous') {
+    } else if (id === 'previous') {
       page--;
-    } else if (ID === 'next') {
+    } else if (id === 'next') {
       page++;
     }
 

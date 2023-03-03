@@ -1,4 +1,5 @@
 import { initializeChannels } from '../utils/channels.js';
+import { client } from '../utils/client.js';
 import { logger } from '../utils/logger.js';
 import {
   type ClientEvents,
@@ -11,5 +12,6 @@ export const once = true;
 export async function execute (...args: ClientEvents[typeof name]) {
   initializeChannels();
   await args[0].application?.commands.fetch();
-  logger.info('Bot is ready');
+  logger.info(`Logged in as ${client.user?.tag}`);
+  logger.info('Bot ready');
 }

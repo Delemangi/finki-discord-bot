@@ -23,7 +23,13 @@ export async function execute (interaction: ChatInputCommandInteraction) {
   const information = getClassrooms().find((c) => c.classroom.toString().toLowerCase() === classroomName?.toLowerCase() && c.location.toString().toLowerCase() === classroomLocation?.slice(1, -1).toLowerCase());
 
   if (information === undefined) {
-    await interaction.editReply('Не постои таа просторија.');
+    const classrooms = getClassrooms().filter((c) => c.classroom.toString().toLowerCase() === classroomName?.toLowerCase());
+
+    const embeds = classrooms.map((c) => getClassroomEmbed(c));
+    await interaction.editReply({
+      embeds,
+      ...embeds.length > 0 ? { content: `Внимание: просторијата ${classroom} постои на повеќе факултети.` } : {}
+    });
     return;
   }
 

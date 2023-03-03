@@ -5,41 +5,56 @@
   },
   "dependencies": {
     "@discordjs/rest": "^1.5.0",
-    "@keyv/mongo": "^2.1.8",
+    "chrono-node": "^2.5.0",
     "discord-api-types": "0.37.20",
     "discord.js": "^14.7.1",
-    "keyv": "^4.5.2",
+    "dotenv": "^16.0.3",
+    "install": "^0.13.0",
+    "jsdom": "^21.1.0",
+    "npm": "^9.5.1",
+    "pg": "^8.9.0",
+    "reflect-metadata": "^0.1.13",
+    "rimraf": "^4.2.0",
+    "typeorm": "^0.3.12",
     "winston": "^3.8.2"
   },
   "description": "FINKI Discord bot",
   "devDependencies": {
-    "@types/node": "^18.14.0",
-    "eslint": "^8.34.0",
-    "eslint-config-canonical": "^40.0.7",
+    "@types/jsdom": "^21.1.0",
+    "@types/node": "^18.14.4",
+    "eslint": "^8.35.0",
+    "eslint-config-canonical": "^40.0.8",
     "typescript": "^4.9.5"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "homepage": "https://github.com/Delemangi/finki-discord-bot",
-  "main": "src/main.js",
+  "license": "MIT",
+  "main": "src/main.ts",
   "name": "finki-discord-bot",
   "repository": {
     "type": "git",
     "url": "https://github.com/Delemangi/finki-discord-bot.git"
   },
   "scripts": {
-    "build": "tsc",
-    "command:delete": "tsc && node dist/scripts/delete.js",
-    "command:register": "tsc && node dist/scripts/register.js",
-    "embed:activities": "tsc && node dist/scripts/activities.js",
-    "embed:colors": "tsc && node dist/scripts/colors.js",
-    "embed:courses": "tsc && node dist/scripts/courses.js",
-    "embed:notifications": "tsc && node dist/scripts/notifications.js",
-    "embed:programs": "tsc && node dist/scripts/programs.js",
-    "embed:rules": "tsc && node dist/scripts/rules.js",
-    "embed:years": "tsc && node dist/scripts/years.js",
-    "forum:courses": "tsc && node dist/scripts/coursesForum.js",
-    "lint": "eslint . --ext .ts",
-    "start": "tsc && node dist/main.js"
+    "build": "rimraf dist && tsc",
+    "command:delete": "npm run build && node dist/scripts/delete.js",
+    "command:register": "npm run build && node dist/scripts/register.js",
+    "embed:activities": "npm run build && node dist/scripts/activities.js",
+    "embed:colors": "npm run build && node dist/scripts/colors.js",
+    "embed:courses": "npm run build && node dist/scripts/courses.js",
+    "embed:notifications": "npm run build && node dist/scripts/notifications.js",
+    "embed:programs": "npm run build && node dist/scripts/programs.js",
+    "embed:rules": "npm run build && node dist/scripts/rules.js",
+    "embed:years": "npm run build && node dist/scripts/years.js",
+    "forum:courses": "npm run build && node dist/scripts/coursesForum.js",
+    "lint": "eslint . --ext .ts --cache",
+    "lint:cfg": "eslint . --ext .json --cache",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "start": "node dist/main.js",
+    "start:dev": "npm run lint && npm run build && node dist/main.js"
   },
   "type": "module",
-  "version": "2.0.0"
+  "version": "3.0.0"
 }

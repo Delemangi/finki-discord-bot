@@ -1,0 +1,16 @@
+# Node modules
+node_modules
+
+# Output
+dist
+
+# Logs
+bot.log
+
+# User defined folders
+config
+files
+sessions
+
+# Environment variables
+.env

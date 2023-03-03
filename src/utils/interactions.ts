@@ -12,15 +12,25 @@ import {
   getStaff
 } from './config.js';
 import {
+  createPollVote,
+  deletePollVote,
+  getPoll,
+  getPollOption,
+  getPollVotesByOption,
+  getPollVotesByUser
+} from './database.js';
+import {
   getAutocompleteEmbed,
   getButtonEmbed,
   getChatInputCommandEmbed,
+  getPollComponents,
+  getPollEmbed,
+  getPollStatsButtonEmbed,
+  getPollStatsComponents,
+  getPollStatsEmbed,
   getUserContextMenuCommandEmbed
 } from './embeds.js';
-import {
-  createOptions,
-  generatePercentageBar
-} from './functions.js';
+import { createOptions } from './functions.js';
 import { logger } from './logger.js';
 import { transformOptions } from './options.js';
 import {
@@ -43,10 +53,7 @@ import {
   type UserContextMenuCommandInteraction,
   userMention
 } from 'discord.js';
-import Keyv from 'keyv';
 import { setTimeout } from 'node:timers/promises';
-
-const database = new Keyv(getFromBotConfig('database'));
 
 // Interactions
 
@@ -112,7 +119,7 @@ export async function handleButton (interaction: ButtonInteraction) {
     await handleColorButton(interaction, args);
   } else if (command === 'poll') {
     await handlePollButton(interaction, args);
-  } else if (command === 'pollstats') {
+  } else if (command === 'pollStats') {
     await handlePollStatsButton(interaction, args);
   } else if (command === 'quiz') {
     await handleQuizButton(interaction, args);
@@ -360,133 +367,108 @@ async function handleColorButton (interaction: ButtonInteraction, args: string[]
 }
 
 async function handlePollButton (interaction: ButtonInteraction, args: string[]) {
-  const guild = interaction.guild;
-
-  if (guild === null) {
+  if (interaction.guild === null || interaction.member === null) {
     logger.warn(`Received button interaction ${interaction.id}: ${interaction.customId} from ${interaction.user.tag} outside of a guild`);
     return;
   }
 
-  const pollID = String(args[0]);
-  const poll: Poll = await database.get(pollID);
+  const id = args[0]?.toString();
+  const option = args[1]?.toString();
+  const poll = await getPoll(id);
 
-  if (poll === undefined || poll.participants === undefined) {
-    logger.warn(`User ${interaction.user.tag} clicked on an old poll`);
-    await interaction.deferUpdate();
+  if (poll === null || id === undefined || option === undefined) {
+    await interaction.reply({
+      content: 'Веќе не постои анкетата или опцијата.',
+      ephemeral: true
+    });
     return;
   }
 
-  const hasVoted = poll.participants.find((person) => person.id === interaction.user.id);
-  const newIndex = Number(args[1]);
-  let newVotes = poll.votes;
-  const newOptionVotes = poll.optionVotes;
-  const newParticipants = poll.participants;
-  const userIndex = poll.participants.findIndex((person) => person.id === interaction.user.id);
-  let replyMessage: string;
+  const votes = await getPollVotesByUser(poll, interaction.user.id);
+  let replyMessage;
 
-  if (hasVoted && poll.participants[userIndex]?.vote === newIndex) {
-    newVotes -= 1;
-    newOptionVotes[newIndex] -= 1;
-    newParticipants.splice(userIndex, 1);
-
-    replyMessage = 'Го тргнавте вашиот глас.';
-  } else if (hasVoted) {
-    // @ts-expect-error This cannot happen
-    newOptionVotes[poll.participants[userIndex].vote] -= 1;
-    newOptionVotes[newIndex] += 1;
-    // @ts-expect-error This cannot happen
-    newParticipants[userIndex].vote = newIndex;
-
-    replyMessage = `Ја променивте вашата опција во опцијата: ${Number(args[1]) + 1}.`;
+  if (poll.multiple) {
+    if (votes.length === 0 || !votes.some((v) => v.option.name === option)) {
+      await createPollVote(poll, option, interaction.user.id);
+      replyMessage = `Гласавте за опцијата ${inlineCode(option)}.`;
+    } else {
+      await deletePollVote(votes.find((v) => v.option.name === option));
+      replyMessage = 'Го тргнавте вашиот глас.';
+    }
   } else {
-    newOptionVotes[newIndex] += 1;
-    newParticipants.push({
-      id: interaction.user.id,
-      tag: interaction.user.tag,
-      vote: newIndex
-    });
-    newVotes += 1;
+    const vote = votes.at(0) ?? null;
 
-    replyMessage = `Гласавте и ја одбравте опцијата: ${Number(args[1]) + 1}.`;
+    if (vote === null) {
+      await createPollVote(poll, option, interaction.user.id);
+      replyMessage = `Гласавте за опцијата ${inlineCode(option)}.`;
+    } else if (vote !== null && vote.option.name === option) {
+      await deletePollVote(vote);
+      replyMessage = 'Го тргнавте вашиот глас.';
+    } else {
+      const o = await getPollOption(poll, option);
+
+      if (o === null) {
+        await interaction.reply({
+          content: 'Веќе не постои анкетата или опцијата.',
+          ephemeral: true
+        });
+        return;
+      }
+
+      await deletePollVote(vote);
+      await createPollVote(poll, option, interaction.user.id);
+
+      replyMessage = `Гласавте за опцијата ${inlineCode(option)}.`;
+    }
   }
-
-  await database.set(pollID, {
-    isPublic: poll.isPublic,
-    options: poll.options,
-    optionVotes: newOptionVotes,
-    owner: poll.owner,
-    participants: newParticipants,
-    title: poll.title,
-    votes: newVotes
-  });
 
   await interaction.reply({
     content: replyMessage,
     ephemeral: true
   });
 
-  const updatedPoll: Poll = await database.get(pollID);
-
-  const embed = new EmbedBuilder()
-    .setColor(getFromBotConfig('color'))
-    .setTitle(updatedPoll.title)
-    .setDescription(codeBlock(updatedPoll.options.map((option, index) => `${String(index + 1).padStart(2, '0')}. ${option.padEnd(Math.max(...updatedPoll.options.map((o) => o.length)))} - [${updatedPoll.votes > 0 ? generatePercentageBar(Number(updatedPoll.optionVotes[index]) / updatedPoll.votes * 100) : generatePercentageBar(0)}] - ${updatedPoll.optionVotes[index]} [${updatedPoll.votes > 0 ? (Number(updatedPoll.optionVotes[index]) / updatedPoll.votes * 100).toFixed(2).padStart(5, '0') : '00'}%]`).join('\n')))
-    .addFields(
-      {
-        inline: true,
-        name: 'Гласови',
-        value: String(updatedPoll.votes)
-      },
-      {
-        inline: true,
-        name: 'Јавна анкета',
-        value: updatedPoll.isPublic ? 'Да' : 'Не'
-      }
-    )
-    .setTimestamp()
-    .setFooter({ text: `Анкета: ${pollID}` });
-
-  await interaction.message.edit({ embeds: [embed] });
+  const embed = await getPollEmbed(poll);
+  const components = getPollComponents(poll);
+  await interaction.message.edit({
+    components,
+    embeds: [embed]
+  });
 }
 
 async function handlePollStatsButton (interaction: ButtonInteraction, args: string[]) {
-  const guild = interaction.guild;
-
-  if (guild === null) {
+  if (interaction.guild === null || interaction.member === null) {
     logger.warn(`Received button interaction ${interaction.id}: ${interaction.customId} from ${interaction.user.tag} outside of a guild`);
     return;
   }
 
-  const pollId = String(args[0]);
-  const pollOption = Number(args[1]);
-  const poll: Poll = await database.get(pollId);
+  const id = args[0]?.toString();
+  const option = args[1]?.toString();
+  const poll = await getPoll(id);
 
-  const pollVoters: string[] = [];
-
-  for (const el of poll.participants) {
-    if (el.vote === pollOption) {
-      pollVoters.push(el.tag);
-    }
+  if (poll === null || id === undefined || option === undefined) {
+    logger.warn(`Received button interaction ${interaction.id}: ${interaction.customId} from ${interaction.user.tag} for a non-existent poll or option`);
+    await interaction.deferUpdate();
+    return;
   }
 
-  let embed: EmbedBuilder;
+  const pollOption = await getPollOption(poll, option);
 
-  if (pollVoters.length > 0) {
-    embed = new EmbedBuilder()
-      .setColor(getFromBotConfig('color'))
-      .setTitle('Резултати од анкета')
-      .setDescription(`Гласачи за ${pollOption + 1}:\n${codeBlock(pollVoters.join('\n'))}`)
-      .setTimestamp()
-      .setFooter({ text: `ID: ${pollId}` });
-  } else {
-    embed = new EmbedBuilder()
-      .setColor(getFromBotConfig('color'))
-      .setTitle('Резултати од анкета')
-      .setDescription(`Никој не гласал за ${pollOption + 1}`)
-      .setTimestamp()
-      .setFooter({ text: `ID: ${pollId}` });
+  if (pollOption === null) {
+    await interaction.reply({
+      content: 'Оваа опција не постои.',
+      ephemeral: true
+    });
+    return;
   }
 
+  const votes = await getPollVotesByOption(pollOption) ?? [];
+
+  await interaction.message.edit({
+    components: getPollStatsComponents(poll),
+    embeds: [await getPollStatsEmbed(poll)]
+  });
+
+  const embed = await getPollStatsButtonEmbed(poll.id, pollOption.name, votes);
   await interaction.reply({
     embeds: [embed],
     ephemeral: true
@@ -601,7 +583,7 @@ async function handleQuizGameButton (interaction: ButtonInteraction, args: strin
     const checkLevel = Number(args[4]);
 
     if (args[2] === args[3]) {
-      args[4] = String(checkLevel + 1);
+      args[4] = (checkLevel + 1).toString();
     }
 
     if (args[2] !== args[3]) {
@@ -633,7 +615,7 @@ async function handleQuizGameButton (interaction: ButtonInteraction, args: strin
   const quizEmbed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle('Кој сака да биде морален победник?')
-    .setDescription(codeBlock(`Прашање бр. ${lvl + 1}\n\nQ: ${currentQuestion.question}\n${currentQuestion.answers.map((q: string, index: number) => `${index + 1}. ${q}`).join('\n')}`))
+    .setDescription(codeBlock(`Прашање бр. ${lvl + 1}\n\nQ: ${currentQuestion.question}\n${currentQuestion.answers.map((question: string, index: number) => `${inlineCode((index + 1).toString().padStart(2, '0'))} ${question}`).join('\n')}`))
     .setTimestamp()
     .setFooter({ text: 'Кој Сака Да Биде Морален Победник? © 2022' });
 
