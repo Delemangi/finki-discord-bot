@@ -556,9 +556,7 @@ async function handleQuizGameButton (interaction: ButtonInteraction, args: strin
 
     if (args[2] === args[3]) {
       args[4] = (checkLevel + 1).toString();
-    }
-
-    if (args[2] !== args[3]) {
+    } else {
       await interaction.message.delete();
       await interaction.channel?.send('Не го поминавте квизот... Повеќе среќа следен пат.');
       await setTimeout(20_000);
