@@ -9,7 +9,7 @@ It's recommended, but not required to run this bot inside a Docker container.
 ### Installation (Docker)
 
 1. Clone the repository: `git clone git@github.com:Delemangi/finki-discord-bot.git`
-2. Run the Docker container: `docker compose up`
+2. Build the images: `docker compose build`
 
 ### Installation (Normal)
 
