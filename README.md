@@ -2,7 +2,7 @@
 
 Discord bot for the [`FINKI Students`](https://discord.gg/finki-studenti-810997107376914444) Discord server, powered by [discord.js](https://github.com/discordjs/discord.js) 14. Requires Node.js ≥ 18 and PostgreSQL.
 
-It's recommended, but not required to run this bot inside a Docker container.
+It's recommended, but not required to run this inside a Docker container.
 
 ## Installation
 
