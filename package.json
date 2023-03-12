@@ -4,7 +4,7 @@
     "url": "https://github.com/Delemangi/finki-discord-bot/issues"
   },
   "dependencies": {
-    "chrono-node": "^2.5.0",
+    "chrono-node": "^2.6.1",
     "discord-api-types": "0.37.20",
     "discord.js": "^14.8.0",
     "dotenv": "^16.0.3",
