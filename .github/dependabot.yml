@@ -4,6 +4,3 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    automerge:
-      minor:
-        automergeable: true
