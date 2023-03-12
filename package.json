@@ -8,7 +8,7 @@
     "discord-api-types": "0.37.20",
     "discord.js": "^14.8.0",
     "dotenv": "^16.0.3",
-    "jsdom": "^21.1.0",
+    "jsdom": "^21.1.1",
     "pg": "^8.9.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.2.0",
