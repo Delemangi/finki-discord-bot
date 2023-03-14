@@ -36,7 +36,6 @@ export async function initializeDatabase () {
 
   try {
     await database.initialize();
-    await database.synchronize();
     logger.info('Database connection successful');
   } catch (error) {
     logger.warn(`Database connection failed. Some features may not work\n${error}`);
