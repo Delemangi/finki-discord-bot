@@ -894,7 +894,7 @@ function getButtonCommand (command?: string) {
     case 'quizGame':
       return 'Quiz Game';
     default:
-      return command.at(0)?.toUpperCase() + command.slice(1);
+      return command[0]?.toUpperCase() + command.slice(1);
   }
 }
 

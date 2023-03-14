@@ -26,7 +26,7 @@ export async function execute (interaction: ChatInputCommandInteraction) {
   }
 
   await interaction.editReply({
-    content: `Сесија: ${information.at(0)}`,
-    files: [`./sessions/${information.at(-1)}`]
+    content: `Сесија: ${information[0]}`,
+    files: [`./sessions/${information[1]}`]
   });
 }

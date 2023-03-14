@@ -395,7 +395,7 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
       replyMessage = 'Го тргнавте вашиот глас.';
     }
   } else {
-    const vote = votes.at(0) ?? null;
+    const vote = votes[0] ?? null;
 
     if (vote === null) {
       await createPollVote(poll, option, interaction.user.id);

@@ -137,7 +137,7 @@ export async function execute (interaction: ChatInputCommandInteraction) {
     }
 
     let buttons;
-    let page = Number(buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.at(0)) - 1;
+    let page = Number(buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.[0]) - 1;
 
     if (id === 'first') {
       page = 0;
