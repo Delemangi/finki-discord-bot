@@ -3,25 +3,27 @@ import { getCrossposting } from '../utils/crossposting.js';
 import { logger } from '../utils/logger.js';
 import {
   type ClientEvents,
-  Events
+  Events,
+  type Message
 } from 'discord.js';
 
 export const name = Events.MessageCreate;
 const crosspostChannels = getFromBotConfig('crosspostChannels');
 
 export async function execute (...args: ClientEvents[typeof name]) {
-  if (crosspostChannels.length === 0 || !crosspostChannels.includes(args[0].channel.id)) {
-    return;
-  }
+  const message = args[0];
 
-  if (!getCrossposting()) {
-    logger.warn(`Crossposting is disabled, ignoring message by ${args[0].author.tag}`);
+  await crosspost(message);
+}
+
+async function crosspost (message: Message) {
+  if (!getCrossposting() || crosspostChannels.length === 0 || !crosspostChannels.includes(message.channel.id)) {
     return;
   }
 
   try {
-    await args[0].crosspost();
+    await message.crosspost();
   } catch (error) {
-    logger.error(`Failed to crosspost message by ${args[0].author.tag}\n${error}`);
+    logger.error(`Failed to crosspost message by ${message.author.tag}\n${error}`);
   }
 }
