@@ -3,6 +3,7 @@ import { getCommand } from './commands.js';
 import {
   getClassrooms,
   getCourses,
+  getFromBotConfig,
   getFromRoleConfig,
   getLinks,
   getQuestions,
@@ -54,7 +55,7 @@ import {
   type UserContextMenuCommandInteraction,
   userMention
 } from 'discord.js';
-import { setTimeout } from 'node:timers/promises';
+import { setTimeout as setTimeoutPromise } from 'node:timers/promises';
 
 // Interactions
 
@@ -188,10 +189,11 @@ async function handleCourseButton (interaction: ButtonInteraction, args: string[
   }
 
   try {
-    await interaction.reply({
+    const m = await interaction.reply({
       content: `Го ${removed ? 'отстранивте' : 'земавте'} предметот ${inlineCode(getFromRoleConfig('courses')[role.name] ?? 'None')}.`,
       ephemeral: true
     });
+    setTimeout(() => m.delete(), getFromBotConfig('ephemeralReplyTime'));
   } catch (error) {
     logger.warn(`Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`);
   }
@@ -222,10 +224,11 @@ async function handleYearButton (interaction: ButtonInteraction, args: string[])
   }
 
   try {
-    await interaction.reply({
+    const m = await interaction.reply({
       content: `Ја ${removed ? 'отстранивте' : 'земавте'} годината ${inlineCode(role.name)}.`,
       ephemeral: true
     });
+    setTimeout(() => m.delete(), getFromBotConfig('ephemeralReplyTime'));
   } catch (error) {
     logger.warn(`Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`);
   }
@@ -256,10 +259,11 @@ async function handleProgramButton (interaction: ButtonInteraction, args: string
   }
 
   try {
-    await interaction.reply({
+    const m = await interaction.reply({
       content: `Го ${removed ? 'отстранивте' : 'земавте'} смерот ${inlineCode(role.name)}.`,
       ephemeral: true
     });
+    setTimeout(() => m.delete(), getFromBotConfig('ephemeralReplyTime'));
   } catch (error) {
     logger.warn(`Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`);
   }
@@ -289,10 +293,11 @@ async function handleNotificationButton (interaction: ButtonInteraction, args: s
   }
 
   try {
-    await interaction.reply({
+    const m = await interaction.reply({
       content: `${removed ? 'Исклучивте' : 'Вклучивте'} нотификации за ${inlineCode(role.name)}.`,
       ephemeral: true
     });
+    setTimeout(() => m.delete(), getFromBotConfig('ephemeralReplyTime'));
   } catch (error) {
     logger.warn(`Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`);
   }
@@ -322,10 +327,11 @@ async function handleActivityButton (interaction: ButtonInteraction, args: strin
   }
 
   try {
-    await interaction.reply({
+    const m = await interaction.reply({
       content: `Ја ${removed ? 'отстранивте' : 'земавте'} активноста ${inlineCode(role.name)}.`,
       ephemeral: true
     });
+    setTimeout(() => m.delete(), getFromBotConfig('ephemeralReplyTime'));
   } catch (error) {
     logger.warn(`Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`);
   }
@@ -356,10 +362,11 @@ async function handleColorButton (interaction: ButtonInteraction, args: string[]
   }
 
   try {
-    await interaction.reply({
+    const m = await interaction.reply({
       content: `Ја ${removed ? 'отстранивте' : 'земавте'} бојата ${inlineCode(role.name)}.`,
       ephemeral: true
     });
+    setTimeout(() => m.delete(), getFromBotConfig('ephemeralReplyTime'));
   } catch (error) {
     logger.warn(`Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`);
   }
@@ -376,10 +383,11 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
   const poll = await getPoll(id);
 
   if (poll === null || id === undefined || option === undefined) {
-    await interaction.reply({
+    const m = await interaction.reply({
       content: 'Веќе не постои анкетата или опцијата.',
       ephemeral: true
     });
+    setTimeout(() => m.delete(), getFromBotConfig('ephemeralReplyTime'));
     return;
   }
 
@@ -407,10 +415,11 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
       const o = await getPollOption(poll, option);
 
       if (o === null) {
-        await interaction.reply({
+        const m = await interaction.reply({
           content: 'Веќе не постои анкетата или опцијата.',
           ephemeral: true
         });
+        setTimeout(() => m.delete(), getFromBotConfig('ephemeralReplyTime'));
         return;
       }
 
@@ -421,10 +430,11 @@ async function handlePollButton (interaction: ButtonInteraction, args: string[])
     }
   }
 
-  await interaction.reply({
+  const message = await interaction.reply({
     content: replyMessage,
     ephemeral: true
   });
+  setTimeout(() => message.delete(), getFromBotConfig('ephemeralReplyTime'));
 
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
@@ -453,10 +463,11 @@ async function handlePollStatsButton (interaction: ButtonInteraction, args: stri
   const pollOption = await getPollOption(poll, option);
 
   if (pollOption === null) {
-    await interaction.reply({
+    const m = await interaction.reply({
       content: 'Оваа опција не постои.',
       ephemeral: true
     });
+    setTimeout(() => m.delete(), getFromBotConfig('ephemeralReplyTime'));
     return;
   }
 
@@ -468,18 +479,20 @@ async function handlePollStatsButton (interaction: ButtonInteraction, args: stri
   });
 
   const embed = await getPollStatsButtonEmbed(poll.id, pollOption.name, votes);
-  await interaction.reply({
+  const message = await interaction.reply({
     embeds: [embed],
     ephemeral: true
   });
+  setTimeout(() => message.delete(), getFromBotConfig('ephemeralReplyTime'));
 }
 
 async function handleQuizButton (interaction: ButtonInteraction, args: string[]) {
   if (interaction.user.id !== args[0]) {
-    await interaction.reply({
+    const m = await interaction.reply({
       content: errors['quizNoPermission'],
       ephemeral: true
     });
+    setTimeout(() => m.delete(), getFromBotConfig('ephemeralReplyTime'));
     return;
   }
 
@@ -500,10 +513,11 @@ async function handleQuizButton (interaction: ButtonInteraction, args: string[])
   const channel = interaction.guild?.channels.cache.find((c) => c.name === `🎲︱квиз-${interaction.user.tag}`);
 
   if (channel !== undefined) {
-    await interaction.reply({
+    const m = await interaction.reply({
       content: `Веќе имате друг квиз отворено: ${channelMention(channel.id)}`,
       ephemeral: true
     });
+    setTimeout(() => m.delete(), getFromBotConfig('ephemeralReplyTime'));
     return;
   }
 
@@ -531,18 +545,20 @@ async function handleQuizButton (interaction: ButtonInteraction, args: string[])
     embeds: [quizEmbed]
   });
   await interaction.message.delete();
-  await interaction.reply({
+  const message = await interaction.reply({
     content: 'Направен е канал за вас. Со среќа!',
     ephemeral: true
   });
+  setTimeout(() => message.delete(), getFromBotConfig('ephemeralReplyTime'));
 }
 
 async function handleQuizGameButton (interaction: ButtonInteraction, args: string[]) {
   if (interaction.user.id !== args[0]) {
-    await interaction.reply({
+    const m = await interaction.reply({
       content: errors['quizNoPermission'],
       ephemeral: true
     });
+    setTimeout(() => m.delete(), getFromBotConfig('ephemeralReplyTime'));
     return;
   }
 
@@ -559,7 +575,7 @@ async function handleQuizGameButton (interaction: ButtonInteraction, args: strin
     } else {
       await interaction.message.delete();
       await interaction.channel?.send('Не го поминавте квизот... Повеќе среќа следен пат.');
-      await setTimeout(20_000);
+      await setTimeoutPromise(20_000);
       await interaction.channel?.delete();
       return;
     }
@@ -567,7 +583,7 @@ async function handleQuizGameButton (interaction: ButtonInteraction, args: strin
     if (checkLevel + 1 >= 15) {
       await interaction.message.delete();
       await interaction.channel?.send('Честитки! :grin:');
-      await setTimeout(20_000);
+      await setTimeoutPromise(20_000);
       await interaction.channel?.delete();
       return;
     }

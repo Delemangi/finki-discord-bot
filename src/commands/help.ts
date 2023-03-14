@@ -1,4 +1,5 @@
 import { client } from '../utils/client.js';
+import { getFromBotConfig } from '../utils/config.js';
 import {
   getCommandsWithPermission,
   getHelpFirstPageEmbed,
@@ -123,10 +124,11 @@ export async function execute (interaction: ChatInputCommandInteraction) {
 
   collector.on('collect', async (buttonInteraction) => {
     if (buttonInteraction.user.id !== buttonInteraction.message.interaction?.user.id) {
-      await buttonInteraction.reply({
+      const m = await buttonInteraction.reply({
         content: 'Ова не е ваша команда.',
         ephemeral: true
       });
+      setTimeout(() => m.delete(), getFromBotConfig('ephemeralReplyTime'));
       return;
     }
 

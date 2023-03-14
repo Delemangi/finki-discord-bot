@@ -6,6 +6,7 @@ import {
 const defaultConfig: Required<BotConfig> = {
   color: '#000000',
   crosspostChannels: [],
+  ephemeralReplyTime: 5_000,
   logo: '',
   logs: {
     actions: '',

@@ -27,6 +27,7 @@ declare global {
   type BotConfig = {
     color?: ColorResolvable;
     crosspostChannels?: string[];
+    ephemeralReplyTime: number;
     logo: string;
     logs?: { [K in Logs]: string };
     mode: Mode;
