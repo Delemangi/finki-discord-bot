@@ -28,7 +28,7 @@ export async function execute (interaction: ChatInputCommandInteraction) {
     const embeds = classrooms.map((c) => getClassroomEmbed(c));
     await interaction.editReply({
       embeds,
-      ...embeds.length > 0 ? { content: `Внимание: просторијата ${classroom} постои на повеќе факултети.` } : {}
+      ...embeds.length > 1 ? { content: `Внимание: просторијата ${classroom} постои на повеќе факултети.` } : {}
     });
     return;
   }
