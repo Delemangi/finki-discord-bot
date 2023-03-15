@@ -1,7 +1,7 @@
 version: '3.8'
 
 services:
-  db:
+  postgres:
     container_name: finki-postgres
     image: postgres:latest
     restart: always
@@ -14,8 +14,6 @@ services:
     container_name: finki-pgadmin
     image: dpage/pgadmin4:latest
     restart: always
-    depends_on:
-      - db
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@admin.com
       PGADMIN_DEFAULT_PASSWORD: admin
