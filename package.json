@@ -20,7 +20,7 @@
     "@types/jsdom": "^21.1.0",
     "@types/node": "^18.15.0",
     "eslint": "^8.36.0",
-    "eslint-config-canonical": "^40.0.9",
+    "eslint-config-canonical": "^41.0.1",
     "typescript": "^5.0.2"
   },
   "engines": {
