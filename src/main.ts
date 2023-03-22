@@ -1,10 +1,7 @@
+// eslint-disable-next-line import/no-unassigned-import
 import 'reflect-metadata';
 import { client } from './utils/client.js';
-import {
-  checkConfig,
-  getFromBotConfig,
-  getToken
-} from './utils/config.js';
+import { checkConfig, getFromBotConfig, getToken } from './utils/config.js';
 import { initializeDatabase } from './utils/database.js';
 import { attachEventListeners } from './utils/events.js';
 import { logger } from './utils/logger.js';
@@ -19,7 +16,7 @@ logger.info(`Running in ${mode} mode`);
 checkConfig();
 await initializeDatabase();
 await attachEventListeners();
-remind();
+void remind();
 
 // Login
 

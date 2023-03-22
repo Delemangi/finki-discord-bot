@@ -5,7 +5,7 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
-  type Relation
+  type Relation,
 } from 'typeorm';
 
 @Entity()
@@ -24,25 +24,25 @@ export class Poll {
 
   @Column('boolean', {
     default: true,
-    nullable: false
+    nullable: false,
   })
   public anonymous!: boolean;
 
   @Column('boolean', {
     default: false,
-    nullable: false
+    nullable: false,
   })
   public multiple!: boolean;
 
   @Column('boolean', {
     default: false,
-    nullable: false
+    nullable: false,
   })
   public open!: boolean;
 
   @OneToMany(() => PollOption, (option) => option.poll, {
     cascade: true,
-    nullable: false
+    nullable: false,
   })
-  public options!: Relation<PollOption>[];
+  public options!: Array<Relation<PollOption>>;
 }

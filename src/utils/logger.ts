@@ -1,8 +1,4 @@
-import {
-  createLogger,
-  format,
-  transports
-} from 'winston';
+import { createLogger, format, transports } from 'winston';
 
 export const logger = createLogger({
   transports: [
@@ -18,32 +14,30 @@ export const logger = createLogger({
             info: 'green',
             silly: 'magenta',
             verbose: 'cyan',
-            warn: 'yellow'
-          }
+            warn: 'yellow',
+          },
         }),
-        format.printf(({
-          level,
-          message,
-          timestamp
-        }) => `${timestamp} - ${level}: ${message}`)
+        format.printf(
+          ({ level, message, timestamp }) =>
+            `${timestamp} - ${level}: ${message}`,
+        ),
       ),
       handleExceptions: true,
-      level: 'info'
+      level: 'info',
     }),
     new transports.File({
       filename: 'bot.log',
       format: format.combine(
         format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
         format.errors({ stack: true }),
-        format.printf(({
-          level,
-          message,
-          timestamp
-        }) => `${timestamp} - ${level}: ${message}`)
+        format.printf(
+          ({ level, message, timestamp }) =>
+            `${timestamp} - ${level}: ${message}`,
+        ),
       ),
       handleExceptions: true,
       level: 'debug',
-      options: { flags: 'w' }
-    })
-  ]
+      options: { flags: 'w' },
+    }),
+  ],
 });

@@ -1,6 +1,6 @@
 import { client } from './client.js';
 
-export function *splitMessage (message: string) {
+export const splitMessage = function* (message: string) {
   if (message === '') {
     yield '';
     return;
@@ -38,30 +38,37 @@ export function *splitMessage (message: string) {
 
     yield output;
   }
-}
+};
 
-export function commandMention (name: string | undefined) {
+export const commandMention = (name: string | undefined) => {
   if (name === undefined) {
     return '';
   }
 
-  const command = client.application?.commands.cache.find((c) => c.name === (name.includes(' ') ? name.split(' ')[0] : name));
+  const command = client.application?.commands.cache.find(
+    (com) => com.name === (name.includes(' ') ? name.split(' ')[0] : name),
+  );
 
   if (command === undefined) {
     return name;
   }
 
   return `</${name}:${command.id}>`;
-}
+};
 
-export function createOptions (options: [string, string][], term: string) {
+export const createOptions = (
+  options: Array<[string, string]>,
+  term: string,
+) => {
   return options
-    .filter(([index]) => index.toLowerCase().includes(term.toLowerCase()))
-    .map(([, c]) => ({
-      name: c,
-      value: c
+    .filter(([key]) => key.toLowerCase().includes(term.toLowerCase()))
+    .map(([, value]) => ({
+      name: value,
+      value,
     }))
-    .filter((element, index, array) => array.findIndex((t) => t.name === element.name) === index)
+    .filter(
+      (element, index, array) =>
+        array.findIndex((item) => item.name === element.name) === index,
+    )
     .slice(0, 25);
-}
-
+};

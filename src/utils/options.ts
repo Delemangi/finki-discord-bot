@@ -1,3 +1,4 @@
+/* eslint-disable id-length */
 const transformations: { [index: string]: string[] } = {
   а: ['a'],
   А: ['A'],
@@ -60,24 +61,10 @@ const transformations: { [index: string]: string[] } = {
   ќ: ['k', 'kj'],
   Ќ: ['K', 'KJ'],
   џ: ['d', 'dz', 'dzh', 'dj'],
-  Џ: ['D', 'DZ', 'DZH', 'DJ']
+  Џ: ['D', 'DZ', 'DZH', 'DJ'],
 };
 
-export function transformOptions (options: string[]) {
-  const results: { [index: string]: string } = {};
-
-  for (const option of options) {
-    for (const transformedOption of transform(option)) {
-      results[transformedOption] = option;
-    }
-
-    results[option] = option;
-  }
-
-  return results;
-}
-
-function transform (word: string) {
+const transform = (word: string) => {
   let suffixes: string[] = [];
 
   if (word.length === 1) {
@@ -96,4 +83,18 @@ function transform (word: string) {
   }
 
   return transformed;
-}
+};
+
+export const transformOptions = (options: string[]) => {
+  const results: { [index: string]: string } = {};
+
+  for (const option of options) {
+    for (const transformedOption of transform(option)) {
+      results[transformedOption] = option;
+    }
+
+    results[option] = option;
+  }
+
+  return results;
+};

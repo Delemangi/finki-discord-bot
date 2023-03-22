@@ -1,7 +1,4 @@
-import {
-  existsSync,
-  readFileSync
-} from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 
 const defaultConfig: Required<BotConfig> = {
   color: '#000000',
@@ -10,103 +7,127 @@ const defaultConfig: Required<BotConfig> = {
   logo: '',
   logs: {
     actions: '',
-    commands: ''
+    commands: '',
   },
   mode: 'prod',
   profiles: {
     dev: {
       applicationId: '',
-      token: ''
+      token: '',
     },
     prod: {
       applicationId: '',
-      token: ''
-    }
-  }
+      token: '',
+    },
+  },
 };
 
 const anto: string[] = JSON.parse(readFileSync('./config/anto.json', 'utf8'));
-const classrooms: Classroom[] = JSON.parse(readFileSync('./config/classrooms.json', 'utf8'));
-const config: BotConfig = JSON.parse(readFileSync('./config/config.json', 'utf8'));
-const courses: string[] = JSON.parse(readFileSync('./config/courses.json', 'utf8'));
-const information: CourseInformation[] = JSON.parse(readFileSync('./config/information.json', 'utf8'));
+const classrooms: Classroom[] = JSON.parse(
+  readFileSync('./config/classrooms.json', 'utf8'),
+);
+const config: BotConfig = JSON.parse(
+  readFileSync('./config/config.json', 'utf8'),
+);
+const courses: string[] = JSON.parse(
+  readFileSync('./config/courses.json', 'utf8'),
+);
+const information: CourseInformation[] = JSON.parse(
+  readFileSync('./config/information.json', 'utf8'),
+);
 const links: Link[] = JSON.parse(readFileSync('./config/links.json', 'utf8'));
-const participants: CourseParticipants[] = JSON.parse(readFileSync('./config/participants.json', 'utf8'));
-const prerequisites: CoursePrerequisites[] = JSON.parse(readFileSync('./config/prerequisites.json', 'utf8'));
-const professors: CourseStaff[] = JSON.parse(readFileSync('./config/professors.json', 'utf8'));
-const questions: Question[] = JSON.parse(readFileSync('./config/questions.json', 'utf8'));
-const quiz: QuizQuestions = JSON.parse(readFileSync('./config/quiz.json', 'utf8'));
-const responses: CommandResponse[] = JSON.parse(readFileSync('./config/responses.json', 'utf8'));
-const roles: RoleConfig = JSON.parse(readFileSync('./config/roles.json', 'utf8'));
+const participants: CourseParticipants[] = JSON.parse(
+  readFileSync('./config/participants.json', 'utf8'),
+);
+const prerequisites: CoursePrerequisites[] = JSON.parse(
+  readFileSync('./config/prerequisites.json', 'utf8'),
+);
+const professors: CourseStaff[] = JSON.parse(
+  readFileSync('./config/professors.json', 'utf8'),
+);
+const questions: Question[] = JSON.parse(
+  readFileSync('./config/questions.json', 'utf8'),
+);
+const quiz: QuizQuestions = JSON.parse(
+  readFileSync('./config/quiz.json', 'utf8'),
+);
+const responses: CommandResponse[] = JSON.parse(
+  readFileSync('./config/responses.json', 'utf8'),
+);
+const roles: RoleConfig = JSON.parse(
+  readFileSync('./config/roles.json', 'utf8'),
+);
 const rules: string[] = JSON.parse(readFileSync('./config/rules.json', 'utf8'));
-const sessions: { [index: string]: string } = JSON.parse(readFileSync('./config/sessions.json', 'utf8'));
+const sessions: { [index: string]: string } = JSON.parse(
+  readFileSync('./config/sessions.json', 'utf8'),
+);
 const staff: Staff[] = JSON.parse(readFileSync('./config/staff.json', 'utf8'));
 
-export function getAnto () {
+export const getAnto = () => {
   return anto;
-}
+};
 
-export function getClassrooms () {
+export const getClassrooms = () => {
   return classrooms;
-}
+};
 
-export function getFromBotConfig<T extends keyof BotConfig> (key: T) {
+export const getFromBotConfig = <T extends keyof BotConfig>(key: T) => {
   return config[key] ?? defaultConfig[key];
-}
+};
 
-export function getCourses () {
+export const getCourses = () => {
   return courses;
-}
+};
 
-export function getInformation () {
+export const getInformation = () => {
   return information;
-}
+};
 
-export function getLinks () {
+export const getLinks = () => {
   return links;
-}
+};
 
-export function getParticipants () {
+export const getParticipants = () => {
   return participants;
-}
+};
 
-export function getProfessors () {
+export const getProfessors = () => {
   return professors;
-}
+};
 
-export function getPrerequisites () {
+export const getPrerequisites = () => {
   return prerequisites;
-}
+};
 
-export function getQuestions () {
+export const getQuestions = () => {
   return questions;
-}
+};
 
-export function getQuiz () {
+export const getQuiz = () => {
   return quiz;
-}
+};
 
-export function getResponses () {
+export const getResponses = () => {
   return responses;
-}
+};
 
-export function getFromRoleConfig<T extends keyof RoleConfig> (key: T) {
+export const getFromRoleConfig = <T extends keyof RoleConfig>(key: T) => {
   return roles[key];
-}
+};
 
-export function getRules () {
+export const getRules = () => {
   return rules;
-}
+};
 
-export function getSessions () {
+export const getSessions = () => {
   return sessions;
-}
+};
 
-export function getStaff () {
+export const getStaff = () => {
   return staff;
-}
+};
 
-export function checkConfig () {
+export const checkConfig = () => {
   if (!existsSync('./config')) {
     throw new Error('Missing config folder');
   }
@@ -114,15 +135,15 @@ export function checkConfig () {
   const mode = getFromBotConfig('mode');
   const profiles = getFromBotConfig('profiles');
 
-  if (profiles[mode]['applicationId'] === '' || profiles[mode]['token'] === '') {
+  if (profiles[mode].applicationId === '' || profiles[mode].token === '') {
     throw new Error('Missing profiles');
   }
-}
+};
 
-export function getToken () {
-  return getFromBotConfig('profiles')[getFromBotConfig('mode')]['token'];
-}
+export const getToken = () => {
+  return getFromBotConfig('profiles')[getFromBotConfig('mode')].token;
+};
 
-export function getApplicationId () {
-  return getFromBotConfig('profiles')[getFromBotConfig('mode')]['applicationId'];
-}
+export const getApplicationId = () => {
+  return getFromBotConfig('profiles')[getFromBotConfig('mode')].applicationId;
+};

@@ -1,7 +1,7 @@
 import { commands } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
-  SlashCommandBuilder
+  SlashCommandBuilder,
 } from 'discord.js';
 
 const name = 'invite';
@@ -11,6 +11,10 @@ export const data = new SlashCommandBuilder()
   .setDescription(commands[name])
   .setDMPermission(false);
 
-export async function execute (interaction: ChatInputCommandInteraction) {
-  await interaction.editReply(`https://discord.gg/${interaction.guild?.vanityURLCode ?? 'Настана грешка.'}`);
-}
+export const execute = async (interaction: ChatInputCommandInteraction) => {
+  await interaction.editReply(
+    `https://discord.gg/${
+      interaction.guild?.vanityURLCode ?? 'Настана грешка.'
+    }`,
+  );
+};

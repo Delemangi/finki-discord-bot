@@ -1,15 +1,12 @@
 import { logger } from '../utils/logger.js';
-import {
-  commands,
-  errors
-} from '../utils/strings.js';
+import { commands, errors } from '../utils/strings.js';
 import {
   type Channel,
   type ChatInputCommandInteraction,
   EmbedBuilder,
   PermissionFlagsBits,
   type PermissionsBitField,
-  SlashCommandBuilder
+  SlashCommandBuilder,
 } from 'discord.js';
 
 const name = 'embed';
@@ -18,24 +15,26 @@ const permission = PermissionFlagsBits.ManageMessages;
 export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription(commands[name])
-  .addChannelOption((option) => option
-    .setName('channel')
-    .setDescription('Канал')
-    .setRequired(true))
-  .addStringOption((option) => option
-    .setName('json')
-    .setDescription('JSON')
-    .setRequired(true))
-  .addBooleanOption((option) => option
-    .setName('timestamp')
-    .setDescription('Дали да се додаде време?')
-    .setRequired(false))
+  .addChannelOption((option) =>
+    option.setName('channel').setDescription('Канал').setRequired(true),
+  )
+  .addStringOption((option) =>
+    option.setName('json').setDescription('JSON').setRequired(true),
+  )
+  .addBooleanOption((option) =>
+    option
+      .setName('timestamp')
+      .setDescription('Дали да се додаде време?')
+      .setRequired(false),
+  )
   .setDefaultMemberPermissions(permission);
 
-export async function execute (interaction: ChatInputCommandInteraction) {
-  const permissions = interaction.member?.permissions as PermissionsBitField | undefined;
+export const execute = async (interaction: ChatInputCommandInteraction) => {
+  const permissions = interaction.member?.permissions as
+    | PermissionsBitField
+    | undefined;
   if (permissions === undefined || !permissions.has(permission)) {
-    await interaction.editReply(errors['adminOnlyCommand']);
+    await interaction.editReply(errors.adminOnlyCommand);
     return;
   }
 
@@ -44,7 +43,7 @@ export async function execute (interaction: ChatInputCommandInteraction) {
   const timestamp = interaction.options.getBoolean('timestamp') ?? false;
 
   if (!channel.isTextBased() || channel.isDMBased()) {
-    await interaction.editReply(errors['invalidChannel']);
+    await interaction.editReply(errors.invalidChannel);
     return;
   }
 
@@ -73,4 +72,4 @@ export async function execute (interaction: ChatInputCommandInteraction) {
 
     await interaction.editReply('Креирањето embed беше неуспешно.');
   }
-}
+};

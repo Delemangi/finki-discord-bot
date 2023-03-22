@@ -5,7 +5,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
-  Relation
+  Relation,
 } from 'typeorm';
 
 @Entity()
@@ -14,14 +14,14 @@ export class PollVote {
   public id!: string;
 
   @Column('text', {
-    nullable: false
+    nullable: false,
   })
   public user!: string;
 
   @ManyToOne(() => PollOption, (option) => option.votes, {
     nullable: false,
     onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
+    onUpdate: 'CASCADE',
   })
   public option!: Relation<PollOption>;
 }

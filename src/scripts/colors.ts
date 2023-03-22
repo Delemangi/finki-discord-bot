@@ -2,14 +2,14 @@ import { client } from '../utils/client.js';
 import {
   getFromBotConfig,
   getFromRoleConfig,
-  getToken
+  getToken,
 } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
 import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  EmbedBuilder
+  EmbedBuilder,
 } from 'discord.js';
 
 const [channelId, image, newlines] = process.argv.slice(2);
@@ -40,21 +40,23 @@ client.once('ready', async () => {
     .setTitle('Боја на име')
     .setThumbnail(getFromBotConfig('logo'))
     .setDescription('Изберете боја за вашето име.')
-    .setFooter({ text: '(може да изберете само една опција, секоја нова опција ја заменува старата)' })
+    .setFooter({
+      text: '(може да изберете само една опција, секоја нова опција ја заменува старата)',
+    })
     .setImage(image);
 
-  for (let i = 0; i < roles.length; i += 5) {
+  for (let index1 = 0; index1 < roles.length; index1 += 5) {
     const row = new ActionRowBuilder<ButtonBuilder>();
     const buttons = [];
 
-    for (let j = i; j < i + 5; j++) {
-      if (roles[j] === undefined) {
+    for (let index2 = index1; index2 < index1 + 5; index2++) {
+      if (roles[index2] === undefined) {
         break;
       }
 
       const button = new ButtonBuilder()
-        .setCustomId(`color:${roles[j] ?? ''}`)
-        .setLabel(`${j + 1}`)
+        .setCustomId(`color:${roles[index2] ?? ''}`)
+        .setLabel(`${index2 + 1}`)
         .setStyle(ButtonStyle.Secondary);
 
       buttons.push(button);
@@ -68,13 +70,13 @@ client.once('ready', async () => {
     if (newlines === undefined || Number.isNaN(newlines)) {
       await channel.send({
         components,
-        embeds: [embed]
+        embeds: [embed],
       });
     } else {
       await channel.send({
         components,
         content: '_ _\n'.repeat(Number(newlines)),
-        embeds: [embed]
+        embeds: [embed],
       });
     }
   } catch (error) {

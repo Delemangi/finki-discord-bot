@@ -1,12 +1,9 @@
-import {
-  commands,
-  errors
-} from '../utils/strings.js';
+import { commands, errors } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   PermissionFlagsBits,
   PermissionsBitField,
-  SlashCommandBuilder
+  SlashCommandBuilder,
 } from 'discord.js';
 import { setTimeout } from 'node:timers/promises';
 
@@ -15,24 +12,35 @@ const name = 'purge';
 export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription(commands[name])
-  .addNumberOption((option) => option
-    .setName('count')
-    .setDescription('Број на пораки (меѓу 1 и 100)')
-    .setMinValue(1)
-    .setMaxValue(100)
-    .setRequired(true))
+  .addNumberOption((option) =>
+    option
+      .setName('count')
+      .setDescription('Број на пораки (меѓу 1 и 100)')
+      .setMinValue(1)
+      .setMaxValue(100)
+      .setRequired(true),
+  )
   .setDMPermission(false)
   .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages);
 
-export async function execute (interaction: ChatInputCommandInteraction) {
-  const permissions = interaction.member?.permissions as PermissionsBitField | undefined;
-  if (permissions === undefined || !permissions.has(PermissionsBitField.Flags.ManageMessages)) {
-    await interaction.editReply(errors['adminOnlyCommand']);
+export const execute = async (interaction: ChatInputCommandInteraction) => {
+  const permissions = interaction.member?.permissions as
+    | PermissionsBitField
+    | undefined;
+  if (
+    permissions === undefined ||
+    !permissions.has(PermissionsBitField.Flags.ManageMessages)
+  ) {
+    await interaction.editReply(errors.adminOnlyCommand);
     return;
   }
 
-  if (interaction.channel === null || !interaction.channel.isTextBased() || interaction.channel.isDMBased()) {
-    await interaction.editReply(errors['serverOnlyCommand']);
+  if (
+    interaction.channel === null ||
+    !interaction.channel.isTextBased() ||
+    interaction.channel.isDMBased()
+  ) {
+    await interaction.editReply(errors.serverOnlyCommand);
     return;
   }
 
@@ -42,4 +50,4 @@ export async function execute (interaction: ChatInputCommandInteraction) {
   await setTimeout(500);
   await interaction.deleteReply();
   await interaction.channel?.bulkDelete(count);
-}
+};

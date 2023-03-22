@@ -7,22 +7,24 @@ import { type ChatInputCommandInteraction } from 'discord.js';
 import { env } from 'node:process';
 import { DataSource } from 'typeorm';
 
-const db = env['POSTGRES_DB'];
+const database = env['POSTGRES_DB'];
 const user = env['POSTGRES_USER'];
 const pass = env['POSTGRES_PASSWORD'];
 
-let database: DataSource | undefined;
+let dataSource: DataSource | undefined;
 
 // Main
 
-export async function initializeDatabase () {
-  if (db === undefined || user === undefined || pass === undefined) {
-    logger.warn('Database login information is blank. Some features may not work');
+export const initializeDatabase = async () => {
+  if (database === undefined || user === undefined || pass === undefined) {
+    logger.warn(
+      'Database login information is blank. Some features may not work',
+    );
     return;
   }
 
-  database = new DataSource({
-    database: db,
+  dataSource = new DataSource({
+    database,
     entities: ['./dist/entities/*.js'],
     host: 'postgres',
     logger: 'file',
@@ -31,47 +33,118 @@ export async function initializeDatabase () {
     port: 5_432,
     synchronize: true,
     type: 'postgres',
-    username: user
+    username: user,
   });
 
   try {
-    await database.initialize();
-    await database.synchronize();
+    await dataSource.initialize();
+    await dataSource.synchronize();
     logger.info('Database connection successful');
   } catch (error) {
-    logger.warn(`Database connection failed. Some features may not work\n${error}`);
+    logger.warn(
+      `Database connection failed. Some features may not work\n${error}`,
+    );
   }
-}
+};
 
-// Polls: create
+// Polls: get
 
-export async function createPoll (interaction: ChatInputCommandInteraction, title: string, description: string, anonymous: boolean, multiple: boolean, open: boolean, options: string[]) {
-  if (database === undefined) {
+export const getPoll = async (id?: string) => {
+  if (dataSource === undefined || id === undefined) {
     return null;
   }
 
-  const p = new Poll();
-  p.title = title;
-  p.description = description;
-  p.anonymous = anonymous;
-  p.multiple = multiple;
-  p.open = open;
-  p.owner = interaction.user.id;
-  p.options = options.map((o) => {
+  return await dataSource.getRepository(Poll).findOne({
+    relations: { options: true },
+    where: { id },
+  });
+};
+
+export const getPollOption = async (poll: Poll, name: string) => {
+  if (dataSource === undefined) {
+    return null;
+  }
+
+  return await dataSource.getRepository(PollOption).findOne({
+    relations: { poll: true },
+    where: {
+      name,
+      poll,
+    },
+  });
+};
+
+export const getPollVotesByUser = async (poll: Poll, userId: string) => {
+  if (dataSource === undefined) {
+    return [];
+  }
+
+  return await dataSource.getRepository(PollVote).find({
+    relations: {
+      option: true,
+    },
+    where: {
+      option: { poll },
+      user: userId,
+    },
+  });
+};
+
+export const getPollVotes = async (poll: Poll) => {
+  if (dataSource === undefined) {
+    return [];
+  }
+
+  return await dataSource.getRepository(PollVote).findBy({ option: { poll } });
+};
+
+export const getPollVotesByOption = async (option: PollOption) => {
+  if (dataSource === undefined) {
+    return [];
+  }
+
+  return await dataSource.getRepository(PollVote).findBy({ option });
+};
+
+// Polls: create
+
+export const createPoll = async (
+  interaction: ChatInputCommandInteraction,
+  title: string,
+  description: string,
+  anonymous: boolean,
+  multiple: boolean,
+  open: boolean,
+  options: string[],
+) => {
+  if (dataSource === undefined) {
+    return null;
+  }
+
+  const poll = new Poll();
+  poll.title = title;
+  poll.description = description;
+  poll.anonymous = anonymous;
+  poll.multiple = multiple;
+  poll.open = open;
+  poll.owner = interaction.user.id;
+  poll.options = options.map((opt) => {
     const option = new PollOption();
-    option.name = o;
+    option.name = opt;
     return option;
   });
 
-  await database
-    .getRepository(Poll)
-    .save(p);
+  await dataSource.getRepository(Poll).save(poll);
 
-  return p;
-}
+  return poll;
+};
 
-export async function createPollVote (poll: Poll, option: string, userId: string) {
-  if (database === undefined) {
+export const createPollVote = async (
+  poll: Poll,
+  option: string,
+  userId: string,
+) => {
+  if (dataSource === undefined) {
     logger.info(1);
     return null;
   }
@@ -82,175 +155,90 @@ export async function createPollVote (poll: Poll, option: string, userId: string
     return null;
   }
 
-  const p = new PollVote();
-  p.option = pollOption;
-  p.user = userId;
+  const pollVote = new PollVote();
+  pollVote.option = pollOption;
+  pollVote.user = userId;
 
-  await database
-    .getRepository(PollVote)
-    .save(p);
+  await dataSource.getRepository(PollVote).save(pollVote);
 
-  return p;
-}
+  return pollVote;
+};
 
 // Polls: save
 
-export async function savePoll (poll: Poll) {
-  if (database === undefined) {
+export const savePoll = async (poll: Poll) => {
+  if (dataSource === undefined) {
     return null;
   }
 
-  await database
-    .getRepository(Poll)
-    .save(poll);
+  await dataSource.getRepository(Poll).save(poll);
 
   return poll;
-}
-
-// Polls: get
-
-export async function getPoll (id?: string) {
-  if (database === undefined || id === undefined) {
-    return null;
-  }
-
-  return await database
-    .getRepository(Poll)
-    .findOne({
-      relations: { options: true },
-      where: { id }
-    });
-}
-
-export async function getPollOption (poll: Poll, name: string) {
-  if (database === undefined) {
-    return null;
-  }
-
-  return await database
-    .getRepository(PollOption)
-    .findOne({
-      relations: { poll: true },
-      where: {
-        name,
-        poll
-      }
-    });
-}
-
-export async function getPollVotesByUser (poll: Poll, userId: string) {
-  if (database === undefined) {
-    return [];
-  }
-
-  return await database
-    .getRepository(PollVote)
-    .find({
-      relations: {
-        option: true
-      },
-      where: {
-        option: { poll },
-        user: userId
-      }
-    });
-}
-
-export async function getPollVotes (poll: Poll) {
-  if (database === undefined) {
-    return [];
-  }
-
-  return await database
-    .getRepository(PollVote)
-    .findBy({ option: { poll } });
-}
-
-export async function getPollVotesByOption (option: PollOption) {
-  if (database === undefined) {
-    return [];
-  }
-
-  return await database
-    .getRepository(PollVote)
-    .findBy({ option });
-}
+};
 
 // Polls: delete
 
-export async function deletePoll (id: string) {
-  if (database === undefined) {
+export const deletePoll = async (id: string) => {
+  if (dataSource === undefined) {
     return false;
   }
 
-  await database
-    .getRepository(Poll)
-    .delete({ id });
+  await dataSource.getRepository(Poll).delete({ id });
 
   return true;
-}
+};
 
-export async function deletePollOption (poll: Poll, name: string) {
-  if (database === undefined) {
+export const deletePollOption = async (poll: Poll, name: string) => {
+  if (dataSource === undefined) {
     return false;
   }
 
-  await database
-    .getRepository(PollOption)
-    .delete({
-      name,
-      poll
-    });
+  await dataSource.getRepository(PollOption).delete({
+    name,
+    poll,
+  });
 
   return true;
-}
+};
 
-export async function deletePollVote (vote?: PollVote) {
-  if (database === undefined || vote === undefined) {
+export const deletePollVote = async (vote?: PollVote) => {
+  if (dataSource === undefined || vote === undefined) {
     return false;
   }
 
-  await database
-    .getRepository(PollVote)
-    .delete(vote);
+  await dataSource.getRepository(PollVote).delete(vote);
 
   return true;
-}
+};
 
 // Reminders
 
-export async function loadReminders () {
-  if (database === undefined) {
+export const loadReminders = async () => {
+  if (dataSource === undefined) {
     return [];
   }
 
-  return await database
-    .getRepository(Reminder)
-    .find();
-}
+  return await dataSource.getRepository(Reminder).find();
+};
 
-export async function saveReminder (reminder: Reminder) {
-  if (database === undefined) {
+export const saveReminder = async (reminder: Reminder) => {
+  if (dataSource === undefined) {
     return null;
   }
 
-  await database
-    .getRepository(Reminder)
-    .save(reminder);
+  await dataSource.getRepository(Reminder).save(reminder);
 
   return reminder;
-}
+};
 
-export async function deleteReminders (...reminders: Reminder[]) {
-  if (database === undefined) {
+export const deleteReminders = async (...reminders: Reminder[]) => {
+  if (dataSource === undefined) {
     return false;
   }
 
   for (const reminder of reminders) {
-    await database
-      .getRepository(Reminder)
-      .delete({ id: reminder.id });
+    await dataSource.getRepository(Reminder).delete({ id: reminder.id });
   }
 
   return true;
-}
+};

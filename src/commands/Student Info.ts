@@ -3,7 +3,7 @@ import {
   ApplicationCommandType,
   ContextMenuCommandBuilder,
   type GuildMember,
-  type UserContextMenuCommandInteraction
+  type UserContextMenuCommandInteraction,
 } from 'discord.js';
 
 const name = 'Student Info';
@@ -13,7 +13,9 @@ export const data = new ContextMenuCommandBuilder()
   .setType(ApplicationCommandType.User)
   .setDMPermission(false);
 
-export async function execute (interaction: UserContextMenuCommandInteraction) {
+export const execute = async (
+  interaction: UserContextMenuCommandInteraction,
+) => {
   const embed = getStudentInfoEmbed(interaction.targetMember as GuildMember);
   await interaction.editReply({ embeds: [embed] });
-}
+};

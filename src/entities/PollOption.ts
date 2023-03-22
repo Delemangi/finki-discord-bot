@@ -8,7 +8,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  Relation
+  Relation,
 } from 'typeorm';
 
 @Entity()
@@ -17,14 +17,14 @@ export class PollOption {
   public id!: string;
 
   @Column('text', {
-    nullable: false
+    nullable: false,
   })
   public name!: string;
 
   @ManyToOne(() => Poll, (poll) => poll.options, {
     nullable: false,
     onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
+    onUpdate: 'CASCADE',
   })
   public poll!: Relation<Poll>;
 
@@ -32,7 +32,7 @@ export class PollOption {
     cascade: true,
     nullable: true,
     onDelete: 'CASCADE',
-    onUpdate: 'CASCADE'
+    onUpdate: 'CASCADE',
   })
-  public votes!: Relation<PollVote>[];
+  public votes!: Array<Relation<PollVote>>;
 }

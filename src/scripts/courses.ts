@@ -2,19 +2,23 @@ import { client } from '../utils/client.js';
 import {
   getFromBotConfig,
   getFromRoleConfig,
-  getToken
+  getToken,
 } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
 import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  EmbedBuilder
+  EmbedBuilder,
 } from 'discord.js';
 
 const [channelId, newlines, ...roleSets] = process.argv.slice(2);
 
-if (channelId === undefined || roleSets === undefined || roleSets.length === 0) {
+if (
+  channelId === undefined ||
+  roleSets === undefined ||
+  roleSets.length === 0
+) {
   throw new Error('Missing channel ID or role sets arguments');
 }
 
@@ -41,21 +45,30 @@ client.once('ready', async () => {
       .setColor(getFromBotConfig('color'))
       .setTitle(`${roleSet.length > 1 ? '' : 'Семестар'} ${roleSet}`)
       .setThumbnail(getFromBotConfig('logo'))
-      .setDescription(roles.map((role, i) => `${(i + 1).toString().padStart(2, '0')}. ${getFromRoleConfig('courses')[role]}`).join('\n'))
+      .setDescription(
+        roles
+          .map(
+            (role, index_) =>
+              `${(index_ + 1).toString().padStart(2, '0')}. ${
+                getFromRoleConfig('courses')[role]
+              }`,
+          )
+          .join('\n'),
+      )
       .setFooter({ text: '(може да изберете повеќе опции)' });
 
-    for (let i = 0; i < roles.length; i += 5) {
+    for (let index1 = 0; index1 < roles.length; index1 += 5) {
       const row = new ActionRowBuilder<ButtonBuilder>();
       const buttons = [];
 
-      for (let j = i; j < i + 5; j++) {
-        if (roles[j] === undefined) {
+      for (let index2 = index1; index2 < index1 + 5; index2++) {
+        if (roles[index2] === undefined) {
           break;
         }
 
         const button = new ButtonBuilder()
-          .setCustomId(`course:${roles[j]}`)
-          .setLabel(`${j + 1}`)
+          .setCustomId(`course:${roles[index2]}`)
+          .setLabel(`${index2 + 1}`)
           .setStyle(ButtonStyle.Secondary);
 
         buttons.push(button);
@@ -69,13 +82,13 @@ client.once('ready', async () => {
       if (index === 0 || newlines === undefined || Number.isNaN(newlines)) {
         await channel.send({
           components,
-          embeds: [embed]
+          embeds: [embed],
         });
       } else {
         await channel.send({
           components,
           content: '_ _\n'.repeat(Number(newlines)),
-          embeds: [embed]
+          embeds: [embed],
         });
       }
     } catch (error) {

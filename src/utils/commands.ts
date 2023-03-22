@@ -3,27 +3,29 @@ import { readdirSync } from 'node:fs';
 
 const commands = new Collection<string, Command>();
 
-async function refreshCommands () {
+const refreshCommands = async () => {
   commands.clear();
 
-  for (const file of readdirSync('./dist/commands').filter((f) => f.endsWith('.js'))) {
+  for (const file of readdirSync('./dist/commands').filter((fi) =>
+    fi.endsWith('.js'),
+  )) {
     const command: Command = await import(`../commands/${file}`);
     commands.set(command.data.name, command);
   }
-}
+};
 
-export async function getCommand (command: string) {
+export const getCommand = async (command: string) => {
   if (commands.entries.length === 0) {
     await refreshCommands();
   }
 
   return commands.get(command);
-}
+};
 
-export async function getCommands () {
+export const getCommands = async () => {
   if (commands.entries.length === 0) {
     await refreshCommands();
   }
 
   return commands;
-}
+};

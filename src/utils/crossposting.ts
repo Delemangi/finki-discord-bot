@@ -1,11 +1,11 @@
 let crossposting = true;
 
-export function getCrossposting () {
+export const getCrossposting = () => {
   return crossposting;
-}
+};
 
-export function toggleCrossposting () {
+export const toggleCrossposting = () => {
   crossposting = !crossposting;
 
   return crossposting;
-}
+};

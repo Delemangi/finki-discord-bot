@@ -4,7 +4,7 @@ import {
   type ChatInputCommandInteraction,
   PermissionFlagsBits,
   type PermissionsBitField,
-  SlashCommandBuilder
+  SlashCommandBuilder,
 } from 'discord.js';
 
 const name = 'crosspost';
@@ -15,12 +15,16 @@ export const data = new SlashCommandBuilder()
   .setDescription(commands[name])
   .setDefaultMemberPermissions(permission);
 
-export async function execute (interaction: ChatInputCommandInteraction) {
-  const permissions = interaction.member?.permissions as PermissionsBitField | undefined;
+export const execute = async (interaction: ChatInputCommandInteraction) => {
+  const permissions = interaction.member?.permissions as
+    | PermissionsBitField
+    | undefined;
   if (permissions === undefined || !permissions.has(permission)) {
     await interaction.editReply('Оваа команда е само за администратори.');
     return;
   }
 
-  await interaction.editReply(`Crossposting е сега ${toggleCrossposting() ? 'вклучено' : 'исклучено'}.`);
-}
+  await interaction.editReply(
+    `Crossposting е сега ${toggleCrossposting() ? 'вклучено' : 'исклучено'}.`,
+  );
+};

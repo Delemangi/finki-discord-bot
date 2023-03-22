@@ -4,141 +4,18 @@
     "node": true
   },
   "extends": [
-    "canonical"
+    "canonical/auto"
   ],
   "overrides": [
     {
       "extends": [
-        "canonical/json"
-      ],
-      "files": "*.json"
-    },
-    {
-      "extends": [
         "canonical/module",
-        "canonical/node",
-        "canonical/typescript"
+        "canonical/typescript-type-checking"
       ],
       "files": "*.ts",
       "parserOptions": {
         "project": "./tsconfig.json"
-      },
-      "rules": {
-        "@typescript-eslint/array-type": [
-          "error",
-          {
-            "default": "array"
-          }
-        ],
-        "@typescript-eslint/comma-dangle": [
-          "error",
-          "never"
-        ],
-        "@typescript-eslint/member-delimiter-style": [
-          "error",
-          {
-            "multiline": {
-              "delimiter": "semi",
-              "requireLast": true
-            },
-            "multilineDetection": "brackets",
-            "singleline": {
-              "delimiter": "semi",
-              "requireLast": false
-            }
-          }
-        ],
-        "@typescript-eslint/no-extra-parens": [
-          "error",
-          "all",
-          {
-            "enforceForArrowConditionals": false
-          }
-        ],
-        "@typescript-eslint/object-curly-spacing": [
-          "error",
-          "always"
-        ]
       }
     }
-  ],
-  "rules": {
-    "array-bracket-newline": [
-      "error",
-      "consistent"
-    ],
-    "array-element-newline": [
-      "error",
-      "consistent"
-    ],
-    "arrow-body-style": [
-      "error",
-      "as-needed"
-    ],
-    "canonical/destructuring-property-newline": [
-      "error",
-      {
-        "allowAllPropertiesOnSameLine": true
-      }
-    ],
-    "func-style": [
-      "error",
-      "declaration"
-    ],
-    "id-length": [
-      "off"
-    ],
-    "import/extensions": [
-      "off"
-    ],
-    "import/no-unassigned-import": [
-      "error",
-      {
-        "allow": [
-          "reflect-metadata"
-        ]
-      }
-    ],
-    "linebreak-style": [
-      "error",
-      "windows"
-    ],
-    "no-bitwise": [
-      "error",
-      {
-        "allow": [
-          "|"
-        ]
-      }
-    ],
-    "no-confusing-arrow": [
-      "error",
-      {
-        "allowParens": true,
-        "onlyOneSimpleParam": true
-      }
-    ],
-    "object-curly-newline": [
-      "error",
-      {
-        "consistent": true,
-        "minProperties": 2,
-        "multiline": true
-      }
-    ],
-    "object-curly-spacing": [
-      "error",
-      "always"
-    ],
-    "radix": [
-      "error",
-      "as-needed"
-    ],
-    "unicorn/no-nested-ternary": [
-      "off"
-    ],
-    "unicorn/prevent-abbreviations": [
-      "off"
-    ]
-  }
+  ]
 }

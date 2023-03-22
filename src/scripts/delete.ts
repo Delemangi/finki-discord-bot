@@ -1,20 +1,16 @@
 import { client } from '../utils/client.js';
-import {
-  getApplicationId,
-  getToken
-} from '../utils/config.js';
+import { getApplicationId, getToken } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
-import {
-  REST,
-  Routes
-} from 'discord.js';
+import { REST, Routes } from 'discord.js';
 
 const commands = process.argv.slice(2);
 
 if (commands === undefined || commands.length === 0) {
   client.once('ready', async () => {
     const rest = new REST().setToken(getToken());
-    await rest.put(Routes.applicationCommands(getApplicationId()), { body: [] });
+    await rest.put(Routes.applicationCommands(getApplicationId()), {
+      body: [],
+    });
 
     logger.info('Done');
     client.destroy();
@@ -35,4 +31,3 @@ if (commands === undefined || commands.length === 0) {
 }
 
 await client.login(getToken());
-

@@ -1,12 +1,9 @@
 import { getQuestions } from '../utils/config.js';
-import {
-  getQuestionComponents,
-  getQuestionEmbed
-} from '../utils/embeds.js';
+import { getQuestionComponents, getQuestionEmbed } from '../utils/embeds.js';
 import { commands } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
-  SlashCommandBuilder
+  SlashCommandBuilder,
 } from 'discord.js';
 
 const name = 'faq';
@@ -14,15 +11,17 @@ const name = 'faq';
 export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription(commands[name])
-  .addStringOption((option) => option
-    .setName('question')
-    .setDescription('Прашање')
-    .setRequired(true)
-    .setAutocomplete(true));
+  .addStringOption((option) =>
+    option
+      .setName('question')
+      .setDescription('Прашање')
+      .setRequired(true)
+      .setAutocomplete(true),
+  );
 
-export async function execute (interaction: ChatInputCommandInteraction) {
+export const execute = async (interaction: ChatInputCommandInteraction) => {
   const keyword = interaction.options.getString('question', true);
-  const question = getQuestions().find((q) => q.question === keyword);
+  const question = getQuestions().find((quest) => quest.question === keyword);
 
   if (question === undefined) {
     await interaction.editReply('Не постои такво прашање.');
@@ -34,6 +33,6 @@ export async function execute (interaction: ChatInputCommandInteraction) {
   await interaction.editReply({
     components,
     embeds: [embed],
-    files: question.files?.map((f) => `./files/${f}`) ?? []
+    files: question.files?.map((file) => `./files/${file}`) ?? [],
   });
-}
+};

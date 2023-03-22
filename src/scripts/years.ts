@@ -2,14 +2,14 @@ import { client } from '../utils/client.js';
 import {
   getFromBotConfig,
   getFromRoleConfig,
-  getToken
+  getToken,
 } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
 import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  EmbedBuilder
+  EmbedBuilder,
 } from 'discord.js';
 
 const [channelId, newlines] = process.argv.slice(2);
@@ -41,7 +41,9 @@ client.once('ready', async () => {
     .setTitle('Година на студирање')
     .setThumbnail(getFromBotConfig('logo'))
     .setDescription('Изберете ја годината на студирање.')
-    .setFooter({ text: '(може да изберете само една опција, секоја нова опција ја заменува старата)' });
+    .setFooter({
+      text: '(може да изберете само една опција, секоја нова опција ја заменува старата)',
+    });
 
   for (const role of roles) {
     const button = new ButtonBuilder()
@@ -58,13 +60,13 @@ client.once('ready', async () => {
     if (newlines === undefined || Number.isNaN(newlines)) {
       await channel.send({
         components: [components],
-        embeds: [embed]
+        embeds: [embed],
       });
     } else {
       await channel.send({
         components: [components],
         content: '_ _\n'.repeat(Number(newlines)),
-        embeds: [embed]
+        embeds: [embed],
       });
     }
   } catch (error) {

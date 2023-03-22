@@ -1,12 +1,9 @@
 import { client } from './client.js';
-import {
-  deleteReminders,
-  loadReminders
-} from './database.js';
+import { deleteReminders, loadReminders } from './database.js';
 import { userMention } from 'discord.js';
 import { setTimeout } from 'node:timers/promises';
 
-export async function remind () {
+export const remind = async () => {
   while (true) {
     const reminders = await loadReminders();
 
@@ -22,7 +19,11 @@ export async function remind () {
           const channel = await client.channels.fetch(reminder.channel);
 
           if (channel?.isTextBased()) {
-            await channel.send(`${userMention(reminder.owner)} Потсетник: ${reminder.description}`);
+            await channel.send(
+              `${userMention(reminder.owner)} Потсетник: ${
+                reminder.description
+              }`,
+            );
           }
         }
 
@@ -32,4 +33,4 @@ export async function remind () {
 
     await setTimeout(15_000);
   }
-}
+};

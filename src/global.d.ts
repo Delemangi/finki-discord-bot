@@ -6,7 +6,7 @@ import {
   type ContextMenuCommandBuilder,
   type ContextMenuCommandInteraction,
   type SlashCommandBuilder,
-  type SlashCommandSubcommandGroupBuilder
+  type SlashCommandSubcommandGroupBuilder,
 } from 'discord.js';
 
 declare global {
@@ -14,9 +14,21 @@ declare global {
 
   type Logs = 'actions' | 'commands';
 
-  type RoleSets = 'activity' | 'color' | 'courses' | 'notification' | 'program' | 'year';
+  type RoleSets =
+    | 'activity'
+    | 'color'
+    | 'courses'
+    | 'notification'
+    | 'program'
+    | 'year';
 
-  type CourseType = 'задолжителен (изб.)' | 'задолжителен' | 'изборен' | 'нема' | `задолжителен (${number})` | `изборен (${number})`;
+  type CourseType =
+    | 'задолжителен (изб.)'
+    | 'задолжителен'
+    | 'изборен'
+    | 'нема'
+    | `задолжителен (${number})`
+    | `изборен (${number})`;
 
   type ProgramKeys = 'ИМБ' | 'КЕ' | 'КИ' | 'КН' | 'ПИТ' | 'СИИС';
 
@@ -114,8 +126,13 @@ declare global {
   };
 
   type Command = {
-    data: ContextMenuCommandBuilder | SlashCommandBuilder | SlashCommandSubcommandGroupBuilder;
-    execute: (interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction) => Promise<void>;
+    data:
+      | ContextMenuCommandBuilder
+      | SlashCommandBuilder
+      | SlashCommandSubcommandGroupBuilder;
+    execute: (
+      interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction,
+    ) => Promise<void>;
   };
 
   type CommandResponse = {

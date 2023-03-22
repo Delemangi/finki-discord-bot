@@ -5,7 +5,7 @@ import { parseDate } from 'chrono-node';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-  time
+  time,
 } from 'discord.js';
 
 const name = 'reminder';
@@ -13,16 +13,17 @@ const name = 'reminder';
 export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription(commands[name])
-  .addStringOption((option) => option
-    .setName('description')
-    .setDescription('Опис')
-    .setRequired(true))
-  .addStringOption((option) => option
-    .setName('when')
-    .setDescription('Датум и/или време')
-    .setRequired(true));
+  .addStringOption((option) =>
+    option.setName('description').setDescription('Опис').setRequired(true),
+  )
+  .addStringOption((option) =>
+    option
+      .setName('when')
+      .setDescription('Датум и/или време')
+      .setRequired(true),
+  );
 
-export async function execute (interaction: ChatInputCommandInteraction) {
+export const execute = async (interaction: ChatInputCommandInteraction) => {
   const description = interaction.options.getString('description', true);
   const when = interaction.options.getString('when', true);
 
@@ -47,4 +48,4 @@ export async function execute (interaction: ChatInputCommandInteraction) {
   await saveReminder(reminder);
 
   await interaction.editReply(`Креиран е потсетник за ${time(date, 'F')}.`);
-}
+};

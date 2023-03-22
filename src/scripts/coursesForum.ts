@@ -1,13 +1,7 @@
 import { client } from '../utils/client.js';
-import {
-  getCourses,
-  getToken
-} from '../utils/config.js';
+import { getCourses, getToken } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
-import {
-  ChannelType,
-  inlineCode
-} from 'discord.js';
+import { ChannelType, inlineCode } from 'discord.js';
 
 const [channelId] = process.argv.slice(2);
 
@@ -29,9 +23,9 @@ client.once('ready', async () => {
   for (const course of getCourses()) {
     await channel.threads.create({
       message: {
-        content: `Овој канал е за предметот ${inlineCode(course)}.`
+        content: `Овој канал е за предметот ${inlineCode(course)}.`,
       },
-      name: course
+      name: course,
     });
   }
 

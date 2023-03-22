@@ -1,8 +1,5 @@
 import { getFromRoleConfig } from './config.js';
-import {
-  type Guild,
-  type Role
-} from 'discord.js';
+import { type Guild, type Role } from 'discord.js';
 
 const roles: { [K in RoleSets]: Role[] } = {
   activity: [],
@@ -10,10 +7,10 @@ const roles: { [K in RoleSets]: Role[] } = {
   courses: [],
   notification: [],
   program: [],
-  year: []
+  year: [],
 };
 
-export function refreshRoles (guild: Guild | null, type: RoleSets) {
+export const refreshRoles = (guild: Guild | null, type: RoleSets) => {
   if (roles[type].length === 0 && guild !== null) {
     let list;
 
@@ -23,15 +20,17 @@ export function refreshRoles (guild: Guild | null, type: RoleSets) {
       list = getFromRoleConfig(type);
     }
 
-    list = list.map((role) => guild?.roles.cache.find((r) => r.name === role));
+    list = list.map((role) =>
+      guild?.roles.cache.find((ro) => ro.name === role),
+    );
 
     if (!list.includes(undefined)) {
       roles[type] = list as Role[];
     }
   }
-}
+};
 
-export function getRole (guild: Guild | null, type: RoleSets, role?: string) {
+export const getRole = (guild: Guild | null, type: RoleSets, role?: string) => {
   if (role === undefined) {
     return undefined;
   }
@@ -40,13 +39,13 @@ export function getRole (guild: Guild | null, type: RoleSets, role?: string) {
     refreshRoles(guild, type);
   }
 
-  return roles[type].find((r) => r.name === role);
-}
+  return roles[type].find((ro) => ro.name === role);
+};
 
-export function getRoles (guild: Guild | null, type: RoleSets) {
+export const getRoles = (guild: Guild | null, type: RoleSets) => {
   if (roles[type].length === 0) {
     refreshRoles(guild, type);
   }
 
   return roles[type];
-}
+};

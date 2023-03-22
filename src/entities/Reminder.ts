@@ -1,9 +1,5 @@
 // eslint-disable-next-line import/no-cycle
-import {
-  Column,
-  Entity,
-  PrimaryGeneratedColumn
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Reminder {
@@ -21,7 +17,7 @@ export class Reminder {
 
   @Column('boolean', {
     default: false,
-    nullable: false
+    nullable: false,
   })
   public private!: boolean;
 

@@ -1,11 +1,8 @@
-import {
-  getQuizComponents,
-  getQuizEmbed
-} from '../utils/embeds.js';
+import { getQuizComponents, getQuizEmbed } from '../utils/embeds.js';
 import { commands } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
-  SlashCommandBuilder
+  SlashCommandBuilder,
 } from 'discord.js';
 
 const name = 'quiz';
@@ -14,11 +11,11 @@ export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription(commands[name]);
 
-export async function execute (interaction: ChatInputCommandInteraction) {
+export const execute = async (interaction: ChatInputCommandInteraction) => {
   const embed = getQuizEmbed();
   const components = getQuizComponents(interaction);
   await interaction.editReply({
     components,
-    embeds: [embed]
+    embeds: [embed],
   });
-}
+};
