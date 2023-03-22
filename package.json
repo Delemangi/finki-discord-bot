@@ -17,7 +17,7 @@
   },
   "description": "FINKI Discord bot",
   "devDependencies": {
-    "@types/jsdom": "^21.1.0",
+    "@types/jsdom": "^21.1.1",
     "@types/node": "^18.15.0",
     "eslint": "^8.36.0",
     "eslint-config-canonical": "^41.0.1",
