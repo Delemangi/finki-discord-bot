@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "chrono-node": "^2.6.1",
-    "discord-api-types": "^0.37.36",
+    "discord-api-types": "^0.37.37",
     "discord.js": "^14.8.0",
     "dotenv": "^16.0.3",
     "jsdom": "^21.1.1",
