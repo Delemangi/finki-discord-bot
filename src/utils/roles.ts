@@ -49,3 +49,22 @@ export const getRoles = (guild: Guild | null, type: RoleSets) => {
 
   return roles[type];
 };
+
+export const getCourseRoleByCourseName = (
+  guild: Guild | null,
+  course?: string | null,
+) => {
+  if (course === undefined || course === null) {
+    return undefined;
+  }
+
+  const roleName = Object.entries(getFromRoleConfig('courses')).find(
+    ([, courseName]) => course === courseName,
+  );
+
+  if (roleName === undefined) {
+    return undefined;
+  }
+
+  return guild?.roles.cache.find((role) => role.name === roleName[0]);
+};

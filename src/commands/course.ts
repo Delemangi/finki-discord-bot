@@ -12,6 +12,7 @@ import {
   getCourseProfessorsEmbed,
   getCourseSummaryEmbed,
 } from '../utils/embeds.js';
+import { getCourseRoleByCourseName } from '../utils/roles.js';
 import { commands, errors } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
@@ -233,12 +234,7 @@ const handleCourseToggle = async (
   }
 
   const member = interaction.member as GuildMember;
-  const courseRole = Object.entries(getFromRoleConfig('courses')).find(
-    ([, co]) => course === co,
-  );
-  const role = interaction.guild.roles.cache.find(
-    (ro) => ro.name === courseRole?.[0],
-  );
+  const role = getCourseRoleByCourseName(interaction.guild, course);
 
   if (role === undefined) {
     await interaction.editReply(errors.courseNotFound);
