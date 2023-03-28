@@ -10,6 +10,7 @@ export const commands = {
   'course professors': 'Наставен кадар на предмети',
   'course role': 'Број на корисници во канали на предмети',
   'course summary': 'Сите информации за предмети',
+  'course toggle': 'Земи или отстрани улога за предмет',
   'courses prerequisite': 'Сите предмети според предуслов',
   'courses programs': 'Сите предмети според смер',
   crosspost: 'Вклучи или исклучи crossposting',

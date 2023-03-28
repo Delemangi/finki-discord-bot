@@ -15,6 +15,7 @@ import {
 import { commands, errors } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
+  type GuildMember,
   roleMention,
   SlashCommandBuilder,
 } from 'discord.js';
@@ -91,6 +92,18 @@ export const data = new SlashCommandBuilder()
       .addStringOption((option) =>
         option
           .setName('course')
+          .setDescription('Предмет')
+          .setRequired(true)
+          .setAutocomplete(true),
+      ),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName('toggle')
+      .setDescription(commands['course toggle'])
+      .addStringOption((option) =>
+        option
+          .setName('courserole')
           .setDescription('Предмет')
           .setRequired(true)
           .setAutocomplete(true),
@@ -210,6 +223,44 @@ const handleCourseSummary = async (
   await interaction.editReply({ embeds });
 };
 
+const handleCourseToggle = async (
+  interaction: ChatInputCommandInteraction,
+  course: string | null,
+) => {
+  if (interaction.guild === null) {
+    await interaction.editReply(errors.serverOnlyCommand);
+    return;
+  }
+
+  const member = interaction.member as GuildMember;
+  const courseRole = Object.entries(getFromRoleConfig('courses')).find(
+    ([, co]) => course === co,
+  );
+  const role = interaction.guild.roles.cache.find(
+    (ro) => ro.name === courseRole?.[0],
+  );
+
+  if (role === undefined) {
+    await interaction.editReply(errors.courseNotFound);
+    return;
+  }
+
+  if (member.roles.cache.has(role.id)) {
+    await member.roles.remove(role);
+    await interaction.editReply({
+      allowedMentions: { parse: [] },
+      content: `Го отстранивте предметот ${roleMention(role.id)}.`,
+    });
+    return;
+  }
+
+  await member.roles.add(role);
+  await interaction.editReply({
+    allowedMentions: { parse: [] },
+    content: `Го земавте предметот ${roleMention(role.id)}.`,
+  });
+};
+
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const course = interaction.options.getString('course');
   const courseRole = interaction.options.getString('courserole');
@@ -236,5 +287,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     await handleCourseInfo(interaction, course);
   } else if (subcommand === 'summary') {
     await handleCourseSummary(interaction, course);
+  } else if (subcommand === 'toggle') {
+    await handleCourseToggle(interaction, courseRole);
   }
 };
