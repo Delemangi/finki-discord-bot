@@ -36,7 +36,6 @@ export const commands = {
   purge: 'Бриши пораки',
   quiz: 'Започни го квизот Кој Сака Да Биде Морален Победник',
   reminder: 'Потсетник',
-  server: 'Информации за серверот',
   session: 'Распоред за испитни сесии и колоквиуми',
   staff: 'Информации за професори',
   'statistics activity': 'Статистика за улогите за активности',
@@ -44,6 +43,7 @@ export const commands = {
   'statistics course': 'Статистика за улогите за предмети',
   'statistics notification': 'Статистика за улогите за нотификации',
   'statistics program': 'Статистика за улогите за програми',
+  'statistics server': 'Статистика за серверот',
   'statistics year': 'Статистика за улогите за години',
   timetable: 'Распоред на часови',
 };

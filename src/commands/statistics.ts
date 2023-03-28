@@ -5,6 +5,7 @@ import {
   type ChatInputCommandInteraction,
   roleMention,
   SlashCommandBuilder,
+  userMention,
 } from 'discord.js';
 
 const name = 'statistics';
@@ -31,6 +32,9 @@ export const data = new SlashCommandBuilder()
   )
   .addSubcommand((command) =>
     command.setName('activity').setDescription(commands['statistics activity']),
+  )
+  .addSubcommand((command) =>
+    command.setName('server').setDescription(commands['statistics server']),
   )
   .setDMPermission(false);
 
@@ -80,6 +84,40 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
       return;
     }
+
+    await interaction.editReply({
+      allowedMentions: { parse: [] },
+      content: output.join('\n'),
+    });
+  } else {
+    const output = [];
+
+    output.push(`Име: ${interaction.guild?.name}`);
+    output.push(
+      `Сопственик: ${
+        interaction.guild === null
+          ? '-'
+          : userMention(interaction.guild?.ownerId)
+      }`,
+    );
+    output.push(`Членови: ${interaction.guild?.memberCount}`);
+    await interaction.guild?.channels.fetch();
+    output.push(`Канали: ${interaction.guild?.channels.cache.size}`);
+    output.push(
+      `Канали (без нишки): ${
+        interaction.guild?.channels.cache.filter(
+          (channel) => !channel.isThread(),
+        ).size
+      } / 500`,
+    );
+    await interaction.guild?.roles.fetch();
+    output.push(`Улоги: ${interaction.guild?.roles.cache.size} / 250`);
+    await interaction.guild?.emojis.fetch();
+    output.push(`Емоџиња: ${interaction.guild?.emojis.cache.size} / 50`);
+    await interaction.guild?.stickers.fetch();
+    output.push(`Стикери: ${interaction.guild?.stickers.cache.size} / 50`);
+    await interaction.guild?.invites.fetch();
+    output.push(`Покани: ${interaction.guild?.invites.cache.size}`);
 
     await interaction.editReply({
       allowedMentions: { parse: [] },
