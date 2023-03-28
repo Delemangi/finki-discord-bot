@@ -46,6 +46,7 @@ import {
   channelMention,
   ChannelType,
   type ChatInputCommandInteraction,
+  type GuildMember,
   type GuildMemberRoleManager,
   inlineCode,
   PermissionsBitField,
@@ -711,6 +712,96 @@ const handleQuizGameButton = async (
   });
 };
 
+const handleVipButton = async (
+  interaction: ButtonInteraction,
+  args: string[],
+) => {
+  if (args[0] !== 'accept') {
+    const message = await interaction.reply({
+      content: 'Жалиме за вашата одлука... се гледаме следен пат.',
+      ephemeral: true,
+    });
+    setTimeout(
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      async () => await message.delete(),
+      getFromBotConfig('ephemeralReplyTime'),
+    );
+    return;
+  }
+
+  const member = interaction.member as GuildMember;
+
+  if (member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+    const message = await interaction.reply({
+      content: 'Веќе сте администратор.',
+      ephemeral: true,
+    });
+    setTimeout(
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      async () => await message.delete(),
+      getFromBotConfig('ephemeralReplyTime'),
+    );
+    return;
+  }
+
+  const role = interaction.guild?.roles.cache.find(
+    (ro) => ro.name === 'ВИП' || ro.name === 'VIP',
+  );
+
+  if (role === undefined) {
+    const message = await interaction.reply({
+      content: 'Не постои улогата за ВИП.',
+      ephemeral: true,
+    });
+    setTimeout(
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      async () => await message.delete(),
+      getFromBotConfig('ephemeralReplyTime'),
+    );
+    return;
+  }
+
+  if (member.roles.cache.has(role.id)) {
+    const message = await interaction.reply({
+      content: 'Веќе сте во ВИП.',
+      ephemeral: true,
+    });
+    setTimeout(
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      async () => await message.delete(),
+      getFromBotConfig('ephemeralReplyTime'),
+    );
+    return;
+  }
+
+  await member.roles.add(role);
+
+  const mess = await interaction.reply({
+    content: 'Добредојдовте во ВИП.',
+    ephemeral: true,
+  });
+  setTimeout(
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    async () => await mess.delete(),
+    getFromBotConfig('ephemeralReplyTime'),
+  );
+
+  const channel = interaction.guild?.channels.cache.find(
+    (ch) => ch.name.includes('вип') || ch.name.includes('vip'),
+  );
+
+  if (channel === undefined || !channel.isTextBased()) {
+    return;
+  }
+
+  await channel.send({
+    allowedMentions: { parse: [] },
+    content: `Членот ${userMention(
+      member.user.id,
+    )} ја прифати изјавата за големи нешта.`,
+  });
+};
+
 // Autocomplete interactions
 
 let transformedCourses: Array<[string, string]> | null = null;
@@ -928,6 +1019,8 @@ export const handleButton = async (interaction: ButtonInteraction) => {
     await handleQuizButton(interaction, args);
   } else if (command === 'quizGame') {
     await handleQuizGameButton(interaction, args);
+  } else if (command === 'vip') {
+    await handleVipButton(interaction, args);
   } else if (ignoredButtons.includes(command)) {
     // Do nothing
   } else {

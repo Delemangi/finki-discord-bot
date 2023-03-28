@@ -45,6 +45,7 @@
     "embed:programs": "npm run build && node dist/scripts/programs.js",
     "embed:rules": "npm run build && node dist/scripts/rules.js",
     "embed:years": "npm run build && node dist/scripts/years.js",
+    "embed:vip": "npm run build && node dist/scripts/vip.js",
     "forum:courses": "npm run build && node dist/scripts/coursesForum.js",
     "server:info": "npm run build && node dist/scripts/serverInfo.js",
     "lint": "eslint . --ext .ts --cache",

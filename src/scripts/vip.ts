@@ -1,12 +1,12 @@
 import { client } from '../utils/client.js';
-import {
-  getFromBotConfig,
-  getFromRoleConfig,
-  getRules,
-  getToken,
-} from '../utils/config.js';
+import { getFromBotConfig, getResponses, getToken } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
-import { EmbedBuilder, inlineCode, italic } from 'discord.js';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+} from 'discord.js';
 
 const channelId = process.argv[2];
 
@@ -20,33 +20,36 @@ client.once('ready', async () => {
   logger.info('Bot is ready');
 
   const channel = client.channels.cache.get(channelId);
-  const roles = getFromRoleConfig('year');
 
   if (channel === undefined || !channel.isTextBased() || channel.isDMBased()) {
     throw new Error('The provided channel must be a guild text channel');
   }
 
-  if (roles === undefined || roles.length === 0) {
-    throw new Error('No year roles have been provided');
-  }
-
+  const components = [];
   const embed = new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
-    .setTitle('Правила')
-    .setThumbnail(getFromBotConfig('logo'))
+    .setTitle('Изјава за големи нешта')
     .setDescription(
-      `${getRules()
-        .map(
-          (value, index) =>
-            `${inlineCode((index + 1).toString().padStart(2, '0'))} ${value}`,
-        )
-        .join('\n\n')} \n\n ${italic(
-        'Евентуално кршење на правилата може да доведе до санкции',
-      )}.`,
+      getResponses().find((response) => response.command === 'vip')?.response ??
+        '-',
     );
+
+  const row = new ActionRowBuilder<ButtonBuilder>();
+  row.addComponents(
+    new ButtonBuilder()
+      .setCustomId('vip:accept')
+      .setLabel('Прифаќам')
+      .setStyle(ButtonStyle.Success),
+    new ButtonBuilder()
+      .setCustomId('vip:decline')
+      .setLabel('Одбивам')
+      .setStyle(ButtonStyle.Danger),
+  );
+  components.push(row);
 
   try {
     await channel.send({
+      components,
       embeds: [embed],
     });
   } catch (error) {
