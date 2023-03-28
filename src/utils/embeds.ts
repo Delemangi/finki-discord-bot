@@ -676,6 +676,76 @@ export const getStudentInfoEmbed = (member: GuildMember | null | undefined) => {
     .setTimestamp();
 };
 
+export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
+  await interaction.guild?.members.fetch();
+
+  const vipRole = interaction.guild?.roles.cache.find(
+    (role) => role.name === 'ВИП' || role.name === 'VIP',
+  );
+  const vipMembers = [];
+
+  for (const member of vipRole?.members.values() ?? []) {
+    const user = await interaction.guild?.members.fetch(member.user.id);
+    vipMembers.push(user);
+  }
+
+  const adminRole = interaction.guild?.roles.cache.find(
+    (role) => role.name === 'Администратор' || role.name === 'Administrator',
+  );
+  const adminMembers = [];
+
+  for (const member of adminRole?.members.values() ?? []) {
+    const user = await interaction.guild?.members.fetch(member.user.id);
+    adminMembers.push(user);
+  }
+
+  const fssRole = interaction.guild?.roles.cache.find(
+    (role) => role.name.includes('ФСС') || role.name.includes('FSS'),
+  );
+  const fssMembers = [];
+
+  for (const member of fssRole?.members.values() ?? []) {
+    const user = await interaction.guild?.members.fetch(member.user.id);
+    fssMembers.push(user);
+  }
+
+  return [
+    new EmbedBuilder().setColor(getFromBotConfig('color')).setTitle('Состав'),
+    new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
+      .setTitle('ВИП')
+      .setDescription(
+        vipMembers.length === 0
+          ? 'Нема членови на ВИП.'
+          : vipMembers
+              .map((member) => userMention(member?.user.id as string))
+              .join('\n'),
+      ),
+    new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
+      .setTitle('Администратори')
+      .setDescription(
+        adminMembers.length === 0
+          ? 'Нема администратори.'
+          : adminMembers
+              .map((member) => userMention(member?.user.id as string))
+              .join('\n'),
+      )
+      .setTimestamp(),
+
+    new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
+      .setTitle('ФСС')
+      .setDescription(
+        fssMembers.length === 0
+          ? 'Нема членови на ФСС.'
+          : fssMembers
+              .map((member) => userMention(member?.user.id as string))
+              .join('\n'),
+      ),
+  ];
+};
+
 // Questions & links
 
 export const getQuestionEmbed = (question: Question) => {

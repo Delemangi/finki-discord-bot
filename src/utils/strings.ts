@@ -46,6 +46,7 @@ export const commands = {
   'statistics server': 'Статистика за серверот',
   'statistics year': 'Статистика за улогите за години',
   timetable: 'Распоред на часови',
+  vip: 'Моментален состав на ВИП',
 };
 
 export const programMapping: { [index in ProgramKeys]: ProgramValues } = {
