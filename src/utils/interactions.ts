@@ -97,6 +97,7 @@ const handleCourseButton = async (
       )}.`,
       ephemeral: true,
     });
+    deleteResponse(mess);
   } catch (error) {
     logger.warn(
       `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`,

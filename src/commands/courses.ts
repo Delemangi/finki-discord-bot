@@ -2,9 +2,11 @@ import {
   getCoursesPrerequisiteEmbed,
   getCoursesProgramEmbed,
 } from '../utils/embeds.js';
-import { commands, programMapping } from '../utils/strings.js';
+import { getCourseRolesBySemester } from '../utils/roles.js';
+import { commands, errors, programMapping } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
+  type GuildMember,
   SlashCommandBuilder,
 } from 'discord.js';
 
@@ -49,6 +51,32 @@ export const data = new SlashCommandBuilder()
           .setRequired(true)
           .setAutocomplete(true),
       ),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName('add')
+      .setDescription(commands['courses add'])
+      .addNumberOption((option) =>
+        option
+          .setName('semester')
+          .setDescription('Семестар')
+          .setRequired(true)
+          .setMinValue(1)
+          .setMaxValue(8),
+      ),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName('remove')
+      .setDescription(commands['courses remove'])
+      .addNumberOption((option) =>
+        option
+          .setName('semester')
+          .setDescription('Семестар')
+          .setRequired(true)
+          .setMinValue(1)
+          .setMaxValue(8),
+      ),
   );
 
 const handleCoursesProgram = async (
@@ -70,6 +98,40 @@ const handleCoursesPrerequisite = async (
   await interaction.editReply({ embeds: [embed] });
 };
 
+const handleCoursesAdd = async (interaction: ChatInputCommandInteraction) => {
+  if (interaction.guild === null) {
+    await interaction.editReply(errors.serverOnlyCommand);
+    return;
+  }
+
+  const semester = interaction.options.getNumber('semester', true);
+  const member = interaction.member as GuildMember;
+  const roles = getCourseRolesBySemester(interaction.guild, semester);
+
+  await member.roles.add(roles);
+  await interaction.editReply(
+    `Ги земавте улогите за предметите од семестар ${semester}.`,
+  );
+};
+
+const handleCoursesRemove = async (
+  interaction: ChatInputCommandInteraction,
+) => {
+  if (interaction.guild === null) {
+    await interaction.editReply(errors.serverOnlyCommand);
+    return;
+  }
+
+  const semester = interaction.options.getNumber('semester', true);
+  const member = interaction.member as GuildMember;
+  const roles = getCourseRolesBySemester(interaction.guild, semester);
+
+  await member.roles.remove(roles);
+  await interaction.editReply(
+    `Ги отстранете улогите за предметите од семестар ${semester}.`,
+  );
+};
+
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const subcommand = interaction.options.getSubcommand(true);
 
@@ -77,5 +139,9 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     await handleCoursesProgram(interaction);
   } else if (subcommand === 'prerequisite') {
     await handleCoursesPrerequisite(interaction);
+  } else if (subcommand === 'add') {
+    await handleCoursesAdd(interaction);
+  } else if (subcommand === 'remove') {
+    await handleCoursesRemove(interaction);
   }
 };

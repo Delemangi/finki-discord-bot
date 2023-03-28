@@ -50,6 +50,23 @@ export const getRoles = (guild: Guild | null, type: RoleSets) => {
   return roles[type];
 };
 
+export const getCourseRolesBySemester = (
+  guild: Guild | null,
+  semester: number,
+) => {
+  const courses = getFromRoleConfig('course')[semester];
+
+  if (courses === undefined) {
+    return [];
+  }
+
+  if (roles.courses.length === 0) {
+    refreshRoles(guild, 'courses');
+  }
+
+  return roles.courses.filter((role) => courses.includes(role.name));
+};
+
 export const getCourseRoleByCourseName = (
   guild: Guild | null,
   course?: string | null,
