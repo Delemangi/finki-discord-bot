@@ -531,7 +531,8 @@ export const getCoursesPrerequisiteEmbed = (course: string) => {
                 }`,
             )
             .join('\n'),
-    );
+    )
+    .setTimestamp();
 };
 
 export const getStaffEmbed = (information: Staff) => {
