@@ -11,6 +11,7 @@ import {
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
+  inlineCode,
 } from 'discord.js';
 
 const [channelId, newlines, ...roleSets] = process.argv.slice(2);
@@ -50,7 +51,7 @@ client.once('ready', async () => {
         roles
           .map(
             (role, index_) =>
-              `${(index_ + 1).toString().padStart(2, '0')}. ${
+              `${inlineCode((index_ + 1).toString().padStart(2, '0'))}. ${
                 getFromRoleConfig('courses')[role]
               }`,
           )
