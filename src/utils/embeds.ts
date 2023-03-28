@@ -453,7 +453,7 @@ export const getCoursesProgramEmbed = (
           : mandatory
               .map(
                 (course, index) =>
-                  `${inlineCode((index + 1).toString().padStart(2, '0'))}. ${
+                  `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
                     course.course
                   } ${
                     course.type === 'задолжителен (изб.)'
@@ -472,7 +472,7 @@ export const getCoursesProgramEmbed = (
           : mandatory
               .map(
                 (course, index) =>
-                  `${inlineCode((index + 1).toString().padStart(2, '0'))}. ${
+                  `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
                     course.prerequisite === '' ? 'Нема' : course.prerequisite
                   }`,
               )
@@ -487,7 +487,7 @@ export const getCoursesProgramEmbed = (
           : elective
               .map(
                 (course, index) =>
-                  `${inlineCode((index + 1).toString().padStart(2, '0'))}. ${
+                  `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
                     course.course
                   }`,
               )
@@ -502,7 +502,7 @@ export const getCoursesProgramEmbed = (
           : elective
               .map(
                 (course, index) =>
-                  `${inlineCode((index + 1).toString().padStart(2, '0'))}. ${
+                  `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
                     course.prerequisite === '' ? 'Нема' : course.prerequisite
                   }`,
               )
@@ -526,7 +526,7 @@ export const getCoursesPrerequisiteEmbed = (course: string) => {
         : courses
             .map(
               (prerequisite, index) =>
-                `${inlineCode((index + 1).toString().padStart(2, '0'))}. ${
+                `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
                   prerequisite.course
                 }`,
             )

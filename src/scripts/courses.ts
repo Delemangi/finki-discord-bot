@@ -51,7 +51,7 @@ client.once('ready', async () => {
         roles
           .map(
             (role, index_) =>
-              `${inlineCode((index_ + 1).toString().padStart(2, '0'))}. ${
+              `${inlineCode((index_ + 1).toString().padStart(2, '0'))} ${
                 getFromRoleConfig('courses')[role]
               }`,
           )
