@@ -37,7 +37,7 @@ import {
 import { createOptions } from './functions.js';
 import { logger } from './logger.js';
 import { transformOptions } from './options.js';
-import { getRole, getRoles } from './roles.js';
+import { getCourseRolesBySemester, getRole, getRoles } from './roles.js';
 import { errors } from './strings.js';
 import {
   type AutocompleteInteraction,
@@ -49,7 +49,6 @@ import {
   type GuildMemberRoleManager,
   inlineCode,
   PermissionsBitField,
-  type Role,
   type UserContextMenuCommandInteraction,
   userMention,
 } from 'discord.js';
@@ -351,19 +350,11 @@ const handleRemoveCoursesButton = async (
     return;
   }
 
-  let role = getFromRoleConfig('course')[args[0]];
+  const semester = Number(args[0]);
+  const member = interaction.member as GuildMember;
+  const roles = getCourseRolesBySemester(interaction.guild, semester);
 
-  if (role === undefined) {
-    role = Object.keys(getFromRoleConfig('courses'));
-  }
-
-  const roles = interaction.member.roles as GuildMemberRoleManager;
-
-  await roles.remove(
-    role
-      .map((ro) => getRole(interaction.guild, 'courses', ro))
-      .filter(Boolean) as Role[],
-  );
+  await member.roles.remove(roles);
 
   try {
     const mess = await interaction.reply({
