@@ -1,10 +1,5 @@
 import { client } from '../utils/client.js';
-import {
-  getFromBotConfig,
-  getFromRoleConfig,
-  getRules,
-  getToken,
-} from '../utils/config.js';
+import { getFromBotConfig, getRules, getToken } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
 import { EmbedBuilder, inlineCode, italic } from 'discord.js';
 
