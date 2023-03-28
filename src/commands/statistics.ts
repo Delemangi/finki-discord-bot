@@ -115,7 +115,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     await interaction.guild?.emojis.fetch();
     output.push(`Емоџиња: ${interaction.guild?.emojis.cache.size} / 50`);
     await interaction.guild?.stickers.fetch();
-    output.push(`Стикери: ${interaction.guild?.stickers.cache.size} / 50`);
+    output.push(`Стикери: ${interaction.guild?.stickers.cache.size} / 5`);
     await interaction.guild?.invites.fetch();
     output.push(`Покани: ${interaction.guild?.invites.cache.size}`);
 
