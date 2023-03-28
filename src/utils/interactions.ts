@@ -1,9 +1,8 @@
-import { log } from './channels.js';
+import { deleteResponse, log } from './channels.js';
 import { getCommand } from './commands.js';
 import {
   getClassrooms,
   getCourses,
-  getFromBotConfig,
   getFromRoleConfig,
   getLinks,
   getQuestions,
@@ -54,7 +53,7 @@ import {
   type UserContextMenuCommandInteraction,
   userMention,
 } from 'discord.js';
-import { setTimeout as setTimeoutPromise } from 'node:timers/promises';
+import { setTimeout } from 'node:timers/promises';
 
 // Buttons
 
@@ -98,11 +97,6 @@ const handleCourseButton = async (
       )}.`,
       ephemeral: true,
     });
-    setTimeout(
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async () => await mess.delete(),
-      getFromBotConfig('ephemeralReplyTime'),
-    );
   } catch (error) {
     logger.warn(
       `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`,
@@ -148,11 +142,7 @@ const handleYearButton = async (
       )}.`,
       ephemeral: true,
     });
-    setTimeout(
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async () => await mess.delete(),
-      getFromBotConfig('ephemeralReplyTime'),
-    );
+    deleteResponse(mess);
   } catch (error) {
     logger.warn(
       `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`,
@@ -198,11 +188,7 @@ const handleProgramButton = async (
       )}.`,
       ephemeral: true,
     });
-    setTimeout(
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async () => await mess.delete(),
-      getFromBotConfig('ephemeralReplyTime'),
-    );
+    deleteResponse(mess);
   } catch (error) {
     logger.warn(
       `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`,
@@ -247,11 +233,7 @@ const handleNotificationButton = async (
       } нотификации за ${inlineCode(role.name)}.`,
       ephemeral: true,
     });
-    setTimeout(
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async () => await mess.delete(),
-      getFromBotConfig('ephemeralReplyTime'),
-    );
+    deleteResponse(mess);
   } catch (error) {
     logger.warn(
       `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`,
@@ -296,11 +278,7 @@ const handleActivityButton = async (
       } активноста ${inlineCode(role.name)}.`,
       ephemeral: true,
     });
-    setTimeout(
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async () => await mess.delete(),
-      getFromBotConfig('ephemeralReplyTime'),
-    );
+    deleteResponse(mess);
   } catch (error) {
     logger.warn(
       `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`,
@@ -346,11 +324,7 @@ const handleColorButton = async (
       )}.`,
       ephemeral: true,
     });
-    setTimeout(
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async () => await mess.delete(),
-      getFromBotConfig('ephemeralReplyTime'),
-    );
+    deleteResponse(mess);
   } catch (error) {
     logger.warn(
       `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`,
@@ -398,11 +372,7 @@ const handleRemoveCoursesButton = async (
           : `Ги отстранивте предметите за семестар ${args[0]}.`,
       ephemeral: true,
     });
-    setTimeout(
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async () => await mess.delete(),
-      getFromBotConfig('ephemeralReplyTime'),
-    );
+    deleteResponse(mess);
   } catch (error) {
     logger.warn(
       `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`,
@@ -430,11 +400,7 @@ const handlePollButton = async (
       content: 'Веќе не постои анкетата или опцијата.',
       ephemeral: true,
     });
-    setTimeout(
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async () => await mess.delete(),
-      getFromBotConfig('ephemeralReplyTime'),
-    );
+    deleteResponse(mess);
     return;
   }
 
@@ -469,11 +435,7 @@ const handlePollButton = async (
           content: 'Веќе не постои анкетата или опцијата.',
           ephemeral: true,
         });
-        setTimeout(
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          async () => await mess.delete(),
-          getFromBotConfig('ephemeralReplyTime'),
-        );
+        deleteResponse(mess);
         return;
       }
 
@@ -488,11 +450,7 @@ const handlePollButton = async (
     content: replyMessage,
     ephemeral: true,
   });
-  setTimeout(
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    async () => await message.delete(),
-    getFromBotConfig('ephemeralReplyTime'),
-  );
+  deleteResponse(message);
 
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
@@ -532,11 +490,7 @@ const handlePollStatsButton = async (
       content: 'Оваа опција не постои.',
       ephemeral: true,
     });
-    setTimeout(
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async () => await mess.delete(),
-      getFromBotConfig('ephemeralReplyTime'),
-    );
+    deleteResponse(mess);
     return;
   }
 
@@ -552,11 +506,7 @@ const handlePollStatsButton = async (
     embeds: [embed],
     ephemeral: true,
   });
-  setTimeout(
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    async () => await message.delete(),
-    getFromBotConfig('ephemeralReplyTime'),
-  );
+  deleteResponse(message);
 };
 
 const handleQuizButton = async (
@@ -568,11 +518,7 @@ const handleQuizButton = async (
       content: errors.quizNoPermission,
       ephemeral: true,
     });
-    setTimeout(
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async () => await mess.delete(),
-      getFromBotConfig('ephemeralReplyTime'),
-    );
+    deleteResponse(mess);
     return;
   }
 
@@ -599,11 +545,7 @@ const handleQuizButton = async (
       content: `Веќе имате друг квиз отворено: ${channelMention(channel.id)}`,
       ephemeral: true,
     });
-    setTimeout(
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async () => await mess.delete(),
-      getFromBotConfig('ephemeralReplyTime'),
-    );
+    deleteResponse(mess);
     return;
   }
 
@@ -638,11 +580,7 @@ const handleQuizButton = async (
     content: 'Направен е канал за вас. Со среќа!',
     ephemeral: true,
   });
-  setTimeout(
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    async () => await message.delete(),
-    getFromBotConfig('ephemeralReplyTime'),
-  );
+  deleteResponse(message);
 };
 
 const handleQuizGameButton = async (
@@ -654,11 +592,7 @@ const handleQuizGameButton = async (
       content: errors.quizNoPermission,
       ephemeral: true,
     });
-    setTimeout(
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async () => await mess.delete(),
-      getFromBotConfig('ephemeralReplyTime'),
-    );
+    deleteResponse(mess);
     return;
   }
 
@@ -677,7 +611,7 @@ const handleQuizGameButton = async (
       await interaction.channel?.send(
         'Не го поминавте квизот... Повеќе среќа следен пат.',
       );
-      await setTimeoutPromise(20_000);
+      await setTimeout(20_000);
       await interaction.channel?.delete();
       return;
     }
@@ -685,7 +619,7 @@ const handleQuizGameButton = async (
     if (checkLevel + 1 >= 15) {
       await interaction.message.delete();
       await interaction.channel?.send('Честитки! :grin:');
-      await setTimeoutPromise(20_000);
+      await setTimeout(20_000);
       await interaction.channel?.delete();
       return;
     }
@@ -721,11 +655,7 @@ const handleVipButton = async (
       content: 'Жалиме за вашата одлука... се гледаме следен пат.',
       ephemeral: true,
     });
-    setTimeout(
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async () => await message.delete(),
-      getFromBotConfig('ephemeralReplyTime'),
-    );
+    deleteResponse(message);
     return;
   }
 
@@ -736,11 +666,7 @@ const handleVipButton = async (
       content: 'Веќе сте администратор.',
       ephemeral: true,
     });
-    setTimeout(
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async () => await message.delete(),
-      getFromBotConfig('ephemeralReplyTime'),
-    );
+    deleteResponse(message);
     return;
   }
 
@@ -753,11 +679,7 @@ const handleVipButton = async (
       content: 'Не постои улогата за ВИП.',
       ephemeral: true,
     });
-    setTimeout(
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async () => await message.delete(),
-      getFromBotConfig('ephemeralReplyTime'),
-    );
+    deleteResponse(message);
     return;
   }
 
@@ -766,11 +688,7 @@ const handleVipButton = async (
       content: 'Веќе сте во ВИП.',
       ephemeral: true,
     });
-    setTimeout(
-      // eslint-disable-next-line @typescript-eslint/no-misused-promises
-      async () => await message.delete(),
-      getFromBotConfig('ephemeralReplyTime'),
-    );
+    deleteResponse(message);
     return;
   }
 
@@ -780,11 +698,7 @@ const handleVipButton = async (
     content: 'Добредојдовте во ВИП.',
     ephemeral: true,
   });
-  setTimeout(
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    async () => await mess.delete(),
-    getFromBotConfig('ephemeralReplyTime'),
-  );
+  deleteResponse(mess);
 
   const channel = interaction.guild?.channels.cache.find(
     (ch) => ch.name.includes('вип') || ch.name.includes('vip'),

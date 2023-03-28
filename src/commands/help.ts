@@ -1,5 +1,5 @@
+import { deleteResponse } from '../utils/channels.js';
 import { client } from '../utils/client.js';
-import { getFromBotConfig } from '../utils/config.js';
 import {
   getCommandsWithPermission,
   getHelpFirstPageEmbed,
@@ -133,11 +133,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
         content: 'Ова не е ваша команда.',
         ephemeral: true,
       });
-      setTimeout(
-        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-        async () => await mess.delete(),
-        getFromBotConfig('ephemeralReplyTime'),
-      );
+      deleteResponse(mess);
       return;
     }
 

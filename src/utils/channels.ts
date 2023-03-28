@@ -1,7 +1,12 @@
 import { client } from './client.js';
 import { getFromBotConfig } from './config.js';
 import { logger } from './logger.js';
-import { type Channel, type EmbedBuilder, type Interaction } from 'discord.js';
+import {
+  type Channel,
+  type EmbedBuilder,
+  type Interaction,
+  type InteractionResponse,
+} from 'discord.js';
 
 const channels: { [K in Logs]?: Channel | undefined } = {};
 
@@ -36,4 +41,12 @@ export const log = async (
       `Failed to send log for interaction ${interaction.id}\n${error}`,
     );
   }
+};
+
+export const deleteResponse = (message: InteractionResponse) => {
+  setTimeout(
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+    async () => await message.delete(),
+    getFromBotConfig('ephemeralReplyTime'),
+  );
 };
