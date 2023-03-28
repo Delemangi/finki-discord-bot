@@ -20,9 +20,14 @@ client.once('ready', async () => {
   logger.info('Bot is ready');
 
   const channel = client.channels.cache.get(channelId);
+  const roles = getFromRoleConfig('year');
 
   if (channel === undefined || !channel.isTextBased() || channel.isDMBased()) {
     throw new Error('The provided channel must be a guild text channel');
+  }
+
+  if (roles === undefined || roles.length === 0) {
+    throw new Error('No year roles have been provided');
   }
 
   const embed = new EmbedBuilder()
