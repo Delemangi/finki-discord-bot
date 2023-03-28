@@ -91,6 +91,7 @@ const getButtonInfo = (
     case 'pollStats':
     case 'quiz':
     case 'quizGame':
+    case 'removeCourses':
       return {
         name: getButtonCommand(command),
         value: args[0] === undefined ? 'Unknown' : inlineCode(args[0]),

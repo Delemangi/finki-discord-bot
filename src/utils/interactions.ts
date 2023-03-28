@@ -49,6 +49,7 @@ import {
   type GuildMemberRoleManager,
   inlineCode,
   PermissionsBitField,
+  type Role,
   type UserContextMenuCommandInteraction,
   userMention,
 } from 'discord.js';
@@ -342,6 +343,58 @@ const handleColorButton = async (
       content: `Ја ${removed ? 'отстранивте' : 'земавте'} бојата ${inlineCode(
         role.name,
       )}.`,
+      ephemeral: true,
+    });
+    setTimeout(
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
+      async () => await mess.delete(),
+      getFromBotConfig('ephemeralReplyTime'),
+    );
+  } catch (error) {
+    logger.warn(
+      `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`,
+    );
+  }
+};
+
+const handleRemoveCoursesButton = async (
+  interaction: ButtonInteraction,
+  args: string[],
+) => {
+  if (interaction.guild === null || interaction.member === null) {
+    logger.warn(
+      `Received button interaction ${interaction.customId} by ${interaction.user.tag} outside of a guild`,
+    );
+    return;
+  }
+
+  if (args[0] === undefined) {
+    logger.warn(
+      `Received button interaction ${interaction.customId} by ${interaction.user.tag} without arguments`,
+    );
+    return;
+  }
+
+  let role = getFromRoleConfig('course')[args[0]];
+
+  if (role === undefined) {
+    role = Object.keys(getFromRoleConfig('courses'));
+  }
+
+  const roles = interaction.member.roles as GuildMemberRoleManager;
+
+  await roles.remove(
+    role
+      .map((ro) => getRole(interaction.guild, 'courses', ro))
+      .filter(Boolean) as Role[],
+  );
+
+  try {
+    const mess = await interaction.reply({
+      content:
+        args[0] === 'all'
+          ? 'Ги отстранивте сите предмети.'
+          : `Ги отстранивте предметите за семестар ${args[0]}.`,
       ephemeral: true,
     });
     setTimeout(
@@ -865,6 +918,8 @@ export const handleButton = async (interaction: ButtonInteraction) => {
     await handleActivityButton(interaction, args);
   } else if (command === 'color') {
     await handleColorButton(interaction, args);
+  } else if (command === 'removeCourses') {
+    await handleRemoveCoursesButton(interaction, args);
   } else if (command === 'poll') {
     await handlePollButton(interaction, args);
   } else if (command === 'pollStats') {

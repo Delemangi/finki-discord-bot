@@ -7,6 +7,7 @@ import {
 import { logger } from '../utils/logger.js';
 import {
   ActionRowBuilder,
+  bold,
   ButtonBuilder,
   ButtonStyle,
   EmbedBuilder,
@@ -94,6 +95,62 @@ client.once('ready', async () => {
     } catch (error) {
       throw new Error(`Failed to send embed\n${error}`);
     }
+  }
+
+  const removeComponents = [];
+  const removeEmbed = new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Масовно отстранување предмети')
+    .setThumbnail(getFromBotConfig('logo'))
+    .setDescription(
+      `Отстранете предмети од одредени семестри чии канали не сакате да ги гледате.\n\n${bold(
+        'НАПОМЕНА',
+      )}: Внимавајте! Можете да отстраните повеќе предмети од што сакате! Нема враќање назад доколку несакајќи отстраните предмети!`,
+    )
+    .setFooter({ text: '(може да изберете повеќе опции)' });
+
+  for (let index1 = 0; index1 < roleSets.length + 5; index1 += 5) {
+    const row = new ActionRowBuilder<ButtonBuilder>();
+    const buttons = [];
+
+    if (index1 >= roleSets.length) {
+      const removeAllButton = new ButtonBuilder()
+        .setCustomId(`removeCourses:all`)
+        .setLabel('Сите')
+        .setStyle(ButtonStyle.Danger);
+
+      const removeAllRow = new ActionRowBuilder<ButtonBuilder>();
+
+      removeAllRow.addComponents(removeAllButton);
+      removeComponents.push(removeAllRow);
+      break;
+    }
+
+    for (let index2 = index1; index2 < index1 + 5; index2++) {
+      if (roleSets[index2] === undefined) {
+        break;
+      }
+
+      const button = new ButtonBuilder()
+        .setCustomId(`removeCourses:${roleSets[index2]}`)
+        .setLabel(`Семестар ${roleSets[index2]}`)
+        .setStyle(ButtonStyle.Danger);
+
+      buttons.push(button);
+    }
+
+    row.addComponents(buttons);
+    removeComponents.push(row);
+  }
+
+  try {
+    await channel.send({
+      components: removeComponents,
+      content: '_ _',
+      embeds: [removeEmbed],
+    });
+  } catch (error) {
+    throw new Error(`Failed to send embed\n${error}`);
   }
 
   logger.info('Done');
