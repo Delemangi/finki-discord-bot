@@ -1097,7 +1097,7 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
     new EmbedBuilder().setColor(getFromBotConfig('color')).setTitle('Состав'),
     new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
-      .setTitle('ВИП')
+      .setTitle(`ВИП ${vipMembers.length}`)
       .setDescription(
         vipMembers.length === 0
           ? 'Нема членови на ВИП.'
@@ -1107,26 +1107,25 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
       ),
     new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
-      .setTitle('Администратори')
+      .setTitle(`Администратори ${adminMembers.length}`)
       .setDescription(
         adminMembers.length === 0
           ? 'Нема администратори.'
           : adminMembers
               .map((member) => userMention(member?.user.id as string))
               .join('\n'),
-      )
-      .setTimestamp(),
-
+      ),
     new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
-      .setTitle('ФСС')
+      .setTitle(`ФСС ${fssMembers.length}`)
       .setDescription(
         fssMembers.length === 0
           ? 'Нема членови на ФСС.'
           : fssMembers
               .map((member) => userMention(member?.user.id as string))
               .join('\n'),
-      ),
+      )
+      .setTimestamp(),
   ];
 };
 
