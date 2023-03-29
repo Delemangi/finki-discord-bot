@@ -2,8 +2,11 @@ import { client } from './client.js';
 import { getFromBotConfig } from './config.js';
 import { logger } from './logger.js';
 import {
+  type ActionRowBuilder,
+  type ButtonBuilder,
   type Channel,
   type EmbedBuilder,
+  type GuildTextBasedChannel,
   type Interaction,
   type InteractionResponse,
 } from 'discord.js';
@@ -41,6 +44,24 @@ export const log = async (
       `Failed to send log for interaction ${interaction.id}\n${error}`,
     );
   }
+};
+
+export const sendEmbed = async (
+  channel: GuildTextBasedChannel,
+  embed: EmbedBuilder,
+  components: Array<ActionRowBuilder<ButtonBuilder>>,
+  newlines?: number,
+) => {
+  return newlines === undefined || Number.isNaN(newlines)
+    ? await channel.send({
+        components,
+        embeds: [embed],
+      })
+    : await channel.send({
+        components,
+        content: '_ _\n'.repeat(newlines),
+        embeds: [embed],
+      });
 };
 
 export const deleteResponse = (message: InteractionResponse) => {

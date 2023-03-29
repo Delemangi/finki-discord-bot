@@ -10,6 +10,8 @@ import {
   getPrerequisites,
   getProfessors,
   getQuestions,
+  getResponses,
+  getRules,
   getStaff,
 } from './config.js';
 import { getPollVotes, getPollVotesByOption } from './database.js';
@@ -20,6 +22,7 @@ import { commands, programMapping, quizHelp } from './strings.js';
 import {
   ActionRowBuilder,
   type AutocompleteInteraction,
+  bold,
   ButtonBuilder,
   type ButtonInteraction,
   ButtonStyle,
@@ -210,6 +213,387 @@ export const generatePollPercentageBar = (percentage: number) => {
     '█'.repeat(Math.floor(percentage / 5)) +
     (percentage - Math.floor(percentage) >= 0.5 ? '▌' : '');
   return pb + '.'.repeat(Math.max(0, 20 - pb.length));
+};
+
+// Scripts
+
+export const getActivitiesEmbed = () => {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Активности')
+    .setThumbnail(getFromBotConfig('logo'))
+    .setDescription(
+      'Изберете активности од интерес за пристап до соодветните канали.',
+    )
+    .setFooter({ text: '(може да изберете повеќе опции)' });
+};
+
+export const getActivitiesComponents = () => {
+  const components = [];
+  const roles = getFromRoleConfig('activity');
+
+  for (let index1 = 0; index1 < roles.length; index1 += 5) {
+    const row = new ActionRowBuilder<ButtonBuilder>();
+    const buttons = [];
+
+    for (let index2 = index1; index2 < index1 + 5; index2++) {
+      if (roles[index2] === undefined) {
+        break;
+      }
+
+      const button = new ButtonBuilder()
+        .setCustomId(`activity:${roles[index2] ?? ''}`)
+        .setLabel(roles[index2] ?? '')
+        .setStyle(ButtonStyle.Secondary);
+
+      buttons.push(button);
+    }
+
+    row.addComponents(buttons);
+    components.push(row);
+  }
+
+  return components;
+};
+
+export const getColorsEmbed = (image: string) => {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Боја на име')
+    .setThumbnail(getFromBotConfig('logo'))
+    .setDescription('Изберете боја за вашето име.')
+    .setFooter({
+      text: '(може да изберете само една опција, секоја нова опција ја заменува старата)',
+    })
+    .setImage(image);
+};
+
+export const getColorsComponents = () => {
+  const components = [];
+  const roles = getFromRoleConfig('color');
+
+  for (let index1 = 0; index1 < roles.length; index1 += 5) {
+    const row = new ActionRowBuilder<ButtonBuilder>();
+    const buttons = [];
+
+    for (let index2 = index1; index2 < index1 + 5; index2++) {
+      if (roles[index2] === undefined) {
+        break;
+      }
+
+      const button = new ButtonBuilder()
+        .setCustomId(`color:${roles[index2] ?? ''}`)
+        .setLabel(`${index2 + 1}`)
+        .setStyle(ButtonStyle.Secondary);
+
+      buttons.push(button);
+    }
+
+    row.addComponents(buttons);
+    components.push(row);
+  }
+
+  return components;
+};
+
+export const getCoursesEmbed = (roleSet: string, roles: string[]) => {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle(`${roleSet.length > 1 ? '' : 'Семестар'} ${roleSet}`)
+    .setThumbnail(getFromBotConfig('logo'))
+    .setDescription(
+      roles
+        .map(
+          (role, index_) =>
+            `${inlineCode((index_ + 1).toString().padStart(2, '0'))} ${
+              getFromRoleConfig('courses')[role]
+            }`,
+        )
+        .join('\n'),
+    )
+    .setFooter({ text: '(може да изберете повеќе опции)' });
+};
+
+export const getCoursesComponents = (roles: string[]) => {
+  const components = [];
+
+  for (let index1 = 0; index1 < roles.length; index1 += 5) {
+    const row = new ActionRowBuilder<ButtonBuilder>();
+    const buttons = [];
+
+    for (let index2 = index1; index2 < index1 + 5; index2++) {
+      if (roles[index2] === undefined) {
+        break;
+      }
+
+      const button = new ButtonBuilder()
+        .setCustomId(`course:${roles[index2]}`)
+        .setLabel(`${index2 + 1}`)
+        .setStyle(ButtonStyle.Secondary);
+
+      buttons.push(button);
+    }
+
+    row.addComponents(buttons);
+    components.push(row);
+  }
+
+  return components;
+};
+
+export const getCoursesAddEmbed = () => {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Масовно земање предмети')
+    .setThumbnail(getFromBotConfig('logo'))
+    .setDescription(
+      'Земете предмети од одредени семестри чии канали сакате да ги гледате.',
+    )
+    .setFooter({ text: '(може да изберете повеќе опции)' });
+};
+
+export const getCoursesAddComponents = (roleSets: string[]) => {
+  const components = [];
+
+  for (let index1 = 0; index1 < roleSets.length + 5; index1 += 5) {
+    const row = new ActionRowBuilder<ButtonBuilder>();
+    const buttons = [];
+
+    if (index1 >= roleSets.length) {
+      const addAllButton = new ButtonBuilder()
+        .setCustomId(`addCourses:all`)
+        .setLabel('Сите')
+        .setStyle(ButtonStyle.Success);
+
+      const addAllRow = new ActionRowBuilder<ButtonBuilder>();
+
+      addAllRow.addComponents(addAllButton);
+      components.push(addAllRow);
+      break;
+    }
+
+    for (let index2 = index1; index2 < index1 + 5; index2++) {
+      if (roleSets[index2] === undefined) {
+        break;
+      }
+
+      const button = new ButtonBuilder()
+        .setCustomId(`addCourses:${roleSets[index2]}`)
+        .setLabel(`${roleSets[index2]}`)
+        .setStyle(ButtonStyle.Success);
+
+      buttons.push(button);
+    }
+
+    row.addComponents(buttons);
+    components.push(row);
+  }
+
+  return components;
+};
+
+export const getCoursesRemoveEmbed = () => {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Масовно отстранување предмети')
+    .setThumbnail(getFromBotConfig('logo'))
+    .setDescription(
+      `Отстранете предмети од одредени семестри чии канали не сакате да ги гледате.\n\n${bold(
+        'НАПОМЕНА',
+      )}: Внимавајте! Можете да отстраните повеќе предмети од што сакате! Нема враќање назад доколку несакајќи отстраните предмети!`,
+    )
+    .setFooter({ text: '(може да изберете повеќе опции)' });
+};
+
+export const getCoursesRemoveComponents = (roleSets: string[]) => {
+  const components = [];
+
+  for (let index1 = 0; index1 < roleSets.length + 5; index1 += 5) {
+    const row = new ActionRowBuilder<ButtonBuilder>();
+    const buttons = [];
+
+    if (index1 >= roleSets.length) {
+      const removeAllButton = new ButtonBuilder()
+        .setCustomId(`removeCourses:all`)
+        .setLabel('Сите')
+        .setStyle(ButtonStyle.Danger);
+
+      const removeAllRow = new ActionRowBuilder<ButtonBuilder>();
+
+      removeAllRow.addComponents(removeAllButton);
+      components.push(removeAllRow);
+      break;
+    }
+
+    for (let index2 = index1; index2 < index1 + 5; index2++) {
+      if (roleSets[index2] === undefined) {
+        break;
+      }
+
+      const button = new ButtonBuilder()
+        .setCustomId(`removeCourses:${roleSets[index2]}`)
+        .setLabel(`Семестар ${roleSets[index2]}`)
+        .setStyle(ButtonStyle.Danger);
+
+      buttons.push(button);
+    }
+
+    row.addComponents(buttons);
+    components.push(row);
+  }
+
+  return components;
+};
+
+export const getNotificationsEmbed = () => {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Нотификации')
+    .setThumbnail(getFromBotConfig('logo'))
+    .setDescription(
+      'Изберете за кои типови на објави сакате да добиете нотификации.',
+    )
+    .setFooter({ text: '(може да изберете повеќе опции)' });
+};
+
+export const getNotificationsComponents = (roles: string[]) => {
+  const components = [];
+
+  for (let index1 = 0; index1 < roles.length; index1 += 5) {
+    const row = new ActionRowBuilder<ButtonBuilder>();
+    const buttons = [];
+
+    for (let index2 = index1; index2 < index1 + 5; index2++) {
+      if (roles[index2] === undefined) {
+        break;
+      }
+
+      const button = new ButtonBuilder()
+        .setCustomId(`notification:${roles[index2] ?? ''}`)
+        .setLabel(roles[index2] ?? '')
+        .setStyle(ButtonStyle.Secondary);
+
+      buttons.push(button);
+    }
+
+    row.addComponents(buttons);
+    components.push(row);
+  }
+
+  return components;
+};
+
+export const getProgramsEmbed = () => {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Смер')
+    .setThumbnail(getFromBotConfig('logo'))
+    .setDescription('Изберете го смерот на кој студирате.')
+    .setFooter({
+      text: '(може да изберете само една опција, секоја нова опција ја заменува старата)',
+    });
+};
+
+export const getProgramsComponents = (roles: string[]) => {
+  const components = [];
+
+  for (let index1 = 0; index1 < roles.length; index1 += 5) {
+    const row = new ActionRowBuilder<ButtonBuilder>();
+    const buttons = [];
+
+    for (let index2 = index1; index2 < index1 + 5; index2++) {
+      if (roles[index2] === undefined) {
+        break;
+      }
+
+      const button = new ButtonBuilder()
+        .setCustomId(`program:${roles[index2] ?? ''}`)
+        .setLabel(roles[index2] ?? '')
+        .setStyle(ButtonStyle.Secondary);
+
+      buttons.push(button);
+    }
+
+    row.addComponents(buttons);
+    components.push(row);
+  }
+
+  return components;
+};
+
+export const getYearsEmbed = () => {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Година на студирање')
+    .setThumbnail(getFromBotConfig('logo'))
+    .setDescription('Изберете ја годината на студирање.')
+    .setFooter({
+      text: '(може да изберете само една опција, секоја нова опција ја заменува старата)',
+    });
+};
+
+export const getYearsComponents = (roles: string[]) => {
+  const components = new ActionRowBuilder<ButtonBuilder>();
+  const buttons = [];
+
+  for (const role of roles) {
+    const button = new ButtonBuilder()
+      .setCustomId(`year:${role}`)
+      .setLabel(role)
+      .setStyle(ButtonStyle.Secondary);
+
+    buttons.push(button);
+  }
+
+  components.addComponents(buttons);
+
+  return components;
+};
+
+export const getRulesEmbed = () => {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Правила')
+    .setThumbnail(getFromBotConfig('logo'))
+    .setDescription(
+      `${getRules()
+        .map(
+          (value, index) =>
+            `${inlineCode((index + 1).toString().padStart(2, '0'))} ${value}`,
+        )
+        .join('\n\n')} \n\n ${italic(
+        'Евентуално кршење на правилата може да доведе до санкции',
+      )}.`,
+    );
+};
+
+export const getVipScriptEmbed = () => {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Изјава за големи нешта')
+    .setDescription(
+      getResponses().find((response) => response.command === 'vip')?.response ??
+        '-',
+    );
+};
+
+export const getVipScriptComponents = () => {
+  const components = [];
+
+  const row = new ActionRowBuilder<ButtonBuilder>();
+  row.addComponents(
+    new ButtonBuilder()
+      .setCustomId('vip:accept')
+      .setLabel('Прифаќам')
+      .setStyle(ButtonStyle.Success),
+    new ButtonBuilder()
+      .setCustomId('vip:decline')
+      .setLabel('Одбивам')
+      .setStyle(ButtonStyle.Danger),
+  );
+  components.push(row);
+
+  return components;
 };
 
 // Commands

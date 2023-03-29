@@ -16,7 +16,7 @@ client.once('ready', async () => {
   const guild = client.guilds.cache.get(server);
 
   if (guild === undefined) {
-    throw new Error('The provided server must be a guild');
+    throw new Error('The provided server ID must be valid');
   }
 
   logger.info(`Server name: ${guild.name}`);

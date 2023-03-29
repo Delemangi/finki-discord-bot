@@ -1,7 +1,7 @@
 import { client } from '../utils/client.js';
-import { getFromBotConfig, getRules, getToken } from '../utils/config.js';
+import { getToken } from '../utils/config.js';
+import { getRulesEmbed } from '../utils/embeds.js';
 import { logger } from '../utils/logger.js';
-import { EmbedBuilder, inlineCode, italic } from 'discord.js';
 
 const channelId = process.argv[2];
 
@@ -20,21 +20,7 @@ client.once('ready', async () => {
     throw new Error('The provided channel must be a guild text channel');
   }
 
-  const embed = new EmbedBuilder()
-    .setColor(getFromBotConfig('color'))
-    .setTitle('Правила')
-    .setThumbnail(getFromBotConfig('logo'))
-    .setDescription(
-      `${getRules()
-        .map(
-          (value, index) =>
-            `${inlineCode((index + 1).toString().padStart(2, '0'))} ${value}`,
-        )
-        .join('\n\n')} \n\n ${italic(
-        'Евентуално кршење на правилата може да доведе до санкции',
-      )}.`,
-    );
-
+  const embed = getRulesEmbed();
   try {
     await channel.send({
       embeds: [embed],

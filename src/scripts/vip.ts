@@ -1,12 +1,7 @@
 import { client } from '../utils/client.js';
-import { getFromBotConfig, getResponses, getToken } from '../utils/config.js';
+import { getToken } from '../utils/config.js';
+import { getVipScriptComponents, getVipScriptEmbed } from '../utils/embeds.js';
 import { logger } from '../utils/logger.js';
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  EmbedBuilder,
-} from 'discord.js';
 
 const channelId = process.argv[2];
 
@@ -25,28 +20,8 @@ client.once('ready', async () => {
     throw new Error('The provided channel must be a guild text channel');
   }
 
-  const components = [];
-  const embed = new EmbedBuilder()
-    .setColor(getFromBotConfig('color'))
-    .setTitle('Изјава за големи нешта')
-    .setDescription(
-      getResponses().find((response) => response.command === 'vip')?.response ??
-        '-',
-    );
-
-  const row = new ActionRowBuilder<ButtonBuilder>();
-  row.addComponents(
-    new ButtonBuilder()
-      .setCustomId('vip:accept')
-      .setLabel('Прифаќам')
-      .setStyle(ButtonStyle.Success),
-    new ButtonBuilder()
-      .setCustomId('vip:decline')
-      .setLabel('Одбивам')
-      .setStyle(ButtonStyle.Danger),
-  );
-  components.push(row);
-
+  const embed = getVipScriptEmbed();
+  const components = getVipScriptComponents();
   try {
     await channel.send({
       components,

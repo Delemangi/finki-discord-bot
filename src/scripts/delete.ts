@@ -7,6 +7,8 @@ const commands = process.argv.slice(2);
 
 if (commands === undefined || commands.length === 0) {
   client.once('ready', async () => {
+    logger.info('Bot is ready');
+
     const rest = new REST().setToken(getToken());
     await rest.put(Routes.applicationCommands(getApplicationId()), {
       body: [],

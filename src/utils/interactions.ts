@@ -332,6 +332,49 @@ const handleColorButton = async (
   }
 };
 
+const handleAddCoursesButton = async (
+  interaction: ButtonInteraction,
+  args: string[],
+) => {
+  if (interaction.guild === null || interaction.member === null) {
+    logger.warn(
+      `Received button interaction ${interaction.customId} by ${interaction.user.tag} outside of a guild`,
+    );
+    return;
+  }
+
+  if (args[0] === undefined) {
+    logger.warn(
+      `Received button interaction ${interaction.customId} by ${interaction.user.tag} without arguments`,
+    );
+    return;
+  }
+
+  const semester = Number(args[0]);
+  const member = interaction.member as GuildMember;
+  const roles =
+    args[0] === 'all'
+      ? getRoles(interaction.guild, 'courses')
+      : getCourseRolesBySemester(interaction.guild, semester);
+
+  await member.roles.add(roles);
+
+  try {
+    const mess = await interaction.reply({
+      content:
+        args[0] === 'all'
+          ? 'Ги земавте сите предмети.'
+          : `Ги земавте предметите од семестар ${semester}.`,
+      ephemeral: true,
+    });
+    deleteResponse(mess);
+  } catch (error) {
+    logger.warn(
+      `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`,
+    );
+  }
+};
+
 const handleRemoveCoursesButton = async (
   interaction: ButtonInteraction,
   args: string[],
@@ -352,7 +395,10 @@ const handleRemoveCoursesButton = async (
 
   const semester = Number(args[0]);
   const member = interaction.member as GuildMember;
-  const roles = getCourseRolesBySemester(interaction.guild, semester);
+  const roles =
+    args[0] === 'all'
+      ? getRoles(interaction.guild, 'courses')
+      : getCourseRolesBySemester(interaction.guild, semester);
 
   await member.roles.remove(roles);
 
@@ -361,7 +407,7 @@ const handleRemoveCoursesButton = async (
       content:
         args[0] === 'all'
           ? 'Ги отстранивте сите предмети.'
-          : `Ги отстранивте предметите за семестар ${args[0]}.`,
+          : `Ги отстранивте предметите за семестар ${semester}.`,
       ephemeral: true,
     });
     deleteResponse(mess);
@@ -915,6 +961,8 @@ export const handleButton = async (interaction: ButtonInteraction) => {
     await handleActivityButton(interaction, args);
   } else if (command === 'color') {
     await handleColorButton(interaction, args);
+  } else if (command === 'addCourses') {
+    await handleAddCoursesButton(interaction, args);
   } else if (command === 'removeCourses') {
     await handleRemoveCoursesButton(interaction, args);
   } else if (command === 'poll') {

@@ -1,16 +1,8 @@
+import { sendEmbed } from '../utils/channels.js';
 import { client } from '../utils/client.js';
-import {
-  getFromBotConfig,
-  getFromRoleConfig,
-  getToken,
-} from '../utils/config.js';
+import { getFromRoleConfig, getToken } from '../utils/config.js';
+import { getYearsComponents, getYearsEmbed } from '../utils/embeds.js';
 import { logger } from '../utils/logger.js';
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  EmbedBuilder,
-} from 'discord.js';
 
 const [channelId, newlines] = process.argv.slice(2);
 
@@ -30,45 +22,14 @@ client.once('ready', async () => {
     throw new Error('The provided channel must be a guild text channel');
   }
 
-  if (roles === undefined || roles.length === 0) {
+  if (roles.length === 0) {
     throw new Error('No year roles have been provided');
   }
 
-  const components = new ActionRowBuilder<ButtonBuilder>();
-  const buttons = [];
-  const embed = new EmbedBuilder()
-    .setColor(getFromBotConfig('color'))
-    .setTitle('Година на студирање')
-    .setThumbnail(getFromBotConfig('logo'))
-    .setDescription('Изберете ја годината на студирање.')
-    .setFooter({
-      text: '(може да изберете само една опција, секоја нова опција ја заменува старата)',
-    });
-
-  for (const role of roles) {
-    const button = new ButtonBuilder()
-      .setCustomId(`year:${role}`)
-      .setLabel(role)
-      .setStyle(ButtonStyle.Secondary);
-
-    buttons.push(button);
-  }
-
-  components.addComponents(buttons);
-
+  const embed = getYearsEmbed();
+  const components = getYearsComponents(roles);
   try {
-    if (newlines === undefined || Number.isNaN(newlines)) {
-      await channel.send({
-        components: [components],
-        embeds: [embed],
-      });
-    } else {
-      await channel.send({
-        components: [components],
-        content: '_ _\n'.repeat(Number(newlines)),
-        embeds: [embed],
-      });
-    }
+    await sendEmbed(channel, embed, [components], Number(newlines));
   } catch (error) {
     throw new Error(`Failed to send embed\n${error}`);
   }
