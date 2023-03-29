@@ -132,16 +132,19 @@ const handleCoursesRemove = async (
   );
 };
 
+const coursesHandlers = {
+  add: handleCoursesAdd,
+  prerequisite: handleCoursesPrerequisite,
+  program: handleCoursesProgram,
+  remove: handleCoursesRemove,
+};
+
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const subcommand = interaction.options.getSubcommand(true);
 
-  if (subcommand === 'program') {
-    await handleCoursesProgram(interaction);
-  } else if (subcommand === 'prerequisite') {
-    await handleCoursesPrerequisite(interaction);
-  } else if (subcommand === 'add') {
-    await handleCoursesAdd(interaction);
-  } else if (subcommand === 'remove') {
-    await handleCoursesRemove(interaction);
+  if (Object.keys(coursesHandlers).includes(subcommand)) {
+    await coursesHandlers[subcommand as keyof typeof coursesHandlers](
+      interaction,
+    );
   }
 };

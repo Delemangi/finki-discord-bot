@@ -1386,13 +1386,12 @@ export const getPollComponents = (poll: Poll) => {
         .setCustomId(`poll:${poll.id}:${poll.options[index2]?.name}`)
         .setLabel(`${poll.options[index2]?.name}`)
         .setStyle(
-          index2 % 4 === 0
-            ? ButtonStyle.Primary
-            : index2 % 4 === 1
-            ? ButtonStyle.Secondary
-            : index2 % 4 === 2
-            ? ButtonStyle.Success
-            : ButtonStyle.Danger,
+          [
+            ButtonStyle.Primary,
+            ButtonStyle.Secondary,
+            ButtonStyle.Success,
+            ButtonStyle.Danger,
+          ][index2 % 4] as ButtonStyle,
         );
 
       buttons.push(button);

@@ -29,12 +29,15 @@ const handleListLinks = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply({ embeds: [embed] });
 };
 
+const listHandlers = {
+  links: handleListLinks,
+  questions: handleListQuestions,
+};
+
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const subcommand = interaction.options.getSubcommand(true);
 
-  if (subcommand === 'questions') {
-    await handleListQuestions(interaction);
-  } else if (subcommand === 'links') {
-    await handleListLinks(interaction);
+  if (Object.keys(listHandlers).includes(subcommand)) {
+    await listHandlers[subcommand as keyof typeof listHandlers](interaction);
   }
 };

@@ -939,6 +939,22 @@ export const handleUserContextMenuCommand = async (
   );
 };
 
+const buttonInteractionHandlers = {
+  activity: handleActivityButton,
+  addCourses: handleAddCoursesButton,
+  color: handleColorButton,
+  course: handleCourseButton,
+  notification: handleNotificationButton,
+  poll: handlePollButton,
+  pollStats: handlePollStatsButton,
+  program: handleProgramButton,
+  quiz: handleQuizButton,
+  quizGame: handleQuizGameButton,
+  removeCourses: handleRemoveCoursesButton,
+  vip: handleVipButton,
+  year: handleYearButton,
+};
+
 export const handleButton = async (interaction: ButtonInteraction) => {
   const [command, ...args] = interaction.customId.split(':');
 
@@ -949,32 +965,10 @@ export const handleButton = async (interaction: ButtonInteraction) => {
     return;
   }
 
-  if (command === 'course') {
-    await handleCourseButton(interaction, args);
-  } else if (command === 'year') {
-    await handleYearButton(interaction, args);
-  } else if (command === 'program') {
-    await handleProgramButton(interaction, args);
-  } else if (command === 'notification') {
-    await handleNotificationButton(interaction, args);
-  } else if (command === 'activity') {
-    await handleActivityButton(interaction, args);
-  } else if (command === 'color') {
-    await handleColorButton(interaction, args);
-  } else if (command === 'addCourses') {
-    await handleAddCoursesButton(interaction, args);
-  } else if (command === 'removeCourses') {
-    await handleRemoveCoursesButton(interaction, args);
-  } else if (command === 'poll') {
-    await handlePollButton(interaction, args);
-  } else if (command === 'pollStats') {
-    await handlePollStatsButton(interaction, args);
-  } else if (command === 'quiz') {
-    await handleQuizButton(interaction, args);
-  } else if (command === 'quizGame') {
-    await handleQuizGameButton(interaction, args);
-  } else if (command === 'vip') {
-    await handleVipButton(interaction, args);
+  if (Object.keys(buttonInteractionHandlers).includes(command)) {
+    await buttonInteractionHandlers[
+      command as keyof typeof buttonInteractionHandlers
+    ](interaction, args);
   } else if (ignoredButtons.includes(command)) {
     // Do nothing
   } else {
@@ -997,25 +991,25 @@ export const handleButton = async (interaction: ButtonInteraction) => {
   );
 };
 
+const autocompleteInteractionHandlers = {
+  classroom: handleClassroomAutocomplete,
+  course: handleCourseAutocomplete,
+  courserole: handleCourseRoleAutocomplete,
+  link: handleLinkAutocomplete,
+  professor: handleProfessorAutocomplete,
+  question: handleQuestionAutocomplete,
+  session: handleSessionAutocomplete,
+};
+
 export const handleAutocomplete = async (
   interaction: AutocompleteInteraction,
 ) => {
   const option = interaction.options.getFocused(true);
 
-  if (option.name === 'course') {
-    await handleCourseAutocomplete(interaction);
-  } else if (option.name === 'professor') {
-    await handleProfessorAutocomplete(interaction);
-  } else if (option.name === 'courserole') {
-    await handleCourseRoleAutocomplete(interaction);
-  } else if (option.name === 'question') {
-    await handleQuestionAutocomplete(interaction);
-  } else if (option.name === 'link') {
-    await handleLinkAutocomplete(interaction);
-  } else if (option.name === 'session') {
-    await handleSessionAutocomplete(interaction);
-  } else if (option.name === 'classroom') {
-    await handleClassroomAutocomplete(interaction);
+  if (Object.keys(autocompleteInteractionHandlers).includes(option.name)) {
+    await autocompleteInteractionHandlers[
+      option.name as keyof typeof autocompleteInteractionHandlers
+    ](interaction);
   } else {
     logger.warn(
       `Received unknown autocomplete interaction ${option.name} by ${interaction.user.tag}`,

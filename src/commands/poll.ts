@@ -362,22 +362,20 @@ const handlePollDelete = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply('Анкетата е избришана.');
 };
 
+const pollHandlers = {
+  add: handlePollAdd,
+  create: handlePollCreate,
+  delete: handlePollDelete,
+  edit: handlePollEdit,
+  remove: handlePollRemove,
+  show: handlePollShow,
+  stats: handlePollStats,
+};
+
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const subcommand = interaction.options.getSubcommand(true);
 
-  if (subcommand === 'create') {
-    await handlePollCreate(interaction);
-  } else if (subcommand === 'edit') {
-    await handlePollEdit(interaction);
-  } else if (subcommand === 'stats') {
-    await handlePollStats(interaction);
-  } else if (subcommand === 'show') {
-    await handlePollShow(interaction);
-  } else if (subcommand === 'add') {
-    await handlePollAdd(interaction);
-  } else if (subcommand === 'remove') {
-    await handlePollRemove(interaction);
-  } else if (subcommand === 'delete') {
-    await handlePollDelete(interaction);
+  if (Object.keys(pollHandlers).includes(subcommand)) {
+    await pollHandlers[subcommand as keyof typeof pollHandlers](interaction);
   }
 };

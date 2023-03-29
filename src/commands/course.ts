@@ -257,6 +257,16 @@ const handleCourseToggle = async (
   });
 };
 
+const courseHandlers = {
+  info: handleCourseInfo,
+  participants: handleCourseParticipants,
+  prerequisite: handleCoursePrerequisite,
+  professors: handleCourseProfessors,
+  role: handleCourseRole,
+  summary: handleCourseSummary,
+  toggle: handleCourseToggle,
+};
+
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const course = interaction.options.getString('course');
   const courseRole = interaction.options.getString('courserole');
@@ -271,19 +281,10 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   const subcommand = interaction.options.getSubcommand(true);
 
-  if (subcommand === 'participants') {
-    await handleCourseParticipants(interaction, course);
-  } else if (subcommand === 'professors') {
-    await handleCourseProfessors(interaction, course);
-  } else if (subcommand === 'role') {
-    await handleCourseRole(interaction, courseRole);
-  } else if (subcommand === 'prerequisite') {
-    await handleCoursePrerequisite(interaction, course);
-  } else if (subcommand === 'info') {
-    await handleCourseInfo(interaction, course);
-  } else if (subcommand === 'summary') {
-    await handleCourseSummary(interaction, course);
-  } else if (subcommand === 'toggle') {
-    await handleCourseToggle(interaction, courseRole);
+  if (Object.keys(courseHandlers).includes(subcommand)) {
+    await courseHandlers[subcommand as keyof typeof courseHandlers](
+      interaction,
+      course ?? courseRole,
+    );
   }
 };
