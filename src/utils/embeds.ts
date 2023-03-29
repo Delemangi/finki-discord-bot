@@ -22,7 +22,6 @@ import { commands, programMapping, quizHelp } from './strings.js';
 import {
   ActionRowBuilder,
   type AutocompleteInteraction,
-  bold,
   ButtonBuilder,
   type ButtonInteraction,
   ButtonStyle,
@@ -379,7 +378,7 @@ export const getCoursesAddComponents = (roleSets: string[]) => {
 
       const button = new ButtonBuilder()
         .setCustomId(`addCourses:${roleSets[index2]}`)
-        .setLabel(`${roleSets[index2]}`)
+        .setLabel(`Семестар ${roleSets[index2]}`)
         .setStyle(ButtonStyle.Success);
 
       buttons.push(button);
@@ -398,9 +397,7 @@ export const getCoursesRemoveEmbed = () => {
     .setTitle('Масовно отстранување предмети')
     .setThumbnail(getFromBotConfig('logo'))
     .setDescription(
-      `Отстранете предмети од одредени семестри чии канали не сакате да ги гледате.\n\n${bold(
-        'НАПОМЕНА',
-      )}: Внимавајте! Можете да отстраните повеќе предмети од што сакате! Нема враќање назад доколку несакајќи отстраните предмети!`,
+      'Отстранете предмети од одредени семестри чии канали не сакате да ги гледате.',
     )
     .setFooter({ text: '(може да изберете повеќе опции)' });
 };

@@ -13,12 +13,8 @@ import { logger } from '../utils/logger.js';
 
 const [channelId, newlines, ...roleSets] = process.argv.slice(2);
 
-if (
-  channelId === undefined ||
-  roleSets === undefined ||
-  roleSets.length === 0
-) {
-  throw new Error('Missing channel ID or role sets arguments');
+if (channelId === undefined) {
+  throw new Error('Missing channel ID arguments');
 }
 
 await client.login(getToken());
@@ -32,7 +28,7 @@ client.once('ready', async () => {
     throw new Error('The provided channel must be a guild text channel');
   }
 
-  for (const roleSet of roleSets) {
+  for (const roleSet of roleSets.length === 0 ? '12345678' : roleSets) {
     const roles = getFromRoleConfig('course')[roleSet];
 
     if (roles === undefined) {
@@ -49,7 +45,9 @@ client.once('ready', async () => {
   }
 
   const addEmbed = getCoursesAddEmbed();
-  const addComponents = getCoursesAddComponents(roleSets);
+  const addComponents = getCoursesAddComponents(
+    roleSets.length === 0 ? Array.from('12345678') : roleSets,
+  );
   try {
     await sendEmbed(channel, addEmbed, addComponents, Number(newlines));
   } catch (error) {
@@ -57,7 +55,9 @@ client.once('ready', async () => {
   }
 
   const removeEmbed = getCoursesRemoveEmbed();
-  const removeComponents = getCoursesRemoveComponents(roleSets);
+  const removeComponents = getCoursesRemoveComponents(
+    roleSets.length === 0 ? Array.from('12345678') : roleSets,
+  );
   try {
     await sendEmbed(channel, removeEmbed, removeComponents, Number(newlines));
   } catch (error) {

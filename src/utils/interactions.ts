@@ -360,14 +360,12 @@ const handleAddCoursesButton = async (
   await member.roles.add(roles);
 
   try {
-    const mess = await interaction.reply({
+    await interaction.editReply({
       content:
         args[0] === 'all'
           ? 'Ги земавте сите предмети.'
           : `Ги земавте предметите од семестар ${semester}.`,
-      ephemeral: true,
     });
-    deleteResponse(mess);
   } catch (error) {
     logger.warn(
       `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`,
@@ -403,14 +401,12 @@ const handleRemoveCoursesButton = async (
   await member.roles.remove(roles);
 
   try {
-    const mess = await interaction.reply({
+    await interaction.editReply({
       content:
         args[0] === 'all'
           ? 'Ги отстранивте сите предмети.'
           : `Ги отстранивте предметите за семестар ${semester}.`,
-      ephemeral: true,
     });
-    deleteResponse(mess);
   } catch (error) {
     logger.warn(
       `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`,
@@ -963,6 +959,17 @@ export const handleButton = async (interaction: ButtonInteraction) => {
       `Received bad button interaction ${interaction.customId} by ${interaction.user.tag}`,
     );
     return;
+  }
+
+  if (command === 'removeCourses' || command === 'addCourses') {
+    try {
+      const mess = await interaction.deferReply({ ephemeral: true });
+      deleteResponse(mess, 10_000);
+    } catch (error) {
+      logger.error(
+        `Failed to defer reply for button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`,
+      );
+    }
   }
 
   if (Object.keys(buttonInteractionHandlers).includes(command)) {

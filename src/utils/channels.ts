@@ -9,6 +9,7 @@ import {
   type GuildTextBasedChannel,
   type Interaction,
   type InteractionResponse,
+  type Message,
 } from 'discord.js';
 
 const channels: { [K in Logs]?: Channel | undefined } = {};
@@ -64,10 +65,19 @@ export const sendEmbed = async (
       });
 };
 
-export const deleteResponse = (message: InteractionResponse) => {
+export const deleteResponse = (
+  message: InteractionResponse | Message,
+  interval?: number,
+) => {
   setTimeout(
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    async () => await message.delete(),
-    getFromBotConfig('ephemeralReplyTime'),
+    async () => {
+      try {
+        await message.delete();
+      } catch (error) {
+        logger.error(`Failed to delete message ${message.id}\n${error}`);
+      }
+    },
+    interval ?? getFromBotConfig('ephemeralReplyTime'),
   );
 };
