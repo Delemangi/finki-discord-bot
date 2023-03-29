@@ -1,4 +1,4 @@
-import { getVipScriptEmbed } from '../utils/embeds.js';
+import { getVipEmbed } from '../utils/embeds.js';
 import { commands } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
@@ -29,6 +29,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embeds = await getVipScriptEmbed(interaction);
+  const embeds = await getVipEmbed(interaction);
   await interaction.editReply({ embeds });
 };
