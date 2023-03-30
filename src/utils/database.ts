@@ -10,6 +10,7 @@ import {
   userMention,
 } from 'discord.js';
 import { env } from 'node:process';
+import { setTimeout } from 'node:timers/promises';
 import { DataSource } from 'typeorm';
 
 const database = env['POSTGRES_DB'];
@@ -28,27 +29,31 @@ export const initializeDatabase = async () => {
     return;
   }
 
-  dataSource = new DataSource({
-    database,
-    entities: ['./dist/entities/*.js'],
-    host: 'postgres',
-    logger: 'file',
-    logging: true,
-    password: pass,
-    port: 5_432,
-    synchronize: true,
-    type: 'postgres',
-    username: user,
-  });
+  while (true) {
+    dataSource = new DataSource({
+      database,
+      entities: ['./dist/entities/*.js'],
+      host: 'postgres',
+      logger: 'file',
+      logging: true,
+      password: pass,
+      port: 5_432,
+      synchronize: true,
+      type: 'postgres',
+      username: user,
+    });
 
-  try {
-    await dataSource.initialize();
-    await dataSource.synchronize();
-    logger.info('Database connection successful');
-  } catch (error) {
-    logger.warn(
-      `Database connection failed. Some features may not work\n${error}`,
-    );
+    try {
+      await dataSource.initialize();
+      await dataSource.synchronize();
+      logger.info('Database connection successful');
+      break;
+    } catch (error) {
+      logger.warn(
+        `Database connection failed. Some features may not work. Retrying in 15 seconds\n${error}`,
+      );
+      await setTimeout(15_000);
+    }
   }
 };
 
