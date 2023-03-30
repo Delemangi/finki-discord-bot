@@ -14,9 +14,8 @@ logger.info(`Running in ${mode} mode`);
 // Initialization
 
 checkConfig();
-await initializeDatabase();
 await attachEventListeners();
-void remind();
+void initializeDatabase().then(async () => await remind());
 
 // Login
 
