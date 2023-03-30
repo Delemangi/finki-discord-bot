@@ -436,8 +436,7 @@ const handlePollButtonForVipVote = async (
   const votes = (await getPollVotes(poll)).filter(
     (vote) => vote.option.name === 'Да',
   );
-  const voters = [2, 2];
-  await getMembersWithRoles(interaction.guild, ...poll.roles);
+  const voters = await getMembersWithRoles(interaction.guild, ...poll.roles);
 
   if (votes.length >= Math.ceil(voters.length / 2)) {
     const channel = interaction.guild?.channels.cache.find(
