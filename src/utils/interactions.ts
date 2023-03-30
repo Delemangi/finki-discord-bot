@@ -512,7 +512,7 @@ const handlePollButton = async (
   });
   deleteResponse(message);
 
-  const embed = await getPollEmbed(poll);
+  const embed = await getPollEmbed(interaction, poll);
   const components = getPollComponents(poll);
   await interaction.message.edit({
     components,

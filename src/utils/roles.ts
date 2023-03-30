@@ -85,3 +85,32 @@ export const getCourseRoleByCourseName = (
 
   return guild?.roles.cache.find((role) => role.name === roleName[0]);
 };
+
+export const getMembersWithRoles = async (
+  guild: Guild | null,
+  ...rolesWithMembers: Role[] | string[]
+) => {
+  if (guild === null) {
+    return [];
+  }
+
+  await guild.members.fetch();
+  await guild.roles.fetch();
+
+  const members = rolesWithMembers.map((role) =>
+    typeof role === 'string'
+      ? guild.roles.cache.get(role)?.members.keys()
+      : role.members.keys(),
+  );
+
+  const uniqueMembers = new Set<string>();
+  for (const iterator of members) {
+    const ids = Array.from(iterator ?? []);
+
+    for (const id of ids) {
+      uniqueMembers.add(id);
+    }
+  }
+
+  return Array.from(uniqueMembers);
+};

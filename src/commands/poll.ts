@@ -206,7 +206,7 @@ const handlePollCreate = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embed = await getPollEmbed(poll);
+  const embed = await getPollEmbed(interaction, poll);
   const components = getPollComponents(poll);
   await interaction.editReply({
     components,
@@ -288,7 +288,7 @@ const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embed = await getPollEmbed(poll);
+  const embed = await getPollEmbed(interaction, poll);
   const components = getPollComponents(poll);
 
   await interaction.editReply({

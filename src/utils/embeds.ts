@@ -17,7 +17,7 @@ import {
 import { getPollVotes, getPollVotesByOption } from './database.js';
 import { commandMention } from './functions.js';
 import { logger } from './logger.js';
-import { getRole } from './roles.js';
+import { getMembersWithRoles, getRole } from './roles.js';
 import { commands, programMapping, quizHelp } from './strings.js';
 import {
   ActionRowBuilder,
@@ -1300,7 +1300,7 @@ export const getHelpNextEmbed = (
 
 // Polls
 
-export const getPollEmbed = async (poll: Poll) => {
+export const getPollEmbed = async (interaction: Interaction, poll: Poll) => {
   const votes = (await getPollVotes(poll))?.length ?? 0;
 
   return new EmbedBuilder()
@@ -1356,6 +1356,16 @@ export const getPollEmbed = async (poll: Poll) => {
         inline: true,
         name: 'Гласови',
         value: votes.toString(),
+      },
+      {
+        inline: true,
+        name: 'Право на глас',
+        value:
+          poll.roles.length === 0
+            ? 'Сите'
+            : (
+                await getMembersWithRoles(interaction.guild, ...poll.roles)
+              ).length.toString(),
       },
       {
         inline: true,
