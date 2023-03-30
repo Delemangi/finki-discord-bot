@@ -1302,6 +1302,7 @@ export const getHelpNextEmbed = (
 
 export const getPollEmbed = async (interaction: Interaction, poll: Poll) => {
   const votes = (await getPollVotes(poll))?.length ?? 0;
+  const voters = await getMembersWithRoles(interaction.guild, ...poll.roles);
 
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
@@ -1355,7 +1356,10 @@ export const getPollEmbed = async (interaction: Interaction, poll: Poll) => {
       {
         inline: true,
         name: 'Гласови',
-        value: votes.toString(),
+        value: `${votes} ${
+          poll.roles.length > 0 &&
+          `(${((votes / voters.length) * 100).toFixed(2)}%`
+        })`,
       },
       {
         inline: true,
