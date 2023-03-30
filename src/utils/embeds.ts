@@ -1071,7 +1071,7 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const adminRole = interaction.guild?.roles.cache.find(
-    (role) => role.name === 'Администратор' || role.name === 'Administrator',
+    (role) => role.name === 'Админ тим' || role.name === 'Admin team',
   );
   const adminMembers = [];
 
@@ -1094,7 +1094,7 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
     new EmbedBuilder().setColor(getFromBotConfig('color')).setTitle('Состав'),
     new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
-      .setTitle(`ВИП ${vipMembers.length}`)
+      .setTitle(`ВИП: ${vipMembers.length}`)
       .setDescription(
         vipMembers.length === 0
           ? 'Нема членови на ВИП.'
@@ -1104,7 +1104,7 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
       ),
     new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
-      .setTitle(`Администратори ${adminMembers.length}`)
+      .setTitle(`Админ тим: ${adminMembers.length}`)
       .setDescription(
         adminMembers.length === 0
           ? 'Нема администратори.'
@@ -1114,7 +1114,7 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
       ),
     new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
-      .setTitle(`ФСС ${fssMembers.length}`)
+      .setTitle(`ФСС: ${fssMembers.length}`)
       .setDescription(
         fssMembers.length === 0
           ? 'Нема членови на ФСС.'
