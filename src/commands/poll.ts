@@ -320,6 +320,7 @@ const handlePollRemove = async (interaction: ChatInputCommandInteraction) => {
 
   for (const option of options) {
     await deletePollOption(poll, option);
+    poll.options = poll.options.filter((opt) => opt.name !== option);
   }
 
   if (poll.options.length === 0) {
