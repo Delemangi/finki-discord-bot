@@ -12,25 +12,28 @@ import {
   type Message,
 } from 'discord.js';
 
-const channels: { [K in Logs]?: Channel | undefined } = {};
+const channels: { [K in Channels]?: Channel | undefined } = {};
 
 export const initializeChannels = () => {
-  const logChannels = getFromBotConfig('logs');
+  const channelIds = getFromBotConfig('channels');
 
-  if (logChannels === undefined) {
+  if (channelIds === undefined) {
     return;
   }
 
-  channels.actions = client.channels.cache.get(logChannels.actions);
-  channels.commands = client.channels.cache.get(logChannels.commands);
+  channels.commands = client.channels.cache.get(channelIds.commands);
+  channels.vip = client.channels.cache.get(channelIds.vip);
+  channels.polls = client.channels.cache.get(channelIds.polls);
 
   logger.info('Channels initialized');
 };
 
+export const getChannel = (type: Channels) => channels[type];
+
 export const log = async (
   embed: EmbedBuilder,
   interaction: Interaction,
-  type: Logs,
+  type: Channels,
 ) => {
   const channel = channels[type];
 

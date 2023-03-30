@@ -1,7 +1,11 @@
-import { getFromRoleConfig } from './config.js';
+import { client } from './client.js';
+import { getFromBotConfig, getFromRoleConfig } from './config.js';
+import { logger } from './logger.js';
 import { type Guild, type Role } from 'discord.js';
 
-const roles: { [K in RoleSets]: Role[] } = {
+const roles: { [K in Roles]?: Role | undefined } = {};
+
+const roleSets: { [K in RoleSets]: Role[] } = {
   activity: [],
   color: [],
   courses: [],
@@ -10,8 +14,22 @@ const roles: { [K in RoleSets]: Role[] } = {
   year: [],
 };
 
+export const initializeRoles = () => {
+  const roleIds = getFromBotConfig('roles');
+  const guild = client.guilds.cache.get(getFromBotConfig('guild'));
+
+  if (roleIds === undefined || guild === undefined) {
+    return;
+  }
+
+  roles.vip = guild.roles.cache.get(roleIds.vip);
+  roles.admins = guild.roles.cache.get(roleIds.admins);
+
+  logger.info('Roles initialized');
+};
+
 export const refreshRoles = (guild: Guild | null, type: RoleSets) => {
-  if (roles[type].length === 0 && guild !== null) {
+  if (roleSets[type].length === 0 && guild !== null) {
     let list;
 
     if (type === 'courses') {
@@ -25,29 +43,35 @@ export const refreshRoles = (guild: Guild | null, type: RoleSets) => {
     );
 
     if (!list.includes(undefined)) {
-      roles[type] = list as Role[];
+      roleSets[type] = list as Role[];
     }
   }
 };
 
-export const getRole = (guild: Guild | null, type: RoleSets, role?: string) => {
+export const getRole = (type: Roles) => roles[type];
+
+export const getRoleFromSet = (
+  guild: Guild | null,
+  type: RoleSets,
+  role?: string,
+) => {
   if (role === undefined) {
     return undefined;
   }
 
-  if (roles[type].length === 0 && guild !== null) {
+  if (roleSets[type].length === 0 && guild !== null) {
     refreshRoles(guild, type);
   }
 
-  return roles[type].find((ro) => ro.name === role);
+  return roleSets[type].find((ro) => ro.name === role);
 };
 
 export const getRoles = (guild: Guild | null, type: RoleSets) => {
-  if (roles[type].length === 0) {
+  if (roleSets[type].length === 0) {
     refreshRoles(guild, type);
   }
 
-  return roles[type];
+  return roleSets[type];
 };
 
 export const getCourseRolesBySemester = (
@@ -60,11 +84,11 @@ export const getCourseRolesBySemester = (
     return [];
   }
 
-  if (roles.courses.length === 0) {
+  if (roleSets.courses.length === 0) {
     refreshRoles(guild, 'courses');
   }
 
-  return roles.courses.filter((role) => courses.includes(role.name));
+  return roleSets.courses.filter((role) => courses.includes(role.name));
 };
 
 export const getCourseRoleByCourseName = (

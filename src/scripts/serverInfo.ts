@@ -1,12 +1,8 @@
 import { client } from '../utils/client.js';
-import { getToken } from '../utils/config.js';
+import { getFromBotConfig, getToken } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
 
-const server = process.argv[2];
-
-if (server === undefined) {
-  throw new Error('Missing server ID argument');
-}
+const server = process.argv[2] ?? getFromBotConfig('guild');
 
 await client.login(getToken());
 

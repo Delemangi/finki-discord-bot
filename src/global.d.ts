@@ -12,7 +12,9 @@ import {
 declare global {
   type Mode = 'dev' | 'prod';
 
-  type Logs = 'actions' | 'commands';
+  type Channels = 'commands' | 'polls' | 'vip';
+
+  type Roles = 'admins' | 'vip';
 
   type RoleSets =
     | 'activity'
@@ -37,13 +39,15 @@ declare global {
   type QuizDifficulties = 'easy' | 'hard' | 'medium';
 
   type BotConfig = {
+    channels?: { [K in Channels]: string };
     color?: ColorResolvable;
     crosspostChannels?: string[];
     ephemeralReplyTime: number;
+    guild: string;
     logo: string;
-    logs?: { [K in Logs]: string };
     mode: Mode;
     profiles: { [K in Mode]: { applicationId: string; token: string } };
+    roles?: { [K in Roles]: string };
   };
 
   type RoleConfig = {

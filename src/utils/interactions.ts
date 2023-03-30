@@ -1,5 +1,5 @@
 import { type Poll } from '../entities/Poll.js';
-import { deleteResponse, log } from './channels.js';
+import { deleteResponse, getChannel, log } from './channels.js';
 import { getCommand } from './commands.js';
 import {
   getClassrooms,
@@ -48,6 +48,7 @@ import {
   getCourseRolesBySemester,
   getMembersWithRoles,
   getRole,
+  getRoleFromSet,
   getRoles,
 } from './roles.js';
 import { errors } from './strings.js';
@@ -61,9 +62,7 @@ import {
   type GuildMemberRoleManager,
   inlineCode,
   PermissionsBitField,
-  type Role,
   roleMention,
-  type TextChannel,
   type UserContextMenuCommandInteraction,
   userMention,
 } from 'discord.js';
@@ -82,7 +81,7 @@ const handleCourseButton = async (
     return;
   }
 
-  const role = getRole(interaction.guild, 'courses', args[0]);
+  const role = getRoleFromSet(interaction.guild, 'courses', args[0]);
 
   if (role === undefined) {
     logger.warn(
@@ -130,7 +129,7 @@ const handleYearButton = async (
     return;
   }
 
-  const role = getRole(interaction.guild, 'year', args[0]);
+  const role = getRoleFromSet(interaction.guild, 'year', args[0]);
 
   if (role === undefined) {
     logger.warn(
@@ -176,7 +175,7 @@ const handleProgramButton = async (
     return;
   }
 
-  const role = getRole(interaction.guild, 'program', args[0]);
+  const role = getRoleFromSet(interaction.guild, 'program', args[0]);
 
   if (role === undefined) {
     logger.warn(
@@ -222,7 +221,7 @@ const handleNotificationButton = async (
     return;
   }
 
-  const role = getRole(interaction.guild, 'notification', args[0]);
+  const role = getRoleFromSet(interaction.guild, 'notification', args[0]);
 
   if (role === undefined) {
     logger.warn(
@@ -267,7 +266,7 @@ const handleActivityButton = async (
     return;
   }
 
-  const role = getRole(interaction.guild, 'activity', args[0]);
+  const role = getRoleFromSet(interaction.guild, 'activity', args[0]);
 
   if (role === undefined) {
     logger.warn(
@@ -312,7 +311,7 @@ const handleColorButton = async (
     return;
   }
 
-  const role = getRole(interaction.guild, 'color', args[0]);
+  const role = getRoleFromSet(interaction.guild, 'color', args[0]);
 
   if (role === undefined) {
     logger.warn(
@@ -439,33 +438,30 @@ const handlePollButtonForVipVote = async (
   const voters = await getMembersWithRoles(interaction.guild, ...poll.roles);
 
   if (votes.length >= Math.ceil(voters.length / 2)) {
-    const channel = interaction.guild?.channels.cache.find(
-      (ch) => ch.name.includes('вип') || ch.name.includes('vip'),
-    ) as TextChannel;
+    const channel = getChannel('vip');
     const vipPoll = await getVipPollById(poll.id);
-
-    // eslint-disable-next-line require-atomic-updates
-    poll.done = true;
-
-    await savePoll(poll);
-
-    await channel.send(
-      `Корисникот ${userMention(
-        vipPoll?.user ?? '',
-      )} е одобрен како член на ВИП!`,
-    );
-
     const member = interaction.guild?.members.cache.find(
       (mem) => mem.id === vipPoll?.user,
     );
 
-    await member?.roles.add(
-      interaction.guild?.roles.cache.find(
-        (role) => role.name === 'ВИП',
-      ) as Role,
-    );
+    // eslint-disable-next-line require-atomic-updates
+    poll.done = true;
 
-    await deleteVipPoll(vipPoll?.id as string);
+    if (channel?.isTextBased()) {
+      await channel.send(
+        `Корисникот ${userMention(
+          vipPoll?.user ?? '',
+        )} е одобрен како член на ВИП!`,
+      );
+    }
+
+    await savePoll(poll);
+
+    if (vipPoll !== null) {
+      await deleteVipPoll(vipPoll.id);
+    }
+
+    await member?.roles.add(getRole('vip') ?? []);
   }
 };
 
@@ -771,9 +767,13 @@ const handleVipButton = async (
 ) => {
   const member = interaction.member as GuildMember;
 
-  if (member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+  if (
+    member.permissions.has(PermissionsBitField.Flags.Administrator) ||
+    member.roles.cache.has(getRole('vip')?.id ?? '') ||
+    member.roles.cache.has(getRole('admins')?.id ?? '')
+  ) {
     const message = await interaction.reply({
-      content: 'Ова не е за администратори.',
+      content: 'Веќе сте член на ВИП.',
       ephemeral: true,
     });
     deleteResponse(message);
@@ -796,20 +796,9 @@ const handleVipButton = async (
     return;
   }
 
-  const role = interaction.guild?.roles.cache.find(
-    (ro) => ro.name === 'ВИП' || ro.name === 'VIP',
-  );
+  const role = getRole('vip');
 
   if (role === undefined) {
-    return;
-  }
-
-  if (member.roles.cache.has(role.id)) {
-    const message = await interaction.reply({
-      content: 'Веќе сте член на ВИП.',
-      ephemeral: true,
-    });
-    deleteResponse(message);
     return;
   }
 
@@ -824,18 +813,14 @@ const handleVipButton = async (
   }
 
   const poll = await createVipPoll(interaction.user);
-  const channel = interaction.guild?.channels.cache.find((ch) =>
-    ch.name.includes('анкети'),
-  );
+  const channel = getChannel('polls');
 
-  if (channel === null || !channel?.isTextBased() || poll === null) {
-    return;
+  if (channel?.isTextBased() && poll !== null) {
+    await channel.send({
+      components: getPollComponents(poll),
+      embeds: [await getPollEmbed(interaction, poll)],
+    });
   }
-
-  await channel.send({
-    components: getPollComponents(poll),
-    embeds: [await getPollEmbed(interaction, poll)],
-  });
 
   const mess = await interaction.reply({
     content:

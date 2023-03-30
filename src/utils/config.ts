@@ -1,14 +1,16 @@
 import { existsSync, readFileSync } from 'node:fs';
 
 const defaultConfig: Required<BotConfig> = {
+  channels: {
+    commands: '',
+    polls: '',
+    vip: '',
+  },
   color: '#000000',
   crosspostChannels: [],
   ephemeralReplyTime: 5_000,
+  guild: '',
   logo: '',
-  logs: {
-    actions: '',
-    commands: '',
-  },
   mode: 'prod',
   profiles: {
     dev: {
@@ -19,6 +21,10 @@ const defaultConfig: Required<BotConfig> = {
       applicationId: '',
       token: '',
     },
+  },
+  roles: {
+    admins: '',
+    vip: '',
   },
 };
 

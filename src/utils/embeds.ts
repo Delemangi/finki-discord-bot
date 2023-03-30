@@ -17,7 +17,7 @@ import {
 import { getPollVotes, getPollVotesByOption } from './database.js';
 import { commandMention } from './functions.js';
 import { logger } from './logger.js';
-import { getMembersWithRoles, getRole } from './roles.js';
+import { getMembersWithRoles, getRoleFromSet } from './roles.js';
 import { commands, programMapping, quizHelp } from './strings.js';
 import {
   ActionRowBuilder,
@@ -74,7 +74,8 @@ const getButtonInfo = (
       return {
         name: getButtonCommand(command),
         value: roleMention(
-          getRole(interaction.guild, 'courses', args[0])?.id ?? 'Unknown',
+          getRoleFromSet(interaction.guild, 'courses', args[0])?.id ??
+            'Unknown',
         ),
       };
     case 'year':
@@ -85,7 +86,7 @@ const getButtonInfo = (
       return {
         name: getButtonCommand(command),
         value: roleMention(
-          getRole(interaction.guild, command, args[0])?.id ?? 'Unknown',
+          getRoleFromSet(interaction.guild, command, args[0])?.id ?? 'Unknown',
         ),
       };
     case 'help':
