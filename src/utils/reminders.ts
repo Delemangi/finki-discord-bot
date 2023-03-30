@@ -1,6 +1,7 @@
 import { type Reminder } from '../entities/Reminder.js';
 import { client } from './client.js';
 import { deleteReminders, loadReminders } from './database.js';
+import { logger } from './logger.js';
 import { userMention } from 'discord.js';
 import { setTimeout } from 'node:timers/promises';
 
@@ -24,14 +25,18 @@ const remindUser = async (reminder: Reminder) => {
 
 export const remind = async () => {
   while (true) {
-    const reminders = await loadReminders();
+    try {
+      const reminders = await loadReminders();
 
-    for (const reminder of reminders) {
-      if (reminder.date.getTime() <= Date.now()) {
-        await remindUser(reminder);
+      for (const reminder of reminders) {
+        if (reminder.date.getTime() <= Date.now()) {
+          await remindUser(reminder);
 
-        await deleteReminders(reminder);
+          await deleteReminders(reminder);
+        }
       }
+    } catch {
+      logger.warn('Failed to load reminders. Retrying in 15 seconds');
     }
 
     await setTimeout(15_000);
