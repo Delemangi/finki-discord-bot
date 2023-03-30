@@ -120,6 +120,7 @@ export const createPoll = async (
   multiple: boolean,
   open: boolean,
   options: string[],
+  roles: string[],
 ) => {
   if (dataSource === undefined) {
     return null;
@@ -137,6 +138,8 @@ export const createPoll = async (
     option.name = opt;
     return option;
   });
+  poll.roles = roles;
+  poll.done = false;
 
   await dataSource.getRepository(Poll).save(poll);
 

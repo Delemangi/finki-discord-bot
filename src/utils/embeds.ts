@@ -1359,8 +1359,11 @@ export const getPollEmbed = async (poll: Poll) => {
       },
       {
         inline: true,
-        name: '\u200B',
-        value: '\u200B',
+        name: 'Улоги',
+        value:
+          poll.roles.length > 0
+            ? poll.roles.map((role) => roleMention(role)).join(', ')
+            : 'Нема',
       },
     )
     .setFooter({ text: `Анкета: ${poll.id}` })

@@ -49,6 +49,7 @@ import {
   type GuildMemberRoleManager,
   inlineCode,
   PermissionsBitField,
+  roleMention,
   type UserContextMenuCommandInteraction,
   userMention,
 } from 'discord.js';
@@ -440,6 +441,31 @@ const handlePollButton = async (
 
   const votes = await getPollVotesByUser(poll, interaction.user.id);
   let replyMessage;
+
+  if (poll.done) {
+    const mess = await interaction.reply({
+      content: 'Анкетата е затворена.',
+      ephemeral: true,
+    });
+    deleteResponse(mess);
+    return;
+  }
+
+  if (poll.roles.length !== 0) {
+    const roles = interaction.member.roles as GuildMemberRoleManager;
+
+    if (!roles.cache.some((role) => poll.roles.includes(role.id))) {
+      const mess = await interaction.reply({
+        allowedMentions: { parse: [] },
+        content: `Немате дозвола да гласате на оваа анкета. Потребна ви е една од улогите: ${poll.roles
+          .map((role) => roleMention(role))
+          .join(', ')}`,
+        ephemeral: true,
+      });
+      deleteResponse(mess);
+      return;
+    }
+  }
 
   if (poll.multiple) {
     if (

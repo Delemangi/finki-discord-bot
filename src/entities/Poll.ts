@@ -40,6 +40,15 @@ export class Poll {
   })
   public open!: boolean;
 
+  @Column('text', { array: true, default: [], nullable: false })
+  public roles!: string[];
+
+  @Column('boolean', {
+    default: false,
+    nullable: false,
+  })
+  public done!: boolean;
+
   @OneToMany(() => PollOption, (option) => option.poll, {
     cascade: true,
     nullable: false,
