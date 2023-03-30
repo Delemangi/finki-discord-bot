@@ -69,7 +69,7 @@ export const getPollOption = async (poll: Poll, name: string) => {
     relations: { poll: true },
     where: {
       name,
-      poll,
+      poll: { id: poll.id },
     },
   });
 };
@@ -84,7 +84,7 @@ export const getPollVotesByUser = async (poll: Poll, userId: string) => {
       option: true,
     },
     where: {
-      option: { poll },
+      option: { poll: { id: poll.id } },
       user: userId,
     },
   });
@@ -95,7 +95,9 @@ export const getPollVotes = async (poll: Poll) => {
     return [];
   }
 
-  return await dataSource.getRepository(PollVote).findBy({ option: { poll } });
+  return await dataSource
+    .getRepository(PollVote)
+    .findBy({ option: { poll: { id: poll.id } } });
 };
 
 export const getPollVotesByOption = async (option: PollOption) => {
@@ -103,7 +105,9 @@ export const getPollVotesByOption = async (option: PollOption) => {
     return [];
   }
 
-  return await dataSource.getRepository(PollVote).findBy({ option });
+  return await dataSource
+    .getRepository(PollVote)
+    .findBy({ option: { id: option.id } });
 };
 
 // Polls: create
@@ -195,7 +199,7 @@ export const deletePollOption = async (poll: Poll, name: string) => {
 
   await dataSource.getRepository(PollOption).delete({
     name,
-    poll,
+    poll: { id: poll.id },
   });
 
   return true;
@@ -206,7 +210,7 @@ export const deletePollVote = async (vote?: PollVote) => {
     return false;
   }
 
-  await dataSource.getRepository(PollVote).delete(vote);
+  await dataSource.getRepository(PollVote).delete({ id: vote.id });
 
   return true;
 };
