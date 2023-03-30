@@ -2,8 +2,13 @@ import { Poll } from '../entities/Poll.js';
 import { PollOption } from '../entities/PollOption.js';
 import { PollVote } from '../entities/PollVote.js';
 import { Reminder } from '../entities/Reminder.js';
+import { VipPoll } from '../entities/VipPoll.js';
 import { logger } from './logger.js';
-import { type ChatInputCommandInteraction } from 'discord.js';
+import {
+  type ChatInputCommandInteraction,
+  type User,
+  userMention,
+} from 'discord.js';
 import { env } from 'node:process';
 import { DataSource } from 'typeorm';
 
@@ -60,6 +65,22 @@ export const getPoll = async (id?: string) => {
   });
 };
 
+export const getVipPollByUser = async (userId?: string) => {
+  if (dataSource === undefined || userId === undefined) {
+    return null;
+  }
+
+  return await dataSource.getRepository(VipPoll).findOneBy({ user: userId });
+};
+
+export const getVipPollById = async (id?: string) => {
+  if (dataSource === undefined || id === undefined) {
+    return null;
+  }
+
+  return await dataSource.getRepository(VipPoll).findOneBy({ id });
+};
+
 export const getPollOption = async (poll: Poll, name: string) => {
   if (dataSource === undefined) {
     return null;
@@ -95,9 +116,10 @@ export const getPollVotes = async (poll: Poll) => {
     return [];
   }
 
-  return await dataSource
-    .getRepository(PollVote)
-    .findBy({ option: { poll: { id: poll.id } } });
+  return await dataSource.getRepository(PollVote).find({
+    relations: { option: true },
+    where: { option: { poll: { id: poll.id } } },
+  });
 };
 
 export const getPollVotesByOption = async (option: PollOption) => {
@@ -142,6 +164,45 @@ export const createPoll = async (
   poll.done = false;
 
   await dataSource.getRepository(Poll).save(poll);
+
+  return poll;
+};
+
+export const createVipPoll = async (vipUser: User) => {
+  if (dataSource === undefined) {
+    return null;
+  }
+
+  const poll = new Poll();
+
+  const yes = new PollOption();
+  yes.name = 'Да';
+
+  const no = new PollOption();
+  no.name = 'Не';
+
+  const abstain = new PollOption();
+  abstain.name = 'Воздржан';
+
+  poll.title = `Влез во ВИП за ${vipUser.tag}`;
+  poll.description = `Дали сте за да стане корисникот ${
+    vipUser.tag
+  } (${userMention(vipUser.id)}) член на ВИП?`;
+  poll.anonymous = true;
+  poll.multiple = false;
+  poll.open = false;
+  poll.owner = vipUser.id;
+  poll.options = [yes, no, abstain];
+  poll.roles = ['1044418333581254676'];
+  poll.done = false;
+
+  const savedPoll = await dataSource.getRepository(Poll).save(poll);
+
+  const vipPoll = new VipPoll();
+  vipPoll.id = savedPoll.id;
+  vipPoll.user = vipUser.id;
+
+  await dataSource.getRepository(VipPoll).save(vipPoll);
 
   return poll;
 };
@@ -191,6 +252,16 @@ export const deletePoll = async (id: string) => {
   }
 
   await dataSource.getRepository(Poll).delete({ id });
+
+  return true;
+};
+
+export const deleteVipPoll = async (id: string) => {
+  if (dataSource === undefined) {
+    return false;
+  }
+
+  await dataSource.getRepository(VipPoll).delete({ id });
 
   return true;
 };

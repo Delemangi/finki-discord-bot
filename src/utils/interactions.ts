@@ -1,3 +1,4 @@
+import { type Poll } from '../entities/Poll.js';
 import { deleteResponse, log } from './channels.js';
 import { getCommand } from './commands.js';
 import {
@@ -12,11 +13,17 @@ import {
 } from './config.js';
 import {
   createPollVote,
+  createVipPoll,
   deletePollVote,
+  deleteVipPoll,
   getPoll,
   getPollOption,
+  getPollVotes,
   getPollVotesByOption,
   getPollVotesByUser,
+  getVipPollById,
+  getVipPollByUser,
+  savePoll,
 } from './database.js';
 import {
   getAutocompleteEmbed,
@@ -37,7 +44,12 @@ import {
 import { createOptions } from './functions.js';
 import { logger } from './logger.js';
 import { transformOptions } from './options.js';
-import { getCourseRolesBySemester, getRole, getRoles } from './roles.js';
+import {
+  getCourseRolesBySemester,
+  getMembersWithRoles,
+  getRole,
+  getRoles,
+} from './roles.js';
 import { errors } from './strings.js';
 import {
   type AutocompleteInteraction,
@@ -49,7 +61,9 @@ import {
   type GuildMemberRoleManager,
   inlineCode,
   PermissionsBitField,
+  type Role,
   roleMention,
+  type TextChannel,
   type UserContextMenuCommandInteraction,
   userMention,
 } from 'discord.js';
@@ -415,6 +429,47 @@ const handleRemoveCoursesButton = async (
   }
 };
 
+const handlePollButtonForVipVote = async (
+  interaction: ButtonInteraction,
+  poll: Poll,
+) => {
+  const votes = (await getPollVotes(poll)).filter(
+    (vote) => vote.option.name === 'Да',
+  );
+  const voters = [2, 2];
+  await getMembersWithRoles(interaction.guild, ...poll.roles);
+
+  if (votes.length >= Math.ceil(voters.length / 2)) {
+    const channel = interaction.guild?.channels.cache.find(
+      (ch) => ch.name.includes('вип') || ch.name.includes('vip'),
+    ) as TextChannel;
+    const vipPoll = await getVipPollById(poll.id);
+
+    // eslint-disable-next-line require-atomic-updates
+    poll.done = true;
+
+    await savePoll(poll);
+
+    await channel.send(
+      `Корисникот ${userMention(
+        vipPoll?.user ?? '',
+      )} е одобрен како член на ВИП!`,
+    );
+
+    const member = interaction.guild?.members.cache.find(
+      (mem) => mem.id === vipPoll?.user,
+    );
+
+    await member?.roles.add(
+      interaction.guild?.roles.cache.find(
+        (role) => role.name === 'ВИП',
+      ) as Role,
+    );
+
+    await deleteVipPoll(vipPoll?.id as string);
+  }
+};
+
 const handlePollButton = async (
   interaction: ButtonInteraction,
   args: string[],
@@ -518,6 +573,11 @@ const handlePollButton = async (
     components,
     embeds: [embed],
   });
+
+  const vipPoll = await getVipPollById(poll.id);
+  if (vipPoll !== null) {
+    await handlePollButtonForVipVote(interaction, poll);
+  }
 };
 
 const handlePollStatsButton = async (
@@ -710,23 +770,30 @@ const handleVipButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
-  if (args[0] !== 'accept') {
+  const member = interaction.member as GuildMember;
+
+  if (member.permissions.has(PermissionsBitField.Flags.Administrator)) {
     const message = await interaction.reply({
-      content: 'Жалиме за вашата одлука... се гледаме следен пат.',
+      content: 'Ова не е за администратори.',
       ephemeral: true,
     });
     deleteResponse(message);
     return;
   }
 
-  const member = interaction.member as GuildMember;
+  if (args[0] !== 'accept') {
+    if (
+      interaction.channel !== null &&
+      !interaction.channel.isDMBased() &&
+      interaction.channel.isTextBased() &&
+      !interaction.channel.isThread()
+    ) {
+      await interaction.channel.permissionOverwrites.edit(interaction.user.id, {
+        ViewChannel: false,
+      });
+    }
 
-  if (member.permissions.has(PermissionsBitField.Flags.Administrator)) {
-    const message = await interaction.reply({
-      content: 'Веќе сте администратор.',
-      ephemeral: true,
-    });
-    deleteResponse(message);
+    await interaction.deferUpdate();
     return;
   }
 
@@ -735,45 +802,48 @@ const handleVipButton = async (
   );
 
   if (role === undefined) {
-    const message = await interaction.reply({
-      content: 'Не постои улогата за ВИП.',
-      ephemeral: true,
-    });
-    deleteResponse(message);
     return;
   }
 
   if (member.roles.cache.has(role.id)) {
     const message = await interaction.reply({
-      content: 'Веќе сте во ВИП.',
+      content: 'Веќе сте член на ВИП.',
       ephemeral: true,
     });
     deleteResponse(message);
     return;
   }
 
-  await member.roles.add(role);
+  const existingPoll = await getVipPollByUser(interaction.user.id);
+  if (existingPoll !== null) {
+    const message = await interaction.reply({
+      content: 'Веќе имате активна молба за ВИП.',
+      ephemeral: true,
+    });
+    deleteResponse(message);
+    return;
+  }
 
-  const mess = await interaction.reply({
-    content: 'Добредојдовте во ВИП.',
-    ephemeral: true,
-  });
-  deleteResponse(mess);
-
-  const channel = interaction.guild?.channels.cache.find(
-    (ch) => ch.name.includes('вип') || ch.name.includes('vip'),
+  const poll = await createVipPoll(interaction.user);
+  const channel = interaction.guild?.channels.cache.find((ch) =>
+    ch.name.includes('анкети'),
   );
 
-  if (channel === undefined || !channel.isTextBased()) {
+  if (channel === null || !channel?.isTextBased() || poll === null) {
     return;
   }
 
   await channel.send({
-    allowedMentions: { parse: [] },
-    content: `Членот ${userMention(
-      member.user.id,
-    )} ја прифати изјавата за големи нешта.`,
+    components: getPollComponents(poll),
+    embeds: [await getPollEmbed(interaction, poll)],
   });
+
+  const mess = await interaction.reply({
+    content:
+      'Испратена е молба за разгледување до членовите на ВИП. Со среќа! :grin:',
+    ephemeral: true,
+  });
+  deleteResponse(mess);
 };
 
 // Autocomplete interactions
