@@ -6,7 +6,6 @@ import { type Guild, type Role } from 'discord.js';
 const roles: { [K in Roles]?: Role | undefined } = {};
 
 const roleSets: { [K in RoleSets]: Role[] } = {
-  activity: [],
   color: [],
   courses: [],
   notification: [],

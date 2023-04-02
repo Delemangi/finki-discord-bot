@@ -31,9 +31,6 @@ export const data = new SlashCommandBuilder()
       .setDescription(commands['statistics notification']),
   )
   .addSubcommand((command) =>
-    command.setName('activity').setDescription(commands['statistics activity']),
-  )
-  .addSubcommand((command) =>
     command.setName('server').setDescription(commands['statistics server']),
   )
   .setDMPermission(false);
@@ -52,8 +49,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     subcommand === 'program' ||
     subcommand === 'year' ||
     subcommand === 'course' ||
-    subcommand === 'notification' ||
-    subcommand === 'activity'
+    subcommand === 'notification'
   ) {
     const roles = getRoles(
       interaction.guild,

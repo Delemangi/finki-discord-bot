@@ -42,7 +42,6 @@ export const commands = {
   reminder: 'Потсетник',
   session: 'Распоред за испитни сесии и колоквиуми',
   staff: 'Информации за професори',
-  'statistics activity': 'Статистика за улогите за активности',
   'statistics color': 'Статистика за улогите за бои',
   'statistics course': 'Статистика за улогите за предмети',
   'statistics notification': 'Статистика за улогите за нотификации',

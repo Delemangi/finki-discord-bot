@@ -16,13 +16,7 @@ declare global {
 
   type Roles = 'admins' | 'vip';
 
-  type RoleSets =
-    | 'activity'
-    | 'color'
-    | 'courses'
-    | 'notification'
-    | 'program'
-    | 'year';
+  type RoleSets = 'color' | 'courses' | 'notification' | 'program' | 'year';
 
   type CourseType =
     | 'задолжителен (изб.)'
@@ -51,7 +45,6 @@ declare global {
   };
 
   type RoleConfig = {
-    activity: string[];
     color: string[];
     course: { [index: string]: string[] };
     courses: { [index: string]: string };

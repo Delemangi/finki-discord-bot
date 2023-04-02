@@ -81,7 +81,6 @@ const getButtonInfo = (
     case 'year':
     case 'program':
     case 'notification':
-    case 'activity':
     case 'color':
       return {
         name: getButtonCommand(command),
@@ -216,45 +215,6 @@ export const generatePollPercentageBar = (percentage: number) => {
 };
 
 // Scripts
-
-export const getActivitiesEmbed = () => {
-  return new EmbedBuilder()
-    .setColor(getFromBotConfig('color'))
-    .setTitle('Активности')
-    .setThumbnail(getFromBotConfig('logo'))
-    .setDescription(
-      'Изберете активности од интерес за пристап до соодветните канали.',
-    )
-    .setFooter({ text: '(може да изберете повеќе опции)' });
-};
-
-export const getActivitiesComponents = () => {
-  const components = [];
-  const roles = getFromRoleConfig('activity');
-
-  for (let index1 = 0; index1 < roles.length; index1 += 5) {
-    const row = new ActionRowBuilder<ButtonBuilder>();
-    const buttons = [];
-
-    for (let index2 = index1; index2 < index1 + 5; index2++) {
-      if (roles[index2] === undefined) {
-        break;
-      }
-
-      const button = new ButtonBuilder()
-        .setCustomId(`activity:${roles[index2] ?? ''}`)
-        .setLabel(roles[index2] ?? '')
-        .setStyle(ButtonStyle.Secondary);
-
-      buttons.push(button);
-    }
-
-    row.addComponents(buttons);
-    components.push(row);
-  }
-
-  return components;
-};
 
 export const getColorsEmbed = (image: string) => {
   return new EmbedBuilder()
@@ -990,10 +950,6 @@ export const getStudentInfoEmbed = (member: GuildMember | null | undefined) => {
     .filter((role) => getFromRoleConfig('notification').includes(role.name))
     .map((role) => roleMention(role.id))
     .join('\n');
-  const activityRoles = member.roles.cache
-    .filter((role) => getFromRoleConfig('activity').includes(role.name))
-    .map((role) => roleMention(role.id))
-    .join('\n');
   const courseRoles = member.roles.cache
     .filter((role) =>
       Object.keys(getFromRoleConfig('courses')).includes(role.name),
@@ -1040,11 +996,6 @@ export const getStudentInfoEmbed = (member: GuildMember | null | undefined) => {
         inline: true,
         name: 'Нотификации',
         value: notificationRoles === '' ? 'Нема' : notificationRoles,
-      },
-      {
-        inline: true,
-        name: 'Активности',
-        value: activityRoles === '' ? 'Нема' : activityRoles,
       },
       {
         name: 'Предмети',

@@ -255,51 +255,6 @@ const handleNotificationButton = async (
   }
 };
 
-const handleActivityButton = async (
-  interaction: ButtonInteraction,
-  args: string[],
-) => {
-  if (interaction.guild === null || interaction.member === null) {
-    logger.warn(
-      `Received button interaction ${interaction.customId} by ${interaction.user.tag} outside of a guild`,
-    );
-    return;
-  }
-
-  const role = getRoleFromSet(interaction.guild, 'activity', args[0]);
-
-  if (role === undefined) {
-    logger.warn(
-      `The role for button interaction ${interaction.customId} by ${interaction.user.tag} was not found`,
-    );
-    return;
-  }
-
-  const roles = interaction.member.roles as GuildMemberRoleManager;
-  let removed = true;
-
-  if (roles.cache.has(role.id)) {
-    await roles.remove(role);
-  } else {
-    await roles.add(role);
-    removed = false;
-  }
-
-  try {
-    const mess = await interaction.reply({
-      content: `Ја ${
-        removed ? 'отстранивте' : 'земавте'
-      } активноста ${inlineCode(role.name)}.`,
-      ephemeral: true,
-    });
-    deleteResponse(mess);
-  } catch (error) {
-    logger.warn(
-      `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`,
-    );
-  }
-};
-
 const handleColorButton = async (
   interaction: ButtonInteraction,
   args: string[],
@@ -1016,7 +971,6 @@ export const handleUserContextMenuCommand = async (
 };
 
 const buttonInteractionHandlers = {
-  activity: handleActivityButton,
   addCourses: handleAddCoursesButton,
   color: handleColorButton,
   course: handleCourseButton,
