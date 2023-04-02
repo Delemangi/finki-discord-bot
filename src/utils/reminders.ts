@@ -16,9 +16,12 @@ const remindUser = async (reminder: Reminder) => {
     const channel = await client.channels.fetch(reminder.channel);
 
     if (channel?.isTextBased()) {
-      await channel.send(
-        `${userMention(reminder.owner)} Потсетник: ${reminder.description}`,
-      );
+      await channel.send({
+        allowedMentions: { roles: [], users: [reminder.owner] },
+        content: `${userMention(reminder.owner)} Потсетник: ${
+          reminder.description
+        }`,
+      });
     }
   }
 };
