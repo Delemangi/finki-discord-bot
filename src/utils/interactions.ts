@@ -17,7 +17,8 @@ import {
   deletePollVote,
   deleteVipPoll,
   getPoll,
-  getPollOption,
+  getPollOptionById,
+  getPollOptionByName,
   getPollVotes,
   getPollVotesByOption,
   getPollVotesByUser,
@@ -431,11 +432,17 @@ const handlePollButton = async (
     return;
   }
 
-  const id = args[0]?.toString();
-  const option = args[1]?.toString();
-  const poll = await getPoll(id);
+  const pollId = args[0]?.toString();
+  const optionId = args[1]?.toString();
+  const poll = await getPoll(pollId);
+  const option = await getPollOptionById(optionId);
 
-  if (poll === null || id === undefined || option === undefined) {
+  if (
+    poll === null ||
+    option === null ||
+    pollId === undefined ||
+    optionId === undefined
+  ) {
     const mess = await interaction.reply({
       content: 'Веќе не постои анкетата или опцијата.',
       ephemeral: true,
@@ -475,25 +482,25 @@ const handlePollButton = async (
   if (poll.multiple) {
     if (
       votes.length === 0 ||
-      !votes.some((vote) => vote.option.name === option)
+      !votes.some((vote) => vote.option.id === optionId)
     ) {
-      await createPollVote(poll, option, interaction.user.id);
-      replyMessage = `Гласавте за опцијата ${inlineCode(option)}.`;
+      await createPollVote(optionId, interaction.user.id);
+      replyMessage = `Гласавте за опцијата ${inlineCode(option.name)}.`;
     } else {
-      await deletePollVote(votes.find((vote) => vote.option.name === option));
+      await deletePollVote(votes.find((vote) => vote.option.id === optionId));
       replyMessage = 'Го тргнавте вашиот глас.';
     }
   } else {
     const vote = votes[0] ?? null;
 
     if (vote === null) {
-      await createPollVote(poll, option, interaction.user.id);
-      replyMessage = `Гласавте за опцијата ${inlineCode(option)}.`;
-    } else if (vote !== null && vote.option.name === option) {
+      await createPollVote(optionId, interaction.user.id);
+      replyMessage = `Гласавте за опцијата ${inlineCode(option.name)}.`;
+    } else if (vote !== null && vote.option.id === optionId) {
       await deletePollVote(vote);
       replyMessage = 'Го тргнавте вашиот глас.';
     } else {
-      const opt = await getPollOption(poll, option);
+      const opt = await getPollOptionByName(poll, optionId);
 
       if (opt === null) {
         const mess = await interaction.reply({
@@ -505,9 +512,9 @@ const handlePollButton = async (
       }
 
       await deletePollVote(vote);
-      await createPollVote(poll, option, interaction.user.id);
+      await createPollVote(optionId, interaction.user.id);
 
-      replyMessage = `Гласавте за опцијата ${inlineCode(option)}.`;
+      replyMessage = `Гласавте за опцијата ${inlineCode(option.name)}.`;
     }
   }
 
@@ -553,7 +560,7 @@ const handlePollStatsButton = async (
     return;
   }
 
-  const pollOption = await getPollOption(poll, option);
+  const pollOption = await getPollOptionByName(poll, option);
 
   if (pollOption === null) {
     const mess = await interaction.reply({

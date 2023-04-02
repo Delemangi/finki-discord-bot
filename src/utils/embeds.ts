@@ -43,6 +43,16 @@ const color = getFromBotConfig('color');
 
 // Helpers
 
+const truncateString = (string: string | null | undefined, length: number) => {
+  if (string === null || string === undefined) {
+    return '';
+  }
+
+  return string.length > length
+    ? string.slice(0, Math.max(0, length - 3)) + '...'
+    : string;
+};
+
 const getChannel = (interaction: Interaction) => {
   if (interaction.channel === null || interaction.channel.isDMBased()) {
     return 'DM';
@@ -1259,9 +1269,9 @@ export const getPollEmbed = async (interaction: Interaction, poll: Poll) => {
 
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
-    .setTitle(poll.title)
+    .setTitle(truncateString(poll.title, 256))
     .setDescription(
-      `${italic(poll.description)}\n${codeBlock(
+      `${italic(truncateString(poll.description, 1_000))}\n${codeBlock(
         (
           await Promise.all(
             poll.options.map(async (option, index) => {
@@ -1347,8 +1357,8 @@ export const getPollComponents = (poll: Poll) => {
       }
 
       const button = new ButtonBuilder()
-        .setCustomId(`poll:${poll.id}:${poll.options[index2]?.name}`)
-        .setLabel(`${poll.options[index2]?.name}`)
+        .setCustomId(`poll:${poll.id}:${poll.options[index2]?.id}`)
+        .setLabel(`${truncateString(poll.options[index2]?.name, 80)}`)
         .setStyle(
           [
             ButtonStyle.Primary,
@@ -1420,8 +1430,8 @@ export const getPollStatsComponents = (poll: Poll) => {
       }
 
       const button = new ButtonBuilder()
-        .setCustomId(`pollStats:${poll.id}:${poll.options[index2]?.name}`)
-        .setLabel(`${poll.options[index2]?.name}`)
+        .setCustomId(`pollStats:${poll.id}:${poll.options[index2]?.id}`)
+        .setLabel(`${truncateString(poll.options[index2]?.name, 80)}`)
         .setStyle(ButtonStyle.Secondary);
 
       buttons.push(button);
@@ -1616,7 +1626,11 @@ export const getChatInputCommandEmbed = async (
       {
         inline: true,
         name: 'Command',
-        value: inlineCode(interaction.toString()),
+        value: inlineCode(
+          interaction.toString().length > 300
+            ? interaction.toString().slice(0, 300)
+            : interaction.toString(),
+        ),
       },
     )
     .setFooter({ text: interaction.id })
