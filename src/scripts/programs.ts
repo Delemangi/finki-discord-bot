@@ -27,7 +27,7 @@ client.once('ready', async () => {
   }
 
   const embed = getProgramsEmbed();
-  const components = getProgramsComponents(roles);
+  const components = getProgramsComponents();
   try {
     await sendEmbed(channel, embed, components, Number(newlines));
   } catch (error) {

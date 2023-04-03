@@ -30,7 +30,7 @@ client.once('ready', async () => {
   }
 
   const embed = getNotificationsEmbed();
-  const components = getNotificationsComponents(roles);
+  const components = getNotificationsComponents();
   try {
     await sendEmbed(channel, embed, components, Number(newlines));
   } catch (error) {

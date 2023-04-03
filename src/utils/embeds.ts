@@ -424,7 +424,8 @@ export const getNotificationsEmbed = () => {
     .setFooter({ text: '(може да изберете повеќе опции)' });
 };
 
-export const getNotificationsComponents = (roles: string[]) => {
+export const getNotificationsComponents = () => {
+  const roles = getFromRoleConfig('notification');
   const components = [];
 
   for (let index1 = 0; index1 < roles.length; index1 += 5) {
@@ -462,7 +463,8 @@ export const getProgramsEmbed = () => {
     });
 };
 
-export const getProgramsComponents = (roles: string[]) => {
+export const getProgramsComponents = () => {
+  const roles = getFromRoleConfig('program');
   const components = [];
 
   for (let index1 = 0; index1 < roles.length; index1 += 5) {
@@ -500,7 +502,8 @@ export const getYearsEmbed = () => {
     });
 };
 
-export const getYearsComponents = (roles: string[]) => {
+export const getYearsComponents = () => {
+  const roles = getFromRoleConfig('year');
   const components = new ActionRowBuilder<ButtonBuilder>();
   const buttons = [];
 
