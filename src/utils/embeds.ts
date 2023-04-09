@@ -103,6 +103,7 @@ const getButtonInfo = (
     case 'pollStats':
     case 'quiz':
     case 'quizGame':
+    case 'addCourses':
     case 'removeCourses':
     case 'vip':
       return {
