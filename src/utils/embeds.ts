@@ -726,9 +726,7 @@ export const getCourseSummaryEmbed = (course: string | null) => {
       {
         name: 'Предуслови',
         value:
-          prerequisite === undefined
-            ? '-'
-            : prerequisite.prerequisite === ''
+          prerequisite === undefined || prerequisite.prerequisite === ''
             ? 'Нема'
             : prerequisite.prerequisite,
       },
