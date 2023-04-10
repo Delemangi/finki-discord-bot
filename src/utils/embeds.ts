@@ -14,7 +14,11 @@ import {
   getRules,
   getStaff,
 } from './config.js';
-import { getPollVotes, getPollVotesByOption } from './database.js';
+import {
+  getMostPopularPollOption,
+  getPollVotes,
+  getPollVotesByOption,
+} from './database.js';
 import { commandMention } from './functions.js';
 import { logger } from './logger.js';
 import { getMembersWithRoles, getRole, getRoleFromSet } from './roles.js';
@@ -1345,7 +1349,11 @@ export const getPollEmbed = async (interaction: Interaction, poll: Poll) => {
           )
         ).join('\n'),
       )}${
-        poll.done ? `\nРезултат: ${poll.decision}\n` : ''
+        poll.done
+          ? `\nРезултат: ${
+              poll.decision ?? (await getMostPopularPollOption(poll)) ?? '-'
+            }\n`
+          : ''
       }\nИнформации и подесувања за анкетата:`,
     )
     .addFields(
