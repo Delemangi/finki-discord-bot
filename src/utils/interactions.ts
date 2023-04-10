@@ -526,7 +526,7 @@ const handlePollButton = async (
       await deletePollVote(vote.id);
       replyMessage = 'Го тргнавте вашиот глас.';
     } else {
-      const opt = await getPollOptionByName(poll.id, optionId);
+      const opt = await getPollOptionById(optionId);
 
       if (opt === null) {
         const mess = await interaction.reply({
