@@ -43,6 +43,12 @@ export class Poll {
   @Column('text', { array: true, default: [], nullable: false })
   public roles!: string[];
 
+  @Column('float', { default: 0.5, nullable: false })
+  public threshold!: number;
+
+  @Column('text', { nullable: true })
+  public decision?: string;
+
   @Column('boolean', {
     default: false,
     nullable: false,

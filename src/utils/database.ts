@@ -5,8 +5,10 @@ import { Reminder } from '../entities/Reminder.js';
 import { VipPoll } from '../entities/VipPoll.js';
 import { getFromBotConfig } from './config.js';
 import { logger } from './logger.js';
+import { getMembersWithRoles } from './roles.js';
 import {
   type ChatInputCommandInteraction,
+  type Interaction,
   type User,
   userMention,
 } from 'discord.js';
@@ -58,20 +60,35 @@ export const initializeDatabase = async () => {
   }
 };
 
+// Polls: save
+
+export const savePoll = async (poll: Poll) => {
+  if (dataSource === undefined) {
+    return null;
+  }
+
+  try {
+    return await dataSource.getRepository(Poll).save(poll);
+  } catch (error) {
+    logger.error(`Failed saving poll\n${error}`);
+    return null;
+  }
+};
+
 // Polls: get
 
-export const getPoll = async (id?: string) => {
-  if (dataSource === undefined || id === undefined) {
+export const getPoll = async (pollId?: string) => {
+  if (dataSource === undefined || pollId === undefined) {
     return null;
   }
 
   try {
     return await dataSource.getRepository(Poll).findOne({
       relations: { options: true },
-      where: { id },
+      where: { id: pollId },
     });
   } catch (error) {
-    logger.error(`Failed obtaining poll\n${error}`);
+    logger.error(`Failed obtaining poll by poll ID\n${error}`);
     return null;
   }
 };
@@ -84,26 +101,33 @@ export const getVipPollByUser = async (userId?: string) => {
   try {
     return await dataSource.getRepository(VipPoll).findOneBy({ user: userId });
   } catch (error) {
-    logger.error(`Failed obtaining VIP poll\n${error}`);
+    logger.error(`Failed obtaining VIP poll by user ID\n${error}`);
     return null;
   }
 };
 
-export const getVipPollById = async (id?: string) => {
-  if (dataSource === undefined || id === undefined) {
+export const getVipPollById = async (pollId?: string) => {
+  if (dataSource === undefined || pollId === undefined) {
     return null;
   }
 
   try {
-    return await dataSource.getRepository(VipPoll).findOneBy({ id });
+    return await dataSource.getRepository(VipPoll).findOneBy({ id: pollId });
   } catch (error) {
-    logger.error(`Failed obtaining VIP poll\n${error}`);
+    logger.error(`Failed obtaining VIP poll by poll ID\n${error}`);
     return null;
   }
 };
 
-export const getPollOptionByName = async (poll: Poll, name: string) => {
-  if (dataSource === undefined) {
+export const getPollOptionByName = async (
+  pollId?: string,
+  optionName?: string,
+) => {
+  if (
+    dataSource === undefined ||
+    pollId === undefined ||
+    optionName === undefined
+  ) {
     return null;
   }
 
@@ -111,31 +135,39 @@ export const getPollOptionByName = async (poll: Poll, name: string) => {
     return await dataSource.getRepository(PollOption).findOne({
       relations: { poll: true },
       where: {
-        name,
-        poll: { id: poll.id },
+        name: optionName,
+        poll: { id: pollId },
       },
     });
   } catch (error) {
-    logger.error(`Failed obtaining poll option\n${error}`);
+    logger.error(
+      `Failed obtaining poll option by poll ID and option name\n${error}`,
+    );
     return null;
   }
 };
 
-export const getPollOptionById = async (id?: string) => {
-  if (dataSource === undefined || id === undefined) {
+export const getPollOptionById = async (optionId?: string) => {
+  if (dataSource === undefined || optionId === undefined) {
     return null;
   }
 
   try {
-    return await dataSource.getRepository(PollOption).findOneBy({ id });
+    return await dataSource
+      .getRepository(PollOption)
+      .findOneBy({ id: optionId });
   } catch (error) {
-    logger.error(`Failed obtaining poll option\n${error}`);
+    logger.error(`Failed obtaining poll option ID\n${error}`);
     return null;
   }
 };
 
-export const getPollVotesByUser = async (poll: Poll, userId: string) => {
-  if (dataSource === undefined) {
+export const getPollVotesByUser = async (pollId?: string, userId?: string) => {
+  if (
+    dataSource === undefined ||
+    pollId === undefined ||
+    userId === undefined
+  ) {
     return [];
   }
 
@@ -145,44 +177,77 @@ export const getPollVotesByUser = async (poll: Poll, userId: string) => {
         option: true,
       },
       where: {
-        option: { poll: { id: poll.id } },
+        option: { poll: { id: pollId } },
         user: userId,
       },
     });
   } catch (error) {
-    logger.error(`Failed obtaining poll votes\n${error}`);
+    logger.error(
+      `Failed obtaining poll votes by poll ID and user ID\n${error}`,
+    );
     return [];
   }
 };
 
-export const getPollVotes = async (poll: Poll) => {
-  if (dataSource === undefined) {
+export const getPollVotes = async (pollId?: string) => {
+  if (dataSource === undefined || pollId === undefined) {
     return [];
   }
 
   try {
     return await dataSource.getRepository(PollVote).find({
       relations: { option: true },
-      where: { option: { poll: { id: poll.id } } },
+      where: { option: { poll: { id: pollId } } },
     });
   } catch (error) {
-    logger.error(`Failed obtaining poll votes\n${error}`);
+    logger.error(`Failed obtaining poll votes by poll ID\n${error}`);
     return [];
   }
 };
 
-export const getPollVotesByOption = async (option: PollOption) => {
-  if (dataSource === undefined) {
+export const getPollVotesByOption = async (optionId?: string) => {
+  if (dataSource === undefined || optionId === undefined) {
     return [];
   }
 
   try {
     return await dataSource
       .getRepository(PollVote)
-      .findBy({ option: { id: option.id } });
+      .findBy({ option: { id: optionId } });
   } catch (error) {
-    logger.error(`Failed obtaining poll votes\n${error}`);
+    logger.error(`Failed obtaining poll votes by option ID\n${error}`);
     return [];
+  }
+};
+
+export const decidePoll = async (poll: Poll, interaction: Interaction) => {
+  const votes: { [index: string]: number } = {};
+  const totalVoters = await getMembersWithRoles(
+    interaction.guild,
+    ...poll.roles,
+  );
+  const threshold = Math.ceil(totalVoters.length * poll.threshold);
+
+  for (const option of poll.options) {
+    votes[option.name] = (await getPollVotesByOption(option.id)).length;
+  }
+
+  const decision = Object.entries(votes)
+    .sort((a, b) => b[1] - a[1])
+    .find(([, numberVotes]) => numberVotes > threshold);
+
+  if (Object.keys(votes).length === totalVoters.length) {
+    poll.done = true;
+
+    await savePoll(poll);
+    return;
+  }
+
+  if (decision !== undefined) {
+    poll.done = true;
+    poll.decision = decision[0];
+
+    await savePoll(poll);
   }
 };
 
@@ -197,6 +262,7 @@ export const createPoll = async (
   open: boolean,
   options: string[],
   roles: string[],
+  threshold: number,
 ) => {
   if (dataSource === undefined) {
     return null;
@@ -216,6 +282,7 @@ export const createPoll = async (
   });
   poll.roles = roles;
   poll.done = false;
+  poll.threshold = threshold;
 
   try {
     return await dataSource.getRepository(Poll).save(poll);
@@ -252,6 +319,7 @@ export const createVipPoll = async (vipUser: User) => {
   poll.options = [yes, no, abstain];
   poll.roles = [getFromBotConfig('roles').vip];
   poll.done = false;
+  poll.threshold = 0.5;
 
   const savedPoll = await dataSource.getRepository(Poll).save(poll);
 
@@ -268,8 +336,12 @@ export const createVipPoll = async (vipUser: User) => {
   }
 };
 
-export const createPollVote = async (optionId: string, userId: string) => {
-  if (dataSource === undefined) {
+export const createPollVote = async (optionId?: string, userId?: string) => {
+  if (
+    dataSource === undefined ||
+    optionId === undefined ||
+    userId === undefined
+  ) {
     logger.info(1);
     return null;
   }
@@ -292,74 +364,68 @@ export const createPollVote = async (optionId: string, userId: string) => {
   }
 };
 
-// Polls: save
-
-export const savePoll = async (poll: Poll) => {
-  if (dataSource === undefined) {
-    return null;
-  }
-
-  try {
-    return await dataSource.getRepository(Poll).save(poll);
-  } catch (error) {
-    logger.error(`Failed saving poll\n${error}`);
-    return null;
-  }
-};
-
 // Polls: delete
 
-export const deletePoll = async (id: string) => {
-  if (dataSource === undefined) {
+export const deletePoll = async (pollId?: string) => {
+  if (dataSource === undefined || pollId === undefined) {
     return null;
   }
 
   try {
-    return await dataSource.getRepository(Poll).delete({ id });
+    return await dataSource.getRepository(Poll).delete({ id: pollId });
   } catch (error) {
-    logger.error(`Failed deleting poll\n${error}`);
+    logger.error(`Failed deleting poll by poll ID\n${error}`);
     return null;
   }
 };
 
-export const deleteVipPoll = async (id: string) => {
-  if (dataSource === undefined) {
+export const deleteVipPoll = async (pollId?: string) => {
+  if (dataSource === undefined || pollId === undefined) {
     return null;
   }
 
   try {
-    return await dataSource.getRepository(VipPoll).delete({ id });
+    return await dataSource.getRepository(VipPoll).delete({ id: pollId });
   } catch (error) {
-    logger.error(`Failed deleting VIP poll\n${error}`);
+    logger.error(`Failed deleting VIP poll by poll ID\n${error}`);
     return null;
   }
 };
 
-export const deletePollOption = async (poll: Poll, name: string) => {
-  if (dataSource === undefined) {
+export const deletePollOption = async (
+  pollId?: string,
+  optionName?: string,
+) => {
+  if (
+    dataSource === undefined ||
+    pollId === undefined ||
+    optionName === undefined
+  ) {
     return null;
   }
 
   try {
     return await dataSource.getRepository(PollOption).delete({
-      name,
-      poll: { id: poll.id },
+      name: optionName,
+      poll: { id: pollId },
     });
   } catch (error) {
-    logger.error(`Failed deleting poll option\n${error}`);
+    logger.error(
+      `Failed deleting poll option by poll ID and option name\n${error}`,
+    );
     return null;
   }
 };
 
-export const deletePollVote = async (vote?: PollVote) => {
-  if (dataSource === undefined || vote === undefined) {
+export const deletePollVote = async (voteId?: string) => {
+  if (dataSource === undefined || voteId === undefined) {
     return null;
   }
 
   try {
-    return await dataSource.getRepository(PollVote).delete({ id: vote.id });
+    return await dataSource.getRepository(PollVote).delete({ id: voteId });
   } catch (error) {
-    logger.error(`Failed deleting poll vote\n${error}`);
+    logger.error(`Failed deleting poll vote by vote ID\n${error}`);
     return null;
   }
 };
@@ -379,8 +445,8 @@ export const loadReminders = async () => {
   }
 };
 
-export const saveReminder = async (reminder: Reminder) => {
-  if (dataSource === undefined) {
+export const saveReminder = async (reminder?: Reminder) => {
+  if (dataSource === undefined || reminder === undefined) {
     return null;
   }
 

@@ -12,9 +12,9 @@ import {
 declare global {
   type Mode = 'dev' | 'prod';
 
-  type Channels = 'commands' | 'polls' | 'vip';
+  type Channels = 'commands' | 'oath' | 'polls' | 'vip';
 
-  type Roles = 'admin' | 'fss' | 'ombudsman' | 'vip';
+  type Roles = 'admin' | 'fss' | 'ombudsman' | 'vip' | 'vipInvited';
 
   type RoleSets = 'color' | 'courses' | 'notification' | 'program' | 'year';
 

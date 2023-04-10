@@ -24,6 +24,7 @@ export const initializeChannels = () => {
   channels.commands = client.channels.cache.get(channelIds.commands);
   channels.vip = client.channels.cache.get(channelIds.vip);
   channels.polls = client.channels.cache.get(channelIds.polls);
+  channels.oath = client.channels.cache.get(channelIds.oath);
 
   logger.info('Channels initialized');
 };

@@ -68,6 +68,12 @@ export const data = new SlashCommandBuilder()
           .setName('roles')
           .setDescription('Улоги за кои е анкетата (IDs, разделени со запирки)')
           .setRequired(false),
+      )
+      .addNumberOption((option) =>
+        option
+          .setName('threshold')
+          .setDescription('Праг за завршување на анкетата')
+          .setRequired(false),
       ),
   )
   .addSubcommand((command) =>
@@ -177,6 +183,7 @@ const handlePollCreate = async (interaction: ChatInputCommandInteraction) => {
   const roles = (interaction.options.getString('roles')?.trim() ?? '')
     .split(',')
     .filter(Boolean);
+  const threshold = interaction.options.getNumber('threshold') ?? 0.5;
 
   if (options.length === 0) {
     await interaction.editReply('Анкетата мора да има опции.');
@@ -197,6 +204,7 @@ const handlePollCreate = async (interaction: ChatInputCommandInteraction) => {
     open,
     options,
     roles,
+    threshold,
   );
 
   if (poll === null) {
@@ -361,7 +369,7 @@ const handlePollRemove = async (interaction: ChatInputCommandInteraction) => {
   }
 
   for (const option of options) {
-    await deletePollOption(poll, option);
+    await deletePollOption(poll.id, option);
     poll.options = poll.options.filter((opt) => opt.name !== option);
   }
 

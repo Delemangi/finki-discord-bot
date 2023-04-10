@@ -539,29 +539,65 @@ export const getRulesEmbed = () => {
     );
 };
 
-export const getVipScriptEmbed = () => {
+export const getVipRequestEmbed = () => {
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
-    .setTitle('Изјава за големи нешта')
+    .setTitle('Quest')
     .setDescription(
-      getResponses().find((response) => response.command === 'vip')?.response ??
-        '-',
+      getResponses().find((response) => response.command === 'vipRequest')
+        ?.response ?? '-',
     );
 };
 
-export const getVipScriptComponents = () => {
+export const getVipRequestComponents = () => {
   const components = [];
 
   const row = new ActionRowBuilder<ButtonBuilder>();
   row.addComponents(
     new ButtonBuilder()
-      .setCustomId('vip:accept')
+      .setCustomId('vip:request')
+      .setLabel('Start')
+      .setStyle(ButtonStyle.Primary),
+  );
+  components.push(row);
+
+  return components;
+};
+
+export const getVipConfirmEmbed = () => {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Заклетва')
+    .setDescription(
+      getResponses().find((response) => response.command === 'vipConfirm')
+        ?.response ?? '-',
+    );
+};
+
+export const getVipConfirmComponents = () => {
+  const components = [];
+
+  const row = new ActionRowBuilder<ButtonBuilder>();
+  row.addComponents(
+    new ButtonBuilder()
+      .setCustomId('vip:confirm')
       .setLabel('Прифаќам')
       .setStyle(ButtonStyle.Success),
+  );
+  components.push(row);
+
+  return components;
+};
+
+export const getVipAcknowledgeComponents = () => {
+  const components = [];
+
+  const row = new ActionRowBuilder<ButtonBuilder>();
+  row.addComponents(
     new ButtonBuilder()
-      .setCustomId('vip:decline')
-      .setLabel('Одбивам')
-      .setStyle(ButtonStyle.Danger),
+      .setCustomId('vip:acknowledge')
+      .setLabel('Прифаќам')
+      .setStyle(ButtonStyle.Success),
   );
   components.push(row);
 
@@ -1277,12 +1313,13 @@ export const getHelpNextEmbed = (
 // Polls
 
 export const getPollEmbed = async (interaction: Interaction, poll: Poll) => {
-  const votes = (await getPollVotes(poll))?.length ?? 0;
+  const votes = (await getPollVotes(poll.id))?.length ?? 0;
   const voters = await getMembersWithRoles(interaction.guild, ...poll.roles);
   const turnout = `(${((votes / voters.length) * 100).toFixed(2)}%)`;
 
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
+    .setAuthor(poll.done ? { name: 'ГЛАСАЊЕТО Е ЗАВРШЕНО' } : null)
     .setTitle(truncateString(poll.title, 256))
     .setDescription(
       `${italic(truncateString(poll.description, 1_000))}\n${codeBlock(
@@ -1290,7 +1327,7 @@ export const getPollEmbed = async (interaction: Interaction, poll: Poll) => {
           await Promise.all(
             poll.options.map(async (option, index) => {
               const optionVotes =
-                (await getPollVotesByOption(option))?.length ?? 0;
+                (await getPollVotesByOption(option.id))?.length ?? 0;
               const fraction = (optionVotes / votes) * 100;
               const bar =
                 votes === 0
@@ -1307,7 +1344,9 @@ export const getPollEmbed = async (interaction: Interaction, poll: Poll) => {
             }),
           )
         ).join('\n'),
-      )}\nИнформации и подесувања за анкетата:`,
+      )}${
+        poll.done ? `\nРезултат: ${poll.decision}\n` : ''
+      }\nИнформации и подесувања за анкетата:`,
     )
     .addFields(
       {
@@ -1373,14 +1412,7 @@ export const getPollComponents = (poll: Poll) => {
       const button = new ButtonBuilder()
         .setCustomId(`poll:${poll.id}:${poll.options[index2]?.id}`)
         .setLabel(`${truncateString(poll.options[index2]?.name, 80)}`)
-        .setStyle(
-          [
-            ButtonStyle.Primary,
-            ButtonStyle.Secondary,
-            ButtonStyle.Success,
-            ButtonStyle.Danger,
-          ][index2 % 4] as ButtonStyle,
-        );
+        .setStyle(ButtonStyle.Primary);
 
       buttons.push(button);
     }
@@ -1396,7 +1428,7 @@ export const getPollStatsEmbed = async (poll: Poll) => {
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle(poll.title)
-    .setDescription(`Гласови: ${(await getPollVotes(poll))?.length}`)
+    .setDescription(`Гласови: ${(await getPollVotes(poll.id))?.length}`)
     .addFields(
       {
         inline: true,
@@ -1420,7 +1452,7 @@ export const getPollStatsEmbed = async (poll: Poll) => {
             poll.options.map(
               async (option, index) =>
                 `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
-                  (await getPollVotesByOption(option))?.length ?? 0
+                  (await getPollVotesByOption(option.id))?.length ?? 0
                 }`,
             ),
           )

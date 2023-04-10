@@ -19,8 +19,8 @@ import {
   getProgramsComponents,
   getProgramsEmbed,
   getRulesEmbed,
-  getVipScriptComponents,
-  getVipScriptEmbed,
+  getVipRequestComponents,
+  getVipRequestEmbed,
   getYearsComponents,
   getYearsEmbed,
 } from '../utils/embeds.js';
@@ -171,6 +171,7 @@ const handleScriptCourses = async (
         components,
         Number(newlines),
       );
+      await interaction.editReply('Успешно испратено.');
     } catch (error) {
       await interaction.editReply('Испраќањето беше неуспешно.');
       logger.error(`Couldn't send embed\n${error}`);
@@ -189,6 +190,7 @@ const handleScriptCourses = async (
       addComponents,
       Number(newlines),
     );
+    await interaction.editReply('Успешно испратено.');
   } catch (error) {
     await interaction.editReply('Испраќањето беше неуспешно.');
     logger.error(`Couldn't send embed\n${error}`);
@@ -206,6 +208,7 @@ const handleScriptCourses = async (
       removeComponents,
       Number(newlines),
     );
+    await interaction.editReply('Успешно испратено.');
   } catch (error) {
     await interaction.editReply('Испраќањето беше неуспешно.');
     logger.error(`Couldn't send embed\n${error}`);
@@ -230,6 +233,7 @@ const handleScriptColors = async (interaction: ChatInputCommandInteraction) => {
       components,
       Number(newlines),
     );
+    await interaction.editReply('Успешно испратено.');
   } catch (error) {
     await interaction.editReply('Испраќањето беше неуспешно.');
     logger.error(`Couldn't send embed\n${error}`);
@@ -255,6 +259,7 @@ const handleScriptNotifications = async (
       components,
       Number(newlines),
     );
+    await interaction.editReply('Успешно испратено.');
   } catch (error) {
     await interaction.editReply('Испраќањето беше неуспешно.');
     logger.error(`Couldn't send embed\n${error}`);
@@ -280,6 +285,7 @@ const handleScriptPrograms = async (
       components,
       Number(newlines),
     );
+    await interaction.editReply('Успешно испратено.');
   } catch (error) {
     await interaction.editReply('Испраќањето беше неуспешно.');
     logger.error(`Couldn't send embed\n${error}`);
@@ -303,6 +309,7 @@ const handleScriptYears = async (interaction: ChatInputCommandInteraction) => {
       [components],
       Number(newlines),
     );
+    await interaction.editReply('Успешно испратено.');
   } catch (error) {
     await interaction.editReply('Испраќањето беше неуспешно.');
     logger.error(`Couldn't send embed\n${error}`);
@@ -342,6 +349,7 @@ const handleScriptRules = async (interaction: ChatInputCommandInteraction) => {
     await (channel as GuildTextBasedChannel).send({
       embeds: [embed],
     });
+    await interaction.editReply('Успешно испратено.');
   } catch (error) {
     await interaction.editReply('Испраќањето беше неуспешно.');
     logger.error(`Couldn't send embed\n${error}`);
@@ -355,13 +363,14 @@ const handleScriptVip = async (interaction: ChatInputCommandInteraction) => {
     await interaction.editReply('Само текст канали се дозволени.');
   }
 
-  const embed = getVipScriptEmbed();
-  const components = getVipScriptComponents();
+  const embed = getVipRequestEmbed();
+  const components = getVipRequestComponents();
   try {
     await (channel as GuildTextBasedChannel).send({
       components,
       embeds: [embed],
     });
+    await interaction.editReply('Успешно испратено.');
   } catch (error) {
     await interaction.editReply('Испраќањето беше неуспешно.');
     logger.error(`Couldn't send embed\n${error}`);

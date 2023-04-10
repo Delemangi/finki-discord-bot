@@ -1,6 +1,9 @@
 import { client } from '../utils/client.js';
 import { getToken } from '../utils/config.js';
-import { getVipScriptComponents, getVipScriptEmbed } from '../utils/embeds.js';
+import {
+  getVipRequestComponents,
+  getVipRequestEmbed,
+} from '../utils/embeds.js';
 import { logger } from '../utils/logger.js';
 
 const channelId = process.argv[2];
@@ -20,8 +23,8 @@ client.once('ready', async () => {
     throw new Error('The provided channel must be a guild text channel');
   }
 
-  const embed = getVipScriptEmbed();
-  const components = getVipScriptComponents();
+  const embed = getVipRequestEmbed();
+  const components = getVipRequestComponents();
   try {
     await channel.send({
       components,

@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from 'node:fs';
 const defaultConfig: Required<BotConfig> = {
   channels: {
     commands: '',
+    oath: '',
     polls: '',
     vip: '',
   },
@@ -27,6 +28,7 @@ const defaultConfig: Required<BotConfig> = {
     fss: '',
     ombudsman: '',
     vip: '',
+    vipInvited: '',
   },
 };
 
