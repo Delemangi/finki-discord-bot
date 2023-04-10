@@ -23,7 +23,9 @@ const defaultConfig: Required<BotConfig> = {
     },
   },
   roles: {
-    admins: '',
+    admin: '',
+    fss: '',
+    ombudsman: '',
     vip: '',
   },
 };
