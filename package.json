@@ -4,7 +4,7 @@
     "url": "https://github.com/Delemangi/finki-discord-bot/issues"
   },
   "dependencies": {
-    "chrono-node": "^2.6.2",
+    "chrono-node": "^2.6.3",
     "discord-api-types": "^0.37.37",
     "discord.js": "^14.9.0",
     "dotenv": "^16.0.3",
@@ -12,14 +12,14 @@
     "pg": "^8.10.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^4.4.1",
-    "typeorm": "^0.3.13",
+    "typeorm": "^0.3.14",
     "winston": "^3.8.2"
   },
   "description": "FINKI Discord bot",
   "devDependencies": {
     "@types/jsdom": "^21.1.1",
-    "@types/node": "^18.15.0",
-    "eslint": "^8.37.0",
+    "@types/node": "^18.15.11",
+    "eslint": "^8.38.0",
     "eslint-config-canonical": "^41.0.1",
     "typescript": "^5.0.4"
   },
