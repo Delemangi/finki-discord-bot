@@ -1048,6 +1048,14 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
     fssMembers.push(user);
   }
 
+  const ombudsmanRole = getRole('ombudsman');
+  const ombudsmanMembers = [];
+
+  for (const member of ombudsmanRole?.members.values() ?? []) {
+    const user = await interaction.guild?.members.fetch(member.user.id);
+    ombudsmanMembers.push(user);
+  }
+
   return [
     new EmbedBuilder().setColor(getFromBotConfig('color')).setTitle('Состав'),
     new EmbedBuilder()
@@ -1077,6 +1085,16 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
         fssMembers.length === 0
           ? 'Нема членови на ФСС.'
           : fssMembers
+              .map((member) => userMention(member?.user.id as string))
+              .join('\n'),
+      ),
+    new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
+      .setTitle(`Правобранител: ${ombudsmanMembers.length}`)
+      .setDescription(
+        ombudsmanMembers.length === 0
+          ? 'Нема членови на Правобранител.'
+          : ombudsmanMembers
               .map((member) => userMention(member?.user.id as string))
               .join('\n'),
       )
