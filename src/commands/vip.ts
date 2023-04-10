@@ -21,14 +21,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (
-    !interaction.channel.parent?.name.includes('ВИП') &&
-    !interaction.channel.parent?.name.includes('VIP')
-  ) {
-    await interaction.editReply('Оваа команда е само за во ВИП.');
-    return;
-  }
-
   const embeds = await getVipEmbed(interaction);
   await interaction.editReply({ embeds });
 };
