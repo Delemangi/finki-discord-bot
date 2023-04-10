@@ -221,6 +221,10 @@ export const getPollVotesByOption = async (optionId?: string) => {
 };
 
 export const decidePoll = async (poll: Poll, interaction: Interaction) => {
+  if (poll.roles.length === 0) {
+    return;
+  }
+
   const votes: { [index: string]: number } = {};
   const totalVoters = await getMembersWithRoles(
     interaction.guild,
