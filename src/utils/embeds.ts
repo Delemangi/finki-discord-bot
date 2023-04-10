@@ -17,7 +17,7 @@ import {
 import { getPollVotes, getPollVotesByOption } from './database.js';
 import { commandMention } from './functions.js';
 import { logger } from './logger.js';
-import { getMembersWithRoles, getRoleFromSet } from './roles.js';
+import { getMembersWithRoles, getRole, getRoleFromSet } from './roles.js';
 import { commands, programMapping, quizHelp } from './strings.js';
 import {
   ActionRowBuilder,
@@ -1024,9 +1024,7 @@ export const getStudentInfoEmbed = (member: GuildMember | null | undefined) => {
 export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
   await interaction.guild?.members.fetch();
 
-  const vipRole = interaction.guild?.roles.cache.find(
-    (role) => role.name === 'ВИП' || role.name === 'VIP',
-  );
+  const vipRole = getRole('vip');
   const vipMembers = [];
 
   for (const member of vipRole?.members.values() ?? []) {
@@ -1034,9 +1032,7 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
     vipMembers.push(user);
   }
 
-  const adminRole = interaction.guild?.roles.cache.find(
-    (role) => role.name === 'Админ тим' || role.name === 'Admin team',
-  );
+  const adminRole = getRole('admin');
   const adminMembers = [];
 
   for (const member of adminRole?.members.values() ?? []) {
@@ -1044,9 +1040,7 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
     adminMembers.push(user);
   }
 
-  const fssRole = interaction.guild?.roles.cache.find(
-    (role) => role.name.includes('ФСС') || role.name.includes('FSS'),
-  );
+  const fssRole = getRole('fss');
   const fssMembers = [];
 
   for (const member of fssRole?.members.values() ?? []) {

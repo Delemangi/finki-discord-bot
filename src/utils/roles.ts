@@ -22,7 +22,8 @@ export const initializeRoles = () => {
   }
 
   roles.vip = guild.roles.cache.get(roleIds.vip);
-  roles.admins = guild.roles.cache.get(roleIds.admins);
+  roles.admin = guild.roles.cache.get(roleIds.admin);
+  roles.fss = guild.roles.cache.get(roleIds.fss);
 
   logger.info('Roles initialized');
 };
