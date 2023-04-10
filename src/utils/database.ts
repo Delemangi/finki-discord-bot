@@ -220,6 +220,24 @@ export const getPollVotesByOption = async (optionId?: string) => {
   }
 };
 
+export const getMostPopularPollOption = async (poll: Poll) => {
+  if (poll.roles.length === 0) {
+    return null;
+  }
+
+  const votes: { [index: string]: number } = {};
+
+  for (const option of poll.options) {
+    votes[option.name] = (await getPollVotesByOption(option.id)).length;
+  }
+
+  const decision = Object.entries(votes).sort((a, b) => b[1] - a[1])[0];
+
+  return decision === undefined ? null : decision[0];
+};
+
+// Polls: decide
+
 export const decidePoll = async (poll: Poll, interaction: Interaction) => {
   if (poll.roles.length === 0) {
     return;

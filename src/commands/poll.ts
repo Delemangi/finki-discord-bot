@@ -3,6 +3,7 @@ import {
   createPoll,
   deletePoll,
   deletePollOption,
+  getMostPopularPollOption,
   getPoll,
   savePoll,
 } from '../utils/database.js';
@@ -458,6 +459,12 @@ const handlePollClose = async (interaction: ChatInputCommandInteraction) => {
   }
 
   poll.done = true;
+
+  const decision = await getMostPopularPollOption(poll);
+  if (decision !== null) {
+    poll.decision = decision;
+  }
+
   await savePoll(poll);
 
   await interaction.editReply(
