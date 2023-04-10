@@ -732,7 +732,8 @@ const handleVipButton = async (
   if (
     member.permissions.has(PermissionsBitField.Flags.Administrator) ||
     member.roles.cache.has(getRole('vip')?.id ?? '') ||
-    member.roles.cache.has(getRole('admins')?.id ?? '')
+    member.roles.cache.has(getRole('admin')?.id ?? '') ||
+    member.roles.cache.has(getRole('ombudsman')?.id ?? '')
   ) {
     const message = await interaction.reply({
       content: 'Веќе сте член на ВИП.',
