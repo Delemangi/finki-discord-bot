@@ -1248,7 +1248,7 @@ export const getHelpFirstPageEmbed = (
     .setTimestamp();
 };
 
-export const getHelpNextEmbed = (
+export const getHelpNextPageEmbed = (
   member: GuildMember | null,
   page: number,
   commandsPerPage: number = 8,
@@ -1498,6 +1498,150 @@ export const getPollStatsButtonEmbed = async (
         .setDescription(`Никој не гласал за ${inlineCode(option)}`)
         .setTimestamp()
         .setFooter({ text: `Анкета: ${id}` });
+};
+
+export const getPollListFirstPageEmbed = async (
+  polls: Poll[],
+  all: boolean = false,
+  pollsPerPage: number = 8,
+) => {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Анкети')
+    .setDescription(`Ова се сите ${all ? '' : 'активни'} анкети.`)
+    .addFields(
+      ...polls.slice(0, pollsPerPage).map((poll) => ({
+        name: all && !poll.done ? `${poll.title} (затворена)` : poll.title,
+        value: poll.id,
+      })),
+    )
+    .setFooter({
+      text: `Страна: 1 / ${Math.ceil(
+        polls.length / pollsPerPage,
+      )}  •  Анкети: ${polls.length}`,
+    })
+    .setTimestamp();
+};
+
+export const getPollListNextPageEmbed = (
+  polls: Poll[],
+  page: number,
+  all: boolean = false,
+  pollsPerPage: number = 8,
+) => {
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Анкети')
+    .setDescription(`Ова се сите ${all ? '' : 'активни'} анкети.`)
+    .addFields(
+      ...polls
+        .slice(pollsPerPage * page, pollsPerPage * (page + 1))
+        .map((poll) => ({
+          name: all && !poll.done ? `${poll.title} (затворена)` : poll.title,
+          value: poll.id,
+        })),
+    )
+    .setFooter({
+      text: `Страна: ${page + 1} / ${Math.ceil(
+        polls.length / pollsPerPage,
+      )}  •  Анкети: ${polls.length}`,
+    })
+    .setTimestamp();
+};
+
+// Pagination
+
+export const getPaginationComponents = (
+  name: string,
+  position: 'end' | 'middle' | 'none' | 'start' = 'none',
+) => {
+  if (position === 'none') {
+    return new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
+        .setCustomId(`${name}:first`)
+        .setEmoji('⏪')
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(true),
+      new ButtonBuilder()
+        .setCustomId(`${name}:previous`)
+        .setEmoji('⬅️')
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(true),
+      new ButtonBuilder()
+        .setCustomId(`${name}:next`)
+        .setEmoji('➡️')
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(true),
+      new ButtonBuilder()
+        .setCustomId(`${name}:last`)
+        .setEmoji('⏩')
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(true),
+    );
+  }
+
+  if (position === 'start') {
+    return new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
+        .setCustomId(`${name}:first`)
+        .setEmoji('⏪')
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(true),
+      new ButtonBuilder()
+        .setCustomId(`${name}:previous`)
+        .setEmoji('⬅️')
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(true),
+      new ButtonBuilder()
+        .setCustomId(`${name}:next`)
+        .setEmoji('➡️')
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
+        .setCustomId(`${name}:last`)
+        .setEmoji('⏩')
+        .setStyle(ButtonStyle.Primary),
+    );
+  } else if (position === 'middle') {
+    return new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
+        .setCustomId(`${name}:first`)
+        .setEmoji('⏪')
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
+        .setCustomId(`${name}:previous`)
+        .setEmoji('⬅️')
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
+        .setCustomId(`${name}:next`)
+        .setEmoji('➡️')
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
+        .setCustomId(`${name}:last`)
+        .setEmoji('⏩')
+        .setStyle(ButtonStyle.Primary),
+    );
+  } else {
+    return new ActionRowBuilder<ButtonBuilder>().addComponents(
+      new ButtonBuilder()
+        .setCustomId(`${name}:first`)
+        .setEmoji('⏪')
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
+        .setCustomId(`${name}:previous`)
+        .setEmoji('⬅️')
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
+        .setCustomId(`${name}:next`)
+        .setEmoji('➡️')
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(true),
+      new ButtonBuilder()
+        .setCustomId(`${name}:last`)
+        .setEmoji('⏩')
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(true),
+    );
+  }
 };
 
 // Quiz

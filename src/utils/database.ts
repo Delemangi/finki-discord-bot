@@ -78,6 +78,21 @@ export const savePoll = async (poll: Poll) => {
 
 // Polls: get
 
+export const getAllPolls = async () => {
+  if (dataSource === undefined) {
+    return [];
+  }
+
+  try {
+    return await dataSource.getRepository(Poll).find({
+      relations: { options: true },
+    });
+  } catch (error) {
+    logger.error(`Failed obtaining all polls\n${error}`);
+    return [];
+  }
+};
+
 export const getPollById = async (pollId?: string) => {
   if (dataSource === undefined || pollId === undefined) {
     return null;

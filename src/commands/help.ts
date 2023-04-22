@@ -3,14 +3,12 @@ import { client } from '../utils/client.js';
 import {
   getCommandsWithPermission,
   getHelpFirstPageEmbed,
-  getHelpNextEmbed,
+  getHelpNextPageEmbed,
+  getPaginationComponents,
 } from '../utils/embeds.js';
 import { logger } from '../utils/logger.js';
 import { commands } from '../utils/strings.js';
 import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
   type ChatInputCommandInteraction,
   ComponentType,
   type GuildMember,
@@ -18,86 +16,6 @@ import {
 } from 'discord.js';
 
 const name = 'help';
-const middleButtons = new ActionRowBuilder<ButtonBuilder>().addComponents(
-  new ButtonBuilder()
-    .setCustomId('help:first')
-    .setEmoji('⏪')
-    .setStyle(ButtonStyle.Primary),
-  new ButtonBuilder()
-    .setCustomId('help:previous')
-    .setEmoji('⬅️')
-    .setStyle(ButtonStyle.Primary),
-  new ButtonBuilder()
-    .setCustomId('help:next')
-    .setEmoji('➡️')
-    .setStyle(ButtonStyle.Primary),
-  new ButtonBuilder()
-    .setCustomId('help:last')
-    .setEmoji('⏩')
-    .setStyle(ButtonStyle.Primary),
-);
-const startButtons = new ActionRowBuilder<ButtonBuilder>().addComponents(
-  new ButtonBuilder()
-    .setCustomId('help:first')
-    .setEmoji('⏪')
-    .setStyle(ButtonStyle.Primary)
-    .setDisabled(true),
-  new ButtonBuilder()
-    .setCustomId('help:previous')
-    .setEmoji('⬅️')
-    .setStyle(ButtonStyle.Primary)
-    .setDisabled(true),
-  new ButtonBuilder()
-    .setCustomId('help:next')
-    .setEmoji('➡️')
-    .setStyle(ButtonStyle.Primary),
-  new ButtonBuilder()
-    .setCustomId('help:last')
-    .setEmoji('⏩')
-    .setStyle(ButtonStyle.Primary),
-);
-const endButtons = new ActionRowBuilder<ButtonBuilder>().addComponents(
-  new ButtonBuilder()
-    .setCustomId('help:first')
-    .setEmoji('⏪')
-    .setStyle(ButtonStyle.Primary),
-  new ButtonBuilder()
-    .setCustomId('help:previous')
-    .setEmoji('⬅️')
-    .setStyle(ButtonStyle.Primary),
-  new ButtonBuilder()
-    .setCustomId('help:next')
-    .setEmoji('➡️')
-    .setStyle(ButtonStyle.Primary)
-    .setDisabled(true),
-  new ButtonBuilder()
-    .setCustomId('help:last')
-    .setEmoji('⏩')
-    .setStyle(ButtonStyle.Primary)
-    .setDisabled(true),
-);
-const disabledButtons = new ActionRowBuilder<ButtonBuilder>().addComponents(
-  new ButtonBuilder()
-    .setCustomId('help:first')
-    .setEmoji('⏪')
-    .setStyle(ButtonStyle.Primary)
-    .setDisabled(true),
-  new ButtonBuilder()
-    .setCustomId('help:previous')
-    .setEmoji('⬅️')
-    .setStyle(ButtonStyle.Primary)
-    .setDisabled(true),
-  new ButtonBuilder()
-    .setCustomId('help:next')
-    .setEmoji('➡️')
-    .setStyle(ButtonStyle.Primary)
-    .setDisabled(true),
-  new ButtonBuilder()
-    .setCustomId('help:last')
-    .setEmoji('⏩')
-    .setStyle(ButtonStyle.Primary)
-    .setDisabled(true),
-);
 
 export const data = new SlashCommandBuilder()
   .setName(name)
@@ -115,8 +33,9 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     interaction.member as GuildMember | null,
     commandsPerPage,
   );
+  const components = [getPaginationComponents('help', 'start')];
   const message = await interaction.editReply({
-    components: [startButtons],
+    components,
     embeds: [embed],
   });
   const collector = message.createMessageComponentCollector({
@@ -160,14 +79,14 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     }
 
     if (page === 0) {
-      buttons = startButtons;
+      buttons = getPaginationComponents('help', 'start');
     } else if (page === pages - 1) {
-      buttons = endButtons;
+      buttons = getPaginationComponents('help', 'end');
     } else {
-      buttons = middleButtons;
+      buttons = getPaginationComponents('help', 'middle');
     }
 
-    const nextEmbed = getHelpNextEmbed(
+    const nextEmbed = getHelpNextPageEmbed(
       interaction.member as GuildMember | null,
       page,
       commandsPerPage,
@@ -186,7 +105,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   collector.on('end', async () => {
     try {
       await interaction.editReply({
-        components: [disabledButtons],
+        components: [getPaginationComponents('help')],
       });
     } catch (error) {
       logger.error(`Failed to end help command\n${error}`);

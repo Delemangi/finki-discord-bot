@@ -1,22 +1,29 @@
 import { PollOption } from '../entities/PollOption.js';
+import { deleteResponse } from '../utils/channels.js';
 import {
   createPoll,
   deletePoll,
   deletePollOption,
+  getAllPolls,
   getMostPopularPollOption,
   getPollById,
   savePoll,
 } from '../utils/database.js';
 import {
+  getPaginationComponents,
   getPollComponents,
   getPollEmbed,
+  getPollListFirstPageEmbed,
+  getPollListNextPageEmbed,
   getPollStatsComponents,
   getPollStatsEmbed,
 } from '../utils/embeds.js';
 import { commandMention } from '../utils/functions.js';
+import { logger } from '../utils/logger.js';
 import { commands, errors } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
+  ComponentType,
   PermissionsBitField,
   SlashCommandBuilder,
 } from 'discord.js';
@@ -163,6 +170,17 @@ export const data = new SlashCommandBuilder()
       .setDescription(commands['poll close'])
       .addStringOption((option) =>
         option.setName('id').setDescription('Анкета').setRequired(true),
+      ),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName('list')
+      .setDescription(commands['poll list'])
+      .addBooleanOption((option) =>
+        option
+          .setName('all')
+          .setDescription('Дали да се листаат сите анкети?')
+          .setRequired(false),
       ),
   );
 
@@ -472,12 +490,99 @@ const handlePollClose = async (interaction: ChatInputCommandInteraction) => {
   );
 };
 
+const handlePollList = async (interaction: ChatInputCommandInteraction) => {
+  const all = interaction.options.getBoolean('all') ?? false;
+
+  const polls = all
+    ? await getAllPolls()
+    : (await getAllPolls()).filter((poll) => !poll.done);
+
+  const embed = await getPollListFirstPageEmbed(polls, all);
+  const components = [getPaginationComponents('polls', 'start')];
+  const message = await interaction.editReply({
+    components,
+    embeds: [embed],
+  });
+  const collector = message.createMessageComponentCollector({
+    componentType: ComponentType.Button,
+    time: 30_000,
+  });
+  const pollsPerPage = 8;
+  const pages = Math.ceil(polls.length / pollsPerPage);
+
+  collector.on('collect', async (buttonInteraction) => {
+    if (
+      buttonInteraction.user.id !==
+      buttonInteraction.message.interaction?.user.id
+    ) {
+      const mess = await buttonInteraction.reply({
+        content: 'Ова не е ваша команда.',
+        ephemeral: true,
+      });
+      deleteResponse(mess);
+      return;
+    }
+
+    const id = buttonInteraction.customId.split('-')[1];
+
+    if (id === 'undefined') {
+      return;
+    }
+
+    let buttons;
+    let page =
+      Number(
+        buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.[0],
+      ) - 1;
+
+    if (id === 'first') {
+      page = 0;
+    } else if (id === 'last') {
+      page = pages - 1;
+    } else if (id === 'previous') {
+      page--;
+    } else if (id === 'next') {
+      page++;
+    }
+
+    if (page === 0) {
+      buttons = getPaginationComponents('polls', 'start');
+    } else if (page === pages - 1) {
+      buttons = getPaginationComponents('polls', 'end');
+    } else {
+      buttons = getPaginationComponents('polls', 'middle');
+    }
+
+    const nextEmbed = getPollListNextPageEmbed(polls, page, all);
+
+    try {
+      await buttonInteraction.update({
+        components: [buttons],
+        embeds: [nextEmbed],
+      });
+    } catch (error) {
+      logger.error(`Failed to update poll list command\n${error}`);
+    }
+  });
+
+  collector.on('end', async () => {
+    try {
+      await message.edit({
+        components: [getPaginationComponents('polls')],
+      });
+    } catch (error) {
+      logger.error(`Failed to update poll list command\n${error}`);
+    }
+  });
+};
+
 const pollHandlers = {
   add: handlePollAdd,
   close: handlePollClose,
   create: handlePollCreate,
   delete: handlePollDelete,
   edit: handlePollEdit,
+  list: handlePollList,
   open: handlePollOpen,
   remove: handlePollRemove,
   show: handlePollShow,
