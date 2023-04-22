@@ -1396,7 +1396,8 @@ export const getPollComponents = (poll: Poll) => {
       const button = new ButtonBuilder()
         .setCustomId(`poll:${poll.id}:${poll.options[index2]?.id}`)
         .setLabel(`${truncateString(poll.options[index2]?.name, 80)}`)
-        .setStyle(ButtonStyle.Primary);
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(poll.done);
 
       buttons.push(button);
     }

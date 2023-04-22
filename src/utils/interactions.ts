@@ -526,11 +526,12 @@ const handlePollButton = async (
   let replyMessage;
 
   if (poll.done) {
-    const mess = await interaction.reply({
-      content: 'Анкетата е затворена.',
-      ephemeral: true,
+    const pollEmbed = await getPollEmbed(interaction, poll);
+    const pollComponents = getPollComponents(poll);
+    await interaction.update({
+      components: pollComponents,
+      embeds: [pollEmbed],
     });
-    deleteResponse(mess);
     return;
   }
 
