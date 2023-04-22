@@ -7,4 +7,7 @@ export class VipPoll {
 
   @Column('text', { nullable: false })
   public user!: string;
+
+  @Column('text', { nullable: false })
+  public type!: string;
 }

@@ -57,7 +57,10 @@ export const commands = {
   'statistics server': 'Статистика за серверот',
   'statistics year': 'Статистика за улогите за години',
   timetable: 'Распоред на часови',
-  vip: 'Моментален состав на ВИП',
+  'vip add': 'Предложете нов член за ВИП',
+  'vip members': 'Моментален состав на ВИП',
+  'vip override': 'Одлучи за ВИП анкета',
+  'vip remove': 'Покренете гласање за недоверба против член на ВИП',
 };
 
 export const programMapping: { [index in ProgramKeys]: ProgramValues } = {

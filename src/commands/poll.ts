@@ -4,7 +4,7 @@ import {
   deletePoll,
   deletePollOption,
   getMostPopularPollOption,
-  getPoll,
+  getPollById,
   savePoll,
 } from '../utils/database.js';
 import {
@@ -235,7 +235,7 @@ const handlePollEdit = async (interaction: ChatInputCommandInteraction) => {
 
   const changed = [];
 
-  const poll = await getPoll(id);
+  const poll = await getPollById(id);
 
   if (poll === null) {
     await interaction.editReply(errors.pollNotFound);
@@ -268,7 +268,7 @@ const handlePollEdit = async (interaction: ChatInputCommandInteraction) => {
 
 const handlePollStats = async (interaction: ChatInputCommandInteraction) => {
   const id = interaction.options.getString('id', true).trim();
-  const poll = await getPoll(id);
+  const poll = await getPollById(id);
 
   if (poll === null) {
     await interaction.editReply(errors.pollNotFound);
@@ -290,7 +290,7 @@ const handlePollStats = async (interaction: ChatInputCommandInteraction) => {
 
 const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
   const id = interaction.options.getString('id', true).trim();
-  const poll = await getPoll(id);
+  const poll = await getPollById(id);
 
   if (poll === null) {
     await interaction.editReply(errors.pollNotFound);
@@ -313,7 +313,7 @@ const handlePollAdd = async (interaction: ChatInputCommandInteraction) => {
     .split(',')
     .filter(Boolean)
     .map((option) => option.trim());
-  const poll = await getPoll(id);
+  const poll = await getPollById(id);
 
   if (poll === null) {
     await interaction.editReply(errors.pollNotFound);
@@ -357,7 +357,7 @@ const handlePollRemove = async (interaction: ChatInputCommandInteraction) => {
     .split(',')
     .filter(Boolean)
     .map((option) => option.trim());
-  const poll = await getPoll(id);
+  const poll = await getPollById(id);
 
   if (poll === null) {
     await interaction.editReply(errors.pollNotFound);
@@ -391,7 +391,7 @@ const handlePollRemove = async (interaction: ChatInputCommandInteraction) => {
 
 const handlePollDelete = async (interaction: ChatInputCommandInteraction) => {
   const id = interaction.options.getString('id', true).trim();
-  const poll = await getPoll(id);
+  const poll = await getPollById(id);
 
   if (poll === null) {
     await interaction.reply(errors.pollNotFound);
@@ -416,7 +416,7 @@ const handlePollDelete = async (interaction: ChatInputCommandInteraction) => {
 
 const handlePollOpen = async (interaction: ChatInputCommandInteraction) => {
   const id = interaction.options.getString('id', true).trim();
-  const poll = await getPoll(id);
+  const poll = await getPollById(id);
 
   if (poll === null) {
     await interaction.editReply(errors.pollNotFound);
@@ -441,7 +441,7 @@ const handlePollOpen = async (interaction: ChatInputCommandInteraction) => {
 
 const handlePollClose = async (interaction: ChatInputCommandInteraction) => {
   const id = interaction.options.getString('id', true).trim();
-  const poll = await getPoll(id);
+  const poll = await getPollById(id);
 
   if (poll === null) {
     await interaction.editReply(errors.pollNotFound);

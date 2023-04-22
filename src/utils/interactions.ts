@@ -1,4 +1,5 @@
 import { type Poll } from '../entities/Poll.js';
+import { type VipPoll } from '../entities/VipPoll.js';
 import { deleteResponse, getChannel, log } from './channels.js';
 import { getCommand } from './commands.js';
 import {
@@ -17,13 +18,13 @@ import {
   decidePoll,
   deletePollVote,
   deleteVipPoll,
-  getPoll,
+  getPollById,
   getPollOptionById,
   getPollOptionByName,
   getPollVotesByOption,
   getPollVotesByUser,
   getVipPollById,
-  getVipPollByUser,
+  getVipPollByUserAndType,
 } from './database.js';
 import {
   getAutocompleteEmbed,
@@ -387,12 +388,7 @@ const handleRemoveCoursesButton = async (
   }
 };
 
-const handlePollButtonForVipVote = async (poll: Poll) => {
-  if (!poll.done) {
-    return;
-  }
-
-  const vipPoll = await getVipPollById(poll.id);
+const handlePollButtonForVipAddVote = async (poll: Poll, vipPoll: VipPoll) => {
   const vipChannel = getChannel('vip');
   const oathChannel = getChannel('oath');
 
@@ -445,6 +441,57 @@ const handlePollButtonForVipVote = async (poll: Poll) => {
   }
 };
 
+const handlePollButtonForVipRemoveVote = async (
+  poll: Poll,
+  vipPoll: VipPoll,
+  member: GuildMember,
+) => {
+  const vipChannel = getChannel('vip');
+
+  if (poll.decision === 'Да') {
+    if (vipChannel?.isTextBased()) {
+      await vipChannel.send(
+        `Изгласана е недоверба против членот на ВИП ${userMention(
+          vipPoll.user,
+        )}.`,
+      );
+    }
+
+    if (vipPoll !== null) {
+      await deleteVipPoll(vipPoll.id);
+    }
+
+    const vipRole = getRole('vip');
+
+    if (vipRole !== undefined) {
+      await member.roles.remove(vipRole);
+    }
+  } else if (vipChannel?.isTextBased()) {
+    await vipChannel.send(
+      `Не е изгласана недоверба против членот на ВИП ${userMention(
+        vipPoll.user,
+      )}.`,
+    );
+  }
+};
+
+export const handlePollButtonForVipVote = async (
+  poll: Poll,
+  member: GuildMember,
+) => {
+  if (!poll.done) {
+    return;
+  }
+
+  const vipPoll = await getVipPollById(poll.id);
+
+  if (vipPoll?.type === 'add') {
+    await handlePollButtonForVipAddVote(poll, vipPoll);
+  } else if (vipPoll?.type === 'remove') {
+    await handlePollButtonForVipRemoveVote(poll, vipPoll, member);
+  }
+};
+
 const handlePollButton = async (
   interaction: ButtonInteraction,
   args: string[],
@@ -458,7 +505,7 @@ const handlePollButton = async (
 
   const pollId = args[0]?.toString();
   const optionId = args[1]?.toString();
-  const poll = await getPoll(pollId);
+  const poll = await getPollById(pollId);
   const option = await getPollOptionById(optionId);
 
   if (
@@ -561,7 +608,8 @@ const handlePollButton = async (
 
   const vipPoll = await getVipPollById(poll.id);
   if (vipPoll !== null) {
-    await handlePollButtonForVipVote(poll);
+    const member = await interaction.guild.members.fetch(vipPoll.user);
+    await handlePollButtonForVipVote(poll, member);
   }
 };
 
@@ -578,7 +626,7 @@ const handlePollStatsButton = async (
 
   const id = args[0]?.toString();
   const option = args[1]?.toString();
-  const poll = await getPoll(id);
+  const poll = await getPollById(id);
 
   if (poll === null || id === undefined || option === undefined) {
     logger.warn(
@@ -760,9 +808,7 @@ const handleVipButton = async (
   if (
     member.permissions.has(PermissionsBitField.Flags.Administrator) ||
     member.roles.cache.has(getRole('vip')?.id ?? '') ||
-    member.roles.cache.has(getRole('admin')?.id ?? '') ||
-    member.roles.cache.has(getRole('fss')?.id ?? '') ||
-    member.roles.cache.has(getRole('ombudsman')?.id ?? '')
+    member.roles.cache.has(getRole('admin')?.id ?? '')
   ) {
     const message = await interaction.reply({
       content: 'Веќе сте член на ВИП.',
@@ -832,7 +878,10 @@ const handleVipButton = async (
     return;
   }
 
-  const existingPoll = await getVipPollByUser(interaction.user.id);
+  const existingPoll = await getVipPollByUserAndType(
+    interaction.user.id,
+    'add',
+  );
   if (existingPoll !== null) {
     const message = await interaction.reply({
       content: 'Веќе имате активна молба за ВИП.',
@@ -842,7 +891,7 @@ const handleVipButton = async (
     return;
   }
 
-  const poll = await createVipPoll(interaction.user);
+  const poll = await createVipPoll(interaction.user, 'add');
   const channel = getChannel('polls');
 
   if (channel?.isTextBased() && poll !== null) {

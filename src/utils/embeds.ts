@@ -1080,22 +1080,6 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
     adminMembers.push(user);
   }
 
-  const fssRole = getRole('fss');
-  const fssMembers = [];
-
-  for (const member of fssRole?.members.values() ?? []) {
-    const user = await interaction.guild?.members.fetch(member.user.id);
-    fssMembers.push(user);
-  }
-
-  const ombudsmanRole = getRole('ombudsman');
-  const ombudsmanMembers = [];
-
-  for (const member of ombudsmanRole?.members.values() ?? []) {
-    const user = await interaction.guild?.members.fetch(member.user.id);
-    ombudsmanMembers.push(user);
-  }
-
   return [
     new EmbedBuilder().setColor(getFromBotConfig('color')).setTitle('Состав'),
     new EmbedBuilder()
@@ -1115,26 +1099,6 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
         adminMembers.length === 0
           ? 'Нема администратори.'
           : adminMembers
-              .map((member) => userMention(member?.user.id as string))
-              .join('\n'),
-      ),
-    new EmbedBuilder()
-      .setColor(getFromBotConfig('color'))
-      .setTitle(`ФСС: ${fssMembers.length}`)
-      .setDescription(
-        fssMembers.length === 0
-          ? 'Нема членови на ФСС.'
-          : fssMembers
-              .map((member) => userMention(member?.user.id as string))
-              .join('\n'),
-      ),
-    new EmbedBuilder()
-      .setColor(getFromBotConfig('color'))
-      .setTitle(`Правобранител: ${ombudsmanMembers.length}`)
-      .setDescription(
-        ombudsmanMembers.length === 0
-          ? 'Нема членови на Правобранител.'
-          : ombudsmanMembers
               .map((member) => userMention(member?.user.id as string))
               .join('\n'),
       )
@@ -1350,9 +1314,9 @@ export const getPollEmbed = async (interaction: Interaction, poll: Poll) => {
         ).join('\n'),
       )}${
         poll.done
-          ? `\nРезултат: ${
-              poll.decision ?? (await getMostPopularPollOption(poll)) ?? '-'
-            }\n`
+          ? `\nРезултат: ${inlineCode(
+              poll.decision ?? (await getMostPopularPollOption(poll)) ?? '-',
+            )}\n`
           : ''
       }\nИнформации и подесувања за анкетата:`,
     )
@@ -1394,11 +1358,23 @@ export const getPollEmbed = async (interaction: Interaction, poll: Poll) => {
       },
       {
         inline: true,
+        name: 'Праг',
+        value: `${poll.threshold * 100}% (${Math.ceil(
+          poll.threshold * voters.length,
+        )})`,
+      },
+      {
+        inline: true,
         name: 'Улоги',
         value:
           poll.roles.length > 0
             ? poll.roles.map((role) => roleMention(role)).join(', ')
             : 'Нема',
+      },
+      {
+        inline: true,
+        name: '\u200B',
+        value: '\u200B',
       },
     )
     .setFooter({ text: `Анкета: ${poll.id}` })
