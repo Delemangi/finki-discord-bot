@@ -1512,7 +1512,7 @@ export const getPollListFirstPageEmbed = async (
     .setDescription(`Ова се сите ${all ? '' : 'активни'} анкети.`)
     .addFields(
       ...polls.slice(0, pollsPerPage).map((poll) => ({
-        name: all && !poll.done ? `${poll.title} (затворена)` : poll.title,
+        name: all && poll.done ? `${poll.title} (затворена)` : poll.title,
         value: poll.id,
       })),
     )
@@ -1538,7 +1538,7 @@ export const getPollListNextPageEmbed = (
       ...polls
         .slice(pollsPerPage * page, pollsPerPage * (page + 1))
         .map((poll) => ({
-          name: all && !poll.done ? `${poll.title} (затворена)` : poll.title,
+          name: all && poll.done ? `${poll.title} (затворена)` : poll.title,
           value: poll.id,
         })),
     )
