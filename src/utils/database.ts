@@ -356,9 +356,6 @@ export const createVipPoll = async (
   const no = new PollOption();
   no.name = 'Не';
 
-  const abstain = new PollOption();
-  abstain.name = 'Воздржан';
-
   poll.title =
     type === 'add'
       ? `Влез во ВИП за ${vipUser.tag}`
@@ -375,7 +372,7 @@ export const createVipPoll = async (
   poll.multiple = false;
   poll.open = false;
   poll.owner = client.user?.id ?? '';
-  poll.options = [yes, no, abstain];
+  poll.options = [yes, no];
   poll.roles = [getFromBotConfig('roles').vip];
   poll.done = false;
   poll.threshold = threshold ?? 0.5;
