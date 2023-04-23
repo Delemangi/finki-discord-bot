@@ -33,6 +33,7 @@ import {
   type ChatInputCommandInteraction,
   codeBlock,
   EmbedBuilder,
+  type Guild,
   type GuildMember,
   hyperlink,
   inlineCode,
@@ -1280,10 +1281,8 @@ export const getHelpNextPageEmbed = (
 
 // Polls
 
-export const getPollEmbed = async (interaction: Interaction, poll: Poll) => {
+export const getPollEmbed = async (poll: Poll) => {
   const votes = (await getPollVotes(poll.id))?.length ?? 0;
-  const voters = await getMembersWithRoles(interaction.guild, ...poll.roles);
-  const turnout = `(${((votes / voters.length) * 100).toFixed(2)}%)`;
 
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
@@ -1318,8 +1317,57 @@ export const getPollEmbed = async (interaction: Interaction, poll: Poll) => {
               poll.decision ?? (await getMostPopularPollOption(poll)) ?? '-',
             )}\n`
           : ''
-      }\nИнформации и подесувања за анкетата:`,
+      }`,
     )
+    .setFooter({ text: `Анкета: ${poll.id}` })
+    .setTimestamp();
+};
+
+export const getPollComponents = (poll: Poll) => {
+  const components = [];
+
+  for (let index1 = 0; index1 < poll.options.length; index1 += 5) {
+    const row = new ActionRowBuilder<ButtonBuilder>();
+    const buttons = [];
+
+    if (index1 === 0) {
+      const button = new ButtonBuilder()
+        .setCustomId(`poll:${poll.id}:info`)
+        .setLabel('Информации')
+        .setStyle(ButtonStyle.Secondary);
+
+      buttons.push(button);
+    }
+
+    for (let index2 = index1; index2 < index1 + 5; index2++) {
+      if (poll.options[index2] === undefined) {
+        break;
+      }
+
+      const button = new ButtonBuilder()
+        .setCustomId(`poll:${poll.id}:${poll.options[index2]?.id}`)
+        .setLabel(`${truncateString(poll.options[index2]?.name, 80)}`)
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(poll.done);
+
+      buttons.push(button);
+    }
+
+    row.addComponents(buttons);
+    components.push(row);
+  }
+
+  return components;
+};
+
+export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
+  const votes = (await getPollVotes(poll.id))?.length ?? 0;
+  const voters = await getMembersWithRoles(guild, ...poll.roles);
+  const turnout = `(${((votes / voters.length) * 100).toFixed(2)}%)`;
+
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle(poll.title)
     .addFields(
       {
         inline: true,
@@ -1353,7 +1401,7 @@ export const getPollEmbed = async (interaction: Interaction, poll: Poll) => {
           poll.roles.length === 0
             ? 'Сите'
             : (
-                await getMembersWithRoles(interaction.guild, ...poll.roles)
+                await getMembersWithRoles(guild, ...poll.roles)
               ).length.toString(),
       },
       {
@@ -1379,34 +1427,6 @@ export const getPollEmbed = async (interaction: Interaction, poll: Poll) => {
     )
     .setFooter({ text: `Анкета: ${poll.id}` })
     .setTimestamp();
-};
-
-export const getPollComponents = (poll: Poll) => {
-  const components = [];
-
-  for (let index1 = 0; index1 < poll.options.length; index1 += 5) {
-    const row = new ActionRowBuilder<ButtonBuilder>();
-    const buttons = [];
-
-    for (let index2 = index1; index2 < index1 + 5; index2++) {
-      if (poll.options[index2] === undefined) {
-        break;
-      }
-
-      const button = new ButtonBuilder()
-        .setCustomId(`poll:${poll.id}:${poll.options[index2]?.id}`)
-        .setLabel(`${truncateString(poll.options[index2]?.name, 80)}`)
-        .setStyle(ButtonStyle.Primary)
-        .setDisabled(poll.done);
-
-      buttons.push(button);
-    }
-
-    row.addComponents(buttons);
-    components.push(row);
-  }
-
-  return components;
 };
 
 export const getPollStatsEmbed = async (poll: Poll) => {

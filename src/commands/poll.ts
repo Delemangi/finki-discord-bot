@@ -13,6 +13,7 @@ import {
   getPaginationComponents,
   getPollComponents,
   getPollEmbed,
+  getPollInfoEmbed,
   getPollListFirstPageEmbed,
   getPollListNextPageEmbed,
   getPollStatsComponents,
@@ -182,6 +183,14 @@ export const data = new SlashCommandBuilder()
           .setDescription('Дали да се листаат сите анкети?')
           .setRequired(false),
       ),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName('info')
+      .setDescription(commands['poll info'])
+      .addStringOption((option) =>
+        option.setName('id').setDescription('Анкета').setRequired(true),
+      ),
   );
 
 const handlePollCreate = async (interaction: ChatInputCommandInteraction) => {
@@ -233,7 +242,7 @@ const handlePollCreate = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embed = await getPollEmbed(interaction, poll);
+  const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
   await interaction.editReply({
     components,
@@ -315,7 +324,7 @@ const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embed = await getPollEmbed(interaction, poll);
+  const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
 
   await interaction.editReply({
@@ -576,12 +585,32 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
   });
 };
 
+const handlePollInfo = async (interaction: ChatInputCommandInteraction) => {
+  const id = interaction.options.getString('id', true).trim();
+
+  const poll = await getPollById(id);
+
+  if (poll === null) {
+    await interaction.editReply(errors.pollNotFound);
+    return;
+  }
+
+  if (interaction.guild === null) {
+    await interaction.editReply(errors.serverOnlyCommand);
+    return;
+  }
+
+  const embed = await getPollInfoEmbed(interaction.guild, poll);
+  await interaction.editReply({ embeds: [embed] });
+};
+
 const pollHandlers = {
   add: handlePollAdd,
   close: handlePollClose,
   create: handlePollCreate,
   delete: handlePollDelete,
   edit: handlePollEdit,
+  info: handlePollInfo,
   list: handlePollList,
   open: handlePollOpen,
   remove: handlePollRemove,

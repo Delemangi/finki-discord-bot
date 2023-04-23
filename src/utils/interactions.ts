@@ -1,4 +1,5 @@
 import { type Poll } from '../entities/Poll.js';
+import { type PollOption } from '../entities/PollOption.js';
 import { type VipPoll } from '../entities/VipPoll.js';
 import { deleteResponse, getChannel, log } from './channels.js';
 import { getCommand } from './commands.js';
@@ -32,6 +33,7 @@ import {
   getChatInputCommandEmbed,
   getPollComponents,
   getPollEmbed,
+  getPollInfoEmbed,
   getPollStatsButtonEmbed,
   getPollStatsComponents,
   getPollStatsEmbed,
@@ -492,64 +494,14 @@ export const handlePollButtonForVipVote = async (
   }
 };
 
-const handlePollButton = async (
+const handleVote = async (
   interaction: ButtonInteraction,
-  args: string[],
+  poll: Poll,
+  optionId: string,
+  option: PollOption,
 ) => {
-  if (interaction.guild === null || interaction.member === null) {
-    logger.warn(
-      `Received button interaction ${interaction.id}: ${interaction.customId} from ${interaction.user.tag} outside of a guild`,
-    );
-    return;
-  }
-
-  const pollId = args[0]?.toString();
-  const optionId = args[1]?.toString();
-  const poll = await getPollById(pollId);
-  const option = await getPollOptionById(optionId);
-
-  if (
-    poll === null ||
-    option === null ||
-    pollId === undefined ||
-    optionId === undefined
-  ) {
-    const mess = await interaction.reply({
-      content: 'Веќе не постои анкетата или опцијата.',
-      ephemeral: true,
-    });
-    deleteResponse(mess);
-    return;
-  }
-
   const votes = await getPollVotesByUser(poll.id, interaction.user.id);
   let replyMessage;
-
-  if (poll.done) {
-    const pollEmbed = await getPollEmbed(interaction, poll);
-    const pollComponents = getPollComponents(poll);
-    await interaction.update({
-      components: pollComponents,
-      embeds: [pollEmbed],
-    });
-    return;
-  }
-
-  if (poll.roles.length !== 0) {
-    const roles = interaction.member.roles as GuildMemberRoleManager;
-
-    if (!roles.cache.some((role) => poll.roles.includes(role.id))) {
-      const mess = await interaction.reply({
-        allowedMentions: { parse: [] },
-        content: `Немате дозвола да гласате на оваа анкета. Потребна ви е една од улогите: ${poll.roles
-          .map((role) => roleMention(role))
-          .join(', ')}`,
-        ephemeral: true,
-      });
-      deleteResponse(mess);
-      return;
-    }
-  }
 
   if (poll.multiple) {
     if (
@@ -574,17 +526,6 @@ const handlePollButton = async (
       await deletePollVote(vote.id);
       replyMessage = 'Го тргнавте вашиот глас.';
     } else {
-      const opt = await getPollOptionById(optionId);
-
-      if (opt === null) {
-        const mess = await interaction.reply({
-          content: 'Веќе не постои анкетата или опцијата.',
-          ephemeral: true,
-        });
-        deleteResponse(mess);
-        return;
-      }
-
       await deletePollVote(vote.id);
       await createPollVote(optionId, interaction.user.id);
 
@@ -597,10 +538,77 @@ const handlePollButton = async (
     ephemeral: true,
   });
   deleteResponse(message);
+};
 
+const handlePollButton = async (
+  interaction: ButtonInteraction,
+  args: string[],
+) => {
+  if (interaction.guild === null || interaction.member === null) {
+    logger.warn(
+      `Received button interaction ${interaction.id}: ${interaction.customId} from ${interaction.user.tag} outside of a guild`,
+    );
+    return;
+  }
+
+  const pollId = args[0]?.toString();
+  const optionId = args[1]?.toString();
+  const poll = await getPollById(pollId);
+  const option = optionId === 'info' ? null : await getPollOptionById(optionId);
+
+  if (optionId === 'info' && poll !== null) {
+    const infoEmbed = await getPollInfoEmbed(interaction.guild, poll);
+    await interaction.reply({
+      embeds: [infoEmbed],
+      ephemeral: true,
+    });
+    return;
+  }
+
+  if (
+    poll === null ||
+    option === null ||
+    pollId === undefined ||
+    optionId === undefined
+  ) {
+    const mess = await interaction.reply({
+      content: 'Веќе не постои анкетата или опцијата.',
+      ephemeral: true,
+    });
+    deleteResponse(mess);
+    return;
+  }
+
+  if (poll.done) {
+    const pollEmbed = await getPollEmbed(poll);
+    const pollComponents = getPollComponents(poll);
+    await interaction.update({
+      components: pollComponents,
+      embeds: [pollEmbed],
+    });
+    return;
+  }
+
+  if (poll.roles.length !== 0) {
+    const roles = interaction.member.roles as GuildMemberRoleManager;
+
+    if (!roles.cache.some((role) => poll.roles.includes(role.id))) {
+      const mess = await interaction.reply({
+        allowedMentions: { parse: [] },
+        content: `Немате дозвола да гласате на оваа анкета. Потребна ви е една од улогите: ${poll.roles
+          .map((role) => roleMention(role))
+          .join(', ')}`,
+        ephemeral: true,
+      });
+      deleteResponse(mess);
+      return;
+    }
+  }
+
+  await handleVote(interaction, poll, optionId, option);
   await decidePoll(poll, interaction);
 
-  const embed = await getPollEmbed(interaction, poll);
+  const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
   await interaction.message.edit({
     components,
@@ -898,7 +906,7 @@ const handleVipButton = async (
   if (channel?.isTextBased() && poll !== null) {
     await channel.send({
       components: getPollComponents(poll),
-      embeds: [await getPollEmbed(interaction, poll)],
+      embeds: [await getPollEmbed(poll)],
     });
   }
 

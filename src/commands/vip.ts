@@ -123,7 +123,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embed = await getPollEmbed(interaction, poll);
+  const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
   await interaction.editReply({ components, embeds: [embed] });
 };
@@ -171,7 +171,7 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embed = await getPollEmbed(interaction, poll);
+  const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
   await interaction.editReply({ components, embeds: [embed] });
 };
