@@ -68,8 +68,28 @@ export const scheduleVipTemporaryChannel = async () => {
       });
       await channel.setPosition(-3, { relative: true });
 
-      logger.info('Temporary VIP channel recreated');
+      logger.info(
+        `Temporary VIP channel recreated. Next recreation is scheduled for ${Cron(
+          getFromBotConfig('vipTemporaryChannelCron'),
+        )
+          .nextRun()
+          ?.toLocaleString('mk-MK', { timeZone: 'CET' })}`,
+      );
     },
+  );
+
+  const nextRun = Cron(getFromBotConfig('vipTemporaryChannelCron')).nextRun();
+
+  logger.info(
+    `Temporary vip channel recreation is scheduled for ${
+      nextRun === null
+        ? 'never'
+        : new Intl.DateTimeFormat('en-GB', {
+            dateStyle: 'full',
+            timeStyle: 'long',
+            timeZone: 'CET',
+          }).format(nextRun)
+    }`,
   );
 };
 
