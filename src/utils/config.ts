@@ -30,6 +30,9 @@ const defaultConfig: Required<BotConfig> = {
     vip: '',
     vipInvited: '',
   },
+  vipTemporaryChannelCron: '',
+  vipTemporaryChannelName: '',
+  vipTemporaryChannelParent: '',
 };
 
 const anto: string[] = JSON.parse(readFileSync('./config/anto.json', 'utf8'));

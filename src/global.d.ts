@@ -42,6 +42,9 @@ declare global {
     mode: Mode;
     profiles: { [K in Mode]: { applicationId: string; token: string } };
     roles?: { [K in Roles]: string };
+    vipTemporaryChannelCron: string;
+    vipTemporaryChannelName: string;
+    vipTemporaryChannelParent: string;
   };
 
   type RoleConfig = {

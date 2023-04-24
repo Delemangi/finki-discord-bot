@@ -1,18 +1,20 @@
 import { client } from './client.js';
 import { getFromBotConfig } from './config.js';
 import { logger } from './logger.js';
+import { Cron } from 'croner';
 import {
   type ActionRowBuilder,
   type ButtonBuilder,
-  type Channel,
+  ChannelType,
   type EmbedBuilder,
+  type GuildChannel,
   type GuildTextBasedChannel,
   type Interaction,
   type InteractionResponse,
   type Message,
 } from 'discord.js';
 
-const channels: { [K in Channels]?: Channel | undefined } = {};
+const channels: { [K in Channels]?: GuildChannel | undefined } = {};
 
 export const initializeChannels = () => {
   const channelIds = getFromBotConfig('channels');
@@ -21,15 +23,55 @@ export const initializeChannels = () => {
     return;
   }
 
-  channels.commands = client.channels.cache.get(channelIds.commands);
-  channels.vip = client.channels.cache.get(channelIds.vip);
-  channels.polls = client.channels.cache.get(channelIds.polls);
-  channels.oath = client.channels.cache.get(channelIds.oath);
+  channels.commands = client.channels.cache.get(
+    channelIds.commands,
+  ) as GuildChannel;
+  channels.vip = client.channels.cache.get(channelIds.vip) as GuildChannel;
+  channels.polls = client.channels.cache.get(channelIds.polls) as GuildChannel;
+  channels.oath = client.channels.cache.get(channelIds.oath) as GuildChannel;
 
   logger.info('Channels initialized');
 };
 
 export const getChannel = (type: Channels) => channels[type];
+
+export const scheduleVipTemporaryChannel = async () => {
+  Cron(
+    getFromBotConfig('vipTemporaryChannelCron'),
+    { timezone: 'CET' },
+    async () => {
+      const existingChannel = client.channels.cache.find(
+        (ch) =>
+          ch.type !== ChannelType.DM &&
+          ch.name === getFromBotConfig('vipTemporaryChannelName'),
+      );
+
+      if (existingChannel !== undefined) {
+        await existingChannel.delete();
+      }
+
+      const guild = client.guilds.cache.get(getFromBotConfig('guild'));
+
+      if (guild === undefined) {
+        return;
+      }
+
+      const channel = await guild.channels.create({
+        name: getFromBotConfig('vipTemporaryChannelName'),
+        parent: getFromBotConfig('vipTemporaryChannelParent'),
+        topic: `Задните соби на ВИП. Следно бришење е на ${Cron(
+          getFromBotConfig('vipTemporaryChannelCron'),
+        )
+          .nextRun()
+          ?.toLocaleString('mk-MK', { timeZone: 'CET' })}`,
+        type: ChannelType.GuildText,
+      });
+      await channel.setPosition(-3, { relative: true });
+
+      logger.info('Temporary VIP channel recreated');
+    },
+  );
+};
 
 export const log = async (
   embed: EmbedBuilder,
