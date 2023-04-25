@@ -35,6 +35,20 @@ export const initializeChannels = () => {
 
 export const getChannel = (type: Channels) => channels[type];
 
+const getNextVipCronRun = (locale: string = 'en-GB') => {
+  const nextRun = Cron(getFromBotConfig('vipTemporaryChannelCron'), {
+    timezone: 'CET',
+  }).nextRun();
+  logger.info(nextRun?.getTimezoneOffset());
+  return nextRun === null
+    ? '?'
+    : new Intl.DateTimeFormat(locale, {
+        dateStyle: 'full',
+        timeStyle: 'long',
+        timeZone: 'CET',
+      }).format(nextRun);
+};
+
 export const scheduleVipTemporaryChannel = async () => {
   Cron(
     getFromBotConfig('vipTemporaryChannelCron'),
@@ -59,43 +73,21 @@ export const scheduleVipTemporaryChannel = async () => {
       const channel = await guild.channels.create({
         name: getFromBotConfig('vipTemporaryChannelName'),
         parent: getFromBotConfig('vipTemporaryChannelParent'),
-        topic: `Задните соби на ВИП. Следно бришење е на ${Cron(
-          getFromBotConfig('vipTemporaryChannelCron'),
-        )
-          .nextRun()
-          ?.toLocaleString('mk-MK', { timeZone: 'CET' })}`,
+        topic: `Задните соби на ВИП. Следно бришење е на ${getNextVipCronRun(
+          'mk-MK',
+        )}`,
         type: ChannelType.GuildText,
       });
       await channel.setPosition(-3, { relative: true });
 
-      const cron = Cron(getFromBotConfig('vipTemporaryChannelCron')).nextRun();
-
       logger.info(
-        `Temporary VIP channel recreated. Next recreation is scheduled for ${
-          cron === null
-            ? 'never'
-            : new Intl.DateTimeFormat('en-GB', {
-                dateStyle: 'full',
-                timeStyle: 'long',
-                timeZone: 'CET',
-              }).format(cron)
-        }`,
+        `Temporary VIP channel recreated. Next recreation is scheduled for ${getNextVipCronRun()}`,
       );
     },
   );
 
-  const nextRun = Cron(getFromBotConfig('vipTemporaryChannelCron')).nextRun();
-
   logger.info(
-    `Temporary vip channel recreation is scheduled for ${
-      nextRun === null
-        ? 'never'
-        : new Intl.DateTimeFormat('en-GB', {
-            dateStyle: 'full',
-            timeStyle: 'long',
-            timeZone: 'CET',
-          }).format(nextRun)
-    }`,
+    `Temporary vip channel recreation is scheduled for ${getNextVipCronRun()}`,
   );
 };
 
