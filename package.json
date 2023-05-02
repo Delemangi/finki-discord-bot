@@ -7,7 +7,7 @@
     "chrono-node": "^2.6.3",
     "croner": "^6.0.3",
     "discord-api-types": "^0.37.41",
-    "discord.js": "^14.9.0",
+    "discord.js": "^14.10.2",
     "dotenv": "^16.0.3",
     "jsdom": "^21.1.2",
     "pg": "^8.10.0",
