@@ -10,16 +10,6 @@ services:
     volumes:
       - ./db:/var/lib/postgresql/data
 
-  pgadmin:
-    container_name: finki-pgadmin
-    image: dpage/pgadmin4:latest
-    restart: always
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.com
-      PGADMIN_DEFAULT_PASSWORD: admin
-    ports:
-      - 5050:80
-
   bot:
     container_name: finki-bot
     image: finki-discord-bot
