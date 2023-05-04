@@ -1,6 +1,6 @@
 import { getFromBotConfig } from '../utils/config.js';
 import { getCrossposting } from '../utils/crossposting.js';
-import { addExperience } from '../utils/leveling.js';
+import { addExperience } from '../utils/experience.js';
 import { logger } from '../utils/logger.js';
 import { type ClientEvents, Events, type Message } from 'discord.js';
 
