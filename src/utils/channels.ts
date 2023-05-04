@@ -49,7 +49,6 @@ const getNextVipCronRun = (locale: string = 'en-GB', offset = 1) => {
   })
     .nextRuns(offset)
     .at(-1);
-  logger.info(nextRun?.getTimezoneOffset());
   return nextRun === null
     ? '?'
     : new Intl.DateTimeFormat(locale, {
