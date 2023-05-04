@@ -11,10 +11,9 @@ import {
 } from '../utils/embeds.js';
 import { handlePollButtonForVipVote } from '../utils/interactions.js';
 import { getRole } from '../utils/roles.js';
-import { commands, errors } from '../utils/strings.js';
+import { commandDescriptions, errors } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
-  PermissionsBitField,
   SlashCommandBuilder,
 } from 'discord.js';
 
@@ -24,12 +23,14 @@ export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription('VIP')
   .addSubcommand((command) =>
-    command.setName('members').setDescription(commands['vip members']),
+    command
+      .setName('members')
+      .setDescription(commandDescriptions['vip members']),
   )
   .addSubcommand((command) =>
     command
       .setName('add')
-      .setDescription(commands['vip add'])
+      .setDescription(commandDescriptions['vip add'])
       .addUserOption((option) =>
         option
           .setName('user')
@@ -40,7 +41,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('remove')
-      .setDescription(commands['vip remove'])
+      .setDescription(commandDescriptions['vip remove'])
       .addUserOption((option) =>
         option.setName('user').setDescription('Член на ВИП').setRequired(true),
       ),
@@ -48,7 +49,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('override')
-      .setDescription(commands['vip override'])
+      .setDescription(commandDescriptions['vip override'])
       .addUserOption((option) =>
         option.setName('user').setDescription('Корисник').setRequired(true),
       )
@@ -177,17 +178,6 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handleVipOverride = async (interaction: ChatInputCommandInteraction) => {
-  const permissions = interaction.member?.permissions as
-    | PermissionsBitField
-    | undefined;
-  if (
-    permissions === undefined ||
-    !permissions.has(PermissionsBitField.Flags.Administrator)
-  ) {
-    await interaction.editReply(errors.adminOnlyCommand);
-    return;
-  }
-
   const user = interaction.options.getUser('user', true);
   const type = interaction.options.getString('type', true);
   const decision = interaction.options.getString('decision', true);

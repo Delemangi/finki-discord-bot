@@ -1,6 +1,6 @@
 import { getClassrooms } from '../utils/config.js';
 import { getClassroomEmbed } from '../utils/embeds.js';
-import { commands } from '../utils/strings.js';
+import { commandDescriptions } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -10,7 +10,7 @@ const name = 'classroom';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription(commands[name])
+  .setDescription(commandDescriptions[name])
   .addStringOption((option) =>
     option
       .setName('classroom')

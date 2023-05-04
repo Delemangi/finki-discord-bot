@@ -1,17 +1,17 @@
-import { commands, errors } from '../utils/strings.js';
+import { commandDescriptions, errors } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   PermissionFlagsBits,
-  PermissionsBitField,
   SlashCommandBuilder,
 } from 'discord.js';
 import { setTimeout } from 'node:timers/promises';
 
 const name = 'purge';
+const permission = PermissionFlagsBits.ManageMessages;
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription(commands[name])
+  .setDescription(commandDescriptions[name])
   .addNumberOption((option) =>
     option
       .setName('count')
@@ -21,20 +21,9 @@ export const data = new SlashCommandBuilder()
       .setRequired(true),
   )
   .setDMPermission(false)
-  .setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages);
+  .setDefaultMemberPermissions(permission);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const permissions = interaction.member?.permissions as
-    | PermissionsBitField
-    | undefined;
-  if (
-    permissions === undefined ||
-    !permissions.has(PermissionsBitField.Flags.ManageMessages)
-  ) {
-    await interaction.editReply(errors.adminOnlyCommand);
-    return;
-  }
-
   if (
     interaction.channel === null ||
     !interaction.channel.isTextBased() ||

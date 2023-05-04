@@ -22,8 +22,12 @@ import {
 } from './database.js';
 import { commandMention } from './functions.js';
 import { logger } from './logger.js';
+import {
+  getCommandsWithPermission,
+  hasCommandPermission,
+} from './permissions.js';
 import { getMembersWithRoles, getRole, getRoleFromSet } from './roles.js';
-import { commands, programMapping, quizHelp } from './strings.js';
+import { commandDescriptions, programMapping, quizHelp } from './strings.js';
 import {
   ActionRowBuilder,
   type AutocompleteInteraction,
@@ -139,36 +143,6 @@ const linkProfessors = (professors: string) => {
       finki ? `[${professor}](${finki})` : professor,
     )
     .join('\n');
-};
-
-const checkCommandPermission = (
-  member: GuildMember | null,
-  command: string,
-) => {
-  if (member === null) {
-    return true;
-  }
-
-  const permissions = client.application?.commands.cache.find(
-    (com) =>
-      com.name === (command.includes(' ') ? command.split(' ')[0] : command),
-  )?.defaultMemberPermissions;
-
-  if (permissions === null || permissions === undefined) {
-    return true;
-  }
-
-  return member.permissions.any(permissions.bitfield);
-};
-
-export const getCommandsWithPermission = (member: GuildMember | null) => {
-  if (client.application === null) {
-    return [];
-  }
-
-  return Object.keys(commands).filter((command) =>
-    checkCommandPermission(member, command),
-  );
 };
 
 const fetchMessageUrl = async (
@@ -1263,8 +1237,8 @@ export const getHelpFirstPageEmbed = (
       'Ова се сите достапни команди за вас. Командите може да ги повикате во овој сервер, или во приватна порака.',
     )
     .addFields(
-      ...Object.entries(commands)
-        .filter((command) => checkCommandPermission(member, command[0]))
+      ...Object.entries(commandDescriptions)
+        .filter((command) => hasCommandPermission(member, command[0]))
         .slice(0, commandsPerPage)
         .map(([command, description]) => ({
           name: commandMention(command),
@@ -1293,8 +1267,8 @@ export const getHelpNextPageEmbed = (
       'Ова се сите достапни команди за вас. Командите може да ги извршите во овој сервер, или во приватна порака.',
     )
     .addFields(
-      ...Object.entries(commands)
-        .filter((command) => checkCommandPermission(member, command[0]))
+      ...Object.entries(commandDescriptions)
+        .filter((command) => hasCommandPermission(member, command[0]))
         .slice(commandsPerPage * page, commandsPerPage * (page + 1))
         .map(([command, description]) => ({
           name: commandMention(command),

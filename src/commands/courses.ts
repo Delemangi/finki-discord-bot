@@ -3,7 +3,11 @@ import {
   getCoursesProgramEmbed,
 } from '../utils/embeds.js';
 import { getCourseRolesBySemester } from '../utils/roles.js';
-import { commands, errors, programMapping } from '../utils/strings.js';
+import {
+  commandDescriptions,
+  errors,
+  programMapping,
+} from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   type GuildMember,
@@ -18,7 +22,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('program')
-      .setDescription(commands['courses programs'])
+      .setDescription(commandDescriptions['courses programs'])
       .addStringOption((option) =>
         option
           .setName('program')
@@ -43,7 +47,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('prerequisite')
-      .setDescription(commands['courses prerequisite'])
+      .setDescription(commandDescriptions['courses prerequisite'])
       .addStringOption((option) =>
         option
           .setName('course')
@@ -55,7 +59,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('add')
-      .setDescription(commands['courses add'])
+      .setDescription(commandDescriptions['courses add'])
       .addNumberOption((option) =>
         option
           .setName('semester')
@@ -68,7 +72,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('remove')
-      .setDescription(commands['courses remove'])
+      .setDescription(commandDescriptions['courses remove'])
       .addNumberOption((option) =>
         option
           .setName('semester')

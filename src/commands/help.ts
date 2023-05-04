@@ -1,13 +1,13 @@
 import { deleteResponse } from '../utils/channels.js';
 import { client } from '../utils/client.js';
 import {
-  getCommandsWithPermission,
   getHelpFirstPageEmbed,
   getHelpNextPageEmbed,
   getPaginationComponents,
 } from '../utils/embeds.js';
 import { logger } from '../utils/logger.js';
-import { commands } from '../utils/strings.js';
+import { getCommandsWithPermission } from '../utils/permissions.js';
+import { commandDescriptions } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   ComponentType,
@@ -19,7 +19,7 @@ const name = 'help';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription(commands[name]);
+  .setDescription(commandDescriptions[name]);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   await client.application?.commands.fetch();

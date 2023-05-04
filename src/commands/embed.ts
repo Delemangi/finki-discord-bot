@@ -1,11 +1,10 @@
 import { logger } from '../utils/logger.js';
-import { commands, errors } from '../utils/strings.js';
+import { commandDescriptions, errors } from '../utils/strings.js';
 import {
   type Channel,
   type ChatInputCommandInteraction,
   EmbedBuilder,
   PermissionFlagsBits,
-  type PermissionsBitField,
   SlashCommandBuilder,
 } from 'discord.js';
 
@@ -14,7 +13,7 @@ const permission = PermissionFlagsBits.ManageMessages;
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription(commands[name])
+  .setDescription(commandDescriptions[name])
   .addChannelOption((option) =>
     option.setName('channel').setDescription('Канал').setRequired(true),
   )
@@ -30,14 +29,6 @@ export const data = new SlashCommandBuilder()
   .setDefaultMemberPermissions(permission);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const permissions = interaction.member?.permissions as
-    | PermissionsBitField
-    | undefined;
-  if (permissions === undefined || !permissions.has(permission)) {
-    await interaction.editReply(errors.adminOnlyCommand);
-    return;
-  }
-
   const channel = interaction.options.getChannel('channel', true) as Channel;
   const json = interaction.options.getString('json', true);
   const timestamp = interaction.options.getBoolean('timestamp') ?? false;

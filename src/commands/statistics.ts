@@ -1,6 +1,6 @@
 import { splitMessage } from '../utils/functions.js';
 import { getRoles } from '../utils/roles.js';
-import { commands } from '../utils/strings.js';
+import { commandDescriptions } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   roleMention,
@@ -14,24 +14,34 @@ export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription('Color')
   .addSubcommand((command) =>
-    command.setName('color').setDescription(commands['statistics color']),
+    command
+      .setName('color')
+      .setDescription(commandDescriptions['statistics color']),
   )
   .addSubcommand((command) =>
-    command.setName('program').setDescription(commands['statistics program']),
+    command
+      .setName('program')
+      .setDescription(commandDescriptions['statistics program']),
   )
   .addSubcommand((command) =>
-    command.setName('year').setDescription(commands['statistics year']),
+    command
+      .setName('year')
+      .setDescription(commandDescriptions['statistics year']),
   )
   .addSubcommand((command) =>
-    command.setName('course').setDescription(commands['statistics course']),
+    command
+      .setName('course')
+      .setDescription(commandDescriptions['statistics course']),
   )
   .addSubcommand((command) =>
     command
       .setName('notification')
-      .setDescription(commands['statistics notification']),
+      .setDescription(commandDescriptions['statistics notification']),
   )
   .addSubcommand((command) =>
-    command.setName('server').setDescription(commands['statistics server']),
+    command
+      .setName('server')
+      .setDescription(commandDescriptions['statistics server']),
   )
   .setDMPermission(false);
 

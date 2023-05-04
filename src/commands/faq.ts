@@ -1,6 +1,6 @@
 import { getQuestions } from '../utils/config.js';
 import { getQuestionComponents, getQuestionEmbed } from '../utils/embeds.js';
-import { commands } from '../utils/strings.js';
+import { commandDescriptions } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -10,7 +10,7 @@ const name = 'faq';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription(commands[name])
+  .setDescription(commandDescriptions[name])
   .addStringOption((option) =>
     option
       .setName('question')

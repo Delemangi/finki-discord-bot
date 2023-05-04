@@ -1,5 +1,5 @@
 import { client } from '../utils/client.js';
-import { commands } from '../utils/strings.js';
+import { commandDescriptions } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -9,7 +9,7 @@ const name = 'ping';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription(commands[name]);
+  .setDescription(commandDescriptions[name]);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply(`Понг! ${client.ws.ping.toString()} ms`);

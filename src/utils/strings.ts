@@ -1,5 +1,6 @@
 /* eslint-disable id-length */
-export const commands = {
+
+export const commandDescriptions = {
   about: 'Информации за ботот',
   anto: 'Анто факт',
   calendar: 'Академски календар',
@@ -121,7 +122,8 @@ export const emojis = {
 };
 
 export const errors = {
-  adminOnlyCommand: 'Оваа команда е само за администратори.',
+  commandNoPermission: 'Немате дозвола да ја извршите оваа команда.',
+  commandNotFound: 'Таа команда не постои.',
   courseNotFound: 'Не постои таков предмет.',
   invalidChannel: 'Невалиден канал.',
   pollNoPermission: 'Ова не е ваша анкета.',

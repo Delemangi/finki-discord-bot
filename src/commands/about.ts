@@ -1,5 +1,5 @@
 import { getAboutEmbed } from '../utils/embeds.js';
-import { commands } from '../utils/strings.js';
+import { commandDescriptions } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -9,7 +9,7 @@ const name = 'about';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription(commands[name]);
+  .setDescription(commandDescriptions[name]);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const embed = getAboutEmbed();

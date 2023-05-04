@@ -5,10 +5,9 @@ import {
   saveExperience,
 } from '../utils/database.js';
 import { getExperienceEmbed } from '../utils/embeds.js';
-import { commands, errors } from '../utils/strings.js';
+import { commandDescriptions } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
-  PermissionsBitField,
   SlashCommandBuilder,
 } from 'discord.js';
 
@@ -20,7 +19,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((subcommand) =>
     subcommand
       .setName('get')
-      .setDescription(commands['experience get'])
+      .setDescription(commandDescriptions['experience get'])
       .addUserOption((option) =>
         option.setName('user').setDescription('Корисник').setRequired(false),
       ),
@@ -28,7 +27,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((subcommand) =>
     subcommand
       .setName('add')
-      .setDescription(commands['experience add'])
+      .setDescription(commandDescriptions['experience add'])
       .addUserOption((option) =>
         option.setName('user').setDescription('Корисник').setRequired(true),
       )
@@ -63,16 +62,6 @@ const handleExperienceGet = async (
 const handleExperienceAdd = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const permissions = interaction.member?.permissions as
-    | PermissionsBitField
-    | undefined;
-  if (
-    permissions === undefined ||
-    !permissions.has(PermissionsBitField.Flags.Administrator)
-  ) {
-    await interaction.editReply(errors.adminOnlyCommand);
-  }
-
   const user = interaction.options.getUser('user', true);
   const experience = interaction.options.getNumber('experience', true);
 

@@ -1,6 +1,6 @@
 import { Reminder } from '../entities/Reminder.js';
 import { saveReminder } from '../utils/database.js';
-import { commands } from '../utils/strings.js';
+import { commandDescriptions } from '../utils/strings.js';
 import { parseDate } from 'chrono-node';
 import {
   type ChatInputCommandInteraction,
@@ -12,7 +12,7 @@ const name = 'reminder';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription(commands[name])
+  .setDescription(commandDescriptions[name])
   .addStringOption((option) =>
     option.setName('description').setDescription('Опис').setRequired(true),
   )

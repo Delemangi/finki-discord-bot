@@ -25,19 +25,19 @@ import {
   getYearsEmbed,
 } from '../utils/embeds.js';
 import { logger } from '../utils/logger.js';
-import { commands, errors } from '../utils/strings.js';
+import { commandDescriptions } from '../utils/strings.js';
 import {
   type Channel,
   type ChatInputCommandInteraction,
   type GuildTextBasedChannel,
   PermissionFlagsBits,
-  PermissionsBitField,
   REST,
   Routes,
   SlashCommandBuilder,
 } from 'discord.js';
 
 const name = 'script';
+const permission = PermissionFlagsBits.Administrator;
 
 export const data = new SlashCommandBuilder()
   .setName(name)
@@ -45,7 +45,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('courses')
-      .setDescription(commands['script courses'])
+      .setDescription(commandDescriptions['script courses'])
       .addChannelOption((option) =>
         option.setName('channel').setDescription('Канал').setRequired(true),
       )
@@ -65,7 +65,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('colors')
-      .setDescription(commands['script colors'])
+      .setDescription(commandDescriptions['script colors'])
       .addChannelOption((option) =>
         option.setName('channel').setDescription('Канал').setRequired(true),
       )
@@ -82,7 +82,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('notifications')
-      .setDescription(commands['script notifications'])
+      .setDescription(commandDescriptions['script notifications'])
       .addChannelOption((option) =>
         option.setName('channel').setDescription('Канал').setRequired(true),
       )
@@ -96,7 +96,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('programs')
-      .setDescription(commands['script programs'])
+      .setDescription(commandDescriptions['script programs'])
       .addChannelOption((option) =>
         option.setName('channel').setDescription('Канал').setRequired(true),
       )
@@ -110,7 +110,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('years')
-      .setDescription(commands['script years'])
+      .setDescription(commandDescriptions['script years'])
       .addChannelOption((option) =>
         option.setName('channel').setDescription('Канал').setRequired(true),
       )
@@ -124,24 +124,26 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('rules')
-      .setDescription(commands['script rules'])
+      .setDescription(commandDescriptions['script rules'])
       .addChannelOption((option) =>
         option.setName('channel').setDescription('Канал').setRequired(true),
       ),
   )
   .addSubcommand((command) =>
-    command.setName('register').setDescription(commands['script register']),
+    command
+      .setName('register')
+      .setDescription(commandDescriptions['script register']),
   )
   .addSubcommand((command) =>
     command
       .setName('vip')
-      .setDescription(commands['script vip'])
+      .setDescription(commandDescriptions['script vip'])
       .addChannelOption((option) =>
         option.setName('channel').setDescription('Канал').setRequired(true),
       ),
   )
   .setDMPermission(false)
-  .setDefaultMemberPermissions(PermissionFlagsBits.Administrator);
+  .setDefaultMemberPermissions(permission);
 
 const handleScriptCourses = async (
   interaction: ChatInputCommandInteraction,
@@ -389,17 +391,6 @@ const listHandlers = {
 };
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const permissions = interaction.member?.permissions as
-    | PermissionsBitField
-    | undefined;
-  if (
-    permissions === undefined ||
-    !permissions.has(PermissionsBitField.Flags.Administrator)
-  ) {
-    await interaction.editReply(errors.adminOnlyCommand);
-    return;
-  }
-
   const subcommand = interaction.options.getSubcommand(true);
 
   if (Object.keys(listHandlers).includes(subcommand)) {

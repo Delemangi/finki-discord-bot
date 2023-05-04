@@ -1,5 +1,5 @@
 import { getSessions } from '../utils/config.js';
-import { commands } from '../utils/strings.js';
+import { commandDescriptions } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -9,7 +9,7 @@ const name = 'session';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription(commands[name])
+  .setDescription(commandDescriptions[name])
   .addStringOption((option) =>
     option
       .setName('session')

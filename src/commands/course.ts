@@ -13,7 +13,7 @@ import {
   getCourseSummaryEmbed,
 } from '../utils/embeds.js';
 import { getCourseRoleByCourseName } from '../utils/roles.js';
-import { commands, errors } from '../utils/strings.js';
+import { commandDescriptions, errors } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   type GuildMember,
@@ -29,7 +29,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('participants')
-      .setDescription(commands['course participants'])
+      .setDescription(commandDescriptions['course participants'])
       .addStringOption((option) =>
         option
           .setName('course')
@@ -41,7 +41,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('professors')
-      .setDescription(commands['course professors'])
+      .setDescription(commandDescriptions['course professors'])
       .addStringOption((option) =>
         option
           .setName('course')
@@ -53,7 +53,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('role')
-      .setDescription(commands['course role'])
+      .setDescription(commandDescriptions['course role'])
       .addStringOption((option) =>
         option
           .setName('courserole')
@@ -65,7 +65,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('prerequisite')
-      .setDescription(commands['course prerequisite'])
+      .setDescription(commandDescriptions['course prerequisite'])
       .addStringOption((option) =>
         option
           .setName('course')
@@ -77,7 +77,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('info')
-      .setDescription(commands['course info'])
+      .setDescription(commandDescriptions['course info'])
       .addStringOption((option) =>
         option
           .setName('course')
@@ -89,7 +89,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('summary')
-      .setDescription(commands['course summary'])
+      .setDescription(commandDescriptions['course summary'])
       .addStringOption((option) =>
         option
           .setName('course')
@@ -101,7 +101,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('toggle')
-      .setDescription(commands['course toggle'])
+      .setDescription(commandDescriptions['course toggle'])
       .addStringOption((option) =>
         option
           .setName('courserole')

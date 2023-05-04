@@ -1,6 +1,6 @@
 import { getLinks } from '../utils/config.js';
 import { getLinkComponents, getLinkEmbed } from '../utils/embeds.js';
-import { commands } from '../utils/strings.js';
+import { commandDescriptions } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -10,7 +10,7 @@ const name = 'link';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription(commands[name])
+  .setDescription(commandDescriptions[name])
   .addStringOption((option) =>
     option
       .setName('link')

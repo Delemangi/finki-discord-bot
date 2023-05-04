@@ -1,5 +1,5 @@
 import { getResponses } from '../utils/config.js';
-import { commands } from '../utils/strings.js';
+import { commandDescriptions } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -9,7 +9,7 @@ const name = 'calendar';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription(commands[name]);
+  .setDescription(commandDescriptions[name]);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const response = getResponses().find((resp) => resp.command === name);

@@ -21,11 +21,10 @@ import {
 } from '../utils/embeds.js';
 import { commandMention } from '../utils/functions.js';
 import { logger } from '../utils/logger.js';
-import { commands, errors } from '../utils/strings.js';
+import { commandDescriptions, errors } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   ComponentType,
-  PermissionsBitField,
   SlashCommandBuilder,
 } from 'discord.js';
 
@@ -37,7 +36,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('create')
-      .setDescription(commands['poll create'])
+      .setDescription(commandDescriptions['poll create'])
       .addStringOption((option) =>
         option.setName('title').setDescription('Наслов').setRequired(true),
       )
@@ -88,7 +87,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('edit')
-      .setDescription(commands['poll edit'])
+      .setDescription(commandDescriptions['poll edit'])
       .addStringOption((option) =>
         option.setName('id').setDescription('Анкета').setRequired(true),
       )
@@ -108,7 +107,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('stats')
-      .setDescription(commands['poll stats'])
+      .setDescription(commandDescriptions['poll stats'])
       .addStringOption((option) =>
         option.setName('id').setDescription('Анкета').setRequired(true),
       ),
@@ -116,7 +115,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('show')
-      .setDescription(commands['poll show'])
+      .setDescription(commandDescriptions['poll show'])
       .addStringOption((option) =>
         option.setName('id').setDescription('Анкета').setRequired(true),
       ),
@@ -124,7 +123,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('add')
-      .setDescription(commands['poll add'])
+      .setDescription(commandDescriptions['poll add'])
       .addStringOption((option) =>
         option.setName('id').setDescription('Анкета').setRequired(true),
       )
@@ -138,7 +137,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('remove')
-      .setDescription(commands['poll remove'])
+      .setDescription(commandDescriptions['poll remove'])
       .addStringOption((option) =>
         option.setName('id').setDescription('Анкета').setRequired(true),
       )
@@ -152,7 +151,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('delete')
-      .setDescription(commands['poll delete'])
+      .setDescription(commandDescriptions['poll delete'])
       .addStringOption((option) =>
         option.setName('id').setDescription('Анкета').setRequired(true),
       ),
@@ -160,7 +159,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('open')
-      .setDescription(commands['poll open'])
+      .setDescription(commandDescriptions['poll open'])
       .addStringOption((option) =>
         option.setName('id').setDescription('Анкета').setRequired(true),
       ),
@@ -168,7 +167,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('close')
-      .setDescription(commands['poll close'])
+      .setDescription(commandDescriptions['poll close'])
       .addStringOption((option) =>
         option.setName('id').setDescription('Анкета').setRequired(true),
       ),
@@ -176,7 +175,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('list')
-      .setDescription(commands['poll list'])
+      .setDescription(commandDescriptions['poll list'])
       .addBooleanOption((option) =>
         option
           .setName('all')
@@ -187,7 +186,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('info')
-      .setDescription(commands['poll info'])
+      .setDescription(commandDescriptions['poll info'])
       .addStringOption((option) =>
         option.setName('id').setDescription('Анкета').setRequired(true),
       ),
@@ -422,17 +421,6 @@ const handlePollDelete = async (interaction: ChatInputCommandInteraction) => {
 
   if (poll === null) {
     await interaction.reply(errors.pollNotFound);
-    return;
-  }
-
-  const permissions = interaction.member?.permissions as
-    | PermissionsBitField
-    | undefined;
-  if (
-    permissions === undefined ||
-    !permissions.has(PermissionsBitField.Flags.ManageMessages)
-  ) {
-    await interaction.reply(errors.adminOnlyCommand);
     return;
   }
 

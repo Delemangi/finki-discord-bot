@@ -50,6 +50,7 @@ import {
 import { createOptions } from './functions.js';
 import { logger } from './logger.js';
 import { transformOptions } from './options.js';
+import { hasCommandPermission } from './permissions.js';
 import {
   getCourseRolesBySemester,
   getRole,
@@ -1042,6 +1043,17 @@ export const handleChatInputCommand = async (
     logger.warn(
       `No command was found for the chat input command ${interaction} by ${interaction.user.tag}`,
     );
+    await interaction.editReply(errors.commandNotFound);
+    return;
+  }
+
+  if (
+    !hasCommandPermission(
+      interaction.member as GuildMember | null,
+      command.data.name,
+    )
+  ) {
+    await interaction.editReply(errors.commandNoPermission);
     return;
   }
 

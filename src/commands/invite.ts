@@ -1,4 +1,4 @@
-import { commands } from '../utils/strings.js';
+import { commandDescriptions } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -8,7 +8,7 @@ const name = 'invite';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription(commands[name])
+  .setDescription(commandDescriptions[name])
   .setDMPermission(false);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
