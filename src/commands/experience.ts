@@ -56,7 +56,7 @@ const handleExperienceGet = async (
   }
 
   const embed = getExperienceEmbed(experience);
-  await interaction.reply({ embeds: [embed] });
+  await interaction.editReply({ embeds: [embed] });
 };
 
 const handleExperienceAdd = async (
