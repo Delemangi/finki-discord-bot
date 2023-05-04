@@ -2,6 +2,7 @@ import { existsSync, readFileSync } from 'node:fs';
 
 const defaultConfig: Required<BotConfig> = {
   channels: {
+    activity: '',
     commands: '',
     oath: '',
     polls: '',
@@ -47,6 +48,9 @@ const courses: string[] = JSON.parse(
 );
 const information: CourseInformation[] = JSON.parse(
   readFileSync('./config/information.json', 'utf8'),
+);
+const levels: LevelConfig = JSON.parse(
+  readFileSync('./config/levels.json', 'utf8'),
 );
 const links: Link[] = JSON.parse(readFileSync('./config/links.json', 'utf8'));
 const participants: CourseParticipants[] = JSON.parse(
@@ -94,6 +98,10 @@ export const getCourses = () => {
 
 export const getInformation = () => {
   return information;
+};
+
+export const getLevels = () => {
+  return levels;
 };
 
 export const getLinks = () => {

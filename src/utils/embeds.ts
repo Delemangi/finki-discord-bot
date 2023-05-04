@@ -1,3 +1,4 @@
+import { type Experience } from '../entities/Experience.js';
 import { type Poll } from '../entities/Poll.js';
 import { type PollVote } from '../entities/PollVote.js';
 import { client } from './client.js';
@@ -1105,6 +1106,35 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
       )
       .setTimestamp(),
   ];
+};
+
+export const getExperienceEmbed = (experience: Experience) => {
+  const guild = client.guilds.cache.get(getFromBotConfig('guild'));
+
+  if (guild === undefined) {
+    return new EmbedBuilder()
+      .setColor(getFromBotConfig('color'))
+      .setTitle(experience.tag)
+      .setDescription('Настана грешка.')
+      .setTimestamp();
+  }
+
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle(experience.tag)
+    .addFields(
+      {
+        inline: true,
+        name: 'Ниво',
+        value: experience.level.toString(),
+      },
+      {
+        inline: true,
+        name: 'Поени',
+        value: experience.experience.toString(),
+      },
+    )
+    .setTimestamp();
 };
 
 // Questions & links

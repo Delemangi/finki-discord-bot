@@ -7,14 +7,13 @@ import {
   type ButtonBuilder,
   ChannelType,
   type EmbedBuilder,
-  type GuildChannel,
   type GuildTextBasedChannel,
   type Interaction,
   type InteractionResponse,
   type Message,
 } from 'discord.js';
 
-const channels: { [K in Channels]?: GuildChannel | undefined } = {};
+const channels: { [K in Channels]?: GuildTextBasedChannel | undefined } = {};
 
 export const initializeChannels = () => {
   const channelIds = getFromBotConfig('channels');
@@ -25,10 +24,19 @@ export const initializeChannels = () => {
 
   channels.commands = client.channels.cache.get(
     channelIds.commands,
-  ) as GuildChannel;
-  channels.vip = client.channels.cache.get(channelIds.vip) as GuildChannel;
-  channels.polls = client.channels.cache.get(channelIds.polls) as GuildChannel;
-  channels.oath = client.channels.cache.get(channelIds.oath) as GuildChannel;
+  ) as GuildTextBasedChannel;
+  channels.vip = client.channels.cache.get(
+    channelIds.vip,
+  ) as GuildTextBasedChannel;
+  channels.polls = client.channels.cache.get(
+    channelIds.polls,
+  ) as GuildTextBasedChannel;
+  channels.oath = client.channels.cache.get(
+    channelIds.oath,
+  ) as GuildTextBasedChannel;
+  channels.activity = client.channels.cache.get(
+    channelIds.activity,
+  ) as GuildTextBasedChannel;
 
   logger.info('Channels initialized');
 };

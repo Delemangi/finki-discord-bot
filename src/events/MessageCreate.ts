@@ -1,5 +1,6 @@
 import { getFromBotConfig } from '../utils/config.js';
 import { getCrossposting } from '../utils/crossposting.js';
+import { addExperience } from '../utils/leveling.js';
 import { logger } from '../utils/logger.js';
 import { type ClientEvents, Events, type Message } from 'discord.js';
 
@@ -28,4 +29,5 @@ export const execute = async (...args: ClientEvents[typeof name]) => {
   const message = args[0];
 
   await crosspost(message);
+  await addExperience(message);
 };

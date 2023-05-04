@@ -1,3 +1,4 @@
+import { Experience } from '../entities/Experience.js';
 import { Poll } from '../entities/Poll.js';
 import { PollOption } from '../entities/PollOption.js';
 import { PollVote } from '../entities/PollVote.js';
@@ -528,4 +529,83 @@ export const deleteReminders = async (...reminders: Reminder[]) => {
   }
 
   return deleted;
+};
+
+// Leveling
+
+export const getExperienceByUserId = async (userId?: string) => {
+  if (dataSource === undefined || userId === undefined) {
+    return null;
+  }
+
+  try {
+    return await dataSource
+      .getRepository(Experience)
+      .findOneBy({ user: userId });
+  } catch (error) {
+    logger.error(`Failed getting experience by user ID\n${error}`);
+    return null;
+  }
+};
+
+export const addExperienceByUserId = async (
+  userId?: string,
+  experience: number = 0,
+) => {
+  if (
+    dataSource === undefined ||
+    userId === undefined ||
+    experience === undefined
+  ) {
+    return null;
+  }
+
+  const level = await getExperienceByUserId(userId);
+
+  if (level === null) {
+    return null;
+  }
+
+  level.experience += experience;
+
+  try {
+    return await dataSource.getRepository(Experience).save(level);
+  } catch (error) {
+    logger.error(`Failed adding experience by user ID\n${error}`);
+    return null;
+  }
+};
+
+export const addLevelByUserId = async (userId?: string, level: number = 1) => {
+  if (dataSource === undefined || userId === undefined) {
+    return null;
+  }
+
+  const userLevel = await getExperienceByUserId(userId);
+
+  if (userLevel === null) {
+    return null;
+  }
+
+  userLevel.level += level;
+
+  try {
+    return await dataSource.getRepository(Experience).save(userLevel);
+  } catch (error) {
+    logger.error(`Failed adding experience by user ID\n${error}`);
+    return null;
+  }
+};
+
+export const saveExperience = async (level?: Experience) => {
+  if (dataSource === undefined || level === undefined) {
+    return null;
+  }
+
+  try {
+    return await dataSource.getRepository(Experience).save(level);
+  } catch (error) {
+    logger.error(`Failed saving experience\n${error}`);
+    return null;
+  }
 };

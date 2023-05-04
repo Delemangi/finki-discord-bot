@@ -17,6 +17,8 @@ export const commands = {
   'courses remove': 'Отстрани улоги за предмети',
   crosspost: 'Вклучи или исклучи crossposting',
   embed: 'Креирај ембед',
+  'experience add': 'Додади поени за активност на член',
+  'experience get': 'Ниво и активност за член',
   faq: 'Најчесто поставувани прашања',
   help: 'Помош за командите',
   home: 'Изворен код на ботот',

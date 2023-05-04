@@ -12,7 +12,7 @@ import {
 declare global {
   type Mode = 'dev' | 'prod';
 
-  type Channels = 'commands' | 'oath' | 'polls' | 'vip';
+  type Channels = 'activity' | 'commands' | 'oath' | 'polls' | 'vip';
 
   type Roles = 'admin' | 'fss' | 'ombudsman' | 'vip' | 'vipInvited';
 
@@ -56,6 +56,13 @@ declare global {
     other: string[];
     program: string[];
     year: string[];
+  };
+
+  type LevelConfig = {
+    [index: number]: {
+      add: string[];
+      remove: string[];
+    };
   };
 
   type Question = {
