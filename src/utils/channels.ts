@@ -43,10 +43,12 @@ export const initializeChannels = () => {
 
 export const getChannel = (type: Channels) => channels[type];
 
-const getNextVipCronRun = (locale: string = 'en-GB') => {
+const getNextVipCronRun = (locale: string = 'en-GB', offset = 1) => {
   const nextRun = Cron(getFromBotConfig('vipTemporaryChannelCron'), {
     timezone: 'CET',
-  }).nextRun();
+  })
+    .nextRuns(offset)
+    .at(-1);
   logger.info(nextRun?.getTimezoneOffset());
   return nextRun === null
     ? '?'
@@ -83,6 +85,7 @@ export const scheduleVipTemporaryChannel = async () => {
         parent: getFromBotConfig('vipTemporaryChannelParent'),
         topic: `Задните соби на ВИП. Следно бришење е на ${getNextVipCronRun(
           'mk-MK',
+          2,
         )}`,
         type: ChannelType.GuildText,
       });
