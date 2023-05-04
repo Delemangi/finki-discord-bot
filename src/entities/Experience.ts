@@ -1,8 +1,8 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Experience {
-  @PrimaryColumn('uuid')
+  @PrimaryGeneratedColumn('uuid')
   public id!: string;
 
   @Column('text', { nullable: false })
