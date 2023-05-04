@@ -52,9 +52,10 @@ export const addExperience = async (message: Message) => {
     const channel = getChannel('activity');
 
     if (channel !== undefined) {
-      await channel.send(
-        `Честитки, ${message.author}! Сега сте ниво ${currentLevel.level}!`,
-      );
+      await channel.send({
+        allowedMentions: { parse: [] },
+        content: `Честитки, ${message.author}! Сега сте ниво ${currentLevel.level}!`,
+      });
     }
 
     await awardMember(message.member, currentLevel.level);
