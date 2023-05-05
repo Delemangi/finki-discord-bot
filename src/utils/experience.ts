@@ -20,26 +20,26 @@ const countLinks = (message: string) => {
 const getExperienceFromMessage = async (message: Message) => {
   await message.fetch();
 
-  const a = Math.min(
-    50,
-    Math.floor(
-      1 +
-        2 * cleanMessage(message.cleanContent).length ** coefficient +
-        5 * countLinks(message.cleanContent) ** coefficient +
-        5 * message.attachments.size ** coefficient +
-        5 * message.mentions.users.size ** coefficient +
-        5 * message.mentions.roles.size ** coefficient +
-        5 * message.mentions.channels.size ** coefficient +
-        5 * message.stickers.size,
+  return BigInt(
+    Math.min(
+      50,
+      Math.floor(
+        1 +
+          2 * cleanMessage(message.cleanContent).length ** coefficient +
+          5 * countLinks(message.cleanContent) ** coefficient +
+          5 * message.attachments.size ** coefficient +
+          5 * message.mentions.users.size ** coefficient +
+          5 * message.mentions.roles.size ** coefficient +
+          5 * message.mentions.channels.size ** coefficient +
+          5 * message.stickers.size,
+      ),
     ),
   );
-
-  return a;
 };
 
-const getLevelFromExperience = (experience: number) => {
-  const delta = 800;
-  let level = 1;
+const getLevelFromExperience = (experience: bigint) => {
+  const delta = 800n;
+  let level = 1n;
 
   while (experience - delta * level >= 0) {
     // eslint-disable-next-line no-param-reassign
@@ -80,10 +80,9 @@ export const addExperience = async (message: Message) => {
   currentLevel.messages++;
 
   const experience = await getExperienceFromMessage(message);
-  const level = getLevelFromExperience(experience);
-
   currentLevel.experience =
     BigInt(currentLevel.experience) + BigInt(experience);
+  const level = getLevelFromExperience(currentLevel.experience);
 
   if (level > currentLevel.level) {
     currentLevel.level++;
