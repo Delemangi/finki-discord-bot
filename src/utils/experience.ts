@@ -2,6 +2,7 @@ import { Experience } from '../entities/Experience.js';
 import { getChannel } from './channels.js';
 import { getLevels } from './config.js';
 import { getExperienceByUserId, saveExperience } from './database.js';
+import AsyncLock from 'async-lock';
 import { type GuildMember, type Message } from 'discord.js';
 
 const coefficient = (1 + Math.sqrt(5)) / 2 - 1;
@@ -61,42 +62,46 @@ const awardMember = async (member: GuildMember | null, level: number) => {
   await member.roles.remove(roles.remove);
 };
 
+const lock = new AsyncLock();
+
 export const addExperience = async (message: Message) => {
   if (message.author.bot || message.author.system || message.guild === null) {
     return;
   }
 
-  let currentLevel = await getExperienceByUserId(message.author.id);
+  await lock.acquire(message.author.id, async () => {
+    let currentLevel = await getExperienceByUserId(message.author.id);
 
-  if (currentLevel === null) {
-    currentLevel = new Experience();
-    currentLevel.user = message.author.id;
-    currentLevel.tag = message.author.tag;
-    currentLevel.messages = 0;
-    currentLevel.level = 0;
-    currentLevel.experience = 0n;
-  }
-
-  currentLevel.messages++;
-
-  const experience = await getExperienceFromMessage(message);
-  currentLevel.experience = BigInt(currentLevel.experience) + experience;
-  const level = getLevelFromExperience(currentLevel.experience);
-
-  if (level !== currentLevel.level) {
-    currentLevel.level = level;
-
-    const channel = getChannel('activity');
-
-    if (channel !== undefined) {
-      await channel.send({
-        allowedMentions: { parse: [] },
-        content: `Честитки, ${message.author}! Сега сте ниво ${currentLevel.level}!`,
-      });
+    if (currentLevel === null) {
+      currentLevel = new Experience();
+      currentLevel.user = message.author.id;
+      currentLevel.tag = message.author.tag;
+      currentLevel.messages = 0;
+      currentLevel.level = 0;
+      currentLevel.experience = 0n;
     }
 
-    await awardMember(message.member, currentLevel.level);
-  }
+    currentLevel.messages++;
 
-  await saveExperience(currentLevel);
+    const experience = await getExperienceFromMessage(message);
+    currentLevel.experience = BigInt(currentLevel.experience) + experience;
+    const level = getLevelFromExperience(currentLevel.experience);
+
+    if (level !== currentLevel.level) {
+      currentLevel.level = level;
+
+      const channel = getChannel('activity');
+
+      if (channel !== undefined) {
+        await channel.send({
+          allowedMentions: { parse: [] },
+          content: `Честитки, ${message.author}! Сега сте ниво ${currentLevel.level}!`,
+        });
+      }
+
+      await awardMember(message.member, currentLevel.level);
+    }
+
+    await saveExperience(currentLevel);
+  });
 };

@@ -4,6 +4,7 @@
     "url": "https://github.com/Delemangi/finki-discord-bot/issues"
   },
   "dependencies": {
+    "async-lock": "^1.4.0",
     "chrono-node": "^2.6.3",
     "croner": "^6.0.3",
     "discord-api-types": "^0.37.41",
@@ -18,6 +19,7 @@
   },
   "description": "FINKI Discord bot",
   "devDependencies": {
+    "@types/async-lock": "^1.4.0",
     "@types/jsdom": "^21.1.1",
     "eslint": "^8.39.0",
     "eslint-config-canonical": "^41.0.3",
