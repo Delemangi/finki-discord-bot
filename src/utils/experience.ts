@@ -47,7 +47,7 @@ const getLevelFromExperience = (experience: bigint) => {
     level++;
   }
 
-  return level;
+  return Number(level);
 };
 
 const awardMember = async (member: GuildMember | null, level: number) => {
@@ -80,12 +80,11 @@ export const addExperience = async (message: Message) => {
   currentLevel.messages++;
 
   const experience = await getExperienceFromMessage(message);
-  currentLevel.experience =
-    BigInt(currentLevel.experience) + BigInt(experience);
+  currentLevel.experience = BigInt(currentLevel.experience) + experience;
   const level = getLevelFromExperience(currentLevel.experience);
 
-  if (level > currentLevel.level) {
-    currentLevel.level++;
+  if (level !== currentLevel.level) {
+    currentLevel.level = level;
 
     const channel = getChannel('activity');
 
