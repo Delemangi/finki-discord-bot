@@ -14,8 +14,8 @@ export class Experience {
   @Column('int', { default: 0, nullable: false })
   public messages!: number;
 
-  @Column('bigint', { default: 0, nullable: false })
-  public experience!: number;
+  @Column('bigint', { default: 0n, nullable: false })
+  public experience!: bigint;
 
   @Column('int', { default: 0, nullable: false })
   public level!: number;

@@ -566,7 +566,7 @@ export const addExperienceByUserId = async (
     return null;
   }
 
-  level.experience += experience;
+  level.experience = BigInt(level.experience) + BigInt(experience);
 
   try {
     return await dataSource.getRepository(Experience).save(level);

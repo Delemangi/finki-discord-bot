@@ -14,7 +14,7 @@ export const execute = async (...args: ClientEvents[typeof name]) => {
     exp.user = member.id;
     exp.tag = member.user.tag;
     exp.messages = 0;
-    exp.experience = 0;
+    exp.experience = 0n;
     exp.level = 0;
 
     await saveExperience(exp);

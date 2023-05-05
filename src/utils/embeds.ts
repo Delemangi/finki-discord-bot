@@ -45,6 +45,7 @@ import {
   type Interaction,
   italic,
   roleMention,
+  type User,
   type UserContextMenuCommandInteraction,
   userMention,
 } from 'discord.js';
@@ -1084,18 +1085,27 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
 
 export const getExperienceEmbed = (experience: Experience) => {
   const guild = client.guilds.cache.get(getFromBotConfig('guild'));
+  const user = guild?.members.cache.get(experience.user)?.user as User;
 
   if (guild === undefined) {
     return new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
-      .setTitle(experience.tag)
+      .setAuthor({
+        iconURL: user?.avatarURL() ?? '',
+        name: user?.tag,
+      })
+      .setTitle('Активност')
       .setDescription('Настана грешка.')
       .setTimestamp();
   }
 
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
-    .setTitle(experience.tag)
+    .setAuthor({
+      iconURL: user?.avatarURL() ?? '',
+      name: user?.tag,
+    })
+    .setTitle('Активност')
     .addFields(
       {
         inline: true,

@@ -49,7 +49,7 @@ const handleExperienceGet = async (
     experience.user = userId;
     experience.tag = user.tag;
     experience.messages = 0;
-    experience.experience = 0;
+    experience.experience = 0n;
     experience.level = 0;
 
     await saveExperience(experience);
