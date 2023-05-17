@@ -13,7 +13,7 @@
     "jsdom": "^22.0.0",
     "pg": "^8.10.0",
     "reflect-metadata": "^0.1.13",
-    "rimraf": "^5.0.0",
+    "rimraf": "^5.0.1",
     "typeorm": "^0.3.16",
     "winston": "^3.8.2"
   },
