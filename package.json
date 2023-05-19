@@ -21,7 +21,7 @@
   "devDependencies": {
     "@types/async-lock": "^1.4.0",
     "@types/jsdom": "^21.1.1",
-    "eslint": "^8.40.0",
+    "eslint": "^8.41.0",
     "eslint-config-canonical": "^41.0.4",
     "typescript": "^5.0.4"
   },
