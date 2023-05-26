@@ -15,7 +15,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^5.0.1",
     "typeorm": "^0.3.16",
-    "winston": "^3.8.2"
+    "winston": "^3.9.0"
   },
   "description": "FINKI Discord bot",
   "devDependencies": {
