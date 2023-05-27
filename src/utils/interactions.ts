@@ -464,9 +464,14 @@ const handlePollButtonForVipRemoveVote = async (
     }
 
     const vipRole = getRole('vip');
+    const vipVotingRole = getRole('vipVoting');
 
     if (vipRole !== undefined) {
       await member.roles.remove(vipRole);
+    }
+
+    if (vipVotingRole !== undefined) {
+      await member.roles.remove(vipVotingRole);
     }
   } else if (vipChannel?.isTextBased()) {
     await vipChannel.send(
