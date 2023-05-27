@@ -21,7 +21,6 @@ import {
   deleteVipPoll,
   getPollById,
   getPollOptionById,
-  getPollOptionByName,
   getPollVotesByOption,
   getPollVotesByUser,
   getVipPollById,
@@ -634,11 +633,11 @@ const handlePollStatsButton = async (
     return;
   }
 
-  const id = args[0]?.toString();
-  const option = args[1]?.toString();
-  const poll = await getPollById(id);
+  const pollId = args[0]?.toString();
+  const optionId = args[1]?.toString();
+  const poll = await getPollById(pollId);
 
-  if (poll === null || id === undefined || option === undefined) {
+  if (poll === null || pollId === undefined || optionId === undefined) {
     logger.warn(
       `Received button interaction ${interaction.id}: ${interaction.customId} from ${interaction.user.tag} for a non-existent poll or option`,
     );
@@ -646,7 +645,7 @@ const handlePollStatsButton = async (
     return;
   }
 
-  const pollOption = await getPollOptionByName(poll.id, option);
+  const pollOption = await getPollOptionById(optionId);
 
   if (pollOption === null) {
     const mess = await interaction.reply({
