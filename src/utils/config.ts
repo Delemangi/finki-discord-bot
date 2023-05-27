@@ -30,6 +30,7 @@ const defaultConfig: Required<BotConfig> = {
     ombudsman: '',
     vip: '',
     vipInvited: '',
+    vipVoting: '',
   },
   vipTemporaryChannelCron: '',
   vipTemporaryChannelName: '',

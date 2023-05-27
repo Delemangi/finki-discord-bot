@@ -14,7 +14,13 @@ declare global {
 
   type Channels = 'activity' | 'commands' | 'oath' | 'polls' | 'vip';
 
-  type Roles = 'admin' | 'fss' | 'ombudsman' | 'vip' | 'vipInvited';
+  type Roles =
+    | 'admin'
+    | 'fss'
+    | 'ombudsman'
+    | 'vip'
+    | 'vipInvited'
+    | 'vipVoting';
 
   type RoleSets = 'color' | 'courses' | 'notification' | 'program' | 'year';
 
