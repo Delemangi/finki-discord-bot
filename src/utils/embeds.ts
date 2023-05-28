@@ -523,9 +523,12 @@ export const getRulesEmbed = () => {
 export const getVipRequestEmbed = () => {
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
-    .setTitle('Quest')
+    .setTitle(
+      getResponses().find((response) => response.command === 'vipRequestTitle')
+        ?.response ?? 'VIP',
+    )
     .setDescription(
-      getResponses().find((response) => response.command === 'vipRequest')
+      getResponses().find((response) => response.command === 'vipRequestText')
         ?.response ?? '-',
     );
 };
@@ -537,7 +540,11 @@ export const getVipRequestComponents = () => {
   row.addComponents(
     new ButtonBuilder()
       .setCustomId('vip:request')
-      .setLabel('Start')
+      .setLabel(
+        getResponses().find(
+          (response) => response.command === 'vipRequestButton',
+        )?.response ?? 'Start',
+      )
       .setStyle(ButtonStyle.Primary),
   );
   components.push(row);
