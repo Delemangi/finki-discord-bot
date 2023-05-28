@@ -366,12 +366,12 @@ export const createVipPoll = async (
     poll.title = `Недоверба против ${vipUser.tag}`;
     poll.description = `Дали сте за да биде корисникот ${
       vipUser.tag
-    } ${userMention(vipUser.id)} избркан од ВИП?`;
+    } (${userMention(vipUser.id)}) избркан од ВИП?`;
   } else if (type === 'upgrade') {
     poll.title = `Гласачки права за ${vipUser.tag}`;
     poll.description = `Дали сте за да му биде дадено право на глас на корисникот ${
       vipUser.tag
-    } ${userMention(vipUser.id)}?`;
+    } (${userMention(vipUser.id)})?`;
   } else {
     poll.title = `Непознат тип на анкета за ${vipUser.tag}`;
     poll.description = 'Настана некоја грешка со анкетата.';
@@ -383,7 +383,7 @@ export const createVipPoll = async (
   poll.owner = client.user?.id ?? '';
   poll.options = [yes, no];
   poll.roles = [
-    getFromBotConfig('roles').vipVoting,
+    getFromBotConfig('roles').vipVoting,:()
     getFromBotConfig('roles').admin,
   ];
   poll.done = false;
