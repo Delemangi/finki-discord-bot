@@ -14,7 +14,7 @@ export const commandDescriptions = {
   'course toggle': 'Земи или отстрани улога за предмет',
   'courses add': 'Земи улоги за предмети',
   'courses prerequisite': 'Сите предмети според предуслов',
-  'courses programs': 'Сите предмети според смер',
+  'courses program': 'Сите предмети според смер',
   'courses remove': 'Отстрани улоги за предмети',
   crosspost: 'Вклучи или исклучи crossposting',
   embed: 'Креирај ембед',
@@ -30,7 +30,6 @@ export const commandDescriptions = {
   members: 'Број на членови на серверот',
   ping: 'Пинг на ботот',
   'poll add': 'Додади опции на анкети',
-  'poll anonymous': 'Измени анонимност на анкети',
   'poll close': 'Затвори ја анкетата за гласање',
   'poll create': 'Креирај анкети',
   'poll delete': 'Избриши анкети',
@@ -67,7 +66,7 @@ export const commandDescriptions = {
   'vip members': 'Моментален состав на ВИП',
   'vip override': 'Одлучи за ВИП анкета',
   'vip remove': 'Покренете гласање за недоверба против член на ВИП',
-  'vip upgrade': 'Предложи обичен ВИП член за полноправен ВИП член',
+  'vip upgrade': 'Предложи обичен ВИП член за полноправен член на ВИП',
 };
 
 export const programMapping: { [index in ProgramKeys]: ProgramValues } = {

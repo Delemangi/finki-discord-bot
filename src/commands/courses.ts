@@ -22,7 +22,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('program')
-      .setDescription(commandDescriptions['courses programs'])
+      .setDescription(commandDescriptions['courses program'])
       .addStringOption((option) =>
         option
           .setName('program')
