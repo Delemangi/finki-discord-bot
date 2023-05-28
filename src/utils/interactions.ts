@@ -395,51 +395,39 @@ const handlePollButtonForVipAddVote = async (poll: Poll, vipPoll: VipPoll) => {
   const oathChannel = getChannel('oath');
 
   if (poll.decision === 'Да') {
-    if (vipChannel?.isTextBased()) {
-      await vipChannel.send(
-        `Корисникот ${userMention(
-          vipPoll?.user ?? '',
-        )} е одобрен како член на ВИП.`,
-      );
-    }
+    await vipChannel?.send(
+      `Корисникот ${userMention(
+        vipPoll?.user ?? '',
+      )} е одобрен како член на ВИП.`,
+    );
 
-    if (vipPoll !== null) {
-      await deleteVipPoll(vipPoll.id);
-    }
+    await deleteVipPoll(vipPoll.id);
 
-    if (oathChannel?.isTextBased()) {
-      const embed = getVipConfirmEmbed();
-      const components = getVipConfirmComponents();
-      await oathChannel.send({
-        components,
-        content: `${userMention(
-          vipPoll?.user ?? '',
-        )} Вашата молба за член на ВИП беше одобрена.`,
-        embeds: [embed],
-      });
-    }
+    const embed = getVipConfirmEmbed();
+    const components = getVipConfirmComponents();
+    await oathChannel?.send({
+      components,
+      content: `${userMention(
+        vipPoll?.user ?? '',
+      )} Вашата молба за член на ВИП беше одобрена.`,
+      embeds: [embed],
+    });
   } else {
-    if (vipChannel?.isTextBased()) {
-      await vipChannel.send(
-        `Корисникот ${userMention(
-          vipPoll?.user ?? '',
-        )} не е одобрен како член на ВИП.`,
-      );
-    }
+    await vipChannel?.send(
+      `Корисникот ${userMention(
+        vipPoll?.user ?? '',
+      )} не е одобрен како член на ВИП.`,
+    );
 
-    if (vipPoll !== null) {
-      await deleteVipPoll(vipPoll.id);
-    }
+    await deleteVipPoll(vipPoll.id);
 
-    if (oathChannel?.isTextBased()) {
-      const components = getVipAcknowledgeComponents();
-      await oathChannel.send({
-        components,
-        content: `${userMention(
-          vipPoll?.user ?? '',
-        )} Вашата молба за член на ВИП беше одбиена.`,
-      });
-    }
+    const components = getVipAcknowledgeComponents();
+    await oathChannel?.send({
+      components,
+      content: `${userMention(
+        vipPoll?.user ?? '',
+      )} Вашата молба за член на ВИП беше одбиена.`,
+    });
   }
 };
 
@@ -451,17 +439,13 @@ const handlePollButtonForVipRemoveVote = async (
   const vipChannel = getChannel('vip');
 
   if (poll.decision === 'Да') {
-    if (vipChannel?.isTextBased()) {
-      await vipChannel.send(
-        `Изгласана е недоверба против членот на ВИП ${userMention(
-          vipPoll.user,
-        )}.`,
-      );
-    }
+    await vipChannel?.send(
+      `Изгласана е недоверба против членот на ВИП ${userMention(
+        vipPoll.user,
+      )}.`,
+    );
 
-    if (vipPoll !== null) {
-      await deleteVipPoll(vipPoll.id);
-    }
+    await deleteVipPoll(vipPoll.id);
 
     const vipRole = getRole('vip');
     const vipVotingRole = getRole('vipVoting');
@@ -473,8 +457,8 @@ const handlePollButtonForVipRemoveVote = async (
     if (vipVotingRole !== undefined) {
       await member.roles.remove(vipVotingRole);
     }
-  } else if (vipChannel?.isTextBased()) {
-    await vipChannel.send(
+  } else {
+    await vipChannel?.send(
       `Не е изгласана недоверба против членот на ВИП ${userMention(
         vipPoll.user,
       )}.`,
@@ -501,6 +485,14 @@ const handlePollButtonForVipUpgradeVote = async (
     if (vipVotingRole !== undefined) {
       await member.roles.add(vipVotingRole);
     }
+  } else {
+    await vipChannel?.send(
+      `Корисникот ${userMention(
+        vipPoll.user,
+      )} не е одобрен како полноправен член на ВИП.`,
+    );
+
+    await deleteVipPoll(vipPoll.id);
   }
 };
 
