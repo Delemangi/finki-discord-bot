@@ -499,7 +499,7 @@ const handlePollButtonForVipUpgradeVote = async (
     const vipVotingRole = getRole('vipVoting');
 
     if (vipVotingRole !== undefined) {
-      await member.roles.remove(vipVotingRole);
+      await member.roles.add(vipVotingRole);
     }
   }
 };
