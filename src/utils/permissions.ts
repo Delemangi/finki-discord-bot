@@ -84,16 +84,17 @@ export const hasCommandPermission = (
   }
 
   if (roles.includes(undefined)) {
-    logger.warn(
-      `Encountered undefined role while checking command permissions for ${command}`,
-    );
-    return false;
+    logger.warn(`Found undefined roles in command permissions for ${command}`);
   }
 
+  const tidiedRoles = roles.filter(Boolean) as string[];
+
+  logger.info(member.permissions.has(permissions));
+  logger.info(member.roles.cache.hasAll(...tidiedRoles));
+
   return (
-    (permissions.length === 0 && roles.length === 0) ||
-    member.permissions.any(permissions) ||
-    member.roles.cache.some((role) => roles.includes(role.id))
+    member.permissions.has(permissions) ||
+    (tidiedRoles.length !== 0 && member.roles.cache.hasAll(...tidiedRoles))
   );
 };
 

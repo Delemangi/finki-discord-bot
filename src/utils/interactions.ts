@@ -1067,13 +1067,16 @@ export const handleChatInputCommand = async (
     return;
   }
 
+  const fullCommand = (
+    interaction.commandName +
+    ' ' +
+    (interaction.options.getSubcommand(false) ?? '')
+  ).trim();
+
   if (
-    !hasCommandPermission(
-      interaction.member as GuildMember | null,
-      command.data.name,
-    )
+    !hasCommandPermission(interaction.member as GuildMember | null, fullCommand)
   ) {
-    await interaction.editReply(errors.commandNoPermission);
+    await interaction.reply(errors.commandNoPermission);
     return;
   }
 
