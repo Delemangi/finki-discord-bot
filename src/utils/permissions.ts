@@ -89,9 +89,6 @@ export const hasCommandPermission = (
 
   const tidiedRoles = roles.filter(Boolean) as string[];
 
-  logger.info(member.permissions.has(permissions));
-  logger.info(member.roles.cache.hasAll(...tidiedRoles));
-
   return (
     member.permissions.has(permissions) ||
     (tidiedRoles.length !== 0 && member.roles.cache.hasAll(...tidiedRoles))
