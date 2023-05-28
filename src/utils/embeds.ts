@@ -1066,7 +1066,12 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
         vipMembers.length === 0
           ? 'Нема членови на ВИП.'
           : vipMembers
-              .map((member) => userMention(member?.user.id as string))
+              .map(
+                (member) =>
+                  `${member?.user.tag} (${userMention(
+                    member?.user.id as string,
+                  )})`,
+              )
               .join('\n'),
       ),
     new EmbedBuilder()
@@ -1076,7 +1081,12 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
         adminMembers.length === 0
           ? 'Нема администратори.'
           : adminMembers
-              .map((member) => userMention(member?.user.id as string))
+              .map(
+                (member) =>
+                  `${member?.user.tag} (${userMention(
+                    member?.user.id as string,
+                  )})`,
+              )
               .join('\n'),
       )
       .setTimestamp(),
