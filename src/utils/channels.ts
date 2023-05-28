@@ -88,7 +88,7 @@ export const scheduleVipTemporaryChannel = async () => {
         )}`,
         type: ChannelType.GuildText,
       });
-      await channel.setPosition(-3, { relative: true });
+      await channel.setPosition(-1, { relative: true });
 
       logger.info(
         `Temporary VIP channel recreated. Next recreation is scheduled for ${getNextVipCronRun()}`,
