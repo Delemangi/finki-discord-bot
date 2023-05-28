@@ -48,6 +48,14 @@ export const data = new SlashCommandBuilder()
   )
   .addSubcommand((command) =>
     command
+      .setName('upgrade')
+      .setDescription(commandDescriptions['vip upgrade'])
+      .addUserOption((option) =>
+        option.setName('user').setDescription('Корисник').setRequired(true),
+      ),
+  )
+  .addSubcommand((command) =>
+    command
       .setName('override')
       .setDescription(commandDescriptions['vip override'])
       .addUserOption((option) =>
@@ -59,7 +67,7 @@ export const data = new SlashCommandBuilder()
           .setDescription('Тип на анкета')
           .setRequired(true)
           .addChoices(
-            ...['add', 'remove'].map((choice) => ({
+            ...['add', 'remove', 'upgrade'].map((choice) => ({
               name: choice,
               value: choice,
             })),
@@ -177,6 +185,65 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply({ components, embeds: [embed] });
 };
 
+const handleVipUpgrade = async (interaction: ChatInputCommandInteraction) => {
+  const user = interaction.options.getUser('user', true);
+
+  if (user.bot) {
+    await interaction.editReply('Корисникот не смее да биде бот.');
+    return;
+  }
+
+  const member = interaction.guild?.members.cache.find(
+    (mem) => mem.id === user.id,
+  );
+
+  if (member === undefined) {
+    await interaction.editReply('Корисникот не е член на овој сервер.');
+    return;
+  }
+
+  const vipRole = getRole('vip');
+  const vipVotingRole = getRole('vipVoting');
+  const adminRole = getRole('admin');
+
+  if (
+    vipRole === undefined ||
+    adminRole === undefined ||
+    vipVotingRole === undefined
+  ) {
+    await interaction.editReply(
+      'Улогите за пристап до ВИП или не се конфигурирани или не постојат.',
+    );
+    return;
+  }
+
+  if (member.roles.cache.has(adminRole.id)) {
+    await interaction.editReply('Корисникот е администратор.');
+    return;
+  }
+
+  if (!member.roles.cache.has(vipRole.id)) {
+    await interaction.editReply('Корисникот не е член на ВИП.');
+    return;
+  }
+
+  if (member.roles.cache.has(vipVotingRole.id)) {
+    await interaction.editReply('Корисникот е полноправен член на ВИП.');
+    return;
+  }
+
+  const poll = await createVipPoll(user, 'upgrade', 0.33);
+
+  if (poll === null) {
+    await interaction.editReply('Веќе постои предлог за овој корисник.');
+    return;
+  }
+
+  const embed = await getPollEmbed(poll);
+  const components = getPollComponents(poll);
+  await interaction.editReply({ components, embeds: [embed] });
+};
+
 const handleVipOverride = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser('user', true);
   const type = interaction.options.getString('type', true);
@@ -212,6 +279,7 @@ const vipHandlers = {
   members: handleVipMembers,
   override: handleVipOverride,
   remove: handleVipRemove,
+  upgrade: handleVipUpgrade,
 };
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {

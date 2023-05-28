@@ -482,6 +482,28 @@ const handlePollButtonForVipRemoveVote = async (
   }
 };
 
+const handlePollButtonForVipUpgradeVote = async (
+  poll: Poll,
+  vipPoll: VipPoll,
+  member: GuildMember,
+) => {
+  const vipChannel = getChannel('vip');
+
+  if (poll.decision === 'Да') {
+    await vipChannel?.send(
+      `Корисникот ${userMention(vipPoll.user)} е сега полноправен ВИП член.`,
+    );
+
+    await deleteVipPoll(vipPoll.id);
+
+    const vipVotingRole = getRole('vipVoting');
+
+    if (vipVotingRole !== undefined) {
+      await member.roles.remove(vipVotingRole);
+    }
+  }
+};
+
 export const handlePollButtonForVipVote = async (
   poll: Poll,
   member: GuildMember,
@@ -496,6 +518,8 @@ export const handlePollButtonForVipVote = async (
     await handlePollButtonForVipAddVote(poll, vipPoll);
   } else if (vipPoll?.type === 'remove') {
     await handlePollButtonForVipRemoveVote(poll, vipPoll, member);
+  } else if (vipPoll?.type === 'upgrade') {
+    await handlePollButtonForVipUpgradeVote(poll, vipPoll, member);
   }
 };
 

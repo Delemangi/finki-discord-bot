@@ -357,18 +357,26 @@ export const createVipPoll = async (
   const no = new PollOption();
   no.name = 'Не';
 
-  poll.title =
-    type === 'add'
-      ? `Влез во ВИП за ${vipUser.tag}`
-      : `Недоверба против ${vipUser.tag}`;
-  poll.description =
-    type === 'add'
-      ? `Дали сте за да стане корисникот ${vipUser.tag} (${userMention(
-          vipUser.id,
-        )}) член на ВИП?`
-      : `Дали сте за да биде корисникот ${vipUser.tag} ${userMention(
-          vipUser.id,
-        )} избркан од ВИП?`;
+  if (type === 'add') {
+    poll.title = `Влез во ВИП за ${vipUser.tag}`;
+    poll.description = `Дали сте за да стане корисникот ${
+      vipUser.tag
+    } (${userMention(vipUser.id)}) член на ВИП?`;
+  } else if (type === 'remove') {
+    poll.title = `Недоверба против ${vipUser.tag}`;
+    poll.description = `Дали сте за да биде корисникот ${
+      vipUser.tag
+    } ${userMention(vipUser.id)} избркан од ВИП?`;
+  } else if (type === 'upgrade') {
+    poll.title = `Гласачки права за ${vipUser.tag}`;
+    poll.description = `Дали сте за да му биде дадено право на глас на корисникот ${
+      vipUser.tag
+    } ${userMention(vipUser.id)}?`;
+  } else {
+    poll.title = `Непознат тип на анкета за ${vipUser.tag}`;
+    poll.description = 'Настана некоја грешка со анкетата.';
+  }
+
   poll.anonymous = true;
   poll.multiple = false;
   poll.open = false;

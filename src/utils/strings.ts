@@ -66,6 +66,7 @@ export const commandDescriptions = {
   'vip members': 'Моментален состав на ВИП',
   'vip override': 'Одлучи за ВИП анкета',
   'vip remove': 'Покренете гласање за недоверба против член на ВИП',
+  'vip upgrade': 'Предложи обичен ВИП член за полноправен ВИП член',
 };
 
 export const programMapping: { [index in ProgramKeys]: ProgramValues } = {
