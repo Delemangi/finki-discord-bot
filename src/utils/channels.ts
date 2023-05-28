@@ -54,7 +54,6 @@ const getNextVipCronRun = (locale: string = 'en-GB', offset = 1) => {
     : new Intl.DateTimeFormat(locale, {
         dateStyle: 'full',
         timeStyle: 'long',
-        timeZone: 'CET',
       }).format(nextRun);
 };
 
