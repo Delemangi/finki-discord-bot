@@ -520,7 +520,7 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
       return;
     }
 
-    const id = buttonInteraction.customId.split('-')[1];
+    const id = buttonInteraction.customId.split(':')[1];
 
     if (id === 'undefined') {
       return;
