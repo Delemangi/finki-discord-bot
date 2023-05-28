@@ -44,6 +44,7 @@ declare global {
     crosspostChannels?: string[];
     ephemeralReplyTime: number;
     guild: string;
+    leveling: boolean;
     logo: string;
     mode: Mode;
     profiles: { [K in Mode]: { applicationId: string; token: string } };

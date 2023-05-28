@@ -1,6 +1,6 @@
 import { Experience } from '../entities/Experience.js';
 import { getChannel } from './channels.js';
-import { getLevels } from './config.js';
+import { getFromBotConfig, getLevels } from './config.js';
 import { getExperienceByUserId, saveExperience } from './database.js';
 import AsyncLock from 'async-lock';
 import { type GuildMember, type Message } from 'discord.js';
@@ -65,6 +65,10 @@ const awardMember = async (member: GuildMember | null, level: number) => {
 const lock = new AsyncLock();
 
 export const addExperience = async (message: Message) => {
+  if (!getFromBotConfig('leveling')) {
+    return;
+  }
+
   if (message.author.bot || message.author.system || message.guild === null) {
     return;
   }

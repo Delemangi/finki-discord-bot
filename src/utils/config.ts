@@ -12,6 +12,7 @@ const defaultConfig: Required<BotConfig> = {
   crosspostChannels: [],
   ephemeralReplyTime: 5_000,
   guild: '',
+  leveling: false,
   logo: '',
   mode: 'prod',
   profiles: {
