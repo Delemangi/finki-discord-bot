@@ -1349,36 +1349,55 @@ export const getPollEmbed = async (poll: Poll) => {
 
 export const getPollComponents = (poll: Poll) => {
   const components = [];
+  const firstRow = new ActionRowBuilder<ButtonBuilder>();
+  const firstButtons = [];
+  const highestIndex = Math.min(poll.options.length, 4);
 
-  for (let index1 = 0; index1 < poll.options.length; index1 += 5) {
-    const row = new ActionRowBuilder<ButtonBuilder>();
-    const buttons = [];
+  const infoButton = new ButtonBuilder()
+    .setCustomId(`poll:${poll.id}:info`)
+    .setLabel('Информации')
+    .setStyle(ButtonStyle.Secondary);
 
-    if (index1 === 0) {
-      const button = new ButtonBuilder()
-        .setCustomId(`poll:${poll.id}:info`)
-        .setLabel('Информации')
-        .setStyle(ButtonStyle.Secondary);
+  firstButtons.push(infoButton);
 
-      buttons.push(button);
-    }
+  for (let index = 0; index < highestIndex; index++) {
+    const option = poll.options[index];
+    const button = new ButtonBuilder()
+      .setCustomId(`poll:${poll.id}:${option?.id}`)
+      .setLabel(`${truncateString(option?.name, 80)}`)
+      .setStyle(ButtonStyle.Primary)
+      .setDisabled(poll.done);
 
-    for (let index2 = index1; index2 < index1 + 5; index2++) {
-      if (poll.options[index2] === undefined) {
-        break;
+    firstButtons.push(button);
+  }
+
+  firstRow.addComponents(firstButtons);
+  components.push(firstRow);
+
+  if (highestIndex === 4) {
+    for (let index1 = highestIndex; index1 < poll.options.length; index1 += 5) {
+      const row = new ActionRowBuilder<ButtonBuilder>();
+      const buttons = [];
+
+      for (let index2 = index1; index2 < index1 + 5; index2++) {
+        const option = poll.options[index2];
+
+        if (option === undefined) {
+          break;
+        }
+
+        const button = new ButtonBuilder()
+          .setCustomId(`poll:${poll.id}:${option.id}`)
+          .setLabel(`${truncateString(option.name, 80)}`)
+          .setStyle(ButtonStyle.Primary)
+          .setDisabled(poll.done);
+
+        buttons.push(button);
       }
 
-      const button = new ButtonBuilder()
-        .setCustomId(`poll:${poll.id}:${poll.options[index2]?.id}`)
-        .setLabel(`${truncateString(poll.options[index2]?.name, 80)}`)
-        .setStyle(ButtonStyle.Primary)
-        .setDisabled(poll.done);
-
-      buttons.push(button);
+      row.addComponents(buttons);
+      components.push(row);
     }
-
-    row.addComponents(buttons);
-    components.push(row);
   }
 
   return components;
