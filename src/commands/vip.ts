@@ -1,6 +1,9 @@
 import {
   createVipPoll,
+  deletePoll,
+  deleteVipPoll,
   getPollById,
+  getVipPollById,
   getVipPollByUserAndType,
   savePoll,
 } from '../utils/database.js';
@@ -81,6 +84,14 @@ export const data = new SlashCommandBuilder()
           .addChoices(
             ...['Да', 'Не'].map((choice) => ({ name: choice, value: choice })),
           ),
+      ),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName('delete')
+      .setDescription(commandDescriptions['vip delete'])
+      .addStringOption((option) =>
+        option.setName('poll').setDescription('Анкета').setRequired(true),
       ),
   )
   .setDMPermission(false);
@@ -274,8 +285,26 @@ const handleVipOverride = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply('Успешно е затворена и спроведена анкетата.');
 };
 
+const handleVipDelete = async (interaction: ChatInputCommandInteraction) => {
+  const pollId = interaction.options.getString('poll', true);
+
+  const vipPoll = await getVipPollById(pollId);
+  const poll = await getPollById(pollId);
+
+  if (vipPoll === null || poll === null) {
+    await interaction.editReply('Таа анкета не постои.');
+    return;
+  }
+
+  await deleteVipPoll(pollId);
+  await deletePoll(pollId);
+
+  await interaction.editReply('Успешно е избришана анкетата.');
+};
+
 const vipHandlers = {
   add: handleVipAdd,
+  delete: handleVipDelete,
   members: handleVipMembers,
   override: handleVipOverride,
   remove: handleVipRemove,

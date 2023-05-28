@@ -63,6 +63,7 @@ export const commandDescriptions = {
   'statistics year': 'Статистика за улогите за години',
   timetable: 'Распоред на часови',
   'vip add': 'Предложете нов член за ВИП',
+  'vip delete': 'Избриши ВИП анкета',
   'vip members': 'Моментален состав на ВИП',
   'vip override': 'Одлучи за ВИП анкета',
   'vip remove': 'Покренете гласање за недоверба против член на ВИП',
