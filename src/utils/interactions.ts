@@ -491,7 +491,7 @@ const handlePollButtonForVipUpgradeVote = async (
 
   if (poll.decision === 'Да') {
     await vipChannel?.send(
-      `Корисникот ${userMention(vipPoll.user)} е сега полноправен ВИП член.`,
+      `Корисникот ${userMention(vipPoll.user)} е сега полноправен член на ВИП.`,
     );
 
     await deleteVipPoll(vipPoll.id);
