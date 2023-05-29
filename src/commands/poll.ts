@@ -47,7 +47,7 @@ export const data = new SlashCommandBuilder()
         option
           .setName('options')
           .setDescription(
-            'Опции (максимум 25, минимум 1, уникатни, разделени со запирки)',
+            'Опции (максимум 24, минимум 1, уникатни, разделени со запирки)',
           )
           .setRequired(true),
       )
@@ -130,7 +130,7 @@ export const data = new SlashCommandBuilder()
       .addStringOption((option) =>
         option
           .setName('options')
-          .setDescription('Опции (максимум 25, уникатни, разделени со запирки)')
+          .setDescription('Опции (максимум 24, уникатни, разделени со запирки)')
           .setRequired(true),
       ),
   )
@@ -217,8 +217,8 @@ const handlePollCreate = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (options.length > 25) {
-    await interaction.editReply('Анкетата не може да има повеќе од 25 опции.');
+  if (options.length > 24) {
+    await interaction.editReply('Анкетата не може да има повеќе од 24 опции.');
     return;
   }
 
@@ -353,6 +353,11 @@ const handlePollAdd = async (interaction: ChatInputCommandInteraction) => {
 
   if (options.length === 0) {
     await interaction.editReply('Анкетата мора да има опции.');
+    return;
+  }
+
+  if (poll.options.length + options.length > 24) {
+    await interaction.editReply('Анкетата не може да има повеќе од 24 опции.');
     return;
   }
 
