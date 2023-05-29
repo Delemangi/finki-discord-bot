@@ -493,9 +493,14 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
   const polls = all
     ? await getAllPolls()
     : (await getAllPolls()).filter((poll) => !poll.done);
-
+  const pollsPerPage = 8;
+  const pages = Math.ceil(polls.length / pollsPerPage);
   const embed = await getPollListFirstPageEmbed(polls, all);
-  const components = [getPaginationComponents('polls', 'start')];
+  const components = [
+    pages === 0 || pages === 1
+      ? getPaginationComponents('polls')
+      : getPaginationComponents('polls', 'start'),
+  ];
   const message = await interaction.editReply({
     components,
     embeds: [embed],
@@ -504,8 +509,6 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
     componentType: ComponentType.Button,
     time: 30_000,
   });
-  const pollsPerPage = 8;
-  const pages = Math.ceil(polls.length / pollsPerPage);
 
   collector.on('collect', async (buttonInteraction) => {
     if (
@@ -542,7 +545,9 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
       page++;
     }
 
-    if (page === 0) {
+    if (page === 0 && (pages === 0 || pages === 1)) {
+      buttons = getPaginationComponents('polls');
+    } else if (page === 0) {
       buttons = getPaginationComponents('polls', 'start');
     } else if (page === pages - 1) {
       buttons = getPaginationComponents('polls', 'end');

@@ -97,7 +97,11 @@ const handleExperienceLeaderboard = async (
   const perPage = 8;
   const pages = Math.ceil(experience.length / perPage);
   const embed = getExperienceLeaderboardFirstPageEmbed(experience);
-  const components = [getPaginationComponents('exp', 'start')];
+  const components = [
+    pages === 0 || pages === 1
+      ? getPaginationComponents('exp')
+      : getPaginationComponents('exp', 'start'),
+  ];
   const message = await interaction.editReply({
     components,
     embeds: [embed],
@@ -142,7 +146,9 @@ const handleExperienceLeaderboard = async (
       page++;
     }
 
-    if (page === 0) {
+    if (page === 0 && (pages === 0 || pages === 1)) {
+      buttons = getPaginationComponents('exp');
+    } else if (page === 0) {
       buttons = getPaginationComponents('exp', 'start');
     } else if (page === pages - 1) {
       buttons = getPaginationComponents('exp', 'end');

@@ -33,7 +33,11 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     interaction.member as GuildMember | null,
     commandsPerPage,
   );
-  const components = [getPaginationComponents('help', 'start')];
+  const components = [
+    pages === 0 || pages === 1
+      ? getPaginationComponents('help')
+      : getPaginationComponents('help', 'start'),
+  ];
   const message = await interaction.editReply({
     components,
     embeds: [embed],
@@ -78,7 +82,9 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       page++;
     }
 
-    if (page === 0) {
+    if (page === 0 && (pages === 0 || pages === 1)) {
+      buttons = getPaginationComponents('help');
+    } else if (page === 0) {
       buttons = getPaginationComponents('help', 'start');
     } else if (page === pages - 1) {
       buttons = getPaginationComponents('help', 'end');
