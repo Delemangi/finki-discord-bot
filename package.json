@@ -10,7 +10,7 @@
     "discord-api-types": "^0.37.42",
     "discord.js": "^14.11.0",
     "dotenv": "^16.0.3",
-    "jsdom": "^22.0.0",
+    "jsdom": "^22.1.0",
     "pg": "^8.11.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^5.0.1",
