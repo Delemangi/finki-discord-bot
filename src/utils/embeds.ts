@@ -1176,9 +1176,9 @@ export const getExperienceLeaderboardNextPageEmbed = (
         .slice(perPage * page, perPage * (page + 1))
         .map((exp, index) => ({
           name: '\u200B',
-          value: `${index + 1}. ${userMention(exp.user)}: Ниво: ${
-            exp.level
-          } | Поени: ${exp.experience}`,
+          value: `${perPage * page + index + 1}. ${userMention(
+            exp.user,
+          )}: Ниво: ${exp.level} | Поени: ${exp.experience}`,
         })),
     )
     .setFooter({
