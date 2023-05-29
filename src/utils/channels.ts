@@ -82,7 +82,7 @@ export const scheduleVipTemporaryChannel = async () => {
       const channel = await guild.channels.create({
         name: getFromBotConfig('vipTemporaryChannelName'),
         parent: getFromBotConfig('vipTemporaryChannelParent'),
-        topic: `Задните соби на ВИП. Следно бришење е на ${getNextVipCronRun(
+        topic: `Задните соби на ВИП. Следно бришење е во ${getNextVipCronRun(
           'mk-MK',
           2,
         )}`,
