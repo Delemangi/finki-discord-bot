@@ -20,6 +20,7 @@ export const commandDescriptions = {
   embed: 'Креирај ембед',
   'experience add': 'Додади поени за активност на член',
   'experience get': 'Ниво и активност за член',
+  'experience leaderboard': 'Листа на најактивни членови',
   faq: 'Најчесто поставувани прашања',
   help: 'Помош за командите',
   home: 'Изворен код на ботот',

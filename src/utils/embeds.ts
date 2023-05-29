@@ -1138,6 +1138,57 @@ export const getExperienceEmbed = (experience: Experience) => {
     .setTimestamp();
 };
 
+export const getExperienceLeaderboardFirstPageEmbed = (
+  experience: Experience[],
+  perPage: number = 8,
+) => {
+  const total = experience.length;
+
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Активност')
+    .addFields(
+      experience.slice(0, perPage).map((exp, index) => ({
+        name: '\u200B',
+        value: `${index + 1}. ${userMention(exp.user)}: Ниво: ${
+          exp.level
+        } | Поени: ${exp.experience}`,
+      })),
+    )
+    .setFooter({
+      text: `Страна: 1 / ${Math.ceil(total / perPage)}  •  Членови: ${total}`,
+    })
+    .setTimestamp();
+};
+
+export const getExperienceLeaderboardNextPageEmbed = (
+  experience: Experience[],
+  page: number,
+  perPage: number = 8,
+) => {
+  const total = experience.length;
+
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle('Активност')
+    .addFields(
+      experience
+        .slice(perPage * page, perPage * (page + 1))
+        .map((exp, index) => ({
+          name: '\u200B',
+          value: `${index + 1}. ${userMention(exp.user)}: Ниво: ${
+            exp.level
+          } | Поени: ${exp.experience}`,
+        })),
+    )
+    .setFooter({
+      text: `Страна: ${page + 1} / ${Math.ceil(
+        total / perPage,
+      )}  •  Членови: ${total}`,
+    })
+    .setTimestamp();
+};
+
 // Questions & links
 
 export const getQuestionEmbed = (question: Question) => {

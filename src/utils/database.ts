@@ -620,3 +620,18 @@ export const saveExperience = async (level?: Experience) => {
     return null;
   }
 };
+
+export const getExperienceSorted = async (limit: number = 120) => {
+  if (dataSource === undefined) {
+    return null;
+  }
+
+  try {
+    return await dataSource
+      .getRepository(Experience)
+      .find({ order: { experience: 'DESC' }, take: limit });
+  } catch (error) {
+    logger.error(`Failed getting experience sorted\n${error}`);
+    return null;
+  }
+};

@@ -1052,7 +1052,7 @@ export const handleClassroomAutocomplete = async (
 
 // Interactions
 
-const ignoredButtons = ['help', 'polls'];
+const ignoredButtons = ['help', 'polls', 'exp'];
 
 export const handleChatInputCommand = async (
   interaction: ChatInputCommandInteraction,
