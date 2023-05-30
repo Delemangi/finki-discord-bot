@@ -69,7 +69,12 @@ export const addExperience = async (message: Message) => {
     return;
   }
 
-  if (message.author.bot || message.author.system || message.guild === null) {
+  if (
+    !message.inGuild() ||
+    message.system ||
+    message.author.bot ||
+    message.author.system
+  ) {
     return;
   }
 
