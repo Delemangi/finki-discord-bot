@@ -1150,7 +1150,7 @@ export const getExperienceLeaderboardFirstPageEmbed = (
     .addFields(
       experience.slice(0, perPage).map((exp, index) => ({
         name: '\u200B',
-        value: `${index + 1}. ${userMention(exp.user)}: Ниво: ${
+        value: `${index + 1}. ${exp.tag} (${userMention(exp.user)}): Ниво: ${
           exp.level
         } | Поени: ${exp.experience}`,
       })),
@@ -1176,9 +1176,9 @@ export const getExperienceLeaderboardNextPageEmbed = (
         .slice(perPage * page, perPage * (page + 1))
         .map((exp, index) => ({
           name: '\u200B',
-          value: `${perPage * page + index + 1}. ${userMention(
+          value: `${perPage * page + index + 1}. ${exp.tag} (${userMention(
             exp.user,
-          )}: Ниво: ${exp.level} | Поени: ${exp.experience}`,
+          )}): Ниво: ${exp.level} | Поени: ${exp.experience}`,
         })),
     )
     .setFooter({
