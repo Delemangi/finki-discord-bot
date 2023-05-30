@@ -1422,7 +1422,7 @@ export const getPollComponents = (poll: Poll) => {
     const option = poll.options[index];
     const button = new ButtonBuilder()
       .setCustomId(`poll:${poll.id}:${option?.id}`)
-      .setLabel(`${truncateString(option?.name, 80)}`)
+      .setLabel(`${truncateString(`${index}. ${option?.name}`, 80)}`)
       .setStyle(ButtonStyle.Primary)
       .setDisabled(poll.done);
 
@@ -1446,7 +1446,7 @@ export const getPollComponents = (poll: Poll) => {
 
         const button = new ButtonBuilder()
           .setCustomId(`poll:${poll.id}:${option.id}`)
-          .setLabel(`${truncateString(option.name, 80)}`)
+          .setLabel(`${truncateString(`${index2}. ${option.name}`, 80)}`)
           .setStyle(ButtonStyle.Primary)
           .setDisabled(poll.done);
 
