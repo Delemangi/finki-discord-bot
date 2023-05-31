@@ -1465,6 +1465,7 @@ export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
   const votes = (await getPollVotes(poll.id))?.length ?? 0;
   const voters = await getMembersWithRoles(guild, ...poll.roles);
   const turnout = `(${((votes / voters.length) * 100).toFixed(2)}%)`;
+  const threshold = Math.ceil(poll.threshold * voters.length);
 
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
@@ -1507,10 +1508,10 @@ export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
       },
       {
         inline: true,
-        name: 'Праг',
-        value: `${poll.threshold * 100}% (${Math.ceil(
-          poll.threshold * voters.length,
-        )})`,
+        name: 'Потребно мнозинство',
+        value: `${poll.threshold * 100}% (${
+          voters.length % 2 === 0 ? threshold + 1 : threshold
+        })`,
       },
       {
         inline: true,
