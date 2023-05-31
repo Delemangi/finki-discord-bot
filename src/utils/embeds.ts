@@ -1110,8 +1110,8 @@ export const getExperienceEmbed = (experience: Experience) => {
     return new EmbedBuilder()
       .setColor(getFromBotConfig('color'))
       .setAuthor({
-        iconURL: user?.avatarURL() ?? '',
-        name: user?.tag,
+        iconURL: user.displayAvatarURL(),
+        name: user.tag,
       })
       .setTitle('Активност')
       .setDescription('Настана грешка.')
@@ -1121,8 +1121,8 @@ export const getExperienceEmbed = (experience: Experience) => {
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setAuthor({
-      iconURL: user?.avatarURL() ?? '',
-      name: user?.tag,
+      iconURL: user.displayAvatarURL(),
+      name: user.tag,
     })
     .setTitle('Активност')
     .addFields(
