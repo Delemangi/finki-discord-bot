@@ -33,8 +33,8 @@ const commandPermissions: {
     roles: ['vip'],
   },
   'vip delete': {
-    permissions: [],
-    roles: ['vip'],
+    permissions: [PermissionsBitField.Flags.Administrator],
+    roles: [],
   },
   'vip override': {
     permissions: [PermissionsBitField.Flags.Administrator],
