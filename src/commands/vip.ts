@@ -321,6 +321,13 @@ const handleVipRemaining = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
+  const vipPoll = await getVipPollById(pollId);
+
+  if (vipPoll === null) {
+    await interaction.editReply('Таа ВИП анкета не постои.');
+    return;
+  }
+
   const votes = await getPollVotesByPollId(pollId);
   const voters = votes.map((vote) => vote.user);
   const allVoters = await getMembersWithRoles(interaction.guild, ...poll.roles);
