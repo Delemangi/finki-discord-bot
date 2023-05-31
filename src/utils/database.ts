@@ -621,7 +621,7 @@ export const saveExperience = async (level?: Experience) => {
   }
 };
 
-export const getExperienceSorted = async (limit: number = 120) => {
+export const getExperienceSorted = async (limit: number = 512) => {
   if (dataSource === undefined) {
     return null;
   }
