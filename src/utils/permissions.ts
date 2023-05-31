@@ -23,6 +23,10 @@ const commandPermissions: {
     roles: [],
   },
   purge: { permissions: [PermissionsBitField.Flags.ManageMessages], roles: [] },
+  register: {
+    permissions: [PermissionsBitField.Flags.Administrator],
+    roles: [],
+  },
   script: { permissions: [PermissionsBitField.Flags.Administrator], roles: [] },
   'vip add': {
     permissions: [],
