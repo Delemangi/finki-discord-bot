@@ -169,6 +169,16 @@ declare global {
   type QuizQuestions = {
     [index in QuizDifficulties]: QuizQuestion[];
   };
+
+  type InfoBlock =
+    | {
+        name: string;
+        type: 'image';
+      }
+    | {
+        text: string;
+        type: 'text';
+      };
 }
 
 export {};

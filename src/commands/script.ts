@@ -3,6 +3,7 @@ import { getCommands } from '../utils/commands.js';
 import {
   getApplicationId,
   getFromRoleConfig,
+  getInfo,
   getToken,
 } from '../utils/config.js';
 import {
@@ -29,6 +30,7 @@ import { commandDescriptions } from '../utils/strings.js';
 import {
   type Channel,
   type ChatInputCommandInteraction,
+  type GuildBasedChannel,
   type GuildTextBasedChannel,
   PermissionFlagsBits,
   REST,
@@ -138,6 +140,14 @@ export const data = new SlashCommandBuilder()
     command
       .setName('vip')
       .setDescription(commandDescriptions['script vip'])
+      .addChannelOption((option) =>
+        option.setName('channel').setDescription('Канал').setRequired(true),
+      ),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName('info')
+      .setDescription(commandDescriptions['script info'])
       .addChannelOption((option) =>
         option.setName('channel').setDescription('Канал').setRequired(true),
       ),
@@ -359,7 +369,10 @@ const handleScriptRules = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handleScriptVip = async (interaction: ChatInputCommandInteraction) => {
-  const channel = interaction.options.getChannel('channel', true) as Channel;
+  const channel = interaction.options.getChannel(
+    'channel',
+    true,
+  ) as GuildBasedChannel;
 
   if (!channel.isTextBased() || channel.isDMBased()) {
     await interaction.editReply('Само текст канали се дозволени.');
@@ -379,9 +392,50 @@ const handleScriptVip = async (interaction: ChatInputCommandInteraction) => {
   }
 };
 
+const handleScriptInfo = async (interaction: ChatInputCommandInteraction) => {
+  const channel = interaction.options.getChannel(
+    'channel',
+    true,
+  ) as GuildBasedChannel;
+
+  if (!channel.isTextBased() || channel.isDMBased()) {
+    await interaction.editReply('Само текст канали се дозволени.');
+  }
+
+  const info = getInfo();
+
+  for (const block of info) {
+    if (block.type === 'image') {
+      try {
+        await (channel as GuildTextBasedChannel).send({
+          files: [`./files/${block.name}`],
+        });
+      } catch (error) {
+        await interaction.editReply('Испраќањето беше неуспешно.');
+        logger.error(`Couldn't send image\n${error}`);
+        return;
+      }
+    } else if (block.type === 'text') {
+      try {
+        await (channel as GuildTextBasedChannel).send({
+          allowedMentions: { parse: [] },
+          content: block.text,
+        });
+      } catch (error) {
+        await interaction.editReply('Испраќањето беше неуспешно.');
+        logger.error(`Couldn't send text\n${error}`);
+        return;
+      }
+    }
+  }
+
+  await interaction.editReply('Успешно испратено.');
+};
+
 const listHandlers = {
   colors: handleScriptColors,
   courses: handleScriptCourses,
+  info: handleScriptInfo,
   notifications: handleScriptNotifications,
   programs: handleScriptPrograms,
   register: handleScriptRegister,

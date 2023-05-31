@@ -48,6 +48,9 @@ const config: BotConfig = JSON.parse(
 const courses: string[] = JSON.parse(
   readFileSync('./config/courses.json', 'utf8'),
 );
+const info: InfoBlock[] = JSON.parse(
+  readFileSync('./config/info.json', 'utf8'),
+);
 const information: CourseInformation[] = JSON.parse(
   readFileSync('./config/information.json', 'utf8'),
 );
@@ -96,6 +99,10 @@ export const getFromBotConfig = <T extends keyof BotConfig>(key: T) => {
 
 export const getCourses = () => {
   return courses;
+};
+
+export const getInfo = () => {
+  return info;
 };
 
 export const getInformation = () => {

@@ -47,6 +47,7 @@ export const commandDescriptions = {
   reminder: 'Потсетник',
   'script colors': 'Испрати ембед за избирање бои',
   'script courses': 'Испрати ембеди за избирање предмети',
+  'script info': 'Испрати ги сите информации за серверот',
   'script notifications': 'Испрати ембед за избирање нотификации',
   'script programs': 'Испрати ембед за избирање смерови',
   'script register': 'Синхронизирај ги командите',
