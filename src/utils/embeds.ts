@@ -1140,6 +1140,7 @@ export const getExperienceEmbed = (experience: Experience) => {
 
 export const getExperienceLeaderboardFirstPageEmbed = (
   experience: Experience[],
+  all: number | null,
   perPage: number = 8,
 ) => {
   const total = experience.length;
@@ -1156,7 +1157,9 @@ export const getExperienceLeaderboardFirstPageEmbed = (
       })),
     )
     .setFooter({
-      text: `Страна: 1 / ${Math.ceil(total / perPage)}  •  Членови: ${total}`,
+      text: `Страна: 1 / ${Math.ceil(
+        total / perPage,
+      )}  •  Членови: ${total} / ${all ?? '-'}`,
     })
     .setTimestamp();
 };
@@ -1164,6 +1167,7 @@ export const getExperienceLeaderboardFirstPageEmbed = (
 export const getExperienceLeaderboardNextPageEmbed = (
   experience: Experience[],
   page: number,
+  all: number | null,
   perPage: number = 8,
 ) => {
   const total = experience.length;
@@ -1184,7 +1188,7 @@ export const getExperienceLeaderboardNextPageEmbed = (
     .setFooter({
       text: `Страна: ${page + 1} / ${Math.ceil(
         total / perPage,
-      )}  •  Членови: ${total}`,
+      )}  •  Членови: ${total} / ${all ?? '-'}`,
     })
     .setTimestamp();
 };

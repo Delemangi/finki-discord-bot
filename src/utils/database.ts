@@ -635,3 +635,16 @@ export const getExperienceSorted = async (limit: number = 512) => {
     return null;
   }
 };
+
+export const getExperienceCount = async () => {
+  if (dataSource === undefined) {
+    return null;
+  }
+
+  try {
+    return await dataSource.getRepository(Experience).count();
+  } catch (error) {
+    logger.error(`Failed getting experience count\n${error}`);
+    return null;
+  }
+};

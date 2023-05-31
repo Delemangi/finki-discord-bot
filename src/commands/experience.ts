@@ -3,6 +3,7 @@ import { deleteResponse } from '../utils/channels.js';
 import {
   addExperienceByUserId,
   getExperienceByUserId,
+  getExperienceCount,
   getExperienceSorted,
   saveExperience,
 } from '../utils/database.js';
@@ -96,7 +97,8 @@ const handleExperienceLeaderboard = async (
 
   const perPage = 8;
   const pages = Math.ceil(experience.length / perPage);
-  const embed = getExperienceLeaderboardFirstPageEmbed(experience);
+  const total = await getExperienceCount();
+  const embed = getExperienceLeaderboardFirstPageEmbed(experience, total);
   const components = [
     pages === 0 || pages === 1
       ? getPaginationComponents('exp')
@@ -156,7 +158,11 @@ const handleExperienceLeaderboard = async (
       buttons = getPaginationComponents('exp', 'middle');
     }
 
-    const nextEmbed = getExperienceLeaderboardNextPageEmbed(experience, page);
+    const nextEmbed = getExperienceLeaderboardNextPageEmbed(
+      experience,
+      page,
+      total,
+    );
 
     try {
       await buttonInteraction.update({
