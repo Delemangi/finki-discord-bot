@@ -110,6 +110,8 @@ const getButtonInfo = (
         ),
       };
     case 'help':
+    case 'exp':
+    case 'polls':
     case 'poll':
     case 'pollStats':
     case 'quiz':
