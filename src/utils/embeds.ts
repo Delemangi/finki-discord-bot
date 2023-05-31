@@ -17,8 +17,8 @@ import {
 } from './config.js';
 import {
   getMostPopularPollOption,
-  getPollVotes,
   getPollVotesByOption,
+  getPollVotesByPollId,
 } from './database.js';
 import { commandMention } from './functions.js';
 import { logger } from './logger.js';
@@ -1370,7 +1370,7 @@ export const getHelpNextPageEmbed = (
 // Polls
 
 export const getPollEmbed = async (poll: Poll) => {
-  const votes = (await getPollVotes(poll.id))?.length ?? 0;
+  const votes = (await getPollVotesByPollId(poll.id))?.length ?? 0;
 
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
@@ -1468,7 +1468,7 @@ export const getPollComponents = (poll: Poll) => {
 };
 
 export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
-  const votes = (await getPollVotes(poll.id))?.length ?? 0;
+  const votes = (await getPollVotesByPollId(poll.id))?.length ?? 0;
   const voters = await getMembersWithRoles(guild, ...poll.roles);
   const turnout = `(${((votes / voters.length) * 100).toFixed(2)}%)`;
   const threshold = Math.ceil(poll.threshold * voters.length);
@@ -1541,7 +1541,7 @@ export const getPollStatsEmbed = async (poll: Poll) => {
   return new EmbedBuilder()
     .setColor(getFromBotConfig('color'))
     .setTitle(poll.title)
-    .setDescription(`Гласови: ${(await getPollVotes(poll.id))?.length}`)
+    .setDescription(`Гласови: ${(await getPollVotesByPollId(poll.id))?.length}`)
     .addFields(
       {
         inline: true,

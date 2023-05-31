@@ -3,6 +3,7 @@ import {
   deletePoll,
   deleteVipPoll,
   getPollById,
+  getPollVotesByPollId,
   getVipPollById,
   getVipPollByUserAndType,
   savePoll,
@@ -13,11 +14,12 @@ import {
   getVipEmbed,
 } from '../utils/embeds.js';
 import { handlePollButtonForVipVote } from '../utils/interactions.js';
-import { getRole } from '../utils/roles.js';
+import { getMembersWithRoles, getRole } from '../utils/roles.js';
 import { commandDescriptions, errors } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
+  userMention,
 } from 'discord.js';
 
 const name = 'vip';
@@ -90,6 +92,14 @@ export const data = new SlashCommandBuilder()
     command
       .setName('delete')
       .setDescription(commandDescriptions['vip delete'])
+      .addStringOption((option) =>
+        option.setName('poll').setDescription('Анкета').setRequired(true),
+      ),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName('remaining')
+      .setDescription(commandDescriptions['vip remaining'])
       .addStringOption((option) =>
         option.setName('poll').setDescription('Анкета').setRequired(true),
       ),
@@ -302,11 +312,34 @@ const handleVipDelete = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply('Успешно е избришана анкетата.');
 };
 
+const handleVipRemaining = async (interaction: ChatInputCommandInteraction) => {
+  const pollId = interaction.options.getString('poll', true);
+  const poll = await getPollById(pollId);
+
+  if (poll === null) {
+    await interaction.editReply('Таа анкета не постои.');
+    return;
+  }
+
+  const votes = await getPollVotesByPollId(pollId);
+  const voters = votes.map((vote) => vote.user);
+  const allVoters = await getMembersWithRoles(interaction.guild, ...poll.roles);
+
+  await interaction.editReply({
+    allowedMentions: { parse: [] },
+    content: allVoters
+      .filter((voter) => !voters.includes(voter))
+      .map((voter) => userMention(voter))
+      .join(', '),
+  });
+};
+
 const vipHandlers = {
   add: handleVipAdd,
   delete: handleVipDelete,
   members: handleVipMembers,
   override: handleVipOverride,
+  remaining: handleVipRemaining,
   remove: handleVipRemove,
   upgrade: handleVipUpgrade,
 };

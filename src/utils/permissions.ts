@@ -40,6 +40,10 @@ const commandPermissions: {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
+  'vip remaining': {
+    permissions: [],
+    roles: ['vip'],
+  },
   'vip remove': {
     permissions: [],
     roles: ['vip'],

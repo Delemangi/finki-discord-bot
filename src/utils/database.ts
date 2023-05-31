@@ -211,7 +211,7 @@ export const getPollVotesByUser = async (pollId?: string, userId?: string) => {
   }
 };
 
-export const getPollVotes = async (pollId?: string) => {
+export const getPollVotesByPollId = async (pollId?: string) => {
   if (dataSource === undefined || pollId === undefined) {
     return [];
   }
