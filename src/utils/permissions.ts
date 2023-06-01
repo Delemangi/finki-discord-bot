@@ -30,7 +30,7 @@ const commandPermissions: {
   script: { permissions: [PermissionsBitField.Flags.Administrator], roles: [] },
   'vip add': {
     permissions: [],
-    roles: ['vip'],
+    roles: ['vipVoting'],
   },
   'vip delete': {
     permissions: [PermissionsBitField.Flags.Administrator],
@@ -42,11 +42,11 @@ const commandPermissions: {
   },
   'vip remaining': {
     permissions: [],
-    roles: ['vip'],
+    roles: ['vipVoting'],
   },
   'vip remove': {
     permissions: [],
-    roles: ['vip'],
+    roles: ['vipVoting'],
   },
 };
 
