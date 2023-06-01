@@ -6,7 +6,7 @@ import { type GuildMember, PermissionsBitField } from 'discord.js';
 const commandPermissions: {
   [key: string]: {
     permissions: bigint[];
-    roles: string[];
+    roles: Roles[];
   };
 } = {
   crosspost: {
@@ -58,9 +58,7 @@ const getCommandPermission = (
   if (Object.keys(commandDescriptions).includes(command)) {
     return [
       commandPermissions[command]?.permissions ?? [],
-      commandPermissions[command]?.roles.map(
-        (role) => getRole(role as Roles)?.id,
-      ) ?? [],
+      commandPermissions[command]?.roles.map((role) => getRole(role)?.id) ?? [],
     ];
   } else if (
     topCommand !== undefined &&
@@ -68,9 +66,8 @@ const getCommandPermission = (
   ) {
     return [
       commandPermissions[topCommand]?.permissions ?? [],
-      commandPermissions[topCommand]?.roles.map(
-        (role) => getRole(role as Roles)?.id,
-      ) ?? [],
+      commandPermissions[topCommand]?.roles.map((role) => getRole(role)?.id) ??
+        [],
     ];
   } else {
     return [[], []];
