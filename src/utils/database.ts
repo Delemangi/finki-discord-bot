@@ -382,10 +382,7 @@ export const createVipPoll = async (
   poll.open = false;
   poll.owner = client.user?.id ?? '';
   poll.options = [yes, no];
-  poll.roles = [
-    getFromBotConfig('roles').vipVoting,
-    getFromBotConfig('roles').admin,
-  ];
+  poll.roles = [getFromBotConfig('roles').vipVoting];
   poll.done = false;
   poll.threshold = threshold ?? 0.5;
 
