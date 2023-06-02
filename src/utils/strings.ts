@@ -66,6 +66,7 @@ export const commandDescriptions = {
   timetable: 'Распоред на часови',
   'vip add': 'Предложете нов член за ВИП',
   'vip delete': 'Избриши ВИП анкета',
+  'vip invited': 'Прикажи ги сите членови кои се поканети во ВИП',
   'vip members': 'Моментален состав на ВИП',
   'vip override': 'Одлучи за ВИП анкета',
   'vip remaining': 'Прикажи ги членовите кои се уште не гласале',

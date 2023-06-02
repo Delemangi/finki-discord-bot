@@ -16,6 +16,8 @@ declare global {
 
   type Roles =
     | 'admin'
+    | 'booster'
+    | 'contributor'
     | 'fss'
     | 'ombudsman'
     | 'vip'

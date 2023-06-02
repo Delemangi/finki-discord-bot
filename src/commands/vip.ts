@@ -14,7 +14,11 @@ import {
   getVipEmbed,
 } from '../utils/embeds.js';
 import { handlePollButtonForVipVote } from '../utils/interactions.js';
-import { getMembersWithRoles, getRole } from '../utils/roles.js';
+import {
+  getMembersWithAndWithoutRoles,
+  getMembersWithRoles,
+  getRole,
+} from '../utils/roles.js';
 import { commandDescriptions, errors } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
@@ -103,6 +107,11 @@ export const data = new SlashCommandBuilder()
       .addStringOption((option) =>
         option.setName('poll').setDescription('Анкета').setRequired(true),
       ),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName('invited')
+      .setDescription(commandDescriptions['vip invited']),
   )
   .setDMPermission(false);
 
@@ -341,9 +350,42 @@ const handleVipRemaining = async (interaction: ChatInputCommandInteraction) => {
   });
 };
 
+const handleVipInvited = async (interaction: ChatInputCommandInteraction) => {
+  const vipInvitedRole = getRole('vipInvited');
+  const boosterRole = getRole('booster');
+  const contributorRole = getRole('contributor');
+  const adminRole = getRole('admin');
+  const vipRole = getRole('vip');
+
+  if (
+    vipInvitedRole === undefined ||
+    boosterRole === undefined ||
+    contributorRole === undefined ||
+    adminRole === undefined ||
+    vipRole === undefined
+  ) {
+    await interaction.editReply(
+      'Улогите за ВИП не се конфигурирани или не постојат.',
+    );
+    return;
+  }
+
+  const members = await getMembersWithAndWithoutRoles(
+    interaction.guild,
+    [vipInvitedRole.id, boosterRole.id, contributorRole.id],
+    [adminRole.id, vipRole.id],
+  );
+
+  await interaction.editReply({
+    allowedMentions: { parse: [] },
+    content: members.map((member) => userMention(member)).join(', '),
+  });
+};
+
 const vipHandlers = {
   add: handleVipAdd,
   delete: handleVipDelete,
+  invited: handleVipInvited,
   members: handleVipMembers,
   override: handleVipOverride,
   remaining: handleVipRemaining,

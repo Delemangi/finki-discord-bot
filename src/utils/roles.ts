@@ -27,6 +27,8 @@ export const initializeRoles = () => {
   roles.ombudsman = guild.roles.cache.get(roleIds.ombudsman);
   roles.vipInvited = guild.roles.cache.get(roleIds.vipInvited);
   roles.vipVoting = guild.roles.cache.get(roleIds.vipVoting);
+  roles.contributor = guild.roles.cache.get(roleIds.contributor);
+  roles.booster = guild.roles.cache.get(roleIds.booster);
 
   logger.info('Roles initialized');
 };
@@ -136,6 +138,46 @@ export const getMembersWithRoles = async (
 
     for (const id of ids) {
       uniqueMembers.add(id);
+    }
+  }
+
+  return Array.from(uniqueMembers);
+};
+
+export const getMembersWithAndWithoutRoles = async (
+  guild: Guild | null,
+  rolesWithMembers: string[],
+  rolesWithoutMembers: string[],
+) => {
+  if (guild === null) {
+    return [];
+  }
+
+  await guild.members.fetch();
+  await guild.roles.fetch();
+
+  const members = rolesWithMembers.map((role) =>
+    guild.roles.cache.get(role)?.members.keys(),
+  );
+
+  const uniqueMembers = new Set<string>();
+  for (const iterator of members) {
+    const ids = Array.from(iterator ?? []);
+
+    for (const id of ids) {
+      uniqueMembers.add(id);
+    }
+  }
+
+  const membersWithout = rolesWithoutMembers.map((role) =>
+    guild.roles.cache.get(role)?.members.keys(),
+  );
+
+  for (const iterator of membersWithout) {
+    const ids = Array.from(iterator ?? []);
+
+    for (const id of ids) {
+      uniqueMembers.delete(id);
     }
   }
 
