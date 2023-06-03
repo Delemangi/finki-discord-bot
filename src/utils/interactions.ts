@@ -439,12 +439,6 @@ const handlePollButtonForVipRemoveVote = async (
   const vipChannel = getChannel('vip');
 
   if (poll.decision === 'Да') {
-    await vipChannel?.send(
-      `Изгласана е недоверба против членот на ВИП ${userMention(
-        vipPoll.user,
-      )}.`,
-    );
-
     await deleteVipPoll(vipPoll.id);
 
     const vipRole = getRole('vip');
@@ -457,6 +451,12 @@ const handlePollButtonForVipRemoveVote = async (
     if (vipVotingRole !== undefined) {
       await member.roles.remove(vipVotingRole);
     }
+
+    await vipChannel?.send(
+      `Изгласана е недоверба против членот на ВИП ${userMention(
+        vipPoll.user,
+      )}.`,
+    );
   } else {
     await vipChannel?.send(
       `Не е изгласана недоверба против членот на ВИП ${userMention(
