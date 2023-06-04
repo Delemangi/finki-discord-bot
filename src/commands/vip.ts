@@ -155,7 +155,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const poll = await createVipPoll(user, 'add', 0.67);
+  const poll = await createVipPoll(user, 'add');
 
   if (poll === null) {
     await interaction.editReply('Веќе постои предлог за овој корисник.');
