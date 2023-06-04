@@ -377,7 +377,6 @@ const handleVipInvited = async (interaction: ChatInputCommandInteraction) => {
   );
 
   await interaction.editReply({
-    allowedMentions: { parse: [] },
     content: members.map((member) => userMention(member)).join(', '),
   });
 };
