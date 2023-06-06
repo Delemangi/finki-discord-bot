@@ -145,11 +145,12 @@ export const getMembersWithRoles = async (
 };
 
 export const getMembersWithAndWithoutRoles = async (
-  guild: Guild | null,
   rolesWithMembers: string[],
   rolesWithoutMembers: string[],
 ) => {
-  if (guild === null) {
+  const guild = client.guilds.cache.get(getFromBotConfig('guild'));
+
+  if (guild === undefined) {
     return [];
   }
 

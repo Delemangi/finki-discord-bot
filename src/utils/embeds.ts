@@ -26,7 +26,12 @@ import {
   getCommandsWithPermission,
   hasCommandPermission,
 } from './permissions.js';
-import { getMembersWithRoles, getRole, getRoleFromSet } from './roles.js';
+import {
+  getMembersWithAndWithoutRoles,
+  getMembersWithRoles,
+  getRole,
+  getRoleFromSet,
+} from './roles.js';
 import { commandDescriptions, programMapping, quizHelp } from './strings.js';
 import {
   ActionRowBuilder,
@@ -44,6 +49,7 @@ import {
   inlineCode,
   type Interaction,
   italic,
+  type Role,
   roleMention,
   type User,
   type UserContextMenuCommandInteraction,
@@ -1100,6 +1106,40 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
       )
       .setTimestamp(),
   ];
+};
+
+export const getVipInvitedEmbed = async () => {
+  const vipInvitedRole = getRole('vipInvited') as Role;
+  const boosterRole = getRole('booster') as Role;
+  const contributorRole = getRole('contributor') as Role;
+  const adminRole = getRole('admin') as Role;
+  const vipRole = getRole('vip') as Role;
+
+  const memberIds = await getMembersWithAndWithoutRoles(
+    [vipInvitedRole.id, boosterRole.id, contributorRole.id],
+    [adminRole.id, vipRole.id],
+  );
+  const guild = client.guilds.cache.get(getFromBotConfig('guild'));
+  const members = await Promise.all(
+    memberIds.map(async (memberId) => await guild?.members.fetch(memberId)),
+  );
+
+  return new EmbedBuilder()
+    .setColor(getFromBotConfig('color'))
+    .setTitle(`ВИП поканети: ${memberIds.length}`)
+    .setDescription(
+      members.length === 0
+        ? 'Нема членови на ВИП поканети.'
+        : members
+            .map(
+              (member) =>
+                `${member?.user.tag} (${userMention(
+                  member?.user.id as string,
+                )})`,
+            )
+            .join('\n'),
+    )
+    .setTimestamp();
 };
 
 export const getExperienceEmbed = (experience: Experience) => {

@@ -12,13 +12,10 @@ import {
   getPollComponents,
   getPollEmbed,
   getVipEmbed,
+  getVipInvitedEmbed,
 } from '../utils/embeds.js';
 import { handlePollButtonForVipVote } from '../utils/interactions.js';
-import {
-  getMembersWithAndWithoutRoles,
-  getMembersWithRoles,
-  getRole,
-} from '../utils/roles.js';
+import { getMembersWithRoles, getRole } from '../utils/roles.js';
 import { commandDescriptions, errors } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
@@ -370,14 +367,9 @@ const handleVipInvited = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const members = await getMembersWithAndWithoutRoles(
-    interaction.guild,
-    [vipInvitedRole.id, boosterRole.id, contributorRole.id],
-    [adminRole.id, vipRole.id],
-  );
-
+  const embed = await getVipInvitedEmbed();
   await interaction.editReply({
-    content: members.map((member) => userMention(member)).join(', '),
+    embeds: [embed],
   });
 };
 
