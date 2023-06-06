@@ -19,6 +19,7 @@ import { getMembersWithRoles, getRole } from '../utils/roles.js';
 import { commandDescriptions, errors } from '../utils/strings.js';
 import {
   type ChatInputCommandInteraction,
+  PermissionFlagsBits,
   SlashCommandBuilder,
   userMention,
 } from 'discord.js';
@@ -146,7 +147,8 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
 
   if (
     member.roles.cache.has(vipRole.id) ||
-    member.roles.cache.has(adminRole.id)
+    member.roles.cache.has(adminRole.id) ||
+    member.permissions.has(PermissionFlagsBits.Administrator)
   ) {
     await interaction.editReply('Корисникот е веќе член на ВИП.');
     return;
