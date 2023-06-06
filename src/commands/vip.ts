@@ -192,7 +192,10 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (member?.roles.cache.has(adminRole.id)) {
+  if (
+    member?.roles.cache.has(adminRole.id) ||
+    member?.permissions.has(PermissionFlagsBits.Administrator)
+  ) {
     await interaction.editReply('Корисникот е администратор.');
     return;
   }
