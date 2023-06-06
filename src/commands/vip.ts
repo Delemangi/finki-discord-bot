@@ -164,7 +164,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const poll = await createVipPoll(user, 'forceAdd');
+  const poll = await createVipPoll(user, 'forceAdd', 0.67);
 
   if (poll === null) {
     await interaction.editReply('Веќе постои предлог за овој корисник.');
@@ -274,7 +274,7 @@ const handleVipUpgrade = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const poll = await createVipPoll(user, 'upgrade', 0.33);
+  const poll = await createVipPoll(user, 'upgrade', 0.5);
 
   if (poll === null) {
     await interaction.editReply('Веќе постои предлог за овој корисник.');
