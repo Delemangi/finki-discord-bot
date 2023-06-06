@@ -74,7 +74,7 @@ export const data = new SlashCommandBuilder()
           .setDescription('Тип на анкета')
           .setRequired(true)
           .addChoices(
-            ...['add', 'remove', 'upgrade'].map((choice) => ({
+            ...['add', 'remove', 'upgrade', 'forceAdd'].map((choice) => ({
               name: choice,
               value: choice,
             })),
@@ -164,7 +164,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const poll = await createVipPoll(user, 'add');
+  const poll = await createVipPoll(user, 'forceAdd');
 
   if (poll === null) {
     await interaction.editReply('Веќе постои предлог за овој корисник.');

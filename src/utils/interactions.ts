@@ -407,9 +407,11 @@ const handlePollButtonForVipAddVote = async (poll: Poll, vipPoll: VipPoll) => {
     const components = getVipConfirmComponents();
     await oathChannel?.send({
       components,
-      content: `${userMention(
-        vipPoll?.user ?? '',
-      )} Вашата молба за член на ВИП беше одобрена.`,
+      content: `${userMention(vipPoll?.user ?? '')} ${
+        vipPoll.type === 'add'
+          ? 'Вашата молба за член на ВИП беше одобрена.'
+          : 'Вие сте поканети да бидете член на ВИП.'
+      }`,
       embeds: [embed],
     });
   } else {
@@ -422,12 +424,14 @@ const handlePollButtonForVipAddVote = async (poll: Poll, vipPoll: VipPoll) => {
     await deleteVipPoll(vipPoll.id);
 
     const components = getVipAcknowledgeComponents();
-    await oathChannel?.send({
-      components,
-      content: `${userMention(
-        vipPoll?.user ?? '',
-      )} Вашата молба за член на ВИП беше одбиена.`,
-    });
+    if (vipPoll.type === 'add') {
+      await oathChannel?.send({
+        components,
+        content: `${userMention(
+          vipPoll?.user ?? '',
+        )} Вашата молба за член на ВИП беше одбиена.`,
+      });
+    }
   }
 };
 
@@ -506,7 +510,7 @@ export const handlePollButtonForVipVote = async (
 
   const vipPoll = await getVipPollById(poll.id);
 
-  if (vipPoll?.type === 'add') {
+  if (vipPoll?.type === 'add' || vipPoll?.type === 'forceAdd') {
     await handlePollButtonForVipAddVote(poll, vipPoll);
   } else if (vipPoll?.type === 'remove') {
     await handlePollButtonForVipRemoveVote(poll, vipPoll, member);

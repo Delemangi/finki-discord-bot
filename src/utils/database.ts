@@ -357,7 +357,7 @@ export const createVipPoll = async (
   const no = new PollOption();
   no.name = 'Не';
 
-  if (type === 'add') {
+  if (type === 'add' || type === 'forceAdd') {
     poll.title = `Влез во ВИП за ${vipUser.tag}`;
     poll.description = `Дали сте за да стане корисникот ${
       vipUser.tag
