@@ -137,8 +137,13 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
 
   const vipRole = getRole('vip');
   const adminRole = getRole('admin');
+  const vipInvitedRole = getRole('vipInvited');
 
-  if (vipRole === undefined || adminRole === undefined) {
+  if (
+    vipRole === undefined ||
+    adminRole === undefined ||
+    vipInvitedRole === undefined
+  ) {
     await interaction.editReply(
       'Улогите за пристап до ВИП или не се конфигурирани или не постојат.',
     );
@@ -151,6 +156,11 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     member.permissions.has(PermissionFlagsBits.Administrator)
   ) {
     await interaction.editReply('Корисникот е веќе член на ВИП.');
+    return;
+  }
+
+  if (!member.roles.cache.has(vipInvitedRole.id)) {
+    await interaction.editReply('Корисникот не е поканет да биде член на ВИП.');
     return;
   }
 
