@@ -111,6 +111,17 @@ export const data = new SlashCommandBuilder()
       .setName('invited')
       .setDescription(commandDescriptions['vip invited']),
   )
+  .addSubcommand((command) =>
+    command
+      .setName('invite')
+      .setDescription(commandDescriptions['vip invite'])
+      .addUserOption((option) =>
+        option
+          .setName('user')
+          .setDescription('Предлог корисник за покана')
+          .setRequired(true),
+      ),
+  )
   .setDMPermission(false);
 
 const handleVipMembers = async (interaction: ChatInputCommandInteraction) => {
@@ -388,9 +399,61 @@ const handleVipInvited = async (interaction: ChatInputCommandInteraction) => {
   });
 };
 
+const handleVipInvite = async (interaction: ChatInputCommandInteraction) => {
+  const user = interaction.options.getUser('user', true);
+  const member = interaction.guild?.members.cache.get(user.id);
+
+  if (member === undefined) {
+    await interaction.editReply('Корисникот не е член на овој сервер.');
+    return;
+  }
+
+  const vipInvitedRole = getRole('vipInvited');
+  const boosterRole = getRole('booster');
+  const contributorRole = getRole('contributor');
+  const adminRole = getRole('admin');
+  const vipRole = getRole('vip');
+
+  if (
+    vipInvitedRole === undefined ||
+    boosterRole === undefined ||
+    contributorRole === undefined ||
+    adminRole === undefined ||
+    vipRole === undefined
+  ) {
+    await interaction.editReply(
+      'Улогите за ВИП не се конфигурирани или не постојат.',
+    );
+    return;
+  }
+
+  if (
+    member.roles.cache.has(vipRole.id) ||
+    member.roles.cache.has(adminRole.id) ||
+    member.permissions.has(PermissionFlagsBits.Administrator)
+  ) {
+    await interaction.editReply('Корисникот е веќе член на ВИП.');
+    return;
+  }
+
+  if (
+    member.roles.cache.has(vipInvitedRole.id) ||
+    member.roles.cache.has(boosterRole.id) ||
+    member.roles.cache.has(contributorRole.id)
+  ) {
+    await interaction.editReply('Корисникот е веќе поканет за ВИП.');
+    return;
+  }
+
+  await member.roles.add(vipInvitedRole.id);
+
+  await interaction.editReply('Успешно е поканет корисникот за ВИП.');
+};
+
 const vipHandlers = {
   add: handleVipAdd,
   delete: handleVipDelete,
+  invite: handleVipInvite,
   invited: handleVipInvited,
   members: handleVipMembers,
   override: handleVipOverride,

@@ -36,6 +36,10 @@ const commandPermissions: {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
+  'vip invite': {
+    permissions: [],
+    roles: ['admin'],
+  },
   'vip invited': {
     permissions: [],
     roles: ['vipVoting'],
