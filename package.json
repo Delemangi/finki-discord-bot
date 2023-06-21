@@ -13,7 +13,7 @@
     "pg": "^8.11.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^5.0.1",
-    "typeorm": "^0.3.16",
+    "typeorm": "^0.3.17",
     "winston": "^3.9.0"
   },
   "description": "FINKI Discord bot",
@@ -21,7 +21,7 @@
     "@types/async-lock": "^1.4.0",
     "eslint": "^8.43.0",
     "eslint-config-canonical": "^41.0.5",
-    "typescript": "^5.0.4"
+    "typescript": "^5.2.0-dev.20230621"
   },
   "engines": {
     "node": ">=18.0.0"
