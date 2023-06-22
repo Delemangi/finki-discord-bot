@@ -44,6 +44,9 @@ const anto: string[] = JSON.parse(readFileSync('./config/anto.json', 'utf8'));
 const classrooms: Classroom[] = JSON.parse(
   readFileSync('./config/classrooms.json', 'utf8'),
 );
+const companies: string[] = JSON.parse(
+  readFileSync('./config/companies.json', 'utf8'),
+);
 const config: BotConfig = JSON.parse(
   readFileSync('./config/config.json', 'utf8'),
 );
@@ -93,6 +96,10 @@ export const getAnto = () => {
 
 export const getClassrooms = () => {
   return classrooms;
+};
+
+export const getCompanies = () => {
+  return companies;
 };
 
 export const getFromBotConfig = <T extends keyof BotConfig>(key: T) => {

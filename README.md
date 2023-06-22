@@ -39,7 +39,8 @@ It's recommended, but not required to run this inside a Docker container.
 9. `npm run embed:years <channel ID> [newlines]` - send a years embed to `channel ID` with `newlines` number of newlines in the message content
 10. `npm run embed:vip <channel ID>` - send a VIP embed to `channel ID`
 11. `npm run forum:courses <channel ID>` - creates threads for all courses in `channel ID` forum
-12. `npm run server:info [server ID]` - check the server stats for `server ID`
+12. `npm run forum:companies <channel ID>` creates threads for all companies in `channel ID` forum
+13. `npm run server:info [server ID]` - check the server stats for `server ID`
 
 The arguments marked with `< >` are required, while the arguments marked with `[ ]` are optional.
 
