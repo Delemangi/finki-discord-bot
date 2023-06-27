@@ -21,7 +21,7 @@
     "@types/async-lock": "^1.4.0",
     "eslint": "^8.43.0",
     "eslint-config-canonical": "^41.0.5",
-    "typescript": "^5.2.0-dev.20230621"
+    "typescript": "^5.2.0-dev.20230627"
   },
   "engines": {
     "node": ">=18.0.0"
