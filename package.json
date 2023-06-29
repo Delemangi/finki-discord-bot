@@ -6,11 +6,11 @@
   "dependencies": {
     "async-lock": "^1.4.0",
     "chrono-node": "^2.6.3",
-    "croner": "^6.0.4",
+    "croner": "^6.0.5",
     "discord-api-types": "^0.37.46",
     "discord.js": "^14.11.0",
     "dotenv": "^16.3.1",
-    "pg": "^8.11.0",
+    "pg": "^8.11.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^5.0.1",
     "typeorm": "^0.3.17",
@@ -21,7 +21,7 @@
     "@types/async-lock": "^1.4.0",
     "eslint": "^8.43.0",
     "eslint-config-canonical": "^41.0.5",
-    "typescript": "^5.2.0-dev.20230621"
+    "typescript": "^5.1.6"
   },
   "engines": {
     "node": ">=18.0.0"
