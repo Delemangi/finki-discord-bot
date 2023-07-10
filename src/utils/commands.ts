@@ -1,3 +1,4 @@
+import { type Command } from '../types/Command.js';
 import { Collection } from 'discord.js';
 import { readdirSync } from 'node:fs';
 

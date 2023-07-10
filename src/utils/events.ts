@@ -1,3 +1,4 @@
+import { type ClientEvent } from '../types/ClientEvent.js';
 import { client } from './client.js';
 import { type ClientEvents } from 'discord.js';
 import { readdirSync } from 'node:fs';

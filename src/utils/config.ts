@@ -1,3 +1,4 @@
+import { type BotConfig } from '../types/BotConfig.js';
 import { existsSync, readFileSync } from 'node:fs';
 
 const defaultConfig: Required<BotConfig> = {

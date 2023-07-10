@@ -1,0 +1,17 @@
+import { type ColorResolvable } from 'discord.js';
+
+type BotConfig = {
+  channels?: { [K in Channels]: string };
+  color?: ColorResolvable;
+  crosspostChannels?: string[];
+  ephemeralReplyTime: number;
+  guild: string;
+  leveling: boolean;
+  logo: string;
+  mode: Mode;
+  profiles: { [K in Mode]: { applicationId: string; token: string } };
+  roles?: { [K in Roles]: string };
+  vipTemporaryChannelCron: string;
+  vipTemporaryChannelName: string;
+  vipTemporaryChannelParent: string;
+};
