@@ -12,6 +12,7 @@ import {
   type InteractionResponse,
   type Message,
 } from 'discord.js';
+import { setTimeout } from 'node:timers/promises';
 
 const channels: { [K in Channels]?: GuildTextBasedChannel | undefined } = {};
 
@@ -143,8 +144,8 @@ export const deleteResponse = (
   message: InteractionResponse | Message,
   interval?: number,
 ) => {
-  setTimeout(
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  // eslint-disable-next-line promise/prefer-await-to-then
+  void setTimeout(interval ?? getFromBotConfig('ephemeralReplyTime')).then(
     async () => {
       try {
         await message.delete();
@@ -152,6 +153,5 @@ export const deleteResponse = (
         logger.error(`Failed to delete message ${message.id}\n${error}`);
       }
     },
-    interval ?? getFromBotConfig('ephemeralReplyTime'),
   );
 };
