@@ -1,5 +1,6 @@
 import { PollOption } from '../entities/PollOption.js';
 import { deleteResponse } from '../utils/channels.js';
+import { commandMention } from '../utils/commands.js';
 import {
   createPoll,
   deletePoll,
@@ -19,7 +20,6 @@ import {
   getPollStatsComponents,
   getPollStatsEmbed,
 } from '../utils/embeds.js';
-import { commandMention } from '../utils/functions.js';
 import { logger } from '../utils/logger.js';
 import { commandDescriptions, errors } from '../utils/strings.js';
 import {

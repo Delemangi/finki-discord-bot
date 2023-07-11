@@ -1,4 +1,5 @@
 import { type Command } from '../types/Command.js';
+import { client } from './client.js';
 import { Collection } from 'discord.js';
 import { readdirSync } from 'node:fs';
 
@@ -29,4 +30,20 @@ export const getCommands = async () => {
   }
 
   return commands;
+};
+
+export const commandMention = (name: string | undefined) => {
+  if (name === undefined) {
+    return '';
+  }
+
+  const command = client.application?.commands.cache.find(
+    (cmd) => cmd.name === (name.includes(' ') ? name.split(' ')[0] : name),
+  );
+
+  if (command === undefined) {
+    return name;
+  }
+
+  return `</${name}:${command.id}>`;
 };

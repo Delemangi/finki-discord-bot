@@ -1,5 +1,3 @@
-import { client } from './client.js';
-
 export const splitMessage = function* (message: string) {
   if (message === '') {
     yield '';
@@ -38,22 +36,6 @@ export const splitMessage = function* (message: string) {
 
     yield output;
   }
-};
-
-export const commandMention = (name: string | undefined) => {
-  if (name === undefined) {
-    return '';
-  }
-
-  const command = client.application?.commands.cache.find(
-    (com) => com.name === (name.includes(' ') ? name.split(' ')[0] : name),
-  );
-
-  if (command === undefined) {
-    return name;
-  }
-
-  return `</${name}:${command.id}>`;
 };
 
 export const createOptions = (

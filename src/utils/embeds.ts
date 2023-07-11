@@ -2,6 +2,7 @@ import { type Experience } from '../entities/Experience.js';
 import { type Poll } from '../entities/Poll.js';
 import { type PollVote } from '../entities/PollVote.js';
 import { client } from './client.js';
+import { commandMention } from './commands.js';
 import {
   getFromBotConfig,
   getFromRoleConfig,
@@ -20,7 +21,6 @@ import {
   getPollVotesByOption,
   getPollVotesByPollId,
 } from './database.js';
-import { commandMention } from './functions.js';
 import { logger } from './logger.js';
 import {
   getCommandsWithPermission,
