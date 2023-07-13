@@ -5,7 +5,7 @@
   },
   "dependencies": {
     "async-lock": "^1.4.0",
-    "chrono-node": "^2.6.3",
+    "chrono-node": "^2.6.4",
     "croner": "^6.0.6",
     "discord-api-types": "^0.37.48",
     "discord.js": "^14.11.0",
