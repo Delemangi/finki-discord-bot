@@ -1,3 +1,7 @@
+import {
+  getMaxEmojisByBoostLevel,
+  getMaxStickersByBoostLevel,
+} from '../utils/boost.js';
 import { splitMessage } from '../utils/functions.js';
 import { getRoles } from '../utils/roles.js';
 import { commandDescriptions } from '../utils/strings.js';
@@ -98,6 +102,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     });
   } else {
     const output = [];
+    const boostLevel = interaction.guild.premiumTier;
 
     output.push(`Име: ${interaction.guild.name}`);
     output.push(
@@ -120,9 +125,17 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     await interaction.guild.roles.fetch();
     output.push(`Улоги: ${interaction.guild.roles.cache.size} / 250`);
     await interaction.guild.emojis.fetch();
-    output.push(`Емоџиња: ${interaction.guild.emojis.cache.size} / 50`);
+    output.push(
+      `Емоџиња: ${
+        interaction.guild.emojis.cache.size
+      } / ${getMaxEmojisByBoostLevel(boostLevel)}`,
+    );
     await interaction.guild.stickers.fetch();
-    output.push(`Стикери: ${interaction.guild.stickers.cache.size} / 5`);
+    output.push(
+      `Стикери: ${
+        interaction.guild.stickers.cache.size
+      } / ${getMaxStickersByBoostLevel(boostLevel)}`,
+    );
     await interaction.guild.invites.fetch();
     output.push(`Покани: ${interaction.guild.invites.cache.size}`);
 
