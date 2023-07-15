@@ -99,32 +99,32 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   } else {
     const output = [];
 
-    output.push(`Име: ${interaction.guild?.name}`);
+    output.push(`Име: ${interaction.guild.name}`);
     output.push(
       `Сопственик: ${
         interaction.guild === null
           ? '-'
-          : userMention(interaction.guild?.ownerId)
+          : userMention(interaction.guild.ownerId)
       }`,
     );
-    output.push(`Членови: ${interaction.guild?.memberCount}`);
-    await interaction.guild?.channels.fetch();
-    output.push(`Канали: ${interaction.guild?.channels.cache.size}`);
+    output.push(`Членови: ${interaction.guild.memberCount}`);
+    await interaction.guild.channels.fetch();
+    output.push(`Канали: ${interaction.guild.channels.cache.size}`);
     output.push(
       `Канали (без нишки): ${
-        interaction.guild?.channels.cache.filter(
+        interaction.guild.channels.cache.filter(
           (channel) => !channel.isThread(),
         ).size
       } / 500`,
     );
-    await interaction.guild?.roles.fetch();
-    output.push(`Улоги: ${interaction.guild?.roles.cache.size} / 250`);
-    await interaction.guild?.emojis.fetch();
-    output.push(`Емоџиња: ${interaction.guild?.emojis.cache.size} / 50`);
-    await interaction.guild?.stickers.fetch();
-    output.push(`Стикери: ${interaction.guild?.stickers.cache.size} / 5`);
-    await interaction.guild?.invites.fetch();
-    output.push(`Покани: ${interaction.guild?.invites.cache.size}`);
+    await interaction.guild.roles.fetch();
+    output.push(`Улоги: ${interaction.guild.roles.cache.size} / 250`);
+    await interaction.guild.emojis.fetch();
+    output.push(`Емоџиња: ${interaction.guild.emojis.cache.size} / 50`);
+    await interaction.guild.stickers.fetch();
+    output.push(`Стикери: ${interaction.guild.stickers.cache.size} / 5`);
+    await interaction.guild.invites.fetch();
+    output.push(`Покани: ${interaction.guild.invites.cache.size}`);
 
     await interaction.editReply({
       allowedMentions: { parse: [] },
