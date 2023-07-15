@@ -65,9 +65,10 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       interaction.guild,
       subcommand === 'course' ? 'courses' : subcommand,
     );
-    const output = roles
-      .sort((a, b) => b.members.size - a.members.size)
-      .map((role) => `${roleMention(role.id)}: ${role.members.size}`);
+    roles.sort((a, b) => b.members.size - a.members.size);
+    const output = roles.map(
+      (role) => `${roleMention(role.id)}: ${role.members.size}`,
+    );
 
     if (subcommand === 'course') {
       let followUp = false;
