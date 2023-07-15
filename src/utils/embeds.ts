@@ -1,6 +1,17 @@
 import { type Experience } from '../entities/Experience.js';
 import { type Poll } from '../entities/Poll.js';
 import { type PollVote } from '../entities/PollVote.js';
+import { type Classroom } from '../types/Classroom.js';
+import { type CourseInformation } from '../types/CourseInformation.js';
+import { type CourseParticipants } from '../types/CourseParticipants.js';
+import { type CoursePrerequisites } from '../types/CoursePrerequisites.js';
+import { type CourseStaff } from '../types/CourseStaff.js';
+import { type Link } from '../types/Link.js';
+import { type ProgramName } from '../types/ProgramName.js';
+import { type ProgramShorthand } from '../types/ProgramShorthand.js';
+import { type Question } from '../types/Question.js';
+import { type QuizQuestion } from '../types/QuizQuestion.js';
+import { type Staff } from '../types/Staff.js';
 import { client } from './client.js';
 import { commandMention } from './commands.js';
 import {
@@ -176,7 +187,7 @@ const fetchMessageUrl = async (
 };
 
 const transformCoursePrerequisites = (
-  program: ProgramValues,
+  program: ProgramShorthand,
   semester: number,
 ) => {
   return getPrerequisites()
@@ -813,7 +824,7 @@ export const getCourseSummaryEmbed = (course: string | null) => {
 };
 
 export const getCoursesProgramEmbed = (
-  program: ProgramKeys,
+  program: ProgramName,
   semester: number,
 ) => {
   const courses = transformCoursePrerequisites(

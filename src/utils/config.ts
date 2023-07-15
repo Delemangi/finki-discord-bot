@@ -1,4 +1,17 @@
 import { type BotConfig } from '../types/BotConfig.js';
+import { type Classroom } from '../types/Classroom.js';
+import { type CommandResponse } from '../types/CommandResponse.js';
+import { type CourseInformation } from '../types/CourseInformation.js';
+import { type CourseParticipants } from '../types/CourseParticipants.js';
+import { type CoursePrerequisites } from '../types/CoursePrerequisites.js';
+import { type CourseStaff } from '../types/CourseStaff.js';
+import { type InfoBlock } from '../types/InfoBlock.js';
+import { type LevelConfig } from '../types/LevelConfig.js';
+import { type Link } from '../types/Link.js';
+import { type Question } from '../types/Question.js';
+import { type QuizQuestions } from '../types/QuizQuestions.js';
+import { type RoleConfig } from '../types/RoleConfig.js';
+import { type Staff } from '../types/Staff.js';
 import { existsSync, readFileSync } from 'node:fs';
 
 const defaultConfig: Required<BotConfig> = {

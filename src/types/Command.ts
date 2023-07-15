@@ -6,7 +6,7 @@ import {
   type SlashCommandSubcommandGroupBuilder,
 } from 'discord.js';
 
-type Command = {
+export type Command = {
   data:
     | ContextMenuCommandBuilder
     | SlashCommandBuilder

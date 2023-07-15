@@ -1,4 +1,4 @@
-type CourseParticipants = {
+export type CourseParticipants = {
   '2011/2012': number;
   '2012/2013': number;
   '2013/2014': number;

@@ -1,3 +1,5 @@
+import { type Roles } from '../types/Roles.js';
+import { type RoleSets } from '../types/RoleSets.js';
 import { client } from './client.js';
 import { getFromBotConfig, getFromRoleConfig } from './config.js';
 import { logger } from './logger.js';

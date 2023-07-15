@@ -1,1 +1,0 @@
-type Mode = 'dev' | 'prod';

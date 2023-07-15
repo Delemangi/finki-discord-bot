@@ -1,4 +1,4 @@
-type RoleConfig = {
+export type RoleConfig = {
   color: string[];
   course: { [index: string]: string[] };
   courses: { [index: string]: string };

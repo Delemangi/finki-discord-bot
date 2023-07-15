@@ -1,3 +1,4 @@
+import { type Roles } from '../types/Roles.js';
 import { logger } from './logger.js';
 import { getRole } from './roles.js';
 import { commandDescriptions } from './strings.js';

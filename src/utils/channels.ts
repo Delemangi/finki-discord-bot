@@ -1,3 +1,4 @@
+import { type ChannelName } from '../types/ChannelName.js';
 import { client } from './client.js';
 import { getFromBotConfig } from './config.js';
 import { logger } from './logger.js';
@@ -14,7 +15,7 @@ import {
 } from 'discord.js';
 import { setTimeout } from 'node:timers/promises';
 
-const channels: { [K in Channels]?: GuildTextBasedChannel | undefined } = {};
+const channels: { [K in ChannelName]?: GuildTextBasedChannel | undefined } = {};
 
 export const initializeChannels = () => {
   const channelIds = getFromBotConfig('channels');
@@ -42,7 +43,7 @@ export const initializeChannels = () => {
   logger.info('Channels initialized');
 };
 
-export const getChannel = (type: Channels) => channels[type];
+export const getChannel = (type: ChannelName) => channels[type];
 
 const getNextVipCronRun = (locale: string = 'en-GB', offset = 1) => {
   const nextRun = Cron(getFromBotConfig('vipTemporaryChannelCron'), {
@@ -105,7 +106,7 @@ export const scheduleVipTemporaryChannel = async () => {
 export const log = async (
   embed: EmbedBuilder,
   interaction: Interaction,
-  type: Channels,
+  type: ChannelName,
 ) => {
   const channel = channels[type];
 

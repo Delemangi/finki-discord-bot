@@ -1,5 +1,8 @@
 /* eslint-disable id-length */
 
+import { type ProgramName } from '../types/ProgramName.js';
+import { type ProgramShorthand } from '../types/ProgramShorthand.js';
+
 export const commandDescriptions = {
   about: 'Информации за ботот',
   anto: 'Анто факт',
@@ -75,7 +78,7 @@ export const commandDescriptions = {
   'vip upgrade': 'Предложи обичен ВИП член за полноправен член на ВИП',
 };
 
-export const programMapping: { [index in ProgramKeys]: ProgramValues } = {
+export const programMapping: { [index in ProgramName]: ProgramShorthand } = {
   ИМБ: 'imb',
   КЕ: 'ke',
   КИ: 'ki',

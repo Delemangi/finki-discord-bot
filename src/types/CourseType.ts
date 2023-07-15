@@ -1,4 +1,4 @@
-type CourseType =
+export type CourseType =
   | 'задолжителен (изб.)'
   | 'задолжителен'
   | 'изборен'

@@ -1,4 +1,4 @@
-type Classroom = {
+export type Classroom = {
   capacity: number;
   classroom: number | string;
   floor: number;

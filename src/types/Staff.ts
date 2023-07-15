@@ -1,4 +1,4 @@
-type Staff = {
+export type Staff = {
   courses: string;
   email: string;
   finki: string;

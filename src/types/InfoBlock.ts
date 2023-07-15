@@ -1,4 +1,4 @@
-type InfoBlock =
+export type InfoBlock =
   | {
       name: string;
       type: 'image';

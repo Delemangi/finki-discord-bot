@@ -1,3 +1,4 @@
+import { type ProgramName } from '../types/ProgramName.js';
 import {
   getCoursesPrerequisiteEmbed,
   getCoursesProgramEmbed,
@@ -86,7 +87,7 @@ export const data = new SlashCommandBuilder()
 const handleCoursesProgram = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const program = interaction.options.getString('program', true) as ProgramKeys;
+  const program = interaction.options.getString('program', true) as ProgramName;
   const semester = interaction.options.getNumber('semester', true);
 
   const embeds = getCoursesProgramEmbed(program, semester);

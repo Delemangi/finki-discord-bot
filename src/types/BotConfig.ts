@@ -1,7 +1,10 @@
+import { type ChannelName } from './ChannelName.js';
+import { type Mode } from './Mode.js';
+import { type Roles } from './Roles.js';
 import { type ColorResolvable } from 'discord.js';
 
-type BotConfig = {
-  channels?: { [K in Channels]: string };
+export type BotConfig = {
+  channels?: { [K in ChannelName]: string };
   color?: ColorResolvable;
   crosspostChannels?: string[];
   ephemeralReplyTime: number;

@@ -1,4 +1,4 @@
-type CommandResponse = {
+export type CommandResponse = {
   command: string;
   response: string;
 };
