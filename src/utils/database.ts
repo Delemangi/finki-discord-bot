@@ -1,9 +1,9 @@
-import { Experience } from '../entities/Experience.js';
-import { Poll } from '../entities/Poll.js';
-import { PollOption } from '../entities/PollOption.js';
-import { PollVote } from '../entities/PollVote.js';
-import { Reminder } from '../entities/Reminder.js';
-import { VipPoll } from '../entities/VipPoll.js';
+import { Experience } from '../models/Experience.js';
+import { Poll } from '../models/Poll.js';
+import { PollOption } from '../models/PollOption.js';
+import { PollVote } from '../models/PollVote.js';
+import { Reminder } from '../models/Reminder.js';
+import { VipPoll } from '../models/VipPoll.js';
 import { client } from './client.js';
 import { getFromBotConfig } from './config.js';
 import { logger } from './logger.js';

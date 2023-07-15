@@ -1,4 +1,4 @@
-import { Reminder } from '../entities/Reminder.js';
+import { Reminder } from '../models/Reminder.js';
 import { saveReminder } from '../utils/database.js';
 import { commandDescriptions } from '../utils/strings.js';
 import { parseDate } from 'chrono-node';

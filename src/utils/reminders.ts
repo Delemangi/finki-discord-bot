@@ -1,4 +1,4 @@
-import { type Reminder } from '../entities/Reminder.js';
+import { type Reminder } from '../models/Reminder.js';
 import { client } from './client.js';
 import { deleteReminders, loadReminders } from './database.js';
 import { logger } from './logger.js';

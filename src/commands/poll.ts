@@ -1,4 +1,4 @@
-import { PollOption } from '../entities/PollOption.js';
+import { PollOption } from '../models/PollOption.js';
 import { deleteResponse } from '../utils/channels.js';
 import { commandMention } from '../utils/commands.js';
 import {

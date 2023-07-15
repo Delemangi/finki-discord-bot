@@ -1,4 +1,4 @@
-import { Experience } from '../entities/Experience.js';
+import { Experience } from '../models/Experience.js';
 import { getChannel } from './channels.js';
 import { getFromBotConfig, getLevels } from './config.js';
 import { getExperienceByUserId, saveExperience } from './database.js';

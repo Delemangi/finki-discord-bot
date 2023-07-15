@@ -1,6 +1,6 @@
-import { type Poll } from '../entities/Poll.js';
-import { type PollOption } from '../entities/PollOption.js';
-import { type VipPoll } from '../entities/VipPoll.js';
+import { type Poll } from '../models/Poll.js';
+import { type PollOption } from '../models/PollOption.js';
+import { type VipPoll } from '../models/VipPoll.js';
 import { type QuizQuestion } from '../types/QuizQuestion.js';
 import { deleteResponse, getChannel, log } from './channels.js';
 import { getCommand } from './commands.js';

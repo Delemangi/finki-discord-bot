@@ -1,4 +1,4 @@
-import { Experience } from '../entities/Experience.js';
+import { Experience } from '../models/Experience.js';
 import { getExperienceByUserId, saveExperience } from '../utils/database.js';
 import { type ClientEvents, Events } from 'discord.js';
 

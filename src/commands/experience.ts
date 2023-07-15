@@ -1,4 +1,4 @@
-import { Experience } from '../entities/Experience.js';
+import { Experience } from '../models/Experience.js';
 import { deleteResponse } from '../utils/channels.js';
 import {
   addExperienceByUserId,

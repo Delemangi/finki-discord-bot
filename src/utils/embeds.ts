@@ -1,6 +1,6 @@
-import { type Experience } from '../entities/Experience.js';
-import { type Poll } from '../entities/Poll.js';
-import { type PollVote } from '../entities/PollVote.js';
+import { type Experience } from '../models/Experience.js';
+import { type Poll } from '../models/Poll.js';
+import { type PollVote } from '../models/PollVote.js';
 import { type Classroom } from '../types/Classroom.js';
 import { type CourseInformation } from '../types/CourseInformation.js';
 import { type CourseParticipants } from '../types/CourseParticipants.js';
