@@ -24,21 +24,15 @@ export const initializeChannels = () => {
     return;
   }
 
-  channels.commands = client.channels.cache.get(
-    channelIds.commands,
-  ) as GuildTextBasedChannel;
-  channels.vip = client.channels.cache.get(
-    channelIds.vip,
-  ) as GuildTextBasedChannel;
-  channels.polls = client.channels.cache.get(
-    channelIds.polls,
-  ) as GuildTextBasedChannel;
-  channels.oath = client.channels.cache.get(
-    channelIds.oath,
-  ) as GuildTextBasedChannel;
-  channels.activity = client.channels.cache.get(
-    channelIds.activity,
-  ) as GuildTextBasedChannel;
+  for (const [channelName, channelId] of Object.entries(channelIds)) {
+    if (channelId === undefined) {
+      continue;
+    }
+
+    channels[channelName as ChannelName] = client.channels.cache.get(
+      channelId,
+    ) as GuildTextBasedChannel;
+  }
 
   logger.info('Channels initialized');
 };
