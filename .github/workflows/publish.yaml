@@ -22,4 +22,4 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/kiii-project:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/finki-discord-bot:latest
