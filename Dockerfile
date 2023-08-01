@@ -15,7 +15,7 @@ RUN npx prisma generate
 COPY src tsconfig.json ./
 RUN npm run build
 
-COPY start.sh .
+COPY start.sh ./
 RUN chmod +x /app/start.sh
 
 CMD [ "sh", "/app/start.sh" ]
