@@ -1,10 +1,10 @@
-import { commandDescriptions } from '../utils/strings.js';
+import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-} from 'discord.js';
+} from "discord.js";
 
-const name = 'members';
+const name = "members";
 
 export const data = new SlashCommandBuilder()
   .setName(name)
@@ -12,6 +12,6 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply(
-    `Серверот има ${interaction.guild?.memberCount} членови.`,
+    `Серверот има ${interaction.guild?.memberCount} членови.`
   );
 };

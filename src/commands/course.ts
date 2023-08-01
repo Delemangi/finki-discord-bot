@@ -4,120 +4,120 @@ import {
   getParticipants,
   getPrerequisites,
   getProfessors,
-} from '../utils/config.js';
+} from "../utils/config.js";
 import {
   getCourseInfoEmbed,
   getCourseParticipantsEmbed,
   getCoursePrerequisiteEmbed,
   getCourseProfessorsEmbed,
   getCourseSummaryEmbed,
-} from '../utils/embeds.js';
-import { getCourseRoleByCourseName } from '../utils/roles.js';
-import { commandDescriptions, errors } from '../utils/strings.js';
+} from "../utils/embeds.js";
+import { getCourseRoleByCourseName } from "../utils/roles.js";
+import { commandDescriptions, errors } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   type GuildMember,
   roleMention,
   SlashCommandBuilder,
-} from 'discord.js';
+} from "discord.js";
 
-const name = 'course';
+const name = "course";
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription('Course')
+  .setDescription("Course")
   .addSubcommand((command) =>
     command
-      .setName('participants')
-      .setDescription(commandDescriptions['course participants'])
+      .setName("participants")
+      .setDescription(commandDescriptions["course participants"])
       .addStringOption((option) =>
         option
-          .setName('course')
-          .setDescription('Предмет')
+          .setName("course")
+          .setDescription("Предмет")
           .setRequired(true)
-          .setAutocomplete(true),
-      ),
+          .setAutocomplete(true)
+      )
   )
   .addSubcommand((command) =>
     command
-      .setName('professors')
-      .setDescription(commandDescriptions['course professors'])
+      .setName("professors")
+      .setDescription(commandDescriptions["course professors"])
       .addStringOption((option) =>
         option
-          .setName('course')
-          .setDescription('Предмет')
+          .setName("course")
+          .setDescription("Предмет")
           .setRequired(true)
-          .setAutocomplete(true),
-      ),
+          .setAutocomplete(true)
+      )
   )
   .addSubcommand((command) =>
     command
-      .setName('role')
-      .setDescription(commandDescriptions['course role'])
+      .setName("role")
+      .setDescription(commandDescriptions["course role"])
       .addStringOption((option) =>
         option
-          .setName('courserole')
-          .setDescription('Предмет')
+          .setName("courserole")
+          .setDescription("Предмет")
           .setRequired(true)
-          .setAutocomplete(true),
-      ),
+          .setAutocomplete(true)
+      )
   )
   .addSubcommand((command) =>
     command
-      .setName('prerequisite')
-      .setDescription(commandDescriptions['course prerequisite'])
+      .setName("prerequisite")
+      .setDescription(commandDescriptions["course prerequisite"])
       .addStringOption((option) =>
         option
-          .setName('course')
-          .setDescription('Предмет')
+          .setName("course")
+          .setDescription("Предмет")
           .setRequired(true)
-          .setAutocomplete(true),
-      ),
+          .setAutocomplete(true)
+      )
   )
   .addSubcommand((command) =>
     command
-      .setName('info')
-      .setDescription(commandDescriptions['course info'])
+      .setName("info")
+      .setDescription(commandDescriptions["course info"])
       .addStringOption((option) =>
         option
-          .setName('course')
-          .setDescription('Предмет')
+          .setName("course")
+          .setDescription("Предмет")
           .setRequired(true)
-          .setAutocomplete(true),
-      ),
+          .setAutocomplete(true)
+      )
   )
   .addSubcommand((command) =>
     command
-      .setName('summary')
-      .setDescription(commandDescriptions['course summary'])
+      .setName("summary")
+      .setDescription(commandDescriptions["course summary"])
       .addStringOption((option) =>
         option
-          .setName('course')
-          .setDescription('Предмет')
+          .setName("course")
+          .setDescription("Предмет")
           .setRequired(true)
-          .setAutocomplete(true),
-      ),
+          .setAutocomplete(true)
+      )
   )
   .addSubcommand((command) =>
     command
-      .setName('toggle')
-      .setDescription(commandDescriptions['course toggle'])
+      .setName("toggle")
+      .setDescription(commandDescriptions["course toggle"])
       .addStringOption((option) =>
         option
-          .setName('courserole')
-          .setDescription('Предмет')
+          .setName("courserole")
+          .setDescription("Предмет")
           .setRequired(true)
-          .setAutocomplete(true),
-      ),
+          .setAutocomplete(true)
+      )
   );
 
 const handleCourseParticipants = async (
   interaction: ChatInputCommandInteraction,
-  course: string | null,
+  course: string | null
 ) => {
   const information = getParticipants().find(
     (participants) =>
-      participants.course.toLowerCase() === course?.toLowerCase(),
+      participants.course.toLowerCase() === course?.toLowerCase()
   );
 
   if (information === undefined) {
@@ -131,10 +131,10 @@ const handleCourseParticipants = async (
 
 const handleCourseProfessors = async (
   interaction: ChatInputCommandInteraction,
-  course: string | null,
+  course: string | null
 ) => {
   const information = getProfessors().find(
-    (staff) => staff.course.toLowerCase() === course?.toLowerCase(),
+    (staff) => staff.course.toLowerCase() === course?.toLowerCase()
   );
 
   if (information === undefined) {
@@ -148,7 +148,7 @@ const handleCourseProfessors = async (
 
 const handleCourseRole = async (
   interaction: ChatInputCommandInteraction,
-  courseRole: string | null,
+  courseRole: string | null
 ) => {
   if (interaction.guild === null) {
     await interaction.editReply(errors.serverOnlyCommand);
@@ -157,8 +157,8 @@ const handleCourseRole = async (
 
   await interaction.guild.members.fetch();
 
-  const roleEntry = Object.entries(getFromRoleConfig('courses')).find(
-    ([, course]) => course.toLowerCase() === courseRole?.toLowerCase(),
+  const roleEntry = Object.entries(getFromRoleConfig("courses")).find(
+    ([, course]) => course.toLowerCase() === courseRole?.toLowerCase()
   );
 
   if (roleEntry === undefined) {
@@ -167,7 +167,7 @@ const handleCourseRole = async (
   }
 
   const role = interaction.guild.roles.cache.find(
-    (ro) => ro.name.toLowerCase() === roleEntry[0].toLowerCase(),
+    (ro) => ro.name.toLowerCase() === roleEntry[0].toLowerCase()
   );
 
   if (role === undefined) {
@@ -183,11 +183,11 @@ const handleCourseRole = async (
 
 const handleCoursePrerequisite = async (
   interaction: ChatInputCommandInteraction,
-  course: string | null,
+  course: string | null
 ) => {
   const information = getPrerequisites().find(
     (prerequisites) =>
-      prerequisites.course.toLowerCase() === course?.toLowerCase(),
+      prerequisites.course.toLowerCase() === course?.toLowerCase()
   );
 
   if (information === undefined) {
@@ -201,10 +201,10 @@ const handleCoursePrerequisite = async (
 
 const handleCourseInfo = async (
   interaction: ChatInputCommandInteraction,
-  course: string | null,
+  course: string | null
 ) => {
   const information = getInformation().find(
-    (info) => info.course.toLowerCase() === course?.toLowerCase(),
+    (info) => info.course.toLowerCase() === course?.toLowerCase()
   );
 
   if (information === undefined) {
@@ -218,7 +218,7 @@ const handleCourseInfo = async (
 
 const handleCourseSummary = async (
   interaction: ChatInputCommandInteraction,
-  course: string | null,
+  course: string | null
 ) => {
   const embeds = getCourseSummaryEmbed(course);
   await interaction.editReply({ embeds });
@@ -226,7 +226,7 @@ const handleCourseSummary = async (
 
 const handleCourseToggle = async (
   interaction: ChatInputCommandInteraction,
-  course: string | null,
+  course: string | null
 ) => {
   if (interaction.guild === null) {
     await interaction.editReply(errors.serverOnlyCommand);
@@ -268,14 +268,14 @@ const courseHandlers = {
 };
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const course = interaction.options.getString('course');
-  const courseRole = interaction.options.getString('courserole');
+  const course = interaction.options.getString("course");
+  const courseRole = interaction.options.getString("courserole");
 
   if (
-    course?.toLowerCase() === 'спорт и здравје' ||
-    courseRole?.toLowerCase() === 'спорт и здравје'
+    course?.toLowerCase() === "спорт и здравје" ||
+    courseRole?.toLowerCase() === "спорт и здравје"
   ) {
-    await interaction.editReply('Добар обид.');
+    await interaction.editReply("Добар обид.");
     return;
   }
 
@@ -284,7 +284,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   if (Object.keys(courseHandlers).includes(subcommand)) {
     await courseHandlers[subcommand as keyof typeof courseHandlers](
       interaction,
-      course ?? courseRole,
+      course ?? courseRole
     );
   }
 };

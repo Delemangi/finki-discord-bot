@@ -1,8 +1,8 @@
-import { type Roles } from '../types/Roles.js';
-import { logger } from './logger.js';
-import { getRole } from './roles.js';
-import { commandDescriptions } from './strings.js';
-import { type GuildMember, PermissionsBitField } from 'discord.js';
+import { type Roles } from "../types/Roles.js";
+import { logger } from "./logger.js";
+import { getRole } from "./roles.js";
+import { commandDescriptions } from "./strings.js";
+import { type GuildMember, PermissionsBitField } from "discord.js";
 
 const commandPermissions: {
   [key: string]: {
@@ -15,11 +15,11 @@ const commandPermissions: {
     roles: [],
   },
   embed: { permissions: [PermissionsBitField.Flags.ManageMessages], roles: [] },
-  'experience add': {
+  "experience add": {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
-  'poll delete': {
+  "poll delete": {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
@@ -29,40 +29,40 @@ const commandPermissions: {
     roles: [],
   },
   script: { permissions: [PermissionsBitField.Flags.Administrator], roles: [] },
-  'vip add': {
+  "vip add": {
     permissions: [],
-    roles: ['vipVoting'],
+    roles: ["vipVoting"],
   },
-  'vip delete': {
+  "vip delete": {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
-  'vip invite': {
+  "vip invite": {
     permissions: [],
-    roles: ['admin'],
+    roles: ["admin"],
   },
-  'vip invited': {
+  "vip invited": {
     permissions: [],
-    roles: ['vipVoting'],
+    roles: ["vipVoting"],
   },
-  'vip override': {
+  "vip override": {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
-  'vip remaining': {
+  "vip remaining": {
     permissions: [],
-    roles: ['vipVoting'],
+    roles: ["vipVoting"],
   },
-  'vip remove': {
+  "vip remove": {
     permissions: [],
-    roles: ['vipVoting'],
+    roles: ["vipVoting"],
   },
 };
 
 const getCommandPermission = (
-  command: string,
+  command: string
 ): [bigint[], Array<string | undefined>] => {
-  const topCommand = command.split(' ')[0];
+  const topCommand = command.split(" ")[0];
 
   if (Object.keys(commandDescriptions).includes(command)) {
     return [
@@ -85,7 +85,7 @@ const getCommandPermission = (
 
 export const hasCommandPermission = (
   member: GuildMember | null,
-  command: string,
+  command: string
 ) => {
   if (member === null) {
     return true;
@@ -111,6 +111,6 @@ export const hasCommandPermission = (
 
 export const getCommandsWithPermission = (member: GuildMember | null) => {
   return Object.keys(commandDescriptions).filter((command) =>
-    hasCommandPermission(member, command),
+    hasCommandPermission(member, command)
   );
 };

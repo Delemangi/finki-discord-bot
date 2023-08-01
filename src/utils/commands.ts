@@ -1,15 +1,15 @@
-import { type Command } from '../types/Command.js';
-import { client } from './client.js';
-import { Collection } from 'discord.js';
-import { readdirSync } from 'node:fs';
+import { type Command } from "../types/Command.js";
+import { client } from "./client.js";
+import { Collection } from "discord.js";
+import { readdirSync } from "node:fs";
 
 const commands = new Collection<string, Command>();
 
 const refreshCommands = async () => {
   commands.clear();
 
-  for (const file of readdirSync('./dist/commands').filter((fi) =>
-    fi.endsWith('.js'),
+  for (const file of readdirSync("./dist/commands").filter((fi) =>
+    fi.endsWith(".js")
   )) {
     const command: Command = await import(`../commands/${file}`);
     commands.set(command.data.name, command);
@@ -34,11 +34,11 @@ export const getCommands = async () => {
 
 export const commandMention = (name: string | undefined) => {
   if (name === undefined) {
-    return '';
+    return "";
   }
 
   const command = client.application?.commands.cache.find(
-    (cmd) => cmd.name === (name.includes(' ') ? name.split(' ')[0] : name),
+    (cmd) => cmd.name === (name.includes(" ") ? name.split(" ")[0] : name)
   );
 
   if (command === undefined) {

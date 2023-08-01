@@ -4,10 +4,18 @@ FROM --platform=${PLATFORM} node:20-alpine
 
 WORKDIR /app
 
-COPY package*.json .
+RUN apk update && apk add postgresql-client
+
+COPY package*.json ./
 RUN npm install
 
-COPY . .
+COPY prisma ./
+RUN npx prisma generate
+
+COPY src tsconfig.json ./
 RUN npm run build
 
-CMD [ "npm", "start" ]
+COPY start.sh .
+RUN chmod +x /app/start.sh
+
+CMD [ "sh", "/app/start.sh" ]

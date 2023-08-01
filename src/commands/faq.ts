@@ -1,30 +1,30 @@
-import { getQuestions } from '../utils/config.js';
-import { getQuestionComponents, getQuestionEmbed } from '../utils/embeds.js';
-import { commandDescriptions } from '../utils/strings.js';
+import { getQuestions } from "../utils/config.js";
+import { getQuestionComponents, getQuestionEmbed } from "../utils/embeds.js";
+import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-} from 'discord.js';
+} from "discord.js";
 
-const name = 'faq';
+const name = "faq";
 
 export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription(commandDescriptions[name])
   .addStringOption((option) =>
     option
-      .setName('question')
-      .setDescription('Прашање')
+      .setName("question")
+      .setDescription("Прашање")
       .setRequired(true)
-      .setAutocomplete(true),
+      .setAutocomplete(true)
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const keyword = interaction.options.getString('question', true);
+  const keyword = interaction.options.getString("question", true);
   const question = getQuestions().find((quest) => quest.question === keyword);
 
   if (question === undefined) {
-    await interaction.editReply('Не постои такво прашање.');
+    await interaction.editReply("Не постои такво прашање.");
     return;
   }
 

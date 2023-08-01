@@ -1,9 +1,9 @@
 export type InfoBlock =
   | {
       name: string;
-      type: 'image';
+      type: "image";
     }
   | {
       text: string;
-      type: 'text';
+      type: "text";
     };

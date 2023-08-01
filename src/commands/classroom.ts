@@ -1,38 +1,38 @@
-import { getClassrooms } from '../utils/config.js';
-import { getClassroomEmbed } from '../utils/embeds.js';
-import { commandDescriptions } from '../utils/strings.js';
+import { getClassrooms } from "../utils/config.js";
+import { getClassroomEmbed } from "../utils/embeds.js";
+import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-} from 'discord.js';
+} from "discord.js";
 
-const name = 'classroom';
+const name = "classroom";
 
 export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription(commandDescriptions[name])
   .addStringOption((option) =>
     option
-      .setName('classroom')
-      .setDescription('Просторија')
+      .setName("classroom")
+      .setDescription("Просторија")
       .setRequired(true)
-      .setAutocomplete(true),
+      .setAutocomplete(true)
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const classroom = interaction.options.getString('classroom', true);
-  const [classroomName, classroomLocation] = classroom.split(' ');
+  const classroom = interaction.options.getString("classroom", true);
+  const [classroomName, classroomLocation] = classroom.split(" ");
   const information = getClassrooms().find(
     (cl) =>
       cl.classroom.toString().toLowerCase() === classroomName?.toLowerCase() &&
       cl.location.toString().toLowerCase() ===
-        classroomLocation?.slice(1, -1).toLowerCase(),
+        classroomLocation?.slice(1, -1).toLowerCase()
   );
 
   if (information === undefined) {
     const classrooms = getClassrooms().filter(
       (cl) =>
-        cl.classroom.toString().toLowerCase() === classroomName?.toLowerCase(),
+        cl.classroom.toString().toLowerCase() === classroomName?.toLowerCase()
     );
 
     const embeds = classrooms.map((cl) => getClassroomEmbed(cl));

@@ -1,51 +1,51 @@
 import {
   getMaxEmojisByBoostLevel,
   getMaxStickersByBoostLevel,
-} from '../utils/boost.js';
-import { splitMessage } from '../utils/functions.js';
-import { getRoles } from '../utils/roles.js';
-import { commandDescriptions } from '../utils/strings.js';
+} from "../utils/boost.js";
+import { splitMessage } from "../utils/functions.js";
+import { getRoles } from "../utils/roles.js";
+import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   roleMention,
   SlashCommandBuilder,
   userMention,
-} from 'discord.js';
+} from "discord.js";
 
-const name = 'statistics';
+const name = "statistics";
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription('Color')
+  .setDescription("Color")
   .addSubcommand((command) =>
     command
-      .setName('color')
-      .setDescription(commandDescriptions['statistics color']),
+      .setName("color")
+      .setDescription(commandDescriptions["statistics color"])
   )
   .addSubcommand((command) =>
     command
-      .setName('program')
-      .setDescription(commandDescriptions['statistics program']),
+      .setName("program")
+      .setDescription(commandDescriptions["statistics program"])
   )
   .addSubcommand((command) =>
     command
-      .setName('year')
-      .setDescription(commandDescriptions['statistics year']),
+      .setName("year")
+      .setDescription(commandDescriptions["statistics year"])
   )
   .addSubcommand((command) =>
     command
-      .setName('course')
-      .setDescription(commandDescriptions['statistics course']),
+      .setName("course")
+      .setDescription(commandDescriptions["statistics course"])
   )
   .addSubcommand((command) =>
     command
-      .setName('notification')
-      .setDescription(commandDescriptions['statistics notification']),
+      .setName("notification")
+      .setDescription(commandDescriptions["statistics notification"])
   )
   .addSubcommand((command) =>
     command
-      .setName('server')
-      .setDescription(commandDescriptions['statistics server']),
+      .setName("server")
+      .setDescription(commandDescriptions["statistics server"])
   )
   .setDMPermission(false);
 
@@ -59,25 +59,25 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const subcommand = interaction.options.getSubcommand(true);
 
   if (
-    subcommand === 'color' ||
-    subcommand === 'program' ||
-    subcommand === 'year' ||
-    subcommand === 'course' ||
-    subcommand === 'notification'
+    subcommand === "color" ||
+    subcommand === "program" ||
+    subcommand === "year" ||
+    subcommand === "course" ||
+    subcommand === "notification"
   ) {
     const roles = getRoles(
       interaction.guild,
-      subcommand === 'course' ? 'courses' : subcommand,
+      subcommand === "course" ? "courses" : subcommand
     );
     roles.sort((a, b) => b.members.size - a.members.size);
     const output = roles.map(
-      (role) => `${roleMention(role.id)}: ${role.members.size}`,
+      (role) => `${roleMention(role.id)}: ${role.members.size}`
     );
 
-    if (subcommand === 'course') {
+    if (subcommand === "course") {
       let followUp = false;
 
-      for (const message of splitMessage(output.join('\n'))) {
+      for (const message of splitMessage(output.join("\n"))) {
         if (followUp) {
           await interaction.followUp({
             allowedMentions: { parse: [] },
@@ -98,7 +98,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
     await interaction.editReply({
       allowedMentions: { parse: [] },
-      content: output.join('\n'),
+      content: output.join("\n"),
     });
   } else {
     const output = [];
@@ -108,9 +108,9 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     output.push(
       `Сопственик: ${
         interaction.guild === null
-          ? '-'
+          ? "-"
           : userMention(interaction.guild.ownerId)
-      }`,
+      }`
     );
     output.push(`Членови: ${interaction.guild.memberCount}`);
     await interaction.guild.channels.fetch();
@@ -118,9 +118,9 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     output.push(
       `Канали (без нишки): ${
         interaction.guild.channels.cache.filter(
-          (channel) => !channel.isThread(),
+          (channel) => !channel.isThread()
         ).size
-      } / 500`,
+      } / 500`
     );
     await interaction.guild.roles.fetch();
     output.push(`Улоги: ${interaction.guild.roles.cache.size} / 250`);
@@ -128,20 +128,20 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     output.push(
       `Емоџиња: ${
         interaction.guild.emojis.cache.size
-      } / ${getMaxEmojisByBoostLevel(boostLevel)}`,
+      } / ${getMaxEmojisByBoostLevel(boostLevel)}`
     );
     await interaction.guild.stickers.fetch();
     output.push(
       `Стикери: ${
         interaction.guild.stickers.cache.size
-      } / ${getMaxStickersByBoostLevel(boostLevel)}`,
+      } / ${getMaxStickersByBoostLevel(boostLevel)}`
     );
     await interaction.guild.invites.fetch();
     output.push(`Покани: ${interaction.guild.invites.cache.size}`);
 
     await interaction.editReply({
       allowedMentions: { parse: [] },
-      content: output.join('\n'),
+      content: output.join("\n"),
     });
   }
 };

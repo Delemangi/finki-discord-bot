@@ -1,11 +1,11 @@
-import { getFromBotConfig } from '../utils/config.js';
-import { getCrossposting } from '../utils/crossposting.js';
-import { addExperience } from '../utils/experience.js';
-import { logger } from '../utils/logger.js';
-import { type ClientEvents, Events, type Message } from 'discord.js';
+import { getFromBotConfig } from "../utils/config.js";
+import { getCrossposting } from "../utils/crossposting.js";
+import { addExperience } from "../utils/experience.js";
+import { logger } from "../utils/logger.js";
+import { type ClientEvents, Events, type Message } from "discord.js";
 
 export const name = Events.MessageCreate;
-const crosspostChannels = getFromBotConfig('crosspostChannels');
+const crosspostChannels = getFromBotConfig("crosspostChannels");
 
 const crosspost = async (message: Message) => {
   if (
@@ -20,7 +20,7 @@ const crosspost = async (message: Message) => {
     await message.crosspost();
   } catch (error) {
     logger.error(
-      `Failed to crosspost message by ${message.author.tag}\n${error}`,
+      `Failed to crosspost message by ${message.author.tag}\n${error}`
     );
   }
 };

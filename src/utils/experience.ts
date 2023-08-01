@@ -1,17 +1,22 @@
-import { Experience } from '../models/Experience.js';
-import { getChannel } from './channels.js';
-import { getFromBotConfig, getLevels } from './config.js';
-import { getExperienceByUserId, saveExperience } from './database.js';
-import AsyncLock from 'async-lock';
-import { type GuildMember, type Message } from 'discord.js';
+import {
+  createExperience,
+  getExperienceByUserId,
+  updateExperience,
+} from "../data/Experience.js";
+import { getChannel } from "./channels.js";
+import { getFromBotConfig, getLevels } from "./config.js";
+import { logger } from "./logger.js";
+import { getUsername } from "./members.js";
+import AsyncLock from "async-lock";
+import { type GuildMember, type Message } from "discord.js";
 
 const coefficient = (1 + Math.sqrt(5)) / 2 - 1;
 
 const cleanMessage = (message: string) => {
   return message
     .trim()
-    .replaceAll(/<:(\w)+:\d+>/gu, '$1')
-    .replaceAll(/\bhttps?:\/\/\S+/gu, '');
+    .replaceAll(/<:(\w)+:\d+>/gu, "$1")
+    .replaceAll(/\bhttps?:\/\/\S+/gu, "");
 };
 
 const countLinks = (message: string) => {
@@ -32,9 +37,9 @@ const getExperienceFromMessage = async (message: Message) => {
           5 * message.mentions.users.size ** coefficient +
           5 * message.mentions.roles.size ** coefficient +
           5 * message.mentions.channels.size ** coefficient +
-          5 * message.stickers.size,
-      ),
-    ),
+          5 * message.stickers.size
+      )
+    )
   );
 };
 
@@ -65,7 +70,7 @@ const awardMember = async (member: GuildMember | null, level: number) => {
 const lock = new AsyncLock();
 
 export const addExperience = async (message: Message) => {
-  if (!getFromBotConfig('leveling')) {
+  if (!getFromBotConfig("leveling")) {
     return;
   }
 
@@ -79,15 +84,23 @@ export const addExperience = async (message: Message) => {
   }
 
   await lock.acquire(message.author.id, async () => {
-    let currentLevel = await getExperienceByUserId(message.author.id);
+    const currentLevel =
+      (await getExperienceByUserId(message.author.id)) ??
+      (await createExperience({
+        experience: 0n,
+        lastMessage: new Date(),
+        level: 0,
+        messages: 0,
+        userId: message.author.id,
+      }));
 
     if (currentLevel === null) {
-      currentLevel = new Experience();
-      currentLevel.user = message.author.id;
-      currentLevel.tag = message.author.tag;
-      currentLevel.messages = 0;
-      currentLevel.level = 0;
-      currentLevel.experience = 0n;
+      logger.warn(
+        `Couldn't get or create experience for user ${getUsername(
+          message.author.id
+        )}`
+      );
+      return;
     }
 
     currentLevel.messages++;
@@ -99,7 +112,7 @@ export const addExperience = async (message: Message) => {
     if (level !== currentLevel.level) {
       currentLevel.level = level;
 
-      const channel = getChannel('activity');
+      const channel = getChannel("activity");
 
       if (channel !== undefined) {
         await channel.send({
@@ -111,6 +124,6 @@ export const addExperience = async (message: Message) => {
       await awardMember(message.member, currentLevel.level);
     }
 
-    await saveExperience(currentLevel);
+    await updateExperience(currentLevel);
   });
 };

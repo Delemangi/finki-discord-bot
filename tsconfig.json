@@ -9,7 +9,6 @@
     "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "lib": [
-      "DOM",
       "ESNext"
     ],
     "module": "NodeNext",

@@ -1,15 +1,15 @@
-import { getCommands } from '../utils/commands.js';
-import { getApplicationId, getToken } from '../utils/config.js';
-import { commandDescriptions } from '../utils/strings.js';
+import { getCommands } from "../utils/commands.js";
+import { getApplicationId, getToken } from "../utils/config.js";
+import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   PermissionFlagsBits,
   REST,
   Routes,
   SlashCommandBuilder,
-} from 'discord.js';
+} from "discord.js";
 
-const name = 'register';
+const name = "register";
 const permission = PermissionFlagsBits.ManageMessages;
 
 export const data = new SlashCommandBuilder()
@@ -29,7 +29,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     await rest.put(Routes.applicationCommands(getApplicationId()), {
       body: commands,
     });
-    await interaction.editReply('Успешно се регистрирани сите команди.');
+    await interaction.editReply("Успешно се регистрирани сите команди.");
   } catch (error) {
     throw new Error(`Failed to register application commands\n${error}`);
   }

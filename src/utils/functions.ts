@@ -1,10 +1,10 @@
 export const splitMessage = function* (message: string) {
-  if (message === '') {
-    yield '';
+  if (message === "") {
+    yield "";
     return;
   }
 
-  const delimiters = ['\n'];
+  const delimiters = ["\n"];
   const length = 1_950;
   let output;
   let index = message.length;
@@ -31,7 +31,7 @@ export const splitMessage = function* (message: string) {
       currentMessage = currentMessage.slice(index);
     } else {
       output = currentMessage;
-      currentMessage = '';
+      currentMessage = "";
     }
 
     yield output;
@@ -40,7 +40,7 @@ export const splitMessage = function* (message: string) {
 
 export const createOptions = (
   options: Array<[string, string]>,
-  term: string,
+  term: string
 ) => {
   return options
     .filter(([key]) => key.toLowerCase().includes(term.toLowerCase()))
@@ -50,7 +50,7 @@ export const createOptions = (
     }))
     .filter(
       (element, index, array) =>
-        array.findIndex((item) => item.name === element.name) === index,
+        array.findIndex((item) => item.name === element.name) === index
     )
     .slice(0, 25);
 };

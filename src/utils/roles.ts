@@ -1,9 +1,9 @@
-import { type Roles } from '../types/Roles.js';
-import { type RoleSets } from '../types/RoleSets.js';
-import { client } from './client.js';
-import { getFromBotConfig, getFromRoleConfig } from './config.js';
-import { logger } from './logger.js';
-import { type Guild, type Role } from 'discord.js';
+import { type Roles } from "../types/Roles.js";
+import { type RoleSets } from "../types/RoleSets.js";
+import { client } from "./client.js";
+import { getFromBotConfig, getFromRoleConfig } from "./config.js";
+import { logger } from "./logger.js";
+import { type Guild, type Role } from "discord.js";
 
 const roles: { [K in Roles]?: Role | undefined } = {};
 
@@ -16,8 +16,8 @@ const roleSets: { [K in RoleSets]: Role[] } = {
 };
 
 export const initializeRoles = () => {
-  const roleIds = getFromBotConfig('roles');
-  const guild = client.guilds.cache.get(getFromBotConfig('guild'));
+  const roleIds = getFromBotConfig("roles");
+  const guild = client.guilds.cache.get(getFromBotConfig("guild"));
 
   if (roleIds === undefined || guild === undefined) {
     return;
@@ -32,21 +32,21 @@ export const initializeRoles = () => {
   roles.contributor = guild.roles.cache.get(roleIds.contributor);
   roles.booster = guild.roles.cache.get(roleIds.booster);
 
-  logger.info('Roles initialized');
+  logger.info("Roles initialized");
 };
 
 export const refreshRoles = (guild: Guild | null, type: RoleSets) => {
   if (roleSets[type].length === 0 && guild !== null) {
     let list;
 
-    if (type === 'courses') {
-      list = Object.keys(getFromRoleConfig('courses'));
+    if (type === "courses") {
+      list = Object.keys(getFromRoleConfig("courses"));
     } else {
       list = getFromRoleConfig(type);
     }
 
     list = list.map((role) =>
-      guild?.roles.cache.find((ro) => ro.name === role),
+      guild?.roles.cache.find((ro) => ro.name === role)
     );
 
     if (!list.includes(undefined)) {
@@ -60,7 +60,7 @@ export const getRole = (type: Roles) => roles[type];
 export const getRoleFromSet = (
   guild: Guild | null,
   type: RoleSets,
-  role?: string,
+  role?: string
 ) => {
   if (role === undefined) {
     return undefined;
@@ -83,16 +83,16 @@ export const getRoles = (guild: Guild | null, type: RoleSets) => {
 
 export const getCourseRolesBySemester = (
   guild: Guild | null,
-  semester: number,
+  semester: number
 ) => {
-  const courses = getFromRoleConfig('course')[semester];
+  const courses = getFromRoleConfig("course")[semester];
 
   if (courses === undefined) {
     return [];
   }
 
   if (roleSets.courses.length === 0) {
-    refreshRoles(guild, 'courses');
+    refreshRoles(guild, "courses");
   }
 
   return roleSets.courses.filter((role) => courses.includes(role.name));
@@ -100,14 +100,14 @@ export const getCourseRolesBySemester = (
 
 export const getCourseRoleByCourseName = (
   guild: Guild | null,
-  course?: string | null,
+  course?: string | null
 ) => {
   if (course === undefined || course === null) {
     return undefined;
   }
 
-  const roleName = Object.entries(getFromRoleConfig('courses')).find(
-    ([, courseName]) => course === courseName,
+  const roleName = Object.entries(getFromRoleConfig("courses")).find(
+    ([, courseName]) => course === courseName
   );
 
   if (roleName === undefined) {
@@ -129,9 +129,9 @@ export const getMembersWithRoles = async (
   await guild.roles.fetch();
 
   const members = rolesWithMembers.map((role) =>
-    typeof role === 'string'
+    typeof role === "string"
       ? guild.roles.cache.get(role)?.members.keys()
-      : role.members.keys(),
+      : role.members.keys()
   );
 
   const uniqueMembers = new Set<string>();
@@ -148,9 +148,9 @@ export const getMembersWithRoles = async (
 
 export const getMembersWithAndWithoutRoles = async (
   rolesWithMembers: string[],
-  rolesWithoutMembers: string[],
+  rolesWithoutMembers: string[]
 ) => {
-  const guild = client.guilds.cache.get(getFromBotConfig('guild'));
+  const guild = client.guilds.cache.get(getFromBotConfig("guild"));
 
   if (guild === undefined) {
     return [];
@@ -160,7 +160,7 @@ export const getMembersWithAndWithoutRoles = async (
   await guild.roles.fetch();
 
   const members = rolesWithMembers.map((role) =>
-    guild.roles.cache.get(role)?.members.keys(),
+    guild.roles.cache.get(role)?.members.keys()
   );
 
   const uniqueMembers = new Set<string>();
@@ -173,7 +173,7 @@ export const getMembersWithAndWithoutRoles = async (
   }
 
   const membersWithout = rolesWithoutMembers.map((role) =>
-    guild.roles.cache.get(role)?.members.keys(),
+    guild.roles.cache.get(role)?.members.keys()
   );
 
   for (const iterator of membersWithout) {

@@ -4,16 +4,14 @@
     "url": "https://github.com/Delemangi/finki-discord-bot/issues"
   },
   "dependencies": {
+    "@prisma/client": "^5.0.0",
     "async-lock": "^1.4.0",
     "chrono-node": "^2.6.4",
     "croner": "^6.0.7",
     "discord-api-types": "^0.37.50",
     "discord.js": "^14.11.0",
     "dotenv": "^16.3.1",
-    "pg": "^8.11.1",
-    "reflect-metadata": "^0.1.13",
     "rimraf": "^5.0.1",
-    "typeorm": "^0.3.17",
     "winston": "^3.10.0"
   },
   "description": "FINKI Discord bot",
@@ -21,6 +19,7 @@
     "@types/async-lock": "^1.4.0",
     "eslint": "^8.45.0",
     "eslint-config-canonical": "^41.1.3",
+    "prisma": "^5.0.0",
     "typescript": "^5.1.6"
   },
   "engines": {
@@ -44,17 +43,20 @@
     "embed:notifications": "npm run build && node dist/scripts/notifications.js",
     "embed:programs": "npm run build && node dist/scripts/programs.js",
     "embed:rules": "npm run build && node dist/scripts/rules.js",
-    "embed:years": "npm run build && node dist/scripts/years.js",
     "embed:vip": "npm run build && node dist/scripts/vip.js",
-    "forum:courses": "npm run build && node dist/scripts/coursesForum.js",
+    "embed:years": "npm run build && node dist/scripts/years.js",
     "forum:companies": "npm run build && node dist/scripts/companiesForum.js",
-    "server:info": "npm run build && node dist/scripts/serverInfo.js",
+    "forum:courses": "npm run build && node dist/scripts/coursesForum.js",
     "lint": "eslint . --ext .ts --cache",
     "lint:cfg": "eslint . --ext .json --cache",
     "lint:fix": "eslint . --ext .ts --fix",
+    "migration:apply": "prisma migrate deploy",
+    "migration:create": "prisma migrate dev --name init",
+    "server:info": "npm run build && node dist/scripts/serverInfo.js",
     "start": "node dist/main.js",
-    "start:dev": "npm run lint && npm run build && node dist/main.js"
+    "start:dev": "npm run lint && npm run build && npm run start",
+    "start:prod": "npm run migration:apply && npm run start"
   },
   "type": "module",
-  "version": "3.0.0"
+  "version": "4.0.0"
 }

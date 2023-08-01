@@ -1,7 +1,7 @@
-import { type ChannelName } from './ChannelName.js';
-import { type Mode } from './Mode.js';
-import { type Roles } from './Roles.js';
-import { type ColorResolvable } from 'discord.js';
+import { type ChannelName } from "./ChannelName.js";
+import { type Mode } from "./Mode.js";
+import { type Roles } from "./Roles.js";
+import { type ColorResolvable } from "discord.js";
 
 export type BotConfig = {
   channels?: { [K in ChannelName]: string };

@@ -3,9 +3,9 @@ import {
   handleButton,
   handleChatInputCommand,
   handleUserContextMenuCommand,
-} from '../utils/interactions.js';
-import { logger } from '../utils/logger.js';
-import { type ClientEvents, Events } from 'discord.js';
+} from "../utils/interactions.js";
+import { logger } from "../utils/logger.js";
+import { type ClientEvents, Events } from "discord.js";
 
 export const name = Events.InteractionCreate;
 

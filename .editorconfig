@@ -9,5 +9,5 @@ insert_final_newline = true
 trim_trailing_whitespace = true
 tab_width = 2
 
-[*.ts]
+[*.sh]
 end_of_line = lf

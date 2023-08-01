@@ -1,8 +1,8 @@
-import { type ChannelName } from '../types/ChannelName.js';
-import { client } from './client.js';
-import { getFromBotConfig } from './config.js';
-import { logger } from './logger.js';
-import { Cron } from 'croner';
+import { type ChannelName } from "../types/ChannelName.js";
+import { client } from "./client.js";
+import { getFromBotConfig } from "./config.js";
+import { logger } from "./logger.js";
+import { Cron } from "croner";
 import {
   type ActionRowBuilder,
   type ButtonBuilder,
@@ -12,13 +12,13 @@ import {
   type Interaction,
   type InteractionResponse,
   type Message,
-} from 'discord.js';
-import { setTimeout } from 'node:timers/promises';
+} from "discord.js";
+import { setTimeout } from "node:timers/promises";
 
 const channels: { [K in ChannelName]?: GuildTextBasedChannel | undefined } = {};
 
 export const initializeChannels = () => {
-  const channelIds = getFromBotConfig('channels');
+  const channelIds = getFromBotConfig("channels");
 
   if (channelIds === undefined) {
     return;
@@ -30,77 +30,77 @@ export const initializeChannels = () => {
     }
 
     channels[channelName as ChannelName] = client.channels.cache.get(
-      channelId,
+      channelId
     ) as GuildTextBasedChannel;
   }
 
-  logger.info('Channels initialized');
+  logger.info("Channels initialized");
 };
 
 export const getChannel = (type: ChannelName) => channels[type];
 
-const getNextVipCronRun = (locale: string = 'en-GB', offset = 1) => {
-  const nextRun = Cron(getFromBotConfig('vipTemporaryChannelCron'), {
-    timezone: 'CET',
+const getNextVipCronRun = (locale: string = "en-GB", offset = 1) => {
+  const nextRun = Cron(getFromBotConfig("vipTemporaryChannelCron"), {
+    timezone: "CET",
   })
     .nextRuns(offset)
     .at(-1);
   return nextRun === null
-    ? '?'
+    ? "?"
     : new Intl.DateTimeFormat(locale, {
-        dateStyle: 'full',
-        timeStyle: 'long',
-        timeZone: 'CET',
+        dateStyle: "full",
+        timeStyle: "long",
+        timeZone: "CET",
       }).format(nextRun);
 };
 
 export const scheduleVipTemporaryChannel = async () => {
   Cron(
-    getFromBotConfig('vipTemporaryChannelCron'),
-    { timezone: 'CET' },
+    getFromBotConfig("vipTemporaryChannelCron"),
+    { timezone: "CET" },
     async () => {
       const existingChannel = client.channels.cache.find(
         (ch) =>
           ch.type !== ChannelType.DM &&
-          ch.name === getFromBotConfig('vipTemporaryChannelName'),
+          ch.name === getFromBotConfig("vipTemporaryChannelName")
       );
 
       if (existingChannel !== undefined) {
         await existingChannel.delete();
       }
 
-      const guild = client.guilds.cache.get(getFromBotConfig('guild'));
+      const guild = client.guilds.cache.get(getFromBotConfig("guild"));
 
       if (guild === undefined) {
         return;
       }
 
       const channel = await guild.channels.create({
-        name: getFromBotConfig('vipTemporaryChannelName'),
-        parent: getFromBotConfig('vipTemporaryChannelParent'),
+        name: getFromBotConfig("vipTemporaryChannelName"),
+        parent: getFromBotConfig("vipTemporaryChannelParent"),
         topic: `Задните соби на ВИП. Следно бришење е во ${getNextVipCronRun(
-          'mk-MK',
-          2,
+          "mk-MK",
+          2
         )}`,
         type: ChannelType.GuildText,
       });
       await channel.setPosition(-1, { relative: true });
 
       logger.info(
-        `Temporary VIP channel recreated. Next recreation is scheduled for ${getNextVipCronRun()}`,
+        `Temporary VIP channel recreated. Next recreation is scheduled for ${getNextVipCronRun()}`
       );
-    },
+    }
   );
 
   logger.info(
-    `Temporary vip channel recreation is scheduled for ${getNextVipCronRun()}`,
+    `Temporary vip channel recreation is scheduled for ${getNextVipCronRun()}`
   );
 };
 
 export const log = async (
   embed: EmbedBuilder,
   interaction: Interaction,
-  type: ChannelName,
+  type: ChannelName
 ) => {
   const channel = channels[type];
 
@@ -112,7 +112,7 @@ export const log = async (
     await channel.send({ embeds: [embed] });
   } catch (error) {
     logger.error(
-      `Failed to send log for interaction ${interaction.id}\n${error}`,
+      `Failed to send log for interaction ${interaction.id}\n${error}`
     );
   }
 };
@@ -121,7 +121,7 @@ export const sendEmbed = async (
   channel: GuildTextBasedChannel,
   embed: EmbedBuilder,
   components: Array<ActionRowBuilder<ButtonBuilder>>,
-  newlines?: number,
+  newlines?: number
 ) => {
   return newlines === undefined || Number.isNaN(newlines)
     ? await channel.send({
@@ -130,23 +130,23 @@ export const sendEmbed = async (
       })
     : await channel.send({
         components,
-        content: '_ _\n'.repeat(newlines),
+        content: "_ _\n".repeat(newlines),
         embeds: [embed],
       });
 };
 
 export const deleteResponse = (
   message: InteractionResponse | Message,
-  interval?: number,
+  interval?: number
 ) => {
   // eslint-disable-next-line promise/prefer-await-to-then
-  void setTimeout(interval ?? getFromBotConfig('ephemeralReplyTime')).then(
+  void setTimeout(interval ?? getFromBotConfig("ephemeralReplyTime")).then(
     async () => {
       try {
         await message.delete();
       } catch (error) {
         logger.error(`Failed to delete message ${message.id}\n${error}`);
       }
-    },
+    }
   );
 };

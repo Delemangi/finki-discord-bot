@@ -4,7 +4,7 @@ import {
   type ContextMenuCommandInteraction,
   type SlashCommandBuilder,
   type SlashCommandSubcommandGroupBuilder,
-} from 'discord.js';
+} from "discord.js";
 
 export type Command = {
   data:
@@ -12,6 +12,6 @@ export type Command = {
     | SlashCommandBuilder
     | SlashCommandSubcommandGroupBuilder;
   execute: (
-    interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction,
+    interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction
   ) => Promise<void>;
 };

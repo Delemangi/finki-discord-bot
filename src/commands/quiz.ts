@@ -1,11 +1,11 @@
-import { getQuizComponents, getQuizEmbed } from '../utils/embeds.js';
-import { commandDescriptions } from '../utils/strings.js';
+import { getQuizComponents, getQuizEmbed } from "../utils/embeds.js";
+import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-} from 'discord.js';
+} from "discord.js";
 
-const name = 'quiz';
+const name = "quiz";
 
 export const data = new SlashCommandBuilder()
   .setName(name)

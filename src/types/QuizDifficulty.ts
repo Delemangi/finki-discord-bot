@@ -1,1 +1,1 @@
-export type QuizDifficulties = 'easy' | 'hard' | 'medium';
+export type QuizDifficulties = "easy" | "hard" | "medium";

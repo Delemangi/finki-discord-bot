@@ -1,30 +1,30 @@
-import { getLinks } from '../utils/config.js';
-import { getLinkComponents, getLinkEmbed } from '../utils/embeds.js';
-import { commandDescriptions } from '../utils/strings.js';
+import { getLinks } from "../utils/config.js";
+import { getLinkComponents, getLinkEmbed } from "../utils/embeds.js";
+import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-} from 'discord.js';
+} from "discord.js";
 
-const name = 'link';
+const name = "link";
 
 export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription(commandDescriptions[name])
   .addStringOption((option) =>
     option
-      .setName('link')
-      .setDescription('Линк')
+      .setName("link")
+      .setDescription("Линк")
       .setRequired(true)
-      .setAutocomplete(true),
+      .setAutocomplete(true)
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const keyword = interaction.options.getString('link', true);
+  const keyword = interaction.options.getString("link", true);
   const link = getLinks().find((li) => li.name === keyword);
 
   if (link === undefined) {
-    await interaction.editReply('Не постои таков линк.');
+    await interaction.editReply("Не постои таков линк.");
     return;
   }
 

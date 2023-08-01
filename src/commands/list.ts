@@ -1,26 +1,26 @@
-import { getListLinksEmbed, getListQuestionsEmbed } from '../utils/embeds.js';
-import { commandDescriptions } from '../utils/strings.js';
+import { getListLinksEmbed, getListQuestionsEmbed } from "../utils/embeds.js";
+import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-} from 'discord.js';
+} from "discord.js";
 
-const name = 'list';
+const name = "list";
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription('List')
+  .setDescription("List")
   .addSubcommand((command) =>
     command
-      .setName('questions')
-      .setDescription(commandDescriptions['list questions']),
+      .setName("questions")
+      .setDescription(commandDescriptions["list questions"])
   )
   .addSubcommand((command) =>
-    command.setName('links').setDescription(commandDescriptions['list links']),
+    command.setName("links").setDescription(commandDescriptions["list links"])
   );
 
 const handleListQuestions = async (
-  interaction: ChatInputCommandInteraction,
+  interaction: ChatInputCommandInteraction
 ) => {
   const embed = getListQuestionsEmbed();
   await interaction.editReply({ embeds: [embed] });
