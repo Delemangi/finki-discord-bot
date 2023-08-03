@@ -19,7 +19,7 @@
     "@types/async-lock": "^1.4.0",
     "eslint": "^8.47.0",
     "eslint-config-canonical": "^41.1.7",
-    "prisma": "^5.1.0",
+    "prisma": "^5.1.1",
     "typescript": "^5.1.6"
   },
   "engines": {
