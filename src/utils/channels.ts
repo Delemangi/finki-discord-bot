@@ -1,6 +1,6 @@
 import { type ChannelName } from "../types/ChannelName.js";
 import { client } from "./client.js";
-import { getFromBotConfig } from "./config.js";
+import { getConfigProperty } from "./config.js";
 import { logger } from "./logger.js";
 import { Cron } from "croner";
 import {
@@ -17,8 +17,8 @@ import { setTimeout } from "node:timers/promises";
 
 const channels: { [K in ChannelName]?: GuildTextBasedChannel | undefined } = {};
 
-export const initializeChannels = () => {
-  const channelIds = getFromBotConfig("channels");
+export const initializeChannels = async () => {
+  const channelIds = await getConfigProperty("channels");
 
   if (channelIds === undefined) {
     return;
@@ -39,8 +39,9 @@ export const initializeChannels = () => {
 
 export const getChannel = (type: ChannelName) => channels[type];
 
-const getNextVipCronRun = (locale: string = "en-GB", offset = 1) => {
-  const nextRun = Cron(getFromBotConfig("vipTemporaryChannelCron"), {
+const getNextVipCronRun = async (locale: string = "en-GB", offset = 1) => {
+  const { cron } = await getConfigProperty("temporaryVIPChannel");
+  const nextRun = Cron(cron, {
     timezone: "CET",
   })
     .nextRuns(offset)
@@ -55,45 +56,42 @@ const getNextVipCronRun = (locale: string = "en-GB", offset = 1) => {
 };
 
 export const scheduleVipTemporaryChannel = async () => {
-  Cron(
-    getFromBotConfig("vipTemporaryChannelCron"),
-    { timezone: "CET" },
-    async () => {
-      const existingChannel = client.channels.cache.find(
-        (ch) =>
-          ch.type !== ChannelType.DM &&
-          ch.name === getFromBotConfig("vipTemporaryChannelName")
-      );
+  const { cron, name, parent } = await getConfigProperty("temporaryVIPChannel");
+  const guildId = await getConfigProperty("guild");
 
-      if (existingChannel !== undefined) {
-        await existingChannel.delete();
-      }
+  Cron(cron, { timezone: "CET" }, async () => {
+    const existingChannel = client.channels.cache.find(
+      (ch) => ch.type !== ChannelType.DM && ch.name === name
+    );
 
-      const guild = client.guilds.cache.get(getFromBotConfig("guild"));
-
-      if (guild === undefined) {
-        return;
-      }
-
-      const channel = await guild.channels.create({
-        name: getFromBotConfig("vipTemporaryChannelName"),
-        parent: getFromBotConfig("vipTemporaryChannelParent"),
-        topic: `Задните соби на ВИП. Следно бришење е во ${getNextVipCronRun(
-          "mk-MK",
-          2
-        )}`,
-        type: ChannelType.GuildText,
-      });
-      await channel.setPosition(-1, { relative: true });
-
-      logger.info(
-        `Temporary VIP channel recreated. Next recreation is scheduled for ${getNextVipCronRun()}`
-      );
+    if (existingChannel !== undefined) {
+      await existingChannel.delete();
     }
-  );
+
+    const guild = client.guilds.cache.get(guildId);
+
+    if (guild === undefined) {
+      return;
+    }
+
+    const channel = await guild.channels.create({
+      name,
+      parent,
+      topic: `Задните соби на ВИП. Следно бришење е во ${await getNextVipCronRun(
+        "mk-MK",
+        2
+      )}`,
+      type: ChannelType.GuildText,
+    });
+    await channel.setPosition(-1, { relative: true });
+
+    logger.info(
+      `Temporary VIP channel recreated. Next recreation is scheduled for ${await getNextVipCronRun()}`
+    );
+  });
 
   logger.info(
-    `Temporary vip channel recreation is scheduled for ${getNextVipCronRun()}`
+    `Temporary vip channel recreation is scheduled for ${await getNextVipCronRun()}`
   );
 };
 
@@ -135,18 +133,17 @@ export const sendEmbed = async (
       });
 };
 
-export const deleteResponse = (
+export const deleteResponse = async (
   message: InteractionResponse | Message,
   interval?: number
 ) => {
-  // eslint-disable-next-line promise/prefer-await-to-then
-  void setTimeout(interval ?? getFromBotConfig("ephemeralReplyTime")).then(
-    async () => {
-      try {
-        await message.delete();
-      } catch (error) {
-        logger.error(`Failed to delete message ${message.id}\n${error}`);
-      }
-    }
-  );
+  const ephemeralReplyTime = await getConfigProperty("ephemeralReplyTime");
+
+  await setTimeout(interval ?? ephemeralReplyTime);
+
+  try {
+    await message.delete();
+  } catch (error) {
+    logger.error(`Failed to delete message ${message.id}\n${error}`);
+  }
 };

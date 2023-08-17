@@ -10,6 +10,10 @@ const commandPermissions: {
     roles: Roles[];
   };
 } = {
+  config: {
+    permissions: [PermissionsBitField.Flags.Administrator],
+    roles: [],
+  },
   crosspost: {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
@@ -88,7 +92,7 @@ export const hasCommandPermission = (
   command: string
 ) => {
   if (member === null) {
-    return true;
+    return false;
   }
 
   const [permissions, roles] = getCommandPermission(command);

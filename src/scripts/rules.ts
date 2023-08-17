@@ -20,7 +20,7 @@ client.once("ready", async () => {
     throw new Error("The provided channel must be a guild text channel");
   }
 
-  const embed = getRulesEmbed();
+  const embed = await getRulesEmbed();
   try {
     await channel.send({
       embeds: [embed],
@@ -30,5 +30,5 @@ client.once("ready", async () => {
   }
 
   logger.info("Done");
-  client.destroy();
+  await client.destroy();
 });

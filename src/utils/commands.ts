@@ -1,6 +1,8 @@
 import { type Command } from "../types/Command.js";
 import { client } from "./client.js";
-import { Collection } from "discord.js";
+import { getApplicationId, getToken } from "./config.js";
+import { logger } from "./logger.js";
+import { Collection, REST, Routes } from "discord.js";
 import { readdirSync } from "node:fs";
 
 const commands = new Collection<string, Command>();
@@ -46,4 +48,22 @@ export const commandMention = (name: string | undefined) => {
   }
 
   return `</${name}:${command.id}>`;
+};
+
+export const registerCommands = async () => {
+  const rest = new REST().setToken(getToken());
+  const cmds = [];
+
+  for (const [, command] of await getCommands()) {
+    cmds.push(command.data.toJSON());
+  }
+
+  try {
+    await rest.put(Routes.applicationCommands(getApplicationId()), {
+      body: cmds,
+    });
+    logger.info("Registered commands");
+  } catch (error) {
+    throw new Error(`Failed to register application commands\n${error}`);
+  }
 };

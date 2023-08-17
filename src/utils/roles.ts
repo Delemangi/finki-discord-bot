@@ -1,7 +1,7 @@
 import { type Roles } from "../types/Roles.js";
 import { type RoleSets } from "../types/RoleSets.js";
 import { client } from "./client.js";
-import { getFromBotConfig, getFromRoleConfig } from "./config.js";
+import { getConfigProperty, getFromRoleConfig } from "./config.js";
 import { logger } from "./logger.js";
 import { type Guild, type Role } from "discord.js";
 
@@ -15,9 +15,9 @@ const roleSets: { [K in RoleSets]: Role[] } = {
   year: [],
 };
 
-export const initializeRoles = () => {
-  const roleIds = getFromBotConfig("roles");
-  const guild = client.guilds.cache.get(getFromBotConfig("guild"));
+export const initializeRoles = async () => {
+  const roleIds = await getConfigProperty("roles");
+  const guild = client.guilds.cache.get(await getConfigProperty("guild"));
 
   if (roleIds === undefined || guild === undefined) {
     return;
@@ -150,7 +150,7 @@ export const getMembersWithAndWithoutRoles = async (
   rolesWithMembers: string[],
   rolesWithoutMembers: string[]
 ) => {
-  const guild = client.guilds.cache.get(getFromBotConfig("guild"));
+  const guild = client.guilds.cache.get(await getConfigProperty("guild"));
 
   if (guild === undefined) {
     return [];

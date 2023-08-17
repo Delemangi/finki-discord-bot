@@ -28,7 +28,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embed = getLinkEmbed(link);
+  const embed = await getLinkEmbed(link);
   const components = getLinkComponents(link);
   await interaction.editReply({
     components,

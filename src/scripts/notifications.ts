@@ -29,7 +29,7 @@ client.once("ready", async () => {
     throw new Error("No notification roles have been provided");
   }
 
-  const embed = getNotificationsEmbed();
+  const embed = await getNotificationsEmbed();
   const components = getNotificationsComponents();
   try {
     await sendEmbed(channel, embed, components, Number(newlines));
@@ -38,5 +38,5 @@ client.once("ready", async () => {
   }
 
   logger.info("Done");
-  client.destroy();
+  await client.destroy();
 });

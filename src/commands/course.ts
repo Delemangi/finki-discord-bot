@@ -125,7 +125,7 @@ const handleCourseParticipants = async (
     return;
   }
 
-  const embed = getCourseParticipantsEmbed(information);
+  const embed = await getCourseParticipantsEmbed(information);
   await interaction.editReply({ embeds: [embed] });
 };
 
@@ -142,7 +142,7 @@ const handleCourseProfessors = async (
     return;
   }
 
-  const embed = getCourseProfessorsEmbed(information);
+  const embed = await getCourseProfessorsEmbed(information);
   await interaction.editReply({ embeds: [embed] });
 };
 
@@ -195,7 +195,7 @@ const handleCoursePrerequisite = async (
     return;
   }
 
-  const embed = getCoursePrerequisiteEmbed(information);
+  const embed = await getCoursePrerequisiteEmbed(information);
   await interaction.editReply({ embeds: [embed] });
 };
 
@@ -212,7 +212,7 @@ const handleCourseInfo = async (
     return;
   }
 
-  const embed = getCourseInfoEmbed(information);
+  const embed = await getCourseInfoEmbed(information);
   await interaction.editReply({ embeds: [embed] });
 };
 
@@ -220,7 +220,7 @@ const handleCourseSummary = async (
   interaction: ChatInputCommandInteraction,
   course: string | null
 ) => {
-  const embeds = getCourseSummaryEmbed(course);
+  const embeds = await getCourseSummaryEmbed(course);
   await interaction.editReply({ embeds });
 };
 

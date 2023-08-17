@@ -26,7 +26,7 @@ client.once("ready", async () => {
     throw new Error("No program roles have been provided");
   }
 
-  const embed = getProgramsEmbed();
+  const embed = await getProgramsEmbed();
   const components = getProgramsComponents();
   try {
     await sendEmbed(channel, embed, components, Number(newlines));
@@ -35,5 +35,5 @@ client.once("ready", async () => {
   }
 
   logger.info("Done");
-  client.destroy();
+  await client.destroy();
 });

@@ -23,7 +23,7 @@ client.once("ready", async () => {
     throw new Error("The provided channel must be a guild text channel");
   }
 
-  const embed = getVipRequestEmbed();
+  const embed = await getVipRequestEmbed();
   const components = getVipRequestComponents();
   try {
     await channel.send({
@@ -35,5 +35,5 @@ client.once("ready", async () => {
   }
 
   logger.info("Done");
-  client.destroy();
+  await client.destroy();
 });

@@ -1,7 +1,7 @@
 import { createPoll } from "../data/Poll.js";
 import { createVipPoll } from "../data/VipPoll.js";
 import { client } from "./client.js";
-import { getFromBotConfig } from "./config.js";
+import { getConfigProperty } from "./config.js";
 import { type Prisma } from "@prisma/client";
 import {
   type ButtonInteraction,
@@ -87,7 +87,7 @@ export const startVipPoll = async (
         },
       ],
     },
-    roles: [getFromBotConfig("roles").vipVoting],
+    roles: [(await getConfigProperty("roles")).vipVoting],
     threshold: threshold ?? 0.5,
     title,
     userId: client.user?.id ?? "",

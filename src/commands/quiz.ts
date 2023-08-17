@@ -12,7 +12,7 @@ export const data = new SlashCommandBuilder()
   .setDescription(commandDescriptions[name]);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const embed = getQuizEmbed();
+  const embed = await getQuizEmbed();
   const components = getQuizComponents(interaction);
   await interaction.editReply({
     components,

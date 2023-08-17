@@ -30,6 +30,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embed = getStaffEmbed(information);
+  const embed = await getStaffEmbed(information);
   await interaction.editReply({ embeds: [embed] });
 };

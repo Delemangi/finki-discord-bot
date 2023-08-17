@@ -15,7 +15,7 @@ if (commands === undefined || commands.length === 0) {
     });
 
     logger.info("Done");
-    client.destroy();
+    await client.destroy();
   });
 } else {
   client.once("ready", async () => {
@@ -28,7 +28,7 @@ if (commands === undefined || commands.length === 0) {
     }
 
     logger.info("Done");
-    client.destroy();
+    await client.destroy();
   });
 }
 

@@ -18,7 +18,7 @@ import { type Staff } from "../types/Staff.js";
 import { client } from "./client.js";
 import { commandMention } from "./commands.js";
 import {
-  getFromBotConfig,
+  getConfigProperty,
   getFromRoleConfig,
   getInformation,
   getLinks,
@@ -67,7 +67,7 @@ import {
   userMention,
 } from "discord.js";
 
-const color = getFromBotConfig("color");
+const color = await getConfigProperty("color");
 
 // Helpers
 
@@ -226,11 +226,11 @@ export const generatePollPercentageBar = (percentage: number) => {
 
 // Scripts
 
-export const getColorsEmbed = (image: string) => {
+export const getColorsEmbed = async (image: string) => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Боја на име")
-    .setThumbnail(getFromBotConfig("logo"))
+    .setThumbnail(await getConfigProperty("logo"))
     .setDescription("Изберете боја за вашето име.")
     .setFooter({
       text: "(може да изберете само една опција, секоја нова опција ја заменува старата)",
@@ -266,11 +266,11 @@ export const getColorsComponents = () => {
   return components;
 };
 
-export const getCoursesEmbed = (roleSet: string, roles: string[]) => {
+export const getCoursesEmbed = async (roleSet: string, roles: string[]) => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle(`${roleSet.length > 1 ? "" : "Семестар"} ${roleSet}`)
-    .setThumbnail(getFromBotConfig("logo"))
+    .setThumbnail(await getConfigProperty("logo"))
     .setDescription(
       roles
         .map(
@@ -311,11 +311,11 @@ export const getCoursesComponents = (roles: string[]) => {
   return components;
 };
 
-export const getCoursesAddEmbed = () => {
+export const getCoursesAddEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Масовно земање предмети")
-    .setThumbnail(getFromBotConfig("logo"))
+    .setThumbnail(await getConfigProperty("logo"))
     .setDescription(
       "Земете предмети од одредени семестри чии канали сакате да ги гледате."
     )
@@ -362,11 +362,11 @@ export const getCoursesAddComponents = (roleSets: string[]) => {
   return components;
 };
 
-export const getCoursesRemoveEmbed = () => {
+export const getCoursesRemoveEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Масовно отстранување предмети")
-    .setThumbnail(getFromBotConfig("logo"))
+    .setThumbnail(await getConfigProperty("logo"))
     .setDescription(
       "Отстранете предмети од одредени семестри чии канали не сакате да ги гледате."
     )
@@ -413,11 +413,11 @@ export const getCoursesRemoveComponents = (roleSets: string[]) => {
   return components;
 };
 
-export const getNotificationsEmbed = () => {
+export const getNotificationsEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Нотификации")
-    .setThumbnail(getFromBotConfig("logo"))
+    .setThumbnail(await getConfigProperty("logo"))
     .setDescription(
       "Изберете за кои типови на објави сакате да добиете нотификации."
     )
@@ -452,11 +452,11 @@ export const getNotificationsComponents = () => {
   return components;
 };
 
-export const getProgramsEmbed = () => {
+export const getProgramsEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Смер")
-    .setThumbnail(getFromBotConfig("logo"))
+    .setThumbnail(await getConfigProperty("logo"))
     .setDescription("Изберете го смерот на кој студирате.")
     .setFooter({
       text: "(може да изберете само една опција, секоја нова опција ја заменува старата)",
@@ -491,11 +491,11 @@ export const getProgramsComponents = () => {
   return components;
 };
 
-export const getYearsEmbed = () => {
+export const getYearsEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Година на студирање")
-    .setThumbnail(getFromBotConfig("logo"))
+    .setThumbnail(await getConfigProperty("logo"))
     .setDescription("Изберете ја годината на студирање.")
     .setFooter({
       text: "(може да изберете само една опција, секоја нова опција ја заменува старата)",
@@ -521,11 +521,11 @@ export const getYearsComponents = () => {
   return components;
 };
 
-export const getRulesEmbed = () => {
+export const getRulesEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Правила")
-    .setThumbnail(getFromBotConfig("logo"))
+    .setThumbnail(await getConfigProperty("logo"))
     .setDescription(
       `${getRules()
         .map(
@@ -538,9 +538,9 @@ export const getRulesEmbed = () => {
     );
 };
 
-export const getVipRequestEmbed = () => {
+export const getVipRequestEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle(
       getResponses().find((response) => response.command === "vipRequestTitle")
         ?.response ?? "VIP"
@@ -570,9 +570,9 @@ export const getVipRequestComponents = () => {
   return components;
 };
 
-export const getVipConfirmEmbed = () => {
+export const getVipConfirmEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Заклетва")
     .setDescription(
       getResponses().find((response) => response.command === "vipConfirm")
@@ -612,11 +612,11 @@ export const getVipAcknowledgeComponents = () => {
 
 // Commands
 
-export const getAboutEmbed = () => {
+export const getAboutEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("ФИНКИ Discord бот")
-    .setThumbnail(getFromBotConfig("logo"))
+    .setThumbnail(await getConfigProperty("logo"))
     .setDescription(
       `Овој бот е развиен од ${userMention(
         "198249751001563136"
@@ -632,9 +632,9 @@ export const getAboutEmbed = () => {
     .setTimestamp();
 };
 
-export const getClassroomEmbed = (information: Classroom) => {
+export const getClassroomEmbed = async (information: Classroom) => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle(`${information.classroom.toString()} (${information.location})`)
     .addFields(
       {
@@ -661,9 +661,11 @@ export const getClassroomEmbed = (information: Classroom) => {
     .setTimestamp();
 };
 
-export const getCourseParticipantsEmbed = (information: CourseParticipants) => {
+export const getCourseParticipantsEmbed = async (
+  information: CourseParticipants
+) => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle(information.course)
     .addFields(
       {
@@ -681,9 +683,9 @@ export const getCourseParticipantsEmbed = (information: CourseParticipants) => {
     .setTimestamp();
 };
 
-export const getCourseProfessorsEmbed = (information: CourseStaff) => {
+export const getCourseProfessorsEmbed = async (information: CourseStaff) => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle(information.course)
     .addFields(
       {
@@ -700,11 +702,11 @@ export const getCourseProfessorsEmbed = (information: CourseStaff) => {
     .setTimestamp();
 };
 
-export const getCoursePrerequisiteEmbed = (
+export const getCoursePrerequisiteEmbed = async (
   information: CoursePrerequisites
 ) => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle(information.course)
     .addFields({
       inline: true,
@@ -715,9 +717,9 @@ export const getCoursePrerequisiteEmbed = (
     .setTimestamp();
 };
 
-export const getCourseInfoEmbed = (information: CourseInformation) => {
+export const getCourseInfoEmbed = async (information: CourseInformation) => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle(information.course)
     .addFields(
       {
@@ -739,7 +741,7 @@ export const getCourseInfoEmbed = (information: CourseInformation) => {
     .setTimestamp();
 };
 
-export const getCourseSummaryEmbed = (course: string | null) => {
+export const getCourseSummaryEmbed = async (course: string | null) => {
   if (course === null) {
     return [
       new EmbedBuilder().setDescription("Нема информации за овој предмет."),
@@ -761,10 +763,10 @@ export const getCourseSummaryEmbed = (course: string | null) => {
 
   return [
     new EmbedBuilder()
-      .setColor(getFromBotConfig("color"))
+      .setColor(await getConfigProperty("color"))
       .setTitle(course)
       .setDescription("Ова се сите достапни информации за предметот."),
-    new EmbedBuilder().setColor(getFromBotConfig("color")).addFields(
+    new EmbedBuilder().setColor(await getConfigProperty("color")).addFields(
       {
         name: "Предуслови",
         value:
@@ -788,7 +790,7 @@ export const getCourseSummaryEmbed = (course: string | null) => {
         value: info === undefined ? "-" : info.level.toString(),
       }
     ),
-    new EmbedBuilder().setColor(getFromBotConfig("color")).addFields(
+    new EmbedBuilder().setColor(await getConfigProperty("color")).addFields(
       {
         inline: true,
         name: "Професори",
@@ -806,7 +808,7 @@ export const getCourseSummaryEmbed = (course: string | null) => {
             : linkProfessors(professors.assistants),
       }
     ),
-    new EmbedBuilder().setColor(getFromBotConfig("color")).addFields(
+    new EmbedBuilder().setColor(await getConfigProperty("color")).addFields(
       {
         name: "Број на запишани студенти",
         value: "\u200B",
@@ -822,7 +824,7 @@ export const getCourseSummaryEmbed = (course: string | null) => {
   ];
 };
 
-export const getCoursesProgramEmbed = (
+export const getCoursesProgramEmbed = async (
   program: ProgramName,
   semester: number
 ) => {
@@ -838,11 +840,11 @@ export const getCoursesProgramEmbed = (
 
   return [
     new EmbedBuilder()
-      .setColor(getFromBotConfig("color"))
+      .setColor(await getConfigProperty("color"))
       .setTitle(`Предмети за ${program}, семестар ${semester}`)
       .setDescription("Предусловите за предметите се под истиот реден број."),
     new EmbedBuilder()
-      .setColor(getFromBotConfig("color"))
+      .setColor(await getConfigProperty("color"))
       .setTitle("Задолжителни")
       .setDescription(
         mandatory.length === 0
@@ -861,7 +863,7 @@ export const getCoursesProgramEmbed = (
               .join("\n")
       ),
     new EmbedBuilder()
-      .setColor(getFromBotConfig("color"))
+      .setColor(await getConfigProperty("color"))
       .setTitle("Задолжителни - предуслови")
       .setDescription(
         mandatory.length === 0
@@ -876,7 +878,7 @@ export const getCoursesProgramEmbed = (
               .join("\n")
       ),
     new EmbedBuilder()
-      .setColor(getFromBotConfig("color"))
+      .setColor(await getConfigProperty("color"))
       .setTitle("Изборни")
       .setDescription(
         elective.length === 0
@@ -891,7 +893,7 @@ export const getCoursesProgramEmbed = (
               .join("\n")
       ),
     new EmbedBuilder()
-      .setColor(getFromBotConfig("color"))
+      .setColor(await getConfigProperty("color"))
       .setTitle("Изборни - предуслови")
       .setDescription(
         elective.length === 0
@@ -909,13 +911,13 @@ export const getCoursesProgramEmbed = (
   ];
 };
 
-export const getCoursesPrerequisiteEmbed = (course: string) => {
+export const getCoursesPrerequisiteEmbed = async (course: string) => {
   const courses = getPrerequisites().filter((prerequisite) =>
     prerequisite.prerequisite.toLowerCase().includes(course.toLowerCase())
   );
 
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle(`Предмети со предуслов ${course}`)
     .setDescription(
       courses.length === 0
@@ -932,9 +934,9 @@ export const getCoursesPrerequisiteEmbed = (course: string) => {
     .setTimestamp();
 };
 
-export const getStaffEmbed = (information: Staff) => {
+export const getStaffEmbed = async (information: Staff) => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle(`${information.name}`)
     .addFields(
       {
@@ -980,10 +982,12 @@ export const getStaffEmbed = (information: Staff) => {
     .setTimestamp();
 };
 
-export const getStudentInfoEmbed = (member: GuildMember | null | undefined) => {
+export const getStudentInfoEmbed = async (
+  member: GuildMember | null | undefined
+) => {
   if (member === null || member === undefined) {
     return new EmbedBuilder()
-      .setColor(getFromBotConfig("color"))
+      .setColor(await getConfigProperty("color"))
       .setTitle("Информации за студентот")
       .setDescription("Студентот не постои.");
   }
@@ -1019,7 +1023,7 @@ export const getStudentInfoEmbed = (member: GuildMember | null | undefined) => {
     .join("\n");
 
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setAuthor({
       iconURL: member.user.displayAvatarURL(),
       name: member.user.tag,
@@ -1083,9 +1087,11 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
   }
 
   return [
-    new EmbedBuilder().setColor(getFromBotConfig("color")).setTitle("Состав"),
     new EmbedBuilder()
-      .setColor(getFromBotConfig("color"))
+      .setColor(await getConfigProperty("color"))
+      .setTitle("Состав"),
+    new EmbedBuilder()
+      .setColor(await getConfigProperty("color"))
       .setTitle(`ВИП: ${vipMembers.length}`)
       .setDescription(
         vipMembers.length === 0
@@ -1100,7 +1106,7 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
               .join("\n")
       ),
     new EmbedBuilder()
-      .setColor(getFromBotConfig("color"))
+      .setColor(await getConfigProperty("color"))
       .setTitle(`Админ тим: ${adminMembers.length}`)
       .setDescription(
         adminMembers.length === 0
@@ -1129,13 +1135,13 @@ export const getVipInvitedEmbed = async () => {
     [vipInvitedRole.id, boosterRole.id, contributorRole.id],
     [adminRole.id, vipRole.id]
   );
-  const guild = client.guilds.cache.get(getFromBotConfig("guild"));
+  const guild = client.guilds.cache.get(await getConfigProperty("guild"));
   const members = await Promise.all(
     memberIds.map(async (memberId) => await guild?.members.fetch(memberId))
   );
 
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle(`ВИП поканети: ${memberIds.length}`)
     .setDescription(
       members.length === 0
@@ -1152,13 +1158,13 @@ export const getVipInvitedEmbed = async () => {
     .setTimestamp();
 };
 
-export const getExperienceEmbed = (experience: Experience) => {
-  const guild = client.guilds.cache.get(getFromBotConfig("guild"));
+export const getExperienceEmbed = async (experience: Experience) => {
+  const guild = client.guilds.cache.get(await getConfigProperty("guild"));
   const user = guild?.members.cache.get(experience.userId)?.user as User;
 
   if (guild === undefined) {
     return new EmbedBuilder()
-      .setColor(getFromBotConfig("color"))
+      .setColor(await getConfigProperty("color"))
       .setAuthor({
         iconURL: user.displayAvatarURL(),
         name: user.tag,
@@ -1169,7 +1175,7 @@ export const getExperienceEmbed = (experience: Experience) => {
   }
 
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setAuthor({
       iconURL: user.displayAvatarURL(),
       name: user.tag,
@@ -1190,7 +1196,7 @@ export const getExperienceEmbed = (experience: Experience) => {
     .setTimestamp();
 };
 
-export const getExperienceLeaderboardFirstPageEmbed = (
+export const getExperienceLeaderboardFirstPageEmbed = async (
   experience: Experience[],
   all: number | null,
   perPage: number = 8
@@ -1198,7 +1204,7 @@ export const getExperienceLeaderboardFirstPageEmbed = (
   const total = experience.length;
 
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Активност")
     .addFields(
       experience.slice(0, perPage).map((exp, index) => ({
@@ -1216,7 +1222,7 @@ export const getExperienceLeaderboardFirstPageEmbed = (
     .setTimestamp();
 };
 
-export const getExperienceLeaderboardNextPageEmbed = (
+export const getExperienceLeaderboardNextPageEmbed = async (
   experience: Experience[],
   page: number,
   all: number | null,
@@ -1225,7 +1231,7 @@ export const getExperienceLeaderboardNextPageEmbed = (
   const total = experience.length;
 
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Активност")
     .addFields(
       experience
@@ -1249,9 +1255,9 @@ export const getExperienceLeaderboardNextPageEmbed = (
 
 // Questions & links
 
-export const getQuestionEmbed = (question: Question) => {
+export const getQuestionEmbed = async (question: Question) => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle(question.question)
     .setDescription(question.answer)
     .setTimestamp();
@@ -1296,9 +1302,9 @@ export const getQuestionComponents = (question: Question) => {
   return components;
 };
 
-export const getLinkEmbed = (link: Link) => {
+export const getLinkEmbed = async (link: Link) => {
   const embed = new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle(link.name)
     .setTimestamp();
 
@@ -1320,9 +1326,9 @@ export const getLinkComponents = (link: Link) => {
   ];
 };
 
-export const getListQuestionsEmbed = () => {
+export const getListQuestionsEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Прашања")
     .setDescription(
       `Ова се сите достапни прашања. Користете ${commandMention(
@@ -1339,9 +1345,9 @@ export const getListQuestionsEmbed = () => {
     .setTimestamp();
 };
 
-export const getListLinksEmbed = () => {
+export const getListLinksEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Линкови")
     .setDescription(
       `Ова се сите достапни линкови. Користете ${commandMention(
@@ -1360,14 +1366,14 @@ export const getListLinksEmbed = () => {
 
 // Help
 
-export const getHelpFirstPageEmbed = (
+export const getHelpFirstPageEmbed = async (
   member: GuildMember | null,
   commandsPerPage: number = 8
 ) => {
   const totalCommands = getCommandsWithPermission(member).length;
 
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Команди")
     .setDescription(
       "Ова се сите достапни команди за вас. Командите може да ги повикате во овој сервер, или во приватна порака."
@@ -1389,7 +1395,7 @@ export const getHelpFirstPageEmbed = (
     .setTimestamp();
 };
 
-export const getHelpNextPageEmbed = (
+export const getHelpNextPageEmbed = async (
   member: GuildMember | null,
   page: number,
   commandsPerPage: number = 8
@@ -1397,7 +1403,7 @@ export const getHelpNextPageEmbed = (
   const totalCommands = getCommandsWithPermission(member).length;
 
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Команди")
     .setDescription(
       "Ова се сите достапни команди за вас. Командите може да ги извршите во овој сервер, или во приватна порака."
@@ -1425,7 +1431,7 @@ export const getPollEmbed = async (poll: PollWithOptions) => {
   const votes = (await getPollVotesByPollId(poll.id))?.length ?? 0;
 
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setAuthor(poll.done ? { name: "ГЛАСАЊЕТО Е ЗАВРШЕНО" } : null)
     .setTitle(truncateString(poll.title, 256))
     .setDescription(
@@ -1528,7 +1534,7 @@ export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
   const threshold = Math.ceil(poll.threshold * voters.length);
 
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle(poll.title)
     .addFields(
       {
@@ -1593,7 +1599,7 @@ export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
 
 export const getPollStatsEmbed = async (poll: PollWithOptions) => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle(poll.title)
     .setDescription(`Гласови: ${(await getPollVotesByPollId(poll.id))?.length}`)
     .addFields(
@@ -1666,7 +1672,7 @@ export const getPollStatsButtonEmbed = async (
 
   return votes.length > 0
     ? new EmbedBuilder()
-        .setColor(getFromBotConfig("color"))
+        .setColor(await getConfigProperty("color"))
         .setTitle("Резултати од анкета")
         .setDescription(
           `Гласачи за ${inlineCode(option)}:\n${codeBlock(users.join("\n"))}`
@@ -1674,7 +1680,7 @@ export const getPollStatsButtonEmbed = async (
         .setTimestamp()
         .setFooter({ text: `Анкета: ${id}` })
     : new EmbedBuilder()
-        .setColor(getFromBotConfig("color"))
+        .setColor(await getConfigProperty("color"))
         .setTitle("Резултати од анкета")
         .setDescription(`Никој не гласал за ${inlineCode(option)}`)
         .setTimestamp()
@@ -1687,7 +1693,7 @@ export const getPollListFirstPageEmbed = async (
   pollsPerPage: number = 8
 ) => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Анкети")
     .setDescription(`Ова се сите ${all ? "" : "активни"} анкети.`)
     .addFields(
@@ -1704,14 +1710,14 @@ export const getPollListFirstPageEmbed = async (
     .setTimestamp();
 };
 
-export const getPollListNextPageEmbed = (
+export const getPollListNextPageEmbed = async (
   polls: Poll[],
   page: number,
   all: boolean = false,
   pollsPerPage: number = 8
 ) => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Анкети")
     .setDescription(`Ова се сите ${all ? "" : "активни"} анкети.`)
     .addFields(
@@ -1827,9 +1833,9 @@ export const getPaginationComponents = (
 
 // Quiz
 
-export const getQuizEmbed = () => {
+export const getQuizEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Кој Сака Да Биде Морален Победник?")
     .setDescription("Добредојдовте на квизот.\nДали сакате да започнете?")
     .setTimestamp()
@@ -1868,9 +1874,12 @@ export const getQuizComponents = (interaction: ChatInputCommandInteraction) => {
   return components;
 };
 
-export const getQuizQuestionEmbed = (question: QuizQuestion, level: number) => {
+export const getQuizQuestionEmbed = async (
+  question: QuizQuestion,
+  level: number
+) => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Кој Сака Да Биде Морален Победник?")
     .setDescription(
       codeBlock(
@@ -1911,9 +1920,9 @@ export const getQuizQuestionComponents = (
   return components;
 };
 
-export const getQuizBeginEmbed = () => {
+export const getQuizBeginEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Кој Сака Да Биде Морален Победник?")
     .setDescription(italic("Започни?"))
     .setFooter({ text: "Кој Сака Да Биде Морален Победник? © 2023" })
@@ -1945,9 +1954,9 @@ export const getQuizBeginComponents = (interaction: ButtonInteraction) => {
   return components;
 };
 
-export const getQuizHelpEmbed = () => {
+export const getQuizHelpEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(getFromBotConfig("color"))
+    .setColor(await getConfigProperty("color"))
     .setTitle("Кој Сака Да Биде Морален Победник?")
     .setDescription(quizHelp)
     .setFooter({ text: "Кој Сака Да Биде Морален Победник? © 2023" })

@@ -35,7 +35,7 @@ client.once("ready", async () => {
       throw new Error(`Invalid role set provided: ${roleSet}`);
     }
 
-    const embed = getCoursesEmbed(roleSet, roles);
+    const embed = await getCoursesEmbed(roleSet, roles);
     const components = getCoursesComponents(roles);
     try {
       await sendEmbed(channel, embed, components, Number(newlines));
@@ -44,7 +44,7 @@ client.once("ready", async () => {
     }
   }
 
-  const addEmbed = getCoursesAddEmbed();
+  const addEmbed = await getCoursesAddEmbed();
   const addComponents = getCoursesAddComponents(
     roleSets.length === 0 ? Array.from("12345678") : roleSets
   );
@@ -54,7 +54,7 @@ client.once("ready", async () => {
     throw new Error(`Failed to send embed\n${error}`);
   }
 
-  const removeEmbed = getCoursesRemoveEmbed();
+  const removeEmbed = await getCoursesRemoveEmbed();
   const removeComponents = getCoursesRemoveComponents(
     roleSets.length === 0 ? Array.from("12345678") : roleSets
   );
@@ -65,5 +65,5 @@ client.once("ready", async () => {
   }
 
   logger.info("Done");
-  client.destroy();
+  await client.destroy();
 });

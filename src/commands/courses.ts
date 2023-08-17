@@ -90,7 +90,7 @@ const handleCoursesProgram = async (
   const program = interaction.options.getString("program", true) as ProgramName;
   const semester = interaction.options.getNumber("semester", true);
 
-  const embeds = getCoursesProgramEmbed(program, semester);
+  const embeds = await getCoursesProgramEmbed(program, semester);
   await interaction.editReply({ embeds });
 };
 
@@ -99,7 +99,7 @@ const handleCoursesPrerequisite = async (
 ) => {
   const course = interaction.options.getString("course", true);
 
-  const embed = getCoursesPrerequisiteEmbed(course);
+  const embed = await getCoursesPrerequisiteEmbed(course);
   await interaction.editReply({ embeds: [embed] });
 };
 

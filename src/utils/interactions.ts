@@ -117,7 +117,7 @@ const handleCourseButton = async (
       )}.`,
       ephemeral: true,
     });
-    deleteResponse(mess);
+    void deleteResponse(mess);
   } catch (error) {
     logger.warn(
       `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`
@@ -163,7 +163,7 @@ const handleYearButton = async (
       )}.`,
       ephemeral: true,
     });
-    deleteResponse(mess);
+    void deleteResponse(mess);
   } catch (error) {
     logger.warn(
       `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`
@@ -209,7 +209,7 @@ const handleProgramButton = async (
       )}.`,
       ephemeral: true,
     });
-    deleteResponse(mess);
+    void deleteResponse(mess);
   } catch (error) {
     logger.warn(
       `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`
@@ -254,7 +254,7 @@ const handleNotificationButton = async (
       } нотификации за ${inlineCode(role.name)}.`,
       ephemeral: true,
     });
-    deleteResponse(mess);
+    void deleteResponse(mess);
   } catch (error) {
     logger.warn(
       `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`
@@ -300,7 +300,7 @@ const handleColorButton = async (
       )}.`,
       ephemeral: true,
     });
-    deleteResponse(mess);
+    void deleteResponse(mess);
   } catch (error) {
     logger.warn(
       `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`
@@ -401,7 +401,7 @@ const handlePollButtonForVipAddVote = async (poll: Poll, vipPoll: VipPoll) => {
 
     await deleteVipPoll(vipPoll.id);
 
-    const embed = getVipConfirmEmbed();
+    const embed = await getVipConfirmEmbed();
     const components = getVipConfirmComponents();
     await oathChannel?.send({
       components,
@@ -575,7 +575,7 @@ const handleVote = async (
     content: replyMessage,
     ephemeral: true,
   });
-  deleteResponse(message);
+  void deleteResponse(message);
 };
 
 const handlePollButton = async (
@@ -613,7 +613,7 @@ const handlePollButton = async (
       content: "Веќе не постои анкетата или опцијата.",
       ephemeral: true,
     });
-    deleteResponse(mess);
+    void deleteResponse(mess);
     return;
   }
 
@@ -638,7 +638,7 @@ const handlePollButton = async (
           .join(", ")}`,
         ephemeral: true,
       });
-      deleteResponse(mess);
+      void deleteResponse(mess);
       return;
     }
   }
@@ -690,7 +690,7 @@ const handlePollStatsButton = async (
       content: "Оваа опција не постои.",
       ephemeral: true,
     });
-    deleteResponse(mess);
+    void deleteResponse(mess);
     return;
   }
 
@@ -706,7 +706,7 @@ const handlePollStatsButton = async (
     embeds: [embed],
     ephemeral: true,
   });
-  deleteResponse(message);
+  void deleteResponse(message);
 };
 
 const handleQuizButton = async (
@@ -718,7 +718,7 @@ const handleQuizButton = async (
       content: errors.quizNoPermission,
       ephemeral: true,
     });
-    deleteResponse(mess);
+    void deleteResponse(mess);
     return;
   }
 
@@ -728,7 +728,7 @@ const handleQuizButton = async (
   }
 
   if (args[1] === "h") {
-    const embed = getQuizHelpEmbed();
+    const embed = await getQuizHelpEmbed();
     await interaction.reply({
       embeds: [embed],
       ephemeral: true,
@@ -745,7 +745,7 @@ const handleQuizButton = async (
       content: `Веќе имате друг квиз отворено: ${channelMention(channel.id)}`,
       ephemeral: true,
     });
-    deleteResponse(mess);
+    void deleteResponse(mess);
     return;
   }
 
@@ -768,7 +768,7 @@ const handleQuizButton = async (
     type: ChannelType.GuildText,
   });
 
-  const quizEmbed = getQuizBeginEmbed();
+  const quizEmbed = await getQuizBeginEmbed();
   const components = getQuizBeginComponents(interaction);
   await quizChannel?.send({
     components,
@@ -780,7 +780,7 @@ const handleQuizButton = async (
     content: "Направен е канал за вас. Со среќа!",
     ephemeral: true,
   });
-  deleteResponse(message);
+  void deleteResponse(message);
 };
 
 const handleQuizGameButton = async (
@@ -792,7 +792,7 @@ const handleQuizGameButton = async (
       content: errors.quizNoPermission,
       ephemeral: true,
     });
-    deleteResponse(mess);
+    void deleteResponse(mess);
     return;
   }
 
@@ -834,7 +834,7 @@ const handleQuizGameButton = async (
 
   await interaction.deferUpdate();
 
-  const embed = getQuizQuestionEmbed(currentQuestion, level);
+  const embed = await getQuizQuestionEmbed(currentQuestion, level);
   const components = getQuizQuestionComponents(
     currentQuestion,
     level,
@@ -861,7 +861,7 @@ const handleVipButton = async (
       content: "Веќе сте член на ВИП.",
       ephemeral: true,
     });
-    deleteResponse(message);
+    void deleteResponse(message);
     return;
   }
 
@@ -875,7 +875,7 @@ const handleVipButton = async (
         content: "Ова не е ваша заклетва.",
         ephemeral: true,
       });
-      deleteResponse(resp);
+      void deleteResponse(resp);
       return;
     }
 
@@ -892,7 +892,7 @@ const handleVipButton = async (
         content: "Ова не е ваша заклетва.",
         ephemeral: true,
       });
-      deleteResponse(resp);
+      void deleteResponse(resp);
       return;
     }
 
@@ -912,7 +912,7 @@ const handleVipButton = async (
       content: "Сега сте член на ВИП.",
       ephemeral: true,
     });
-    deleteResponse(message);
+    void deleteResponse(message);
 
     await interaction.message.delete();
 
@@ -934,7 +934,7 @@ const handleVipButton = async (
       content: "Веќе имате активна молба за ВИП.",
       ephemeral: true,
     });
-    deleteResponse(message);
+    void deleteResponse(message);
     return;
   }
 
@@ -960,7 +960,7 @@ const handleVipButton = async (
       "Испратена е молба за разгледување до членовите на ВИП. Ќе добиете повратна порака штом е донесена одлука. Со среќа! :grin:",
     ephemeral: true,
   });
-  deleteResponse(mess);
+  void deleteResponse(mess);
 };
 
 // Autocomplete interactions
@@ -1190,7 +1190,7 @@ export const handleButton = async (interaction: ButtonInteraction) => {
   if (command === "removeCourses" || command === "addCourses") {
     try {
       const mess = await interaction.deferReply({ ephemeral: true });
-      deleteResponse(mess, 10_000);
+      void deleteResponse(mess, 10_000);
     } catch (error) {
       logger.error(
         `Failed to defer reply for button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`

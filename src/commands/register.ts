@@ -15,6 +15,7 @@ const permission = PermissionFlagsBits.ManageMessages;
 export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription(commandDescriptions[name])
+  .setDMPermission(false)
   .setDefaultMemberPermissions(permission);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {

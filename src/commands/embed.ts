@@ -26,6 +26,7 @@ export const data = new SlashCommandBuilder()
       .setDescription("Дали да се додаде време?")
       .setRequired(false)
   )
+  .setDMPermission(false)
   .setDefaultMemberPermissions(permission);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {

@@ -1,15 +1,14 @@
-import { getFromBotConfig } from "../utils/config.js";
-import { getCrossposting } from "../utils/crossposting.js";
+import { getConfigProperty } from "../utils/config.js";
 import { addExperience } from "../utils/experience.js";
 import { logger } from "../utils/logger.js";
 import { type ClientEvents, Events, type Message } from "discord.js";
 
 export const name = Events.MessageCreate;
-const crosspostChannels = getFromBotConfig("crosspostChannels");
+const crosspostChannels = await getConfigProperty("crosspostChannels");
 
 const crosspost = async (message: Message) => {
   if (
-    !getCrossposting() ||
+    !(await getConfigProperty("crosspost")) ||
     crosspostChannels.length === 0 ||
     !crosspostChannels.includes(message.channel.id)
   ) {

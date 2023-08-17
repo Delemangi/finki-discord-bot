@@ -8,7 +8,8 @@ const name = "members";
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription(commandDescriptions[name]);
+  .setDescription(commandDescriptions[name])
+  .setDMPermission(false);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply(

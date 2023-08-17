@@ -70,7 +70,7 @@ const handleExperienceGet = async (
     return;
   }
 
-  const embed = getExperienceEmbed(experience);
+  const embed = await getExperienceEmbed(experience);
   await interaction.editReply({ embeds: [embed] });
 };
 
@@ -98,7 +98,7 @@ const handleExperienceLeaderboard = async (
   const perPage = 8;
   const pages = Math.ceil(experience.length / perPage);
   const total = await getExperienceCount();
-  const embed = getExperienceLeaderboardFirstPageEmbed(experience, total);
+  const embed = await getExperienceLeaderboardFirstPageEmbed(experience, total);
   const components = [
     pages === 0 || pages === 1
       ? getPaginationComponents("exp")
@@ -122,7 +122,7 @@ const handleExperienceLeaderboard = async (
         content: "Ова не е ваша команда.",
         ephemeral: true,
       });
-      deleteResponse(mess);
+      void deleteResponse(mess);
       return;
     }
 
@@ -158,7 +158,7 @@ const handleExperienceLeaderboard = async (
       buttons = getPaginationComponents("exp", "middle");
     }
 
-    const nextEmbed = getExperienceLeaderboardNextPageEmbed(
+    const nextEmbed = await getExperienceLeaderboardNextPageEmbed(
       experience,
       page,
       total

@@ -12,6 +12,6 @@ export const data = new SlashCommandBuilder()
   .setDescription(commandDescriptions[name]);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const embed = getAboutEmbed();
+  const embed = await getAboutEmbed();
   await interaction.editReply({ embeds: [embed] });
 };

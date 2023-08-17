@@ -29,7 +29,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     getCommandsWithPermission(interaction.member as GuildMember | null).length /
       commandsPerPage
   );
-  const embed = getHelpFirstPageEmbed(
+  const embed = await getHelpFirstPageEmbed(
     interaction.member as GuildMember | null,
     commandsPerPage
   );
@@ -56,7 +56,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
         content: "Ова не е ваша команда.",
         ephemeral: true,
       });
-      deleteResponse(mess);
+      void deleteResponse(mess);
       return;
     }
 
@@ -92,7 +92,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       buttons = getPaginationComponents("help", "middle");
     }
 
-    const nextEmbed = getHelpNextPageEmbed(
+    const nextEmbed = await getHelpNextPageEmbed(
       interaction.member as GuildMember | null,
       page,
       commandsPerPage

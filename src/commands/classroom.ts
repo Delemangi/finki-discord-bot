@@ -35,7 +35,9 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
         cl.classroom.toString().toLowerCase() === classroomName?.toLowerCase()
     );
 
-    const embeds = classrooms.map((cl) => getClassroomEmbed(cl));
+    const embeds = await Promise.all(
+      classrooms.map(async (cl) => await getClassroomEmbed(cl))
+    );
     await interaction.editReply({
       embeds,
       ...(embeds.length > 1
@@ -47,6 +49,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embed = getClassroomEmbed(information);
+  const embed = await getClassroomEmbed(information);
   await interaction.editReply({ embeds: [embed] });
 };

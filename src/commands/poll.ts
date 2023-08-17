@@ -187,7 +187,8 @@ export const data = new SlashCommandBuilder()
       .addStringOption((option) =>
         option.setName("id").setDescription("Анкета").setRequired(true)
       )
-  );
+  )
+  .setDMPermission(false);
 
 const handlePollCreate = async (interaction: ChatInputCommandInteraction) => {
   const title = interaction.options.getString("title", true);
@@ -529,7 +530,7 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
         content: "Ова не е ваша команда.",
         ephemeral: true,
       });
-      deleteResponse(mess);
+      void deleteResponse(mess);
       return;
     }
 
@@ -565,7 +566,7 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
       buttons = getPaginationComponents("polls", "middle");
     }
 
-    const nextEmbed = getPollListNextPageEmbed(polls, page, all);
+    const nextEmbed = await getPollListNextPageEmbed(polls, page, all);
 
     try {
       await buttonInteraction.update({

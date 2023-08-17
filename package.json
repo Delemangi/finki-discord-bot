@@ -12,7 +12,8 @@
     "discord.js": "^14.12.1",
     "dotenv": "^16.3.1",
     "rimraf": "^5.0.1",
-    "winston": "^3.10.0"
+    "winston": "^3.10.0",
+    "zod": "^3.22.1"
   },
   "description": "FINKI Discord bot",
   "devDependencies": {

@@ -1,8 +1,8 @@
 import { client } from "../utils/client.js";
-import { getFromBotConfig, getToken } from "../utils/config.js";
+import { getConfigProperty, getToken } from "../utils/config.js";
 import { logger } from "../utils/logger.js";
 
-const server = process.argv[2] ?? getFromBotConfig("guild");
+const server = process.argv[2] ?? (await getConfigProperty("guild"));
 
 await client.login(getToken());
 
@@ -30,5 +30,5 @@ client.once("ready", async () => {
   logger.info(`Server boost level: ${guild.premiumTier}`);
 
   logger.info("Done");
-  client.destroy();
+  await client.destroy();
 });

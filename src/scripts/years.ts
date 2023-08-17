@@ -26,7 +26,7 @@ client.once("ready", async () => {
     throw new Error("No year roles have been provided");
   }
 
-  const embed = getYearsEmbed();
+  const embed = await getYearsEmbed();
   const components = getYearsComponents();
   try {
     await sendEmbed(channel, embed, [components], Number(newlines));
@@ -35,5 +35,5 @@ client.once("ready", async () => {
   }
 
   logger.info("Done");
-  client.destroy();
+  await client.destroy();
 });

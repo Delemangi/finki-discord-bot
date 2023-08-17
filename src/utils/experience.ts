@@ -4,7 +4,7 @@ import {
   updateExperience,
 } from "../data/Experience.js";
 import { getChannel } from "./channels.js";
-import { getFromBotConfig, getLevels } from "./config.js";
+import { getConfigProperty, getLevels } from "./config.js";
 import { logger } from "./logger.js";
 import { getUsername } from "./members.js";
 import AsyncLock from "async-lock";
@@ -70,7 +70,7 @@ const awardMember = async (member: GuildMember | null, level: number) => {
 const lock = new AsyncLock();
 
 export const addExperience = async (message: Message) => {
-  if (!getFromBotConfig("leveling")) {
+  if (!(await getConfigProperty("leveling"))) {
     return;
   }
 

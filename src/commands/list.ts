@@ -22,12 +22,12 @@ export const data = new SlashCommandBuilder()
 const handleListQuestions = async (
   interaction: ChatInputCommandInteraction
 ) => {
-  const embed = getListQuestionsEmbed();
+  const embed = await getListQuestionsEmbed();
   await interaction.editReply({ embeds: [embed] });
 };
 
 const handleListLinks = async (interaction: ChatInputCommandInteraction) => {
-  const embed = getListLinksEmbed();
+  const embed = await getListLinksEmbed();
   await interaction.editReply({ embeds: [embed] });
 };
 

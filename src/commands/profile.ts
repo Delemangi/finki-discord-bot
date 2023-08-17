@@ -19,6 +19,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const member = interaction.guild?.members.cache.get(
     (interaction.options.getUser("user") ?? interaction.user).id
   );
-  const embed = getStudentInfoEmbed(member);
+  const embed = await getStudentInfoEmbed(member);
   await interaction.editReply({ embeds: [embed] });
 };

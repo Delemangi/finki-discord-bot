@@ -174,7 +174,7 @@ const handleScriptCourses = async (
       return;
     }
 
-    const embed = getCoursesEmbed(roleSet, roles);
+    const embed = await getCoursesEmbed(roleSet, roles);
     const components = getCoursesComponents(roles);
     try {
       await sendEmbed(
@@ -191,7 +191,7 @@ const handleScriptCourses = async (
     }
   }
 
-  const addEmbed = getCoursesAddEmbed();
+  const addEmbed = await getCoursesAddEmbed();
   const addComponents = getCoursesAddComponents(
     roleSets.length === 0 ? Array.from("12345678") : roleSets
   );
@@ -209,7 +209,7 @@ const handleScriptCourses = async (
     return;
   }
 
-  const removeEmbed = getCoursesRemoveEmbed();
+  const removeEmbed = await getCoursesRemoveEmbed();
   const removeComponents = getCoursesRemoveComponents(
     roleSets.length === 0 ? Array.from("12345678") : roleSets
   );
@@ -236,7 +236,7 @@ const handleScriptColors = async (interaction: ChatInputCommandInteraction) => {
     await interaction.editReply("Само текст канали се дозволени.");
   }
 
-  const embed = getColorsEmbed(image);
+  const embed = await getColorsEmbed(image);
   const components = getColorsComponents();
   try {
     await sendEmbed(
@@ -262,7 +262,7 @@ const handleScriptNotifications = async (
     await interaction.editReply("Само текст канали се дозволени.");
   }
 
-  const embed = getNotificationsEmbed();
+  const embed = await getNotificationsEmbed();
   const components = getNotificationsComponents();
   try {
     await sendEmbed(
@@ -288,7 +288,7 @@ const handleScriptPrograms = async (
     await interaction.editReply("Само текст канали се дозволени.");
   }
 
-  const embed = getProgramsEmbed();
+  const embed = await getProgramsEmbed();
   const components = getProgramsComponents();
   try {
     await sendEmbed(
@@ -312,7 +312,7 @@ const handleScriptYears = async (interaction: ChatInputCommandInteraction) => {
     await interaction.editReply("Само текст канали се дозволени.");
   }
 
-  const embed = getYearsEmbed();
+  const embed = await getYearsEmbed();
   const components = getYearsComponents();
   try {
     await sendEmbed(
@@ -356,7 +356,7 @@ const handleScriptRules = async (interaction: ChatInputCommandInteraction) => {
     await interaction.editReply("Само текст канали се дозволени.");
   }
 
-  const embed = getRulesEmbed();
+  const embed = await getRulesEmbed();
   try {
     await (channel as GuildTextBasedChannel).send({
       embeds: [embed],
@@ -378,7 +378,7 @@ const handleScriptVip = async (interaction: ChatInputCommandInteraction) => {
     await interaction.editReply("Само текст канали се дозволени.");
   }
 
-  const embed = getVipRequestEmbed();
+  const embed = await getVipRequestEmbed();
   const components = getVipRequestComponents();
   try {
     await (channel as GuildTextBasedChannel).send({

@@ -16,6 +16,8 @@ export const data = new ContextMenuCommandBuilder()
 export const execute = async (
   interaction: UserContextMenuCommandInteraction
 ) => {
-  const embed = getStudentInfoEmbed(interaction.targetMember as GuildMember);
+  const embed = await getStudentInfoEmbed(
+    interaction.targetMember as GuildMember
+  );
   await interaction.editReply({ embeds: [embed] });
 };

@@ -8,6 +8,7 @@ export const commandDescriptions = {
   anto: "Анто факт",
   calendar: "Академски календар",
   classroom: "Информации за простории",
+  config: "Види или измени конфигурација на ботот",
   "course info": "Информации за предмети",
   "course participants": "Број на слушатели на предмети",
   "course prerequisite": "Предуслови за предмети",
