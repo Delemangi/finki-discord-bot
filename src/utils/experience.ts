@@ -96,7 +96,7 @@ export const addExperience = async (message: Message) => {
 
     if (currentLevel === null) {
       logger.warn(
-        `Couldn't get or create experience for user ${getUsername(
+        `Couldn't get or create experience for user ${await getUsername(
           message.author.id
         )}`
       );

@@ -1207,12 +1207,14 @@ export const getExperienceLeaderboardFirstPageEmbed = async (
     .setColor(await getConfigProperty("color"))
     .setTitle("Активност")
     .addFields(
-      experience.slice(0, perPage).map((exp, index) => ({
-        name: "\u200B",
-        value: `${index + 1}. ${getUsername(exp.id)} (${userMention(
-          exp.userId
-        )}): Ниво: ${exp.level} | Поени: ${exp.experience}`,
-      }))
+      await Promise.all(
+        experience.slice(0, perPage).map(async (exp, index) => ({
+          name: "\u200B",
+          value: `${index + 1}. ${await getUsername(exp.userId)} (${userMention(
+            exp.userId
+          )}): Ниво: ${exp.level} | Поени: ${exp.experience}`,
+        }))
+      )
     )
     .setFooter({
       text: `Страна: 1 / ${Math.ceil(
@@ -1234,16 +1236,18 @@ export const getExperienceLeaderboardNextPageEmbed = async (
     .setColor(await getConfigProperty("color"))
     .setTitle("Активност")
     .addFields(
-      experience
-        .slice(perPage * page, perPage * (page + 1))
-        .map((exp, index) => ({
-          name: "\u200B",
-          value: `${perPage * page + index + 1}. ${getUsername(
-            exp.id
-          )} (${userMention(exp.userId)}): Ниво: ${exp.level} | Поени: ${
-            exp.experience
-          }`,
-        }))
+      await Promise.all(
+        experience
+          .slice(perPage * page, perPage * (page + 1))
+          .map(async (exp, index) => ({
+            name: "\u200B",
+            value: `${perPage * page + index + 1}. ${await getUsername(
+              exp.userId
+            )} (${userMention(exp.userId)}): Ниво: ${exp.level} | Поени: ${
+              exp.experience
+            }`,
+          }))
+      )
     )
     .setFooter({
       text: `Страна: ${page + 1} / ${Math.ceil(
@@ -1668,7 +1672,7 @@ export const getPollStatsButtonEmbed = async (
   option: string,
   votes: PollVote[]
 ) => {
-  const users = votes.map((vote) => getUsername(vote.userId));
+  const users = votes.map(async (vote) => await getUsername(vote.userId));
 
   return votes.length > 0
     ? new EmbedBuilder()
