@@ -6,6 +6,7 @@ import {
   getPollVotesByOptionId,
   getPollVotesByPollIdAndUserId,
 } from "../data/PollVote.js";
+import { getQuestionNames } from "../data/Question.js";
 import {
   deleteVipPoll,
   getVipPollById,
@@ -39,7 +40,6 @@ import {
   getCourses,
   getFromRoleConfig,
   getLinks,
-  getQuestions,
   getQuiz,
   getSessions,
   getStaff,
@@ -968,7 +968,6 @@ const handleVipButton = async (
 let transformedCourses: Array<[string, string]> | null = null;
 let transformedProfessors: Array<[string, string]> | null = null;
 let transformedCourseRoles: Array<[string, string]> | null = null;
-let transformedQuestions: Array<[string, string]> | null = null;
 let transformedLinks: Array<[string, string]> | null = null;
 let transformedSessions: Array<[string, string]> | null = null;
 let transformedClassrooms: Array<[string, string]> | null = null;
@@ -1016,14 +1015,13 @@ const handleCourseRoleAutocomplete = async (
 const handleQuestionAutocomplete = async (
   interaction: AutocompleteInteraction
 ) => {
-  if (transformedQuestions === null) {
-    transformedQuestions = Object.entries(
-      transformOptions(getQuestions().map((question) => question.question))
-    );
-  }
-
   await interaction.respond(
-    createOptions(transformedQuestions, interaction.options.getFocused())
+    createOptions(
+      Object.entries(
+        transformOptions((await getQuestionNames()).map(({ name }) => name))
+      ),
+      interaction.options.getFocused()
+    )
   );
 };
 

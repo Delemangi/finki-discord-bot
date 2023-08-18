@@ -1,8 +1,8 @@
+import { getQuestion } from "../data/Question.js";
 import {
   getQuestionComponents,
   getQuestionEmbed,
 } from "../utils/components.js";
-import { getQuestions } from "../utils/config.js";
 import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
@@ -24,9 +24,9 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const keyword = interaction.options.getString("question", true);
-  const question = getQuestions().find((quest) => quest.question === keyword);
+  const question = await getQuestion(keyword);
 
-  if (question === undefined) {
+  if (question === null) {
     await interaction.editReply("Не постои такво прашање.");
     return;
   }
@@ -36,6 +36,5 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply({
     components,
     embeds: [embed],
-    files: question.files?.map((file) => `./files/${file}`) ?? [],
   });
 };

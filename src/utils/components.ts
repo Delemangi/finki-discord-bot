@@ -3,6 +3,7 @@ import {
   getPollVotesByOptionId,
   getPollVotesByPollId,
 } from "../data/PollVote.js";
+import { getQuestions } from "../data/Question.js";
 import { type Classroom } from "../types/Classroom.js";
 import { type CourseInformation } from "../types/CourseInformation.js";
 import { type CourseParticipants } from "../types/CourseParticipants.js";
@@ -12,7 +13,6 @@ import { type Link } from "../types/Link.js";
 import { type PollWithOptions } from "../types/PollWithOptions.js";
 import { type ProgramName } from "../types/ProgramName.js";
 import { type ProgramShorthand } from "../types/ProgramShorthand.js";
-import { type Question } from "../types/Question.js";
 import { type QuizQuestion } from "../types/QuizQuestion.js";
 import { type Staff } from "../types/Staff.js";
 import { client } from "./client.js";
@@ -25,7 +25,6 @@ import {
   getParticipants,
   getPrerequisites,
   getProfessors,
-  getQuestions,
   getResponses,
   getRules,
   getStaff,
@@ -43,7 +42,12 @@ import {
   getRoleFromSet,
 } from "./roles.js";
 import { commandDescriptions, programMapping, quizHelp } from "./strings.js";
-import { type Experience, type Poll, type PollVote } from "@prisma/client";
+import {
+  type Experience,
+  type Poll,
+  type PollVote,
+  type Question,
+} from "@prisma/client";
 import {
   ActionRowBuilder,
   type AutocompleteInteraction,
@@ -1262,8 +1266,8 @@ export const getExperienceLeaderboardNextPageEmbed = async (
 export const getQuestionEmbed = async (question: Question) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle(question.question)
-    .setDescription(question.answer)
+    .setTitle(question.name)
+    .setDescription(question.content)
     .setTimestamp();
 };
 
@@ -1337,11 +1341,11 @@ export const getListQuestionsEmbed = async () => {
     .setDescription(
       `Ова се сите достапни прашања. Користете ${commandMention(
         "faq"
-      )} за да ги добиете одговорите.\n\n${getQuestions()
+      )} за да ги добиете одговорите.\n\n${(await getQuestions())
         .map(
           (question, index) =>
             `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
-              question.question
+              question.name
             }`
         )
         .join("\n")}`

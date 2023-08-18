@@ -21,6 +21,5 @@ services:
       - db
     volumes:
       - ./config:/app/config
-      - ./files:/app/files
       - ./sessions:/app/sessions
       - ./bot.log:/app/bot.log

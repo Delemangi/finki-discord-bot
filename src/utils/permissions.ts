@@ -28,6 +28,10 @@ const commandPermissions: {
     roles: [],
   },
   purge: { permissions: [PermissionsBitField.Flags.ManageMessages], roles: [] },
+  "question set": {
+    permissions: [PermissionsBitField.Flags.Administrator],
+    roles: [],
+  },
   register: {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],

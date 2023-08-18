@@ -52,7 +52,7 @@
     "lint:cfg": "eslint . --ext .json --cache",
     "lint:fix": "eslint . --ext .ts --fix",
     "migration:apply": "prisma migrate deploy",
-    "migration:create": "prisma migrate dev --name init",
+    "migration:create": "prisma migrate dev --name a",
     "server:info": "npm run build && node dist/scripts/serverInfo.js",
     "start": "node dist/main.js",
     "start:dev": "npm run lint && npm run build && npm run start",

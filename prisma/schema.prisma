@@ -15,6 +15,18 @@ model Config {
   updatedAt DateTime @updatedAt
 }
 
+model Question {
+  id String @id @default(uuid())
+
+  name    String   @unique
+  content String
+  links   String[]
+  userId  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Experience {
   id String @id @default(uuid())
 
