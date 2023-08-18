@@ -1,7 +1,7 @@
 import { sendEmbed } from "../utils/channels.js";
 import { client } from "../utils/client.js";
+import { getYearsComponents, getYearsEmbed } from "../utils/components.js";
 import { getFromRoleConfig, getToken } from "../utils/config.js";
-import { getYearsComponents, getYearsEmbed } from "../utils/embeds.js";
 import { logger } from "../utils/logger.js";
 
 const [channelId, newlines] = process.argv.slice(2);

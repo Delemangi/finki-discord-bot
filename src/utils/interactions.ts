@@ -15,16 +15,6 @@ import { type QuizQuestion } from "../types/QuizQuestion.js";
 import { deleteResponse, getChannel, log } from "./channels.js";
 import { getCommand } from "./commands.js";
 import {
-  getClassrooms,
-  getCourses,
-  getFromRoleConfig,
-  getLinks,
-  getQuestions,
-  getQuiz,
-  getSessions,
-  getStaff,
-} from "./config.js";
-import {
   getAutocompleteEmbed,
   getButtonEmbed,
   getChatInputCommandEmbed,
@@ -43,7 +33,17 @@ import {
   getVipAcknowledgeComponents,
   getVipConfirmComponents,
   getVipConfirmEmbed,
-} from "./embeds.js";
+} from "./components.js";
+import {
+  getClassrooms,
+  getCourses,
+  getFromRoleConfig,
+  getLinks,
+  getQuestions,
+  getQuiz,
+  getSessions,
+  getStaff,
+} from "./config.js";
 import { createOptions } from "./functions.js";
 import { logger } from "./logger.js";
 import { transformOptions } from "./options.js";

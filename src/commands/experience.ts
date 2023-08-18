@@ -11,7 +11,7 @@ import {
   getExperienceLeaderboardFirstPageEmbed,
   getExperienceLeaderboardNextPageEmbed,
   getPaginationComponents,
-} from "../utils/embeds.js";
+} from "../utils/components.js";
 import { logger } from "../utils/logger.js";
 import { commandDescriptions } from "../utils/strings.js";
 import {

@@ -2,7 +2,7 @@ import { type ProgramName } from "../types/ProgramName.js";
 import {
   getCoursesPrerequisiteEmbed,
   getCoursesProgramEmbed,
-} from "../utils/embeds.js";
+} from "../utils/components.js";
 import { getCourseRolesBySemester } from "../utils/roles.js";
 import {
   commandDescriptions,

@@ -1,17 +1,17 @@
 import {
+  getCourseInfoEmbed,
+  getCourseParticipantsEmbed,
+  getCoursePrerequisiteEmbed,
+  getCourseProfessorsEmbed,
+  getCourseSummaryEmbed,
+} from "../utils/components.js";
+import {
   getFromRoleConfig,
   getInformation,
   getParticipants,
   getPrerequisites,
   getProfessors,
 } from "../utils/config.js";
-import {
-  getCourseInfoEmbed,
-  getCourseParticipantsEmbed,
-  getCoursePrerequisiteEmbed,
-  getCourseProfessorsEmbed,
-  getCourseSummaryEmbed,
-} from "../utils/embeds.js";
 import { getCourseRoleByCourseName } from "../utils/roles.js";
 import { commandDescriptions, errors } from "../utils/strings.js";
 import {

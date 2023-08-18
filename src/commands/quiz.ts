@@ -1,4 +1,4 @@
-import { getQuizComponents, getQuizEmbed } from "../utils/embeds.js";
+import { getQuizComponents, getQuizEmbed } from "../utils/components.js";
 import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,

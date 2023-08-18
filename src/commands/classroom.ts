@@ -1,5 +1,5 @@
+import { getClassroomEmbed } from "../utils/components.js";
 import { getClassrooms } from "../utils/config.js";
-import { getClassroomEmbed } from "../utils/embeds.js";
 import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,

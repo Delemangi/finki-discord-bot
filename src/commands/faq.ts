@@ -1,5 +1,8 @@
+import {
+  getQuestionComponents,
+  getQuestionEmbed,
+} from "../utils/components.js";
 import { getQuestions } from "../utils/config.js";
-import { getQuestionComponents, getQuestionEmbed } from "../utils/embeds.js";
 import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,

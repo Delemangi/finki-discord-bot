@@ -1,6 +1,6 @@
 import { client } from "../utils/client.js";
+import { getRulesEmbed } from "../utils/components.js";
 import { getToken } from "../utils/config.js";
-import { getRulesEmbed } from "../utils/embeds.js";
 import { logger } from "../utils/logger.js";
 
 const channelId = process.argv[2];

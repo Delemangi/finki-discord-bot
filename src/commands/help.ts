@@ -4,7 +4,7 @@ import {
   getHelpFirstPageEmbed,
   getHelpNextPageEmbed,
   getPaginationComponents,
-} from "../utils/embeds.js";
+} from "../utils/components.js";
 import { logger } from "../utils/logger.js";
 import { getCommandsWithPermission } from "../utils/permissions.js";
 import { commandDescriptions } from "../utils/strings.js";

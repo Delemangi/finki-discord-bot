@@ -1,6 +1,5 @@
 import { sendEmbed } from "../utils/channels.js";
 import { client } from "../utils/client.js";
-import { getFromRoleConfig, getToken } from "../utils/config.js";
 import {
   getCoursesAddComponents,
   getCoursesAddEmbed,
@@ -8,7 +7,8 @@ import {
   getCoursesEmbed,
   getCoursesRemoveComponents,
   getCoursesRemoveEmbed,
-} from "../utils/embeds.js";
+} from "../utils/components.js";
+import { getFromRoleConfig, getToken } from "../utils/config.js";
 import { logger } from "../utils/logger.js";
 
 const [channelId, newlines, ...roleSets] = process.argv.slice(2);

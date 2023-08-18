@@ -10,7 +10,7 @@ import {
   getPollEmbed,
   getVipEmbed,
   getVipInvitedEmbed,
-} from "../utils/embeds.js";
+} from "../utils/components.js";
 import { handlePollButtonForVipVote } from "../utils/interactions.js";
 import { startVipPoll } from "../utils/polls.js";
 import { getMembersWithRoles, getRole } from "../utils/roles.js";

@@ -1,5 +1,5 @@
+import { getLinkComponents, getLinkEmbed } from "../utils/components.js";
 import { getLinks } from "../utils/config.js";
-import { getLinkComponents, getLinkEmbed } from "../utils/embeds.js";
 import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,

@@ -1,9 +1,9 @@
 import { client } from "../utils/client.js";
-import { getToken } from "../utils/config.js";
 import {
   getVipRequestComponents,
   getVipRequestEmbed,
-} from "../utils/embeds.js";
+} from "../utils/components.js";
+import { getToken } from "../utils/config.js";
 import { logger } from "../utils/logger.js";
 
 const channelId = process.argv[2];

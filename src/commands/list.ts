@@ -1,4 +1,7 @@
-import { getListLinksEmbed, getListQuestionsEmbed } from "../utils/embeds.js";
+import {
+  getListLinksEmbed,
+  getListQuestionsEmbed,
+} from "../utils/components.js";
 import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,

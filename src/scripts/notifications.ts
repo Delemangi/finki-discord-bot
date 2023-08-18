@@ -1,10 +1,10 @@
 import { sendEmbed } from "../utils/channels.js";
 import { client } from "../utils/client.js";
-import { getFromRoleConfig, getToken } from "../utils/config.js";
 import {
   getNotificationsComponents,
   getNotificationsEmbed,
-} from "../utils/embeds.js";
+} from "../utils/components.js";
+import { getFromRoleConfig, getToken } from "../utils/config.js";
 import { logger } from "../utils/logger.js";
 
 const [channelId, newlines] = process.argv.slice(2);

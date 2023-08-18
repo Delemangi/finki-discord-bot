@@ -1,12 +1,6 @@
 import { sendEmbed } from "../utils/channels.js";
 import { getCommands } from "../utils/commands.js";
 import {
-  getApplicationId,
-  getFromRoleConfig,
-  getInfo,
-  getToken,
-} from "../utils/config.js";
-import {
   getColorsComponents,
   getColorsEmbed,
   getCoursesAddComponents,
@@ -24,7 +18,13 @@ import {
   getVipRequestEmbed,
   getYearsComponents,
   getYearsEmbed,
-} from "../utils/embeds.js";
+} from "../utils/components.js";
+import {
+  getApplicationId,
+  getFromRoleConfig,
+  getInfo,
+  getToken,
+} from "../utils/config.js";
 import { logger } from "../utils/logger.js";
 import { commandDescriptions } from "../utils/strings.js";
 import {

@@ -15,7 +15,7 @@ import {
   getPollListNextPageEmbed,
   getPollStatsComponents,
   getPollStatsEmbed,
-} from "../utils/embeds.js";
+} from "../utils/components.js";
 import { logger } from "../utils/logger.js";
 import { startPoll } from "../utils/polls.js";
 import { commandDescriptions, errors } from "../utils/strings.js";

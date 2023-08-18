@@ -1,7 +1,7 @@
 import { sendEmbed } from "../utils/channels.js";
 import { client } from "../utils/client.js";
+import { getColorsComponents, getColorsEmbed } from "../utils/components.js";
 import { getFromRoleConfig, getToken } from "../utils/config.js";
-import { getColorsComponents, getColorsEmbed } from "../utils/embeds.js";
 import { logger } from "../utils/logger.js";
 
 const [channelId, image, newlines] = process.argv.slice(2);

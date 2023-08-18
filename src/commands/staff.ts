@@ -1,5 +1,5 @@
+import { getStaffEmbed } from "../utils/components.js";
 import { getStaff } from "../utils/config.js";
-import { getStaffEmbed } from "../utils/embeds.js";
 import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
