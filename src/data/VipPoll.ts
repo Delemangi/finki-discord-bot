@@ -55,7 +55,24 @@ export const createVipPoll = async (vipPoll?: Prisma.VipPollCreateInput) => {
   }
 };
 
-export const deleteVipPoll = async (pollId?: string) => {
+export const deleteVipPoll = async (id?: string) => {
+  if (database === undefined || id === undefined) {
+    return null;
+  }
+
+  try {
+    return await database.vipPoll.delete({
+      where: {
+        id,
+      },
+    });
+  } catch (error) {
+    logger.error(`Failed deleting VIP poll\n${error}`);
+    return null;
+  }
+};
+
+export const deleteVipPollByPollId = async (pollId?: string) => {
   if (database === undefined || pollId === undefined) {
     return null;
   }
@@ -67,7 +84,20 @@ export const deleteVipPoll = async (pollId?: string) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed deleting VIP poll\n${error}`);
+    logger.error(`Failed deleting VIP poll by poll ID\n${error}`);
     return null;
+  }
+};
+
+export const getVipPolls = async () => {
+  if (database === undefined) {
+    return [];
+  }
+
+  try {
+    return await database.vipPoll.findMany();
+  } catch (error) {
+    logger.error(`Failed obtaining VIP polls\n${error}`);
+    return [];
   }
 };

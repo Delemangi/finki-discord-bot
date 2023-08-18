@@ -1,22 +1,29 @@
 import { deletePoll, getPollById, updatePoll } from "../data/Poll.js";
 import { getPollVotesByPollId } from "../data/PollVote.js";
 import {
-  deleteVipPoll,
+  deleteVipPollByPollId,
   getVipPollById,
   getVipPollByUserAndType,
+  getVipPolls,
 } from "../data/VipPoll.js";
+import { deleteResponse } from "../utils/channels.js";
 import {
+  getPaginationComponents,
   getPollComponents,
   getPollEmbed,
   getVipEmbed,
   getVipInvitedEmbed,
+  getVipPollListFirstPageEmbed,
+  getVipPollListNextPageEmbed,
 } from "../utils/components.js";
 import { handlePollButtonForVipVote } from "../utils/interactions.js";
+import { logger } from "../utils/logger.js";
 import { startVipPoll } from "../utils/polls.js";
 import { getMembersWithRoles, getRole } from "../utils/roles.js";
 import { commandDescriptions, errors } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
+  ComponentType,
   PermissionFlagsBits,
   SlashCommandBuilder,
   userMention,
@@ -119,6 +126,9 @@ export const data = new SlashCommandBuilder()
           .setDescription("Предлог корисник за покана")
           .setRequired(true)
       )
+  )
+  .addSubcommand((command) =>
+    command.setName("list").setDescription(commandDescriptions["vip list"])
   )
   .setDMPermission(false);
 
@@ -357,7 +367,7 @@ const handleVipDelete = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  await deleteVipPoll(pollId);
+  await deleteVipPollByPollId(pollId);
   await deletePoll(pollId);
 
   await interaction.editReply("Успешно е избришана анкетата.");
@@ -469,11 +479,100 @@ const handleVipInvite = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply("Успешно е поканет корисникот за ВИП.");
 };
 
+const handleVipList = async (interaction: ChatInputCommandInteraction) => {
+  const vipPolls = await getVipPolls();
+  const pollsPerPage = 8;
+  const pages = Math.ceil(vipPolls.length / pollsPerPage);
+  const embed = await getVipPollListFirstPageEmbed(vipPolls, pollsPerPage);
+  const components = [
+    pages === 0 || pages === 1
+      ? getPaginationComponents("polls")
+      : getPaginationComponents("polls", "start"),
+  ];
+  const message = await interaction.editReply({ components, embeds: [embed] });
+  const collector = message.createMessageComponentCollector({
+    componentType: ComponentType.Button,
+    time: 30_000,
+  });
+
+  collector.on("collect", async (buttonInteraction) => {
+    if (
+      buttonInteraction.user.id !==
+      buttonInteraction.message.interaction?.user.id
+    ) {
+      const mess = await buttonInteraction.reply({
+        content: "Ова не е ваша команда.",
+        ephemeral: true,
+      });
+      void deleteResponse(mess);
+      return;
+    }
+
+    const id = buttonInteraction.customId.split(":")[1];
+
+    if (id === "undefined") {
+      return;
+    }
+
+    let buttons;
+    let page =
+      Number(
+        buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.[0]
+      ) - 1;
+
+    if (id === "first") {
+      page = 0;
+    } else if (id === "last") {
+      page = pages - 1;
+    } else if (id === "previous") {
+      page--;
+    } else if (id === "next") {
+      page++;
+    }
+
+    if (page === 0 && (pages === 0 || pages === 1)) {
+      buttons = getPaginationComponents("polls");
+    } else if (page === 0) {
+      buttons = getPaginationComponents("polls", "start");
+    } else if (page === pages - 1) {
+      buttons = getPaginationComponents("polls", "end");
+    } else {
+      buttons = getPaginationComponents("polls", "middle");
+    }
+
+    const nextEmbed = await getVipPollListNextPageEmbed(
+      vipPolls,
+      page,
+      pollsPerPage
+    );
+
+    try {
+      await buttonInteraction.update({
+        components: [buttons],
+        embeds: [nextEmbed],
+      });
+    } catch (error) {
+      logger.error(`Failed to update poll list command\n${error}`);
+    }
+  });
+
+  collector.on("end", async () => {
+    try {
+      await message.edit({
+        components: [getPaginationComponents("polls")],
+      });
+    } catch (error) {
+      logger.error(`Failed to update poll list command\n${error}`);
+    }
+  });
+};
+
 const vipHandlers = {
   add: handleVipAdd,
   delete: handleVipDelete,
   invite: handleVipInvite,
   invited: handleVipInvited,
+  list: handleVipList,
   members: handleVipMembers,
   override: handleVipOverride,
   remaining: handleVipRemaining,

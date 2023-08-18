@@ -47,6 +47,7 @@ import {
   type Poll,
   type PollVote,
   type Question,
+  type VipPoll,
 } from "@prisma/client";
 import {
   ActionRowBuilder,
@@ -1735,6 +1736,57 @@ export const getPollListNextPageEmbed = async (
           name: all && poll.done ? `${poll.title} (затворена)` : poll.title,
           value: poll.id,
         }))
+    )
+    .setFooter({
+      text: `Страна: ${page + 1} / ${Math.ceil(
+        polls.length / pollsPerPage
+      )}  •  Анкети: ${polls.length}`,
+    })
+    .setTimestamp();
+};
+
+export const getVipPollListFirstPageEmbed = async (
+  polls: VipPoll[],
+  pollsPerPage: number = 8
+) => {
+  return new EmbedBuilder()
+    .setColor(await getConfigProperty("color"))
+    .setTitle("Анкети")
+    .setDescription("Ова се сите ВИП анкети.")
+    .addFields(
+      ...(await Promise.all(
+        polls.slice(0, pollsPerPage).map(async (poll) => ({
+          name: `${poll.type} (${await getUsername(poll.userId)})`,
+          value: poll.id,
+        }))
+      ))
+    )
+    .setFooter({
+      text: `Страна: 1 / ${Math.ceil(
+        polls.length / pollsPerPage
+      )}  •  Анкети: ${polls.length}`,
+    })
+    .setTimestamp();
+};
+
+export const getVipPollListNextPageEmbed = async (
+  polls: VipPoll[],
+  page: number,
+  pollsPerPage: number = 8
+) => {
+  return new EmbedBuilder()
+    .setColor(await getConfigProperty("color"))
+    .setTitle("Анкети")
+    .setDescription("Ова се сите ВИП анкети.")
+    .addFields(
+      ...(await Promise.all(
+        polls
+          .slice(pollsPerPage * page, pollsPerPage * (page + 1))
+          .map(async (poll) => ({
+            name: `${poll.type} (${await getUsername(poll.userId)})`,
+            value: poll.id,
+          }))
+      ))
     )
     .setFooter({
       text: `Страна: ${page + 1} / ${Math.ceil(
