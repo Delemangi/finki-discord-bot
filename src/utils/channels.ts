@@ -91,7 +91,7 @@ export const scheduleVipTemporaryChannel = async () => {
   });
 
   logger.info(
-    `Temporary vip channel recreation is scheduled for ${await getNextVipCronRun()}`
+    `Temporary VIP channel recreation is scheduled for ${await getNextVipCronRun()}`
   );
 };
 
