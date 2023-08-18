@@ -271,14 +271,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const course = interaction.options.getString("course");
   const courseRole = interaction.options.getString("courserole");
 
-  if (
-    course?.toLowerCase() === "спорт и здравје" ||
-    courseRole?.toLowerCase() === "спорт и здравје"
-  ) {
-    await interaction.editReply("Добар обид.");
-    return;
-  }
-
   const subcommand = interaction.options.getSubcommand(true);
 
   if (Object.keys(courseHandlers).includes(subcommand)) {
