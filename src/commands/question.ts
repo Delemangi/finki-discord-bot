@@ -213,9 +213,11 @@ const handleQuestionContent = async (
   }
 
   await interaction.editReply(
-    "Content:" +
+    "Име:" +
+      codeBlock(question.name) +
+      "Одговор:" +
       codeBlock(question.content.replaceAll("\n", "\\n")) +
-      "\nLinks:" +
+      "\nЛинкови:" +
       codeBlock(
         JSON.stringify(
           question.links
