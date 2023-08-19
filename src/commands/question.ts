@@ -3,6 +3,7 @@ import {
   deleteQuestion,
   getQuestion,
 } from "../data/Question.js";
+import { createQuestionLink } from "../data/QuestionLink.js";
 import { LinksSchema } from "../schemas/LinksSchema.js";
 import {
   getQuestionComponents,
@@ -10,6 +11,7 @@ import {
 } from "../utils/components.js";
 import { logger } from "../utils/logger.js";
 import { commandDescriptions } from "../utils/strings.js";
+import { type QuestionLink } from "@prisma/client";
 import {
   type ChatInputCommandInteraction,
   codeBlock,
@@ -163,13 +165,42 @@ const handleQuestionSet = async (
     return;
   }
 
-  if (links !== null && !LinksSchema.parse(links)) {
-    await interaction.editReply("Линковите не се во валиден JSON формат.");
-    return;
-  }
-
   question.content = answer;
-  question.links = links === null ? [] : JSON.parse(links);
+
+  if (links !== null) {
+    try {
+      LinksSchema.parse(JSON.parse(links));
+    } catch (error) {
+      logger.error(`Failed parsing links\n${error}`);
+      await interaction.editReply("Линковите не се во валиден JSON формат.");
+      return;
+    }
+
+    question.links = (
+      await Promise.all(
+        Object.entries(parsedLinks as Record<string, string>).map(
+          async ([linkName, linkUrl]) => {
+            const link = await createQuestionLink({
+              name: linkName,
+              question: {
+                connect: {
+                  name: keyword,
+                },
+              },
+              url: linkUrl,
+            });
+
+            if (link === null) {
+              logger.error(`Failed creating link\n${linkName} ${linkUrl}`);
+              return null;
+            }
+
+            return link;
+          }
+        )
+      )
+    ).filter(Boolean) as QuestionLink[];
+  }
 
   try {
     const embed = await getQuestionEmbed(question);
