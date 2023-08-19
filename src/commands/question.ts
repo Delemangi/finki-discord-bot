@@ -103,6 +103,12 @@ const handleQuestionSet = async (
     };
 
     const createdQuestion = await createQuestion(newQuestion);
+
+    if (createdQuestion === null) {
+      await interaction.editReply("Прашањето не беше креирано.");
+      return;
+    }
+
     const questionEmbed = await getQuestionEmbed(createdQuestion);
     const questionComponents = getQuestionComponents(createdQuestion);
     await interaction.editReply({

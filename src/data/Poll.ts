@@ -7,7 +7,7 @@ import { type Prisma } from "@prisma/client";
 import { type Interaction } from "discord.js";
 
 export const createPoll = async (poll?: Prisma.PollCreateInput) => {
-  if (database === undefined || poll === undefined) {
+  if (poll === undefined) {
     return null;
   }
 
@@ -22,7 +22,7 @@ export const createPoll = async (poll?: Prisma.PollCreateInput) => {
 };
 
 export const updatePoll = async (poll?: PollWithOptions) => {
-  if (database === undefined || poll === undefined) {
+  if (poll === undefined) {
     return null;
   }
 
@@ -53,10 +53,6 @@ export const updatePoll = async (poll?: PollWithOptions) => {
 };
 
 export const getPolls = async () => {
-  if (database === undefined) {
-    return [];
-  }
-
   try {
     return await database.poll.findMany();
   } catch (error) {
@@ -66,7 +62,7 @@ export const getPolls = async () => {
 };
 
 export const getPollById = async (pollId?: string) => {
-  if (database === undefined || pollId === undefined) {
+  if (pollId === undefined) {
     return null;
   }
 
@@ -127,7 +123,7 @@ export const decidePoll = async (pollId: string, interaction: Interaction) => {
 };
 
 export const deletePoll = async (pollId?: string) => {
-  if (database === undefined || pollId === undefined) {
+  if (pollId === undefined) {
     return null;
   }
 

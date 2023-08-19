@@ -5,7 +5,7 @@ import { type Experience, type Prisma } from "@prisma/client";
 export const createExperience = async (
   experience?: Prisma.ExperienceCreateInput
 ) => {
-  if (database === undefined || experience === undefined) {
+  if (experience === undefined) {
     return null;
   }
 
@@ -20,7 +20,7 @@ export const createExperience = async (
 };
 
 export const getExperienceByUserId = async (userId?: string) => {
-  if (database === undefined || userId === undefined) {
+  if (userId === undefined) {
     return null;
   }
 
@@ -37,10 +37,6 @@ export const getExperienceByUserId = async (userId?: string) => {
 };
 
 export const getExperienceCount = async () => {
-  if (database === undefined) {
-    return null;
-  }
-
   try {
     return await database.experience.count();
   } catch (error) {
@@ -50,10 +46,6 @@ export const getExperienceCount = async () => {
 };
 
 export const getExperienceSorted = async (limit: number = 512) => {
-  if (database === undefined) {
-    return null;
-  }
-
   try {
     return await database.experience.findMany({
       orderBy: {
@@ -68,11 +60,7 @@ export const getExperienceSorted = async (limit: number = 512) => {
 };
 
 export const updateExperience = async (experience?: Experience) => {
-  if (
-    database === undefined ||
-    experience === undefined ||
-    experience.userId === undefined
-  ) {
+  if (experience === undefined) {
     return null;
   }
 
@@ -93,7 +81,7 @@ export const addExperienceByUserId = async (
   userId?: string,
   experience: number = 0
 ) => {
-  if (database === undefined || userId === undefined) {
+  if (userId === undefined) {
     return null;
   }
 
@@ -121,7 +109,7 @@ export const addExperienceByUserId = async (
 };
 
 export const addLevelByUserId = async (userId?: string, level: number = 1) => {
-  if (database === undefined || userId === undefined) {
+  if (userId === undefined) {
     return null;
   }
 

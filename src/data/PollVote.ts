@@ -3,7 +3,7 @@ import { database } from "./database.js";
 import { type Prisma } from "@prisma/client";
 
 export const getPollVotesByPollId = async (pollId?: string) => {
-  if (database === undefined || pollId === undefined) {
+  if (pollId === undefined) {
     return [];
   }
 
@@ -24,7 +24,7 @@ export const getPollVotesByPollIdAndUserId = async (
   pollId?: string,
   userId?: string
 ) => {
-  if (database === undefined || pollId === undefined || userId === undefined) {
+  if (pollId === undefined || userId === undefined) {
     return [];
   }
 
@@ -42,7 +42,7 @@ export const getPollVotesByPollIdAndUserId = async (
 };
 
 export const getPollVotesByOptionId = async (optionId?: string) => {
-  if (database === undefined || optionId === undefined) {
+  if (optionId === undefined) {
     return [];
   }
 
@@ -57,8 +57,8 @@ export const getPollVotesByOptionId = async (optionId?: string) => {
   }
 };
 
-export const createPollVote = async (pollVote: Prisma.PollVoteCreateInput) => {
-  if (database === undefined) {
+export const createPollVote = async (pollVote?: Prisma.PollVoteCreateInput) => {
+  if (pollVote === undefined) {
     return null;
   }
 
@@ -73,7 +73,7 @@ export const createPollVote = async (pollVote: Prisma.PollVoteCreateInput) => {
 };
 
 export const deletePollVote = async (voteId?: string) => {
-  if (database === undefined || voteId === undefined) {
+  if (voteId === undefined) {
     return null;
   }
 

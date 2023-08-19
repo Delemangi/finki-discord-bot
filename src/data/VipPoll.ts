@@ -3,7 +3,7 @@ import { database } from "./database.js";
 import { type Prisma } from "@prisma/client";
 
 export const getVipPollById = async (pollId?: string) => {
-  if (database === undefined || pollId === undefined) {
+  if (pollId === undefined) {
     return null;
   }
 
@@ -23,7 +23,7 @@ export const getVipPollByUserAndType = async (
   userId?: string,
   type?: string
 ) => {
-  if (database === undefined || userId === undefined || type === undefined) {
+  if (userId === undefined || type === undefined) {
     return null;
   }
 
@@ -41,7 +41,7 @@ export const getVipPollByUserAndType = async (
 };
 
 export const createVipPoll = async (vipPoll?: Prisma.VipPollCreateInput) => {
-  if (database === undefined || vipPoll === undefined) {
+  if (vipPoll === undefined) {
     return null;
   }
 
@@ -56,7 +56,7 @@ export const createVipPoll = async (vipPoll?: Prisma.VipPollCreateInput) => {
 };
 
 export const deleteVipPoll = async (id?: string) => {
-  if (database === undefined || id === undefined) {
+  if (id === undefined) {
     return null;
   }
 
@@ -73,7 +73,7 @@ export const deleteVipPoll = async (id?: string) => {
 };
 
 export const deleteVipPollByPollId = async (pollId?: string) => {
-  if (database === undefined || pollId === undefined) {
+  if (pollId === undefined) {
     return null;
   }
 
@@ -90,10 +90,6 @@ export const deleteVipPollByPollId = async (pollId?: string) => {
 };
 
 export const getVipPolls = async () => {
-  if (database === undefined) {
-    return [];
-  }
-
   try {
     return await database.vipPoll.findMany();
   } catch (error) {

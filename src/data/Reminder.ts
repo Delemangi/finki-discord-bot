@@ -3,10 +3,6 @@ import { database } from "./database.js";
 import { type Prisma } from "@prisma/client";
 
 export const getReminders = async () => {
-  if (database === undefined) {
-    return [];
-  }
-
   try {
     return await database.reminder.findMany();
   } catch (error) {
@@ -16,7 +12,7 @@ export const getReminders = async () => {
 };
 
 export const createReminder = async (reminder?: Prisma.ReminderCreateInput) => {
-  if (database === undefined || reminder === undefined) {
+  if (reminder === undefined) {
     return null;
   }
 
@@ -31,7 +27,7 @@ export const createReminder = async (reminder?: Prisma.ReminderCreateInput) => {
 };
 
 export const deleteReminders = async (reminderIds?: string[]) => {
-  if (database === undefined || reminderIds === undefined) {
+  if (reminderIds === undefined) {
     return null;
   }
 

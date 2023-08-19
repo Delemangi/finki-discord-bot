@@ -6,7 +6,7 @@ export const getConfig = async () => {
 };
 
 export const setConfig = async (config?: BotConfig) => {
-  if (database === undefined || config === undefined) {
+  if (config === undefined) {
     return null;
   }
 
