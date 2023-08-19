@@ -10,7 +10,7 @@ import {
 } from "discord.js";
 
 const name = "register";
-const permission = PermissionFlagsBits.ManageMessages;
+const permission = PermissionFlagsBits.Administrator;
 
 export const data = new SlashCommandBuilder()
   .setName(name)

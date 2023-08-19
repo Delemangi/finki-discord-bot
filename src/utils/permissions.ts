@@ -14,17 +14,13 @@ const commandPermissions: {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
-  crosspost: {
-    permissions: [PermissionsBitField.Flags.Administrator],
-    roles: [],
-  },
   embed: {
     permissions: [PermissionsBitField.Flags.ManageMessages],
     roles: [],
   },
   "experience add": {
-    permissions: [PermissionsBitField.Flags.Administrator],
-    roles: [],
+    permissions: [],
+    roles: ["admin"],
   },
   "poll delete": {
     permissions: [PermissionsBitField.Flags.Administrator],
@@ -35,16 +31,16 @@ const commandPermissions: {
     roles: [],
   },
   "question content": {
-    permissions: [PermissionsBitField.Flags.Administrator],
-    roles: [],
+    permissions: [],
+    roles: ["admin", "fss"],
   },
   "question delete": {
-    permissions: [PermissionsBitField.Flags.Administrator],
-    roles: [],
+    permissions: [],
+    roles: ["admin", "fss"],
   },
   "question set": {
-    permissions: [PermissionsBitField.Flags.Administrator],
-    roles: [],
+    permissions: [],
+    roles: ["admin", "fss"],
   },
   register: {
     permissions: [PermissionsBitField.Flags.Administrator],
@@ -64,7 +60,7 @@ const commandPermissions: {
   },
   "vip invite": {
     permissions: [],
-    roles: ["admin"],
+    roles: ["vipVoting"],
   },
   "vip invited": {
     permissions: [],
@@ -108,6 +104,7 @@ const getCommandPermission = (
   }
 };
 
+// Check whether the member has all the command permissions, or any of the roles
 export const hasCommandPermission = (
   member: GuildMember | null,
   command: string
@@ -130,7 +127,7 @@ export const hasCommandPermission = (
 
   return (
     member.permissions.has(permissions) ||
-    (tidiedRoles.length !== 0 && member.roles.cache.hasAll(...tidiedRoles))
+    (tidiedRoles.length !== 0 && member.roles.cache.hasAny(...tidiedRoles))
   );
 };
 
