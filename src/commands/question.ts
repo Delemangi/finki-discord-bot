@@ -72,7 +72,9 @@ const handleQuestionSet = async (
   interaction: ChatInputCommandInteraction,
   keyword: string
 ) => {
-  const answer = interaction.options.getString("answer", true);
+  const answer = interaction.options
+    .getString("answer", true)
+    .replaceAll("\\n", "\n");
   const links = interaction.options.getString("links");
   const question = await getQuestion(keyword);
 
