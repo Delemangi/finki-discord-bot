@@ -1222,8 +1222,9 @@ export const getExperienceLeaderboardFirstPageEmbed = async (
       )
     )
     .setFooter({
-      text: `Страна: 1 / ${Math.ceil(
-        total / perPage
+      text: `Страна: 1 / ${Math.max(
+        1,
+        Math.ceil(total / perPage)
       )}  •  Членови: ${total} / ${all ?? "-"}`,
     })
     .setTimestamp();
@@ -1255,8 +1256,9 @@ export const getExperienceLeaderboardNextPageEmbed = async (
       )
     )
     .setFooter({
-      text: `Страна: ${page + 1} / ${Math.ceil(
-        total / perPage
+      text: `Страна: ${page + 1} / ${Math.max(
+        1,
+        Math.ceil(total / perPage)
       )}  •  Членови: ${total} / ${all ?? "-"}`,
     })
     .setTimestamp();
@@ -1397,8 +1399,9 @@ export const getHelpFirstPageEmbed = async (
         }))
     )
     .setFooter({
-      text: `Страна: 1 / ${Math.ceil(
-        totalCommands / commandsPerPage
+      text: `Страна: 1 / ${Math.max(
+        1,
+        Math.ceil(totalCommands / commandsPerPage)
       )}  •  Команди: ${totalCommands}`,
     })
     .setTimestamp();
@@ -1427,8 +1430,9 @@ export const getHelpNextPageEmbed = async (
         }))
     )
     .setFooter({
-      text: `Страна: ${page + 1} / ${Math.ceil(
-        totalCommands / commandsPerPage
+      text: `Страна: ${page + 1} / ${Math.max(
+        1,
+        Math.ceil(totalCommands / commandsPerPage)
       )}  •  Команди: ${totalCommands}`,
     })
     .setTimestamp();
@@ -1712,8 +1716,9 @@ export const getPollListFirstPageEmbed = async (
       }))
     )
     .setFooter({
-      text: `Страна: 1 / ${Math.ceil(
-        polls.length / pollsPerPage
+      text: `Страна: 1 / ${Math.max(
+        1,
+        Math.ceil(polls.length / pollsPerPage)
       )}  •  Анкети: ${polls.length}`,
     })
     .setTimestamp();
@@ -1738,8 +1743,9 @@ export const getPollListNextPageEmbed = async (
         }))
     )
     .setFooter({
-      text: `Страна: ${page + 1} / ${Math.ceil(
-        polls.length / pollsPerPage
+      text: `Страна: ${page + 1} / ${Math.max(
+        1,
+        Math.ceil(polls.length / pollsPerPage)
       )}  •  Анкети: ${polls.length}`,
     })
     .setTimestamp();
@@ -1762,8 +1768,9 @@ export const getVipPollListFirstPageEmbed = async (
       ))
     )
     .setFooter({
-      text: `Страна: 1 / ${Math.ceil(
-        polls.length / pollsPerPage
+      text: `Страна: 1 / ${Math.max(
+        1,
+        Math.ceil(polls.length / pollsPerPage)
       )}  •  Анкети: ${polls.length}`,
     })
     .setTimestamp();
@@ -1789,8 +1796,9 @@ export const getVipPollListNextPageEmbed = async (
       ))
     )
     .setFooter({
-      text: `Страна: ${page + 1} / ${Math.ceil(
-        polls.length / pollsPerPage
+      text: `Страна: ${page + 1} / ${Math.max(
+        1,
+        Math.ceil(polls.length / pollsPerPage)
       )}  •  Анкети: ${polls.length}`,
     })
     .setTimestamp();
