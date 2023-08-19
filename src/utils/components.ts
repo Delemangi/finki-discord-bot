@@ -13,6 +13,7 @@ import { type Link } from "../types/Link.js";
 import { type PollWithOptions } from "../types/PollWithOptions.js";
 import { type ProgramName } from "../types/ProgramName.js";
 import { type ProgramShorthand } from "../types/ProgramShorthand.js";
+import { type QuestionWithLinks } from "../types/QuestionWithLinks.js";
 import { type QuizQuestion } from "../types/QuizQuestion.js";
 import { type Staff } from "../types/Staff.js";
 import { client } from "./client.js";
@@ -1274,33 +1275,31 @@ export const getQuestionEmbed = async (question: Question) => {
     .setTimestamp();
 };
 
-export const getQuestionComponents = (question: Question) => {
+export const getQuestionComponents = (question: QuestionWithLinks) => {
   const components = [];
 
   if (question.links === undefined) {
     return [];
   }
 
-  const entries = Object.entries(question.links);
-
-  for (let index1 = 0; index1 < entries.length; index1 += 5) {
+  for (let index1 = 0; index1 < question.links.length; index1 += 5) {
     const row = new ActionRowBuilder<ButtonBuilder>();
     const buttons = [];
 
     for (let index2 = index1; index2 < index1 + 5; index2++) {
-      const [label, link] = entries[index2] ?? ["", ""];
+      const { name, url } = question.links[index2] ?? {};
       if (
-        label === undefined ||
-        link === undefined ||
-        label === "" ||
-        link === ""
+        name === undefined ||
+        url === undefined ||
+        name === "" ||
+        url === ""
       ) {
         break;
       }
 
       const button = new ButtonBuilder()
-        .setURL(link)
-        .setLabel(label)
+        .setURL(url)
+        .setLabel(name)
         .setStyle(ButtonStyle.Link);
 
       buttons.push(button);

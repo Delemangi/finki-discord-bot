@@ -4,7 +4,11 @@ import { type Prisma } from "@prisma/client";
 
 export const getQuestions = async () => {
   try {
-    return await database.question.findMany();
+    return await database.question.findMany({
+      include: {
+        links: true,
+      },
+    });
   } catch (error) {
     logger.error(`Failed obtaining questions\n${error}`);
     return [];
@@ -14,7 +18,9 @@ export const getQuestions = async () => {
 export const getQuestionNames = async () => {
   try {
     return await database.question.findMany({
-      select: { name: true },
+      select: {
+        name: true,
+      },
     });
   } catch (error) {
     logger.error(`Failed obtaining question names\n${error}`);
@@ -29,7 +35,12 @@ export const getQuestion = async (name?: string) => {
 
   try {
     return await database.question.findFirst({
-      where: { name },
+      include: {
+        links: true,
+      },
+      where: {
+        name,
+      },
     });
   } catch (error) {
     logger.error(`Failed obtaining question\n${error}`);
@@ -45,6 +56,9 @@ export const createQuestion = async (question?: Prisma.QuestionCreateInput) => {
   try {
     return await database.question.create({
       data: question,
+      include: {
+        links: true,
+      },
     });
   } catch (error) {
     logger.error(`Failed creating question\n${error}`);
@@ -63,7 +77,12 @@ export const updateQuestion = async (
   try {
     return await database.question.update({
       data: question,
-      where: { name },
+      include: {
+        links: true,
+      },
+      where: {
+        name,
+      },
     });
   } catch (error) {
     logger.error(`Failed updating question\n${error}`);
@@ -78,7 +97,12 @@ export const deleteQuestion = async (name?: string) => {
 
   try {
     return await database.question.delete({
-      where: { name },
+      include: {
+        links: true,
+      },
+      where: {
+        name,
+      },
     });
   } catch (error) {
     logger.error(`Failed deleting question\n${error}`);

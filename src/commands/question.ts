@@ -11,6 +11,7 @@ import {
 import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
+  codeBlock,
   SlashCommandBuilder,
 } from "discord.js";
 
@@ -63,6 +64,18 @@ export const data = new SlashCommandBuilder()
           .setRequired(true)
           .setAutocomplete(true)
       )
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("content")
+      .setDescription(commandDescriptions["question content"])
+      .addStringOption((option) =>
+        option
+          .setName("question")
+          .setDescription("Прашање")
+          .setRequired(true)
+          .setAutocomplete(true)
+      )
   );
 
 const handleQuestionGet = async (
@@ -97,7 +110,12 @@ const handleQuestionSet = async (
   if (question === null) {
     const newQuestion = {
       content: answer,
-      links: links === null ? [] : JSON.parse(links),
+      links:
+        links === null
+          ? []
+          : {
+              ...JSON.parse(links),
+            },
       name: keyword,
       userId: interaction.user.id,
     };
@@ -149,7 +167,26 @@ const handleQuestionDelete = async (
   await interaction.editReply("Прашањето е избришано.");
 };
 
+const handleQuestionContent = async (
+  interaction: ChatInputCommandInteraction,
+  keyword: string
+) => {
+  const question = await getQuestion(keyword);
+
+  if (question === null) {
+    await interaction.editReply("Не постои такво прашање.");
+    return;
+  }
+
+  await interaction.editReply(
+    codeBlock(question.content.replaceAll("\n", "\\n")) +
+      "\n" +
+      codeBlock(JSON.stringify(question.links, null, 2))
+  );
+};
+
 const questionHandlers = {
+  content: handleQuestionContent,
   delete: handleQuestionDelete,
   get: handleQuestionGet,
   set: handleQuestionSet,
