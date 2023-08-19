@@ -8,6 +8,7 @@ import {
   getQuestionComponents,
   getQuestionEmbed,
 } from "../utils/components.js";
+import { logger } from "../utils/logger.js";
 import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
@@ -106,16 +107,32 @@ const handleQuestionSet = async (
     .replaceAll("\\n", "\n");
   const links = interaction.options.getString("links");
   const question = await getQuestion(keyword);
+  let parsedLinks;
+
+  if (links !== null) {
+    try {
+      parsedLinks = LinksSchema.parse(JSON.parse(links));
+    } catch {
+      await interaction.editReply("Линковите не се во валиден JSON формат.");
+      return;
+    }
+  }
 
   if (question === null) {
     const newQuestion = {
       content: answer,
-      links:
-        links === null
-          ? []
-          : {
-              ...JSON.parse(links),
-            },
+      ...(links !== null && {
+        links: {
+          createMany: {
+            data: Object.entries(parsedLinks as Record<string, string>).map(
+              ([linkName, linkUrl]) => ({
+                name: linkName,
+                url: linkUrl,
+              })
+            ),
+          },
+        },
+      }),
       name: keyword,
       userId: interaction.user.id,
     };
@@ -123,16 +140,26 @@ const handleQuestionSet = async (
     const createdQuestion = await createQuestion(newQuestion);
 
     if (createdQuestion === null) {
-      await interaction.editReply("Прашањето не беше креирано.");
+      await interaction.editReply(
+        "Креирањето на прашањето беше неуспешно. Проверете дали е креирано."
+      );
       return;
     }
 
-    const questionEmbed = await getQuestionEmbed(createdQuestion);
-    const questionComponents = getQuestionComponents(createdQuestion);
-    await interaction.editReply({
-      components: questionComponents,
-      embeds: [questionEmbed],
-    });
+    try {
+      const questionEmbed = await getQuestionEmbed(createdQuestion);
+      const questionComponents = getQuestionComponents(createdQuestion);
+      await interaction.editReply({
+        components: questionComponents,
+        embeds: [questionEmbed],
+      });
+    } catch (error) {
+      logger.error(`Failed sending a question\n${error}`);
+      await interaction.editReply(
+        "Креирањето на прашањето беше неуспешно. Проверете дали е креирано."
+      );
+    }
+
     return;
   }
 
@@ -144,12 +171,19 @@ const handleQuestionSet = async (
   question.content = answer;
   question.links = links === null ? [] : JSON.parse(links);
 
-  const embed = await getQuestionEmbed(question);
-  const components = getQuestionComponents(question);
-  await interaction.editReply({
-    components,
-    embeds: [embed],
-  });
+  try {
+    const embed = await getQuestionEmbed(question);
+    const components = getQuestionComponents(question);
+    await interaction.editReply({
+      components,
+      embeds: [embed],
+    });
+  } catch (error) {
+    logger.error(`Failed sending a question\n${error}`);
+    await interaction.editReply(
+      "Креирањето на прашањето беше неуспешно. Проверете дали е креирано."
+    );
+  }
 };
 
 const handleQuestionDelete = async (
@@ -179,9 +213,27 @@ const handleQuestionContent = async (
   }
 
   await interaction.editReply(
-    codeBlock(question.content.replaceAll("\n", "\\n")) +
-      "\n" +
-      codeBlock(JSON.stringify(question.links, null, 2))
+    "Content:" +
+      codeBlock(question.content.replaceAll("\n", "\\n")) +
+      "\nLinks:" +
+      codeBlock(
+        JSON.stringify(
+          question.links
+            .map(({ name: linkName, url }) => ({
+              [linkName]: url,
+            }))
+            // eslint-disable-next-line unicorn/no-array-reduce
+            .reduce<Record<string, string>>(
+              (accumulator, currentValue) => ({
+                ...accumulator,
+                ...currentValue,
+              }),
+              {}
+            ),
+          null,
+          2
+        )
+      )
   );
 };
 

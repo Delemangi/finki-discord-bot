@@ -34,6 +34,10 @@ const commandPermissions: {
     permissions: [PermissionsBitField.Flags.ManageMessages],
     roles: [],
   },
+  "question content": {
+    permissions: [PermissionsBitField.Flags.Administrator],
+    roles: [],
+  },
   "question delete": {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
