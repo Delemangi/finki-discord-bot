@@ -1,3 +1,4 @@
+import { type QuestionWithLinks } from "../types/QuestionWithLinks.js";
 import { logger } from "../utils/logger.js";
 import { database } from "./database.js";
 import { type Prisma } from "@prisma/client";
@@ -66,22 +67,33 @@ export const createQuestion = async (question?: Prisma.QuestionCreateInput) => {
   }
 };
 
-export const updateQuestion = async (
-  name?: string,
-  question?: Prisma.QuestionUpdateInput
-) => {
-  if (name === undefined || question === undefined) {
+export const updateQuestion = async (question?: QuestionWithLinks) => {
+  if (question === undefined) {
     return null;
   }
 
+  const { links, ...rest } = question;
+
   try {
     return await database.question.update({
-      data: question,
+      data: {
+        ...rest,
+        links: {
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          upsert: links.map(({ questionId, ...linkRest }) => ({
+            create: linkRest,
+            update: linkRest,
+            where: {
+              id: linkRest.id,
+            },
+          })),
+        },
+      },
       include: {
         links: true,
       },
       where: {
-        name,
+        name: question.name,
       },
     });
   } catch (error) {

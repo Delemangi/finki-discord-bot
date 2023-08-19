@@ -18,3 +18,37 @@ export const createQuestionLink = async (
     return null;
   }
 };
+
+export const createQuestionLinks = async (
+  links?: Prisma.QuestionLinkCreateManyInput[]
+) => {
+  if (links === undefined) {
+    return [];
+  }
+
+  try {
+    return await database.questionLink.createMany({
+      data: links,
+    });
+  } catch (error) {
+    logger.error(`Failed creating question links\n${error}`);
+    return [];
+  }
+};
+
+export const deleteQuestionLinksByQuestionId = async (questionId?: string) => {
+  if (questionId === undefined) {
+    return null;
+  }
+
+  try {
+    return await database.questionLink.deleteMany({
+      where: {
+        questionId,
+      },
+    });
+  } catch (error) {
+    logger.error(`Failed deleting question links\n${error}`);
+    return null;
+  }
+};

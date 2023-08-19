@@ -2,8 +2,12 @@ import {
   createQuestion,
   deleteQuestion,
   getQuestion,
+  updateQuestion,
 } from "../data/Question.js";
-import { createQuestionLink } from "../data/QuestionLink.js";
+import {
+  createQuestionLinks,
+  deleteQuestionLinksByQuestionId,
+} from "../data/QuestionLink.js";
 import { LinksSchema } from "../schemas/LinksSchema.js";
 import {
   getQuestionComponents,
@@ -11,7 +15,6 @@ import {
 } from "../utils/components.js";
 import { logger } from "../utils/logger.js";
 import { commandDescriptions } from "../utils/strings.js";
-import { type QuestionLink } from "@prisma/client";
 import {
   type ChatInputCommandInteraction,
   codeBlock,
@@ -166,6 +169,7 @@ const handleQuestionSet = async (
   }
 
   question.content = answer;
+  await updateQuestion(question);
 
   if (links !== null) {
     try {
@@ -176,35 +180,30 @@ const handleQuestionSet = async (
       return;
     }
 
-    question.links = (
-      await Promise.all(
-        Object.entries(parsedLinks as Record<string, string>).map(
-          async ([linkName, linkUrl]) => {
-            const link = await createQuestionLink({
-              name: linkName,
-              question: {
-                connect: {
-                  name: keyword,
-                },
-              },
-              url: linkUrl,
-            });
-
-            if (link === null) {
-              logger.error(`Failed creating link\n${linkName} ${linkUrl}`);
-              return null;
-            }
-
-            return link;
-          }
-        )
+    await deleteQuestionLinksByQuestionId(question.id);
+    await createQuestionLinks(
+      Object.entries(parsedLinks as Record<string, string>).map(
+        ([linkName, linkUrl]) => ({
+          name: linkName,
+          questionId: question.id,
+          url: linkUrl,
+        })
       )
-    ).filter(Boolean) as QuestionLink[];
+    );
+  }
+
+  const updatedQuestion = await getQuestion(keyword);
+
+  if (updatedQuestion === null) {
+    await interaction.editReply(
+      "Креирањето на прашањето беше неуспешно. Проверете дали е креирано."
+    );
+    return;
   }
 
   try {
-    const embed = await getQuestionEmbed(question);
-    const components = getQuestionComponents(question);
+    const embed = await getQuestionEmbed(updatedQuestion);
+    const components = getQuestionComponents(updatedQuestion);
     await interaction.editReply({
       components,
       embeds: [embed],

@@ -1298,7 +1298,7 @@ export const getQuestionComponents = (question: QuestionWithLinks) => {
       }
 
       const button = new ButtonBuilder()
-        .setURL(url)
+        .setURL(url.startsWith("http") ? url : `https://${url}`)
         .setLabel(name)
         .setStyle(ButtonStyle.Link);
 
