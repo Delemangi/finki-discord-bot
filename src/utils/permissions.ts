@@ -18,7 +18,10 @@ const commandPermissions: {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
-  embed: { permissions: [PermissionsBitField.Flags.ManageMessages], roles: [] },
+  embed: {
+    permissions: [PermissionsBitField.Flags.ManageMessages],
+    roles: [],
+  },
   "experience add": {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
@@ -27,7 +30,14 @@ const commandPermissions: {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
-  purge: { permissions: [PermissionsBitField.Flags.ManageMessages], roles: [] },
+  purge: {
+    permissions: [PermissionsBitField.Flags.ManageMessages],
+    roles: [],
+  },
+  "question delete": {
+    permissions: [PermissionsBitField.Flags.Administrator],
+    roles: [],
+  },
   "question set": {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
@@ -36,7 +46,10 @@ const commandPermissions: {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
-  script: { permissions: [PermissionsBitField.Flags.Administrator], roles: [] },
+  script: {
+    permissions: [PermissionsBitField.Flags.Administrator],
+    roles: [],
+  },
   "vip add": {
     permissions: [],
     roles: ["vipVoting"],

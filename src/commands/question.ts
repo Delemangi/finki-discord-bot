@@ -1,4 +1,8 @@
-import { createQuestion, getQuestion } from "../data/Question.js";
+import {
+  createQuestion,
+  deleteQuestion,
+  getQuestion,
+} from "../data/Question.js";
 import { LinksSchema } from "../schemas/LinksSchema.js";
 import {
   getQuestionComponents,
@@ -46,6 +50,18 @@ export const data = new SlashCommandBuilder()
           .setName("links")
           .setDescription("Линкови во JSON формат")
           .setRequired(false)
+      )
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("delete")
+      .setDescription(commandDescriptions["question delete"])
+      .addStringOption((option) =>
+        option
+          .setName("question")
+          .setDescription("Прашање")
+          .setRequired(true)
+          .setAutocomplete(true)
       )
   );
 
@@ -112,7 +128,23 @@ const handleQuestionSet = async (
   });
 };
 
+const handleQuestionDelete = async (
+  interaction: ChatInputCommandInteraction,
+  keyword: string
+) => {
+  const question = await getQuestion(keyword);
+
+  if (question === null) {
+    await interaction.editReply("Не постои такво прашање.");
+    return;
+  }
+
+  await deleteQuestion(keyword);
+  await interaction.editReply("Прашањето е избришано.");
+};
+
 const questionHandlers = {
+  delete: handleQuestionDelete,
   get: handleQuestionGet,
   set: handleQuestionSet,
 };

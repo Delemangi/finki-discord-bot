@@ -47,6 +47,7 @@ export const commandDescriptions = {
   "poll stats": "Статистика за анкети",
   profile: "Информации за студенти",
   purge: "Бриши пораки",
+  "question delete": "Избриши прашање",
   "question get": "Превземи прашање",
   "question set": "Додади или измени прашање",
   quiz: "Започни го квизот Кој Сака Да Биде Морален Победник",

@@ -32,3 +32,9 @@ export const updateQuestion = async (
     where: { name },
   });
 };
+
+export const deleteQuestion = async (name: string) => {
+  return await database.question.delete({
+    where: { name },
+  });
+};
