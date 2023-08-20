@@ -21,6 +21,8 @@ import {
 } from "../utils/components.js";
 import {
   getApplicationId,
+  getCompanies,
+  getCourses,
   getFromRoleConfig,
   getInfo,
   getToken,
@@ -29,9 +31,12 @@ import { logger } from "../utils/logger.js";
 import { commandDescriptions } from "../utils/strings.js";
 import {
   type Channel,
+  ChannelType,
   type ChatInputCommandInteraction,
+  type ForumChannel,
   type GuildBasedChannel,
   type GuildTextBasedChannel,
+  inlineCode,
   PermissionFlagsBits,
   REST,
   Routes,
@@ -148,6 +153,22 @@ export const data = new SlashCommandBuilder()
     command
       .setName("info")
       .setDescription(commandDescriptions["script info"])
+      .addChannelOption((option) =>
+        option.setName("channel").setDescription("Канал").setRequired(true)
+      )
+  )
+  .addSubcommand((command) =>
+    command
+      .setName("coursesforum")
+      .setDescription("Courses forum")
+      .addChannelOption((option) =>
+        option.setName("channel").setDescription("Канал").setRequired(true)
+      )
+  )
+  .addSubcommand((command) =>
+    command
+      .setName("companiesforum")
+      .setDescription("Companies forum")
       .addChannelOption((option) =>
         option.setName("channel").setDescription("Канал").setRequired(true)
       )
@@ -432,9 +453,53 @@ const handleScriptInfo = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply("Успешно испратено.");
 };
 
+const handleCoursesForum = async (interaction: ChatInputCommandInteraction) => {
+  const channel = interaction.options.getChannel(
+    "channel",
+    true
+  ) as GuildBasedChannel;
+
+  if (channel.type !== ChannelType.GuildForum) {
+    await interaction.editReply("Само форуми се дозволени.");
+  }
+
+  for (const course of getCourses()) {
+    await (channel as ForumChannel).threads.create({
+      message: {
+        content: `Овој канал е за предметот ${inlineCode(course)}.`,
+      },
+      name: course,
+    });
+  }
+};
+
+const handleCompaniesForum = async (
+  interaction: ChatInputCommandInteraction
+) => {
+  const channel = interaction.options.getChannel(
+    "channel",
+    true
+  ) as GuildBasedChannel;
+
+  if (channel.type !== ChannelType.GuildForum) {
+    await interaction.editReply("Само форуми се дозволени.");
+  }
+
+  for (const company of getCompanies()) {
+    await (channel as ForumChannel).threads.create({
+      message: {
+        content: `Овој канал е за компанијата ${inlineCode(company)}.`,
+      },
+      name: company,
+    });
+  }
+};
+
 const listHandlers = {
   colors: handleScriptColors,
+  companiesforum: handleCompaniesForum,
   courses: handleScriptCourses,
+  coursesforum: handleCoursesForum,
   info: handleScriptInfo,
   notifications: handleScriptNotifications,
   programs: handleScriptPrograms,

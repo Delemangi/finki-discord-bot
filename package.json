@@ -6,7 +6,7 @@
   "dependencies": {
     "@prisma/client": "^5.1.1",
     "async-lock": "^1.4.0",
-    "chrono-node": "^2.6.4",
+    "chrono-node": "^2.6.5",
     "croner": "^7.0.1",
     "discord-api-types": "^0.37.54",
     "discord.js": "^14.13.0",
@@ -15,7 +15,7 @@
     "winston": "^3.10.0",
     "zod": "^3.22.2"
   },
-  "description": "FINKI Discord bot",
+  "description": "FINKI Discord Bot",
   "devDependencies": {
     "@types/async-lock": "^1.4.0",
     "eslint": "^8.47.0",
@@ -36,24 +36,10 @@
   },
   "scripts": {
     "build": "rimraf dist && tsc",
-    "command:delete": "npm run build && node dist/scripts/delete.js",
-    "command:register": "npm run build && node dist/scripts/register.js",
-    "embed:activities": "npm run build && node dist/scripts/activities.js",
-    "embed:colors": "npm run build && node dist/scripts/colors.js",
-    "embed:courses": "npm run build && node dist/scripts/courses.js",
-    "embed:notifications": "npm run build && node dist/scripts/notifications.js",
-    "embed:programs": "npm run build && node dist/scripts/programs.js",
-    "embed:rules": "npm run build && node dist/scripts/rules.js",
-    "embed:vip": "npm run build && node dist/scripts/vip.js",
-    "embed:years": "npm run build && node dist/scripts/years.js",
-    "forum:companies": "npm run build && node dist/scripts/companiesForum.js",
-    "forum:courses": "npm run build && node dist/scripts/coursesForum.js",
     "lint": "eslint . --ext .ts --cache",
-    "lint:cfg": "eslint . --ext .json --cache",
     "lint:fix": "eslint . --ext .ts --fix",
     "migration:apply": "prisma migrate deploy",
     "migration:create": "prisma migrate dev --name a",
-    "server:info": "npm run build && node dist/scripts/serverInfo.js",
     "start": "node dist/main.js",
     "start:dev": "npm run lint && npm run build && npm run start",
     "start:prod": "npm run migration:apply && npm run start"
