@@ -1,7 +1,6 @@
 import { getConfig, setConfig } from "../data/Config.js";
 import { type BotConfig } from "../types/BotConfig.js";
 import { type Classroom } from "../types/Classroom.js";
-import { type CommandResponse } from "../types/CommandResponse.js";
 import { type CourseInformation } from "../types/CourseInformation.js";
 import { type CourseParticipants } from "../types/CourseParticipants.js";
 import { type CoursePrerequisites } from "../types/CoursePrerequisites.js";
@@ -121,9 +120,6 @@ const professors: CourseStaff[] = JSON.parse(
 const quiz: QuizQuestions = JSON.parse(
   readFileSync("./config/quiz.json", "utf8")
 );
-const responses: CommandResponse[] = JSON.parse(
-  readFileSync("./config/responses.json", "utf8")
-);
 const roles: RoleConfig = JSON.parse(
   readFileSync("./config/roles.json", "utf8")
 );
@@ -179,10 +175,6 @@ export const getPrerequisites = () => {
 
 export const getQuiz = () => {
   return quiz;
-};
-
-export const getResponses = () => {
-  return responses;
 };
 
 export const getFromRoleConfig = <T extends keyof RoleConfig>(key: T) => {

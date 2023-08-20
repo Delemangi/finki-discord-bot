@@ -26,7 +26,6 @@ import {
   getParticipants,
   getPrerequisites,
   getProfessors,
-  getResponses,
   getRules,
   getStaff,
 } from "./config.js";
@@ -42,7 +41,12 @@ import {
   getRole,
   getRoleFromSet,
 } from "./roles.js";
-import { commandDescriptions, programMapping, quizHelp } from "./strings.js";
+import {
+  commandDescriptions,
+  programMapping,
+  quizHelp,
+  vipStrings,
+} from "./strings.js";
 import {
   type Experience,
   type Poll,
@@ -547,14 +551,8 @@ export const getRulesEmbed = async () => {
 export const getVipRequestEmbed = async () => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle(
-      getResponses().find((response) => response.command === "vipRequestTitle")
-        ?.response ?? "VIP"
-    )
-    .setDescription(
-      getResponses().find((response) => response.command === "vipRequestText")
-        ?.response ?? "-"
-    );
+    .setTitle(vipStrings.vipRequestTitle)
+    .setDescription(vipStrings.vipRequestText);
 };
 
 export const getVipRequestComponents = () => {
@@ -564,11 +562,7 @@ export const getVipRequestComponents = () => {
   row.addComponents(
     new ButtonBuilder()
       .setCustomId("vip:request")
-      .setLabel(
-        getResponses().find(
-          (response) => response.command === "vipRequestButton"
-        )?.response ?? "Start"
-      )
+      .setLabel(vipStrings.vipRequestButton)
       .setStyle(ButtonStyle.Primary)
   );
   components.push(row);
@@ -580,10 +574,7 @@ export const getVipConfirmEmbed = async () => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
     .setTitle("Заклетва")
-    .setDescription(
-      getResponses().find((response) => response.command === "vipConfirm")
-        ?.response ?? "-"
-    );
+    .setDescription(vipStrings.vipConfirm);
 };
 
 export const getVipConfirmComponents = () => {

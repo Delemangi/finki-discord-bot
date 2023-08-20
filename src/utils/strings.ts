@@ -84,6 +84,15 @@ export const commandDescriptions = {
   "vip upgrade": "Предложи обичен ВИП член за полноправен член на ВИП",
 };
 
+export const vipStrings = {
+  vipConfirm:
+    "Изјавувам дека функцијата „член на ВИП во официјалниот Discord сервер на студентите на ФИНКИ“ ќе ја вршам совесно и одговорно и ќе го почитувам Уставот и законите на Република Северна Македонија, како и правилата на официјалниот Discord сервер на студентите на ФИНКИ.",
+  vipRequestButton: "Да",
+  vipRequestText:
+    "Дали сакате да станете член на ВИП во серверот на студентите на ФИНКИ?",
+  vipRequestTitle: "Членство во ВИП",
+};
+
 export const programMapping: { [index in ProgramName]: ProgramShorthand } = {
   ИМБ: "imb",
   КЕ: "ke",

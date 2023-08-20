@@ -42,11 +42,10 @@ It's recommended, but not required to run this inside a Docker container.
     7. `prerequisites.json` - an array of course prerequisites
     8. `professors.json` - an array of all courses and their professors and assistants
     9. `quiz.json` - an array of the quiz questions
-    10. `responses.json` - an array of command responses
-    11. `roles.json` - roles for the scripts and for the embeds
-    12. `rules.json` - an array of the server rules
-    13. `sessions.json` - an object of all exam sessions
-    14. `staff.json` - an array of the staff
+    10. `roles.json` - roles for the scripts and for the embeds
+    11. `rules.json` - an array of the server rules
+    12. `sessions.json` - an object of all exam sessions
+    13. `staff.json` - an array of the staff
 
 ### Sessions
 
