@@ -5,6 +5,7 @@ import {
   getConfigProperty,
   setConfigProperty,
 } from "../utils/config.js";
+import { refreshOnConfigChange } from "../utils/refresh.js";
 import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
@@ -84,6 +85,7 @@ const handleConfigSet = async (interaction: ChatInputCommandInteraction) => {
   // @ts-expect-error newConfig is not null
   const newProperty = JSON.stringify({ [key]: newConfig[key] }, null, 2);
 
+  void refreshOnConfigChange(key);
   await interaction.editReply(codeBlock("json", newProperty));
 };
 
