@@ -14,7 +14,6 @@ import { type PollWithOptions } from "../types/PollWithOptions.js";
 import { type ProgramName } from "../types/ProgramName.js";
 import { type ProgramShorthand } from "../types/ProgramShorthand.js";
 import { type QuestionWithLinks } from "../types/QuestionWithLinks.js";
-import { type QuizQuestion } from "../types/QuizQuestion.js";
 import { type Staff } from "../types/Staff.js";
 import { client } from "./client.js";
 import { commandMention } from "./commands.js";
@@ -41,12 +40,7 @@ import {
   getRole,
   getRoleFromSet,
 } from "./roles.js";
-import {
-  commandDescriptions,
-  programMapping,
-  quizHelp,
-  vipStrings,
-} from "./strings.js";
+import { commandDescriptions, programMapping, vipStrings } from "./strings.js";
 import {
   type Experience,
   type Poll,
@@ -105,8 +99,6 @@ const getButtonCommand = (command?: string) => {
       return "Unknown";
     case "pollStats":
       return "Poll Stats";
-    case "quizGame":
-      return "Quiz Game";
     default:
       return command[0]?.toUpperCase() + command.slice(1);
   }
@@ -140,8 +132,6 @@ const getButtonInfo = (
     case "polls":
     case "poll":
     case "pollStats":
-    case "quiz":
-    case "quizGame":
     case "addCourses":
     case "removeCourses":
     case "vip":
@@ -1887,138 +1877,6 @@ export const getPaginationComponents = (
         .setDisabled(true)
     );
   }
-};
-
-// Quiz
-
-export const getQuizEmbed = async () => {
-  return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
-    .setTitle("Кој Сака Да Биде Морален Победник?")
-    .setDescription("Добредојдовте на квизот.\nДали сакате да започнете?")
-    .setTimestamp()
-    .setFooter({ text: "Кој Сака Да Биде Морален Победник? © 2023" });
-};
-
-export const getQuizComponents = (interaction: ChatInputCommandInteraction) => {
-  const components = [];
-  const row = new ActionRowBuilder<ButtonBuilder>();
-  const buttons = [];
-
-  buttons.push(
-    new ButtonBuilder()
-      .setCustomId(`quiz:${interaction.user.id}:y`)
-      .setLabel("Да")
-      .setStyle(ButtonStyle.Primary)
-  );
-
-  buttons.push(
-    new ButtonBuilder()
-      .setCustomId(`quiz:${interaction.user.id}:n`)
-      .setLabel("Не")
-      .setStyle(ButtonStyle.Danger)
-  );
-
-  buttons.push(
-    new ButtonBuilder()
-      .setCustomId(`quiz:${interaction.user.id}:h`)
-      .setLabel("Помош за квизот")
-      .setStyle(ButtonStyle.Secondary)
-  );
-
-  row.addComponents(buttons);
-  components.push(row);
-
-  return components;
-};
-
-export const getQuizQuestionEmbed = async (
-  question: QuizQuestion,
-  level: number
-) => {
-  return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
-    .setTitle("Кој Сака Да Биде Морален Победник?")
-    .setDescription(
-      codeBlock(
-        `Прашање бр. ${level + 1}\n\nQ: ${question.question}\n${question.answers
-          .map(
-            (quest, index) =>
-              `${(index + 1).toString().padStart(2, "0")} ${quest}`
-          )
-          .join("\n")}`
-      )
-    )
-    .setTimestamp()
-    .setFooter({ text: "Кој Сака Да Биде Морален Победник? © 2023" });
-};
-
-export const getQuizQuestionComponents = (
-  question: QuizQuestion,
-  level: number,
-  userId: string
-) => {
-  const components = [];
-  const row = new ActionRowBuilder<ButtonBuilder>();
-  const buttons = [];
-
-  for (let index = 0; index < 4; index++) {
-    const button = new ButtonBuilder()
-      .setCustomId(
-        `quizGame:${userId}:s:${question.answers[index]}:${question.correctAnswer}:${level}`
-      )
-      .setLabel(`${index + 1}`)
-      .setStyle(ButtonStyle.Primary);
-    buttons.push(button);
-  }
-
-  row.addComponents(buttons);
-  components.push(row);
-
-  return components;
-};
-
-export const getQuizBeginEmbed = async () => {
-  return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
-    .setTitle("Кој Сака Да Биде Морален Победник?")
-    .setDescription(italic("Започни?"))
-    .setFooter({ text: "Кој Сака Да Биде Морален Победник? © 2023" })
-    .setTimestamp();
-};
-
-export const getQuizBeginComponents = (interaction: ButtonInteraction) => {
-  const components: Array<ActionRowBuilder<ButtonBuilder>> = [];
-  const row = new ActionRowBuilder<ButtonBuilder>();
-  const buttons = [];
-
-  buttons.push(
-    new ButtonBuilder()
-      .setCustomId(`quizGame:${interaction.user.id}:y:option:answer:0`)
-      .setLabel("Да")
-      .setStyle(ButtonStyle.Primary)
-  );
-
-  buttons.push(
-    new ButtonBuilder()
-      .setCustomId(`quizGame:${interaction.user.id}:n`)
-      .setLabel("Не")
-      .setStyle(ButtonStyle.Danger)
-  );
-
-  row.addComponents(buttons);
-  components.push(row);
-
-  return components;
-};
-
-export const getQuizHelpEmbed = async () => {
-  return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
-    .setTitle("Кој Сака Да Биде Морален Победник?")
-    .setDescription(quizHelp)
-    .setFooter({ text: "Кој Сака Да Биде Морален Победник? © 2023" })
-    .setTimestamp();
 };
 
 // Logs

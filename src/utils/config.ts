@@ -8,7 +8,6 @@ import { type CourseStaff } from "../types/CourseStaff.js";
 import { type InfoBlock } from "../types/InfoBlock.js";
 import { type LevelConfig } from "../types/LevelConfig.js";
 import { type Link } from "../types/Link.js";
-import { type QuizQuestions } from "../types/QuizQuestions.js";
 import { type RoleConfig } from "../types/RoleConfig.js";
 import { type Staff } from "../types/Staff.js";
 import { readFileSync } from "node:fs";
@@ -117,9 +116,6 @@ const prerequisites: CoursePrerequisites[] = JSON.parse(
 const professors: CourseStaff[] = JSON.parse(
   readFileSync("./config/professors.json", "utf8")
 );
-const quiz: QuizQuestions = JSON.parse(
-  readFileSync("./config/quiz.json", "utf8")
-);
 const roles: RoleConfig = JSON.parse(
   readFileSync("./config/roles.json", "utf8")
 );
@@ -171,10 +167,6 @@ export const getProfessors = () => {
 
 export const getPrerequisites = () => {
   return prerequisites;
-};
-
-export const getQuiz = () => {
-  return quiz;
 };
 
 export const getFromRoleConfig = <T extends keyof RoleConfig>(key: T) => {

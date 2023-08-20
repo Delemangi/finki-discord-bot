@@ -12,7 +12,6 @@ import {
   getVipPollById,
   getVipPollByUserAndType,
 } from "../data/VipPoll.js";
-import { type QuizQuestion } from "../types/QuizQuestion.js";
 import { deleteResponse, getChannel, log } from "./channels.js";
 import { getCommand } from "./commands.js";
 import {
@@ -25,11 +24,6 @@ import {
   getPollStatsButtonEmbed,
   getPollStatsComponents,
   getPollStatsEmbed,
-  getQuizBeginComponents,
-  getQuizBeginEmbed,
-  getQuizHelpEmbed,
-  getQuizQuestionComponents,
-  getQuizQuestionEmbed,
   getUserContextMenuCommandEmbed,
   getVipAcknowledgeComponents,
   getVipConfirmComponents,
@@ -40,7 +34,6 @@ import {
   getCourses,
   getFromRoleConfig,
   getLinks,
-  getQuiz,
   getSessions,
   getStaff,
 } from "./config.js";
@@ -60,8 +53,6 @@ import { type Poll, type PollOption, type VipPoll } from "@prisma/client";
 import {
   type AutocompleteInteraction,
   type ButtonInteraction,
-  channelMention,
-  ChannelType,
   type ChatInputCommandInteraction,
   type GuildMember,
   type GuildMemberRoleManager,
@@ -71,7 +62,6 @@ import {
   type UserContextMenuCommandInteraction,
   userMention,
 } from "discord.js";
-import { setTimeout } from "node:timers/promises";
 
 // Buttons
 
@@ -709,143 +699,6 @@ const handlePollStatsButton = async (
   void deleteResponse(message);
 };
 
-const handleQuizButton = async (
-  interaction: ButtonInteraction,
-  args: string[]
-) => {
-  if (interaction.user.id !== args[0]) {
-    const mess = await interaction.reply({
-      content: errors.quizNoPermission,
-      ephemeral: true,
-    });
-    void deleteResponse(mess);
-    return;
-  }
-
-  if (args[1] === "n") {
-    await interaction.message.delete();
-    return;
-  }
-
-  if (args[1] === "h") {
-    const embed = await getQuizHelpEmbed();
-    await interaction.reply({
-      embeds: [embed],
-      ephemeral: true,
-    });
-    return;
-  }
-
-  const channel = interaction.guild?.channels.cache.find(
-    (ch) => ch.name === `🎲︱квиз-${interaction.user.tag}`
-  );
-
-  if (channel !== undefined) {
-    const mess = await interaction.reply({
-      content: `Веќе имате друг квиз отворено: ${channelMention(channel.id)}`,
-      ephemeral: true,
-    });
-    void deleteResponse(mess);
-    return;
-  }
-
-  const quizChannel = await interaction.guild?.channels.create({
-    name: `🎲︱квиз-${interaction.user.tag}`,
-    parent: "813137952900513892",
-    permissionOverwrites: [
-      {
-        deny: [
-          PermissionsBitField.Flags.ViewChannel,
-          PermissionsBitField.Flags.SendMessages,
-        ],
-        id: interaction.guild.id,
-      },
-      {
-        allow: [PermissionsBitField.Flags.ViewChannel],
-        id: interaction.user.id,
-      },
-    ],
-    type: ChannelType.GuildText,
-  });
-
-  const quizEmbed = await getQuizBeginEmbed();
-  const components = getQuizBeginComponents(interaction);
-  await quizChannel?.send({
-    components,
-    content: userMention(interaction.user.id),
-    embeds: [quizEmbed],
-  });
-  await interaction.message.delete();
-  const message = await interaction.reply({
-    content: "Направен е канал за вас. Со среќа!",
-    ephemeral: true,
-  });
-  void deleteResponse(message);
-};
-
-const handleQuizGameButton = async (
-  interaction: ButtonInteraction,
-  args: string[]
-) => {
-  if (interaction.user.id !== args[0]) {
-    const mess = await interaction.reply({
-      content: errors.quizNoPermission,
-      ephemeral: true,
-    });
-    void deleteResponse(mess);
-    return;
-  }
-
-  if (args[1] === "n") {
-    await interaction.message.channel.delete();
-    return;
-  }
-
-  if (args[1] === "s") {
-    const checkLevel = Number(args[4]);
-
-    if (args[2] === args[3]) {
-      args[4] = (checkLevel + 1).toString();
-    } else {
-      await interaction.message.delete();
-      await interaction.channel?.send(
-        "Не го поминавте квизот... Повеќе среќа следен пат."
-      );
-      await setTimeout(20_000);
-      await interaction.channel?.delete();
-      return;
-    }
-
-    if (checkLevel + 1 >= 15) {
-      await interaction.message.delete();
-      await interaction.channel?.send("Честитки! :grin:");
-      await setTimeout(20_000);
-      await interaction.channel?.delete();
-      return;
-    }
-  }
-
-  const level = Number(args[4]);
-  const getLevelQuestions =
-    getQuiz()[level < 5 ? "easy" : level < 10 ? "medium" : "hard"];
-  const currentQuestion = getLevelQuestions[
-    Math.floor(Math.random() * getLevelQuestions.length)
-  ] as QuizQuestion;
-
-  await interaction.deferUpdate();
-
-  const embed = await getQuizQuestionEmbed(currentQuestion, level);
-  const components = getQuizQuestionComponents(
-    currentQuestion,
-    level,
-    interaction.user.id
-  );
-  await interaction.message.edit({
-    components,
-    embeds: [embed],
-  });
-};
-
 const handleVipButton = async (
   interaction: ButtonInteraction,
   args: string[]
@@ -1168,8 +1021,6 @@ const buttonInteractionHandlers = {
   poll: handlePollButton,
   pollStats: handlePollStatsButton,
   program: handleProgramButton,
-  quiz: handleQuizButton,
-  quizGame: handleQuizGameButton,
   removeCourses: handleRemoveCoursesButton,
   vip: handleVipButton,
   year: handleYearButton,
