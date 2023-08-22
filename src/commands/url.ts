@@ -88,7 +88,7 @@ const handleUrlGet = async (
   });
 };
 
-const handleLinkSet = async (
+const handleUrlSet = async (
   interaction: ChatInputCommandInteraction,
   keyword: string
 ) => {
@@ -167,7 +167,7 @@ const handleLinkSet = async (
   }
 };
 
-const handleLinkDelete = async (
+const handleUrlDelete = async (
   interaction: ChatInputCommandInteraction,
   keyword: string
 ) => {
@@ -182,7 +182,7 @@ const handleLinkDelete = async (
   await interaction.editReply("Линкот е избришан.");
 };
 
-const handleLinkContent = async (
+const handleUrlContent = async (
   interaction: ChatInputCommandInteraction,
   keyword: string
 ) => {
@@ -203,19 +203,19 @@ const handleLinkContent = async (
   );
 };
 
-const linkHandlers = {
-  content: handleLinkContent,
-  delete: handleLinkDelete,
+const urlHandlers = {
+  content: handleUrlContent,
+  delete: handleUrlDelete,
   get: handleUrlGet,
-  set: handleLinkSet,
+  set: handleUrlSet,
 };
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const subcommand = interaction.options.getSubcommand(true);
   const keyword = interaction.options.getString("link", true);
 
-  if (Object.keys(linkHandlers).includes(subcommand)) {
-    await linkHandlers[subcommand as keyof typeof linkHandlers](
+  if (Object.keys(urlHandlers).includes(subcommand)) {
+    await urlHandlers[subcommand as keyof typeof urlHandlers](
       interaction,
       keyword
     );

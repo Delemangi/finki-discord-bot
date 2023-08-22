@@ -50,6 +50,18 @@ const commandPermissions: {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
+  "url content": {
+    permissions: [],
+    roles: ["admin", "fss"],
+  },
+  "url delete": {
+    permissions: [],
+    roles: ["admin", "fss"],
+  },
+  "url set": {
+    permissions: [],
+    roles: ["admin", "fss"],
+  },
   "vip add": {
     permissions: [],
     roles: ["vipVoting"],
