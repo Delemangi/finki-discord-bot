@@ -1,3 +1,4 @@
+import { getLinks } from "../data/Link.js";
 import { getMostPopularOptionByPollId } from "../data/PollOption.js";
 import {
   getPollVotesByOptionId,
@@ -9,7 +10,6 @@ import { type CourseInformation } from "../types/CourseInformation.js";
 import { type CourseParticipants } from "../types/CourseParticipants.js";
 import { type CoursePrerequisites } from "../types/CoursePrerequisites.js";
 import { type CourseStaff } from "../types/CourseStaff.js";
-import { type Link } from "../types/Link.js";
 import { type PollWithOptions } from "../types/PollWithOptions.js";
 import { type ProgramName } from "../types/ProgramName.js";
 import { type ProgramShorthand } from "../types/ProgramShorthand.js";
@@ -21,7 +21,6 @@ import {
   getConfigProperty,
   getFromRoleConfig,
   getInformation,
-  getLinks,
   getParticipants,
   getPrerequisites,
   getProfessors,
@@ -43,6 +42,7 @@ import {
 import { commandDescriptions, programMapping, vipStrings } from "./strings.js";
 import {
   type Experience,
+  type Link,
   type Poll,
   type PollVote,
   type Question,
@@ -1310,7 +1310,7 @@ export const getLinkComponents = (link: Link) => {
   return [
     new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
-        .setURL(link.link)
+        .setURL(link.url.startsWith("http") ? link.url : `https://${link.url}`)
         .setLabel("Линк")
         .setStyle(ButtonStyle.Link)
     ),
@@ -1343,12 +1343,12 @@ export const getListLinksEmbed = async () => {
     .setDescription(
       `Ова се сите достапни линкови. Користете ${commandMention(
         "link"
-      )} за да ги добиете линковите.\n\n${getLinks()
+      )} за да ги добиете линковите.\n\n${(await getLinks())
         .map(
           (link, index) =>
             `${inlineCode((index + 1).toString().padStart(2, "0"))} [${
               link.name
-            }](${link.link})`
+            }](${link.url})`
         )
         .join("\n")}`
     )

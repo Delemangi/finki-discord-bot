@@ -41,6 +41,18 @@ model QuestionLink {
   updatedAt DateTime @updatedAt
 }
 
+model Link {
+  id String @id @default(uuid())
+
+  name        String  @unique
+  description String?
+  url         String  @unique
+  userId      String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Experience {
   id String @id @default(uuid())
 

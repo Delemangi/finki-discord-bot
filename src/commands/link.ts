@@ -1,5 +1,5 @@
+import { getLink } from "../data/Link.js";
 import { getLinkComponents, getLinkEmbed } from "../utils/components.js";
-import { getLinks } from "../utils/config.js";
 import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
@@ -21,9 +21,9 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const keyword = interaction.options.getString("link", true);
-  const link = getLinks().find((li) => li.name === keyword);
+  const link = await getLink(keyword);
 
-  if (link === undefined) {
+  if (link === null) {
     await interaction.editReply("Не постои таков линк.");
     return;
   }

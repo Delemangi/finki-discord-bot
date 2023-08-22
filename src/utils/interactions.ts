@@ -1,3 +1,4 @@
+import { getLinkNames } from "../data/Link.js";
 import { decidePoll, getPollById } from "../data/Poll.js";
 import { getPollOptionById } from "../data/PollOption.js";
 import {
@@ -33,7 +34,6 @@ import {
   getClassrooms,
   getCourses,
   getFromRoleConfig,
-  getLinks,
   getSessions,
   getStaff,
 } from "./config.js";
@@ -821,7 +821,6 @@ const handleVipButton = async (
 let transformedCourses: Array<[string, string]> | null = null;
 let transformedProfessors: Array<[string, string]> | null = null;
 let transformedCourseRoles: Array<[string, string]> | null = null;
-let transformedLinks: Array<[string, string]> | null = null;
 let transformedSessions: Array<[string, string]> | null = null;
 let transformedClassrooms: Array<[string, string]> | null = null;
 
@@ -879,15 +878,11 @@ const handleQuestionAutocomplete = async (
 };
 
 const handleLinkAutocomplete = async (interaction: AutocompleteInteraction) => {
-  if (transformedLinks === null) {
-    transformedLinks = Object.entries(
-      transformOptions(getLinks().map((link) => link.name))
-    );
-  }
-
   await interaction.respond(
     createOptions(
-      Object.entries(transformOptions(getLinks().map((link) => link.name))),
+      Object.entries(
+        transformOptions((await getLinkNames()).map(({ name }) => name))
+      ),
       interaction.options.getFocused()
     )
   );

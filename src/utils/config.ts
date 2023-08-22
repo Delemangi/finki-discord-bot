@@ -7,7 +7,6 @@ import { type CoursePrerequisites } from "../types/CoursePrerequisites.js";
 import { type CourseStaff } from "../types/CourseStaff.js";
 import { type InfoBlock } from "../types/InfoBlock.js";
 import { type LevelConfig } from "../types/LevelConfig.js";
-import { type Link } from "../types/Link.js";
 import { type RoleConfig } from "../types/RoleConfig.js";
 import { type Staff } from "../types/Staff.js";
 import { readFileSync } from "node:fs";
@@ -106,7 +105,6 @@ const information: CourseInformation[] = JSON.parse(
 const levels: LevelConfig = JSON.parse(
   readFileSync("./config/levels.json", "utf8")
 );
-const links: Link[] = JSON.parse(readFileSync("./config/links.json", "utf8"));
 const participants: CourseParticipants[] = JSON.parse(
   readFileSync("./config/participants.json", "utf8")
 );
@@ -151,10 +149,6 @@ export const getInformation = () => {
 
 export const getLevels = () => {
   return levels;
-};
-
-export const getLinks = () => {
-  return links;
 };
 
 export const getParticipants = () => {
