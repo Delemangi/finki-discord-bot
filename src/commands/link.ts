@@ -1,4 +1,4 @@
-import { getLink } from "../data/Link.js";
+import { getLink, getNthLink } from "../data/Link.js";
 import { getLinkComponents, getLinkEmbed } from "../utils/components.js";
 import { commandDescriptions } from "../utils/strings.js";
 import {
@@ -21,7 +21,9 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const keyword = interaction.options.getString("link", true);
-  const link = await getLink(keyword);
+  const link = Number.isNaN(Number(keyword))
+    ? await getLink(keyword)
+    : await getNthLink(Number(keyword));
 
   if (link === null) {
     await interaction.editReply("Не постои таков линк.");

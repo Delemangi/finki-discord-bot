@@ -1,4 +1,10 @@
-import { createLink, deleteLink, getLink, updateLink } from "../data/Link.js";
+import {
+  createLink,
+  deleteLink,
+  getLink,
+  getNthLink,
+  updateLink,
+} from "../data/Link.js";
 import { getLinkComponents, getLinkEmbed } from "../utils/components.js";
 import { logger } from "../utils/logger.js";
 import { commandDescriptions } from "../utils/strings.js";
@@ -73,7 +79,9 @@ const handleUrlGet = async (
   interaction: ChatInputCommandInteraction,
   keyword: string
 ) => {
-  const link = await getLink(keyword);
+  const link = Number.isNaN(Number(keyword))
+    ? await getLink(keyword)
+    : await getNthLink(Number(keyword));
 
   if (link === null) {
     await interaction.editReply("Не постои таков линк.");

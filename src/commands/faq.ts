@@ -1,4 +1,4 @@
-import { getQuestion } from "../data/Question.js";
+import { getNthQuestion, getQuestion } from "../data/Question.js";
 import {
   getQuestionComponents,
   getQuestionEmbed,
@@ -24,7 +24,9 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const keyword = interaction.options.getString("question", true);
-  const question = await getQuestion(keyword);
+  const question = Number.isNaN(Number(keyword))
+    ? await getQuestion(keyword)
+    : await getNthQuestion(Number(keyword));
 
   if (question === null) {
     await interaction.editReply("Не постои такво прашање.");

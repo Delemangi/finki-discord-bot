@@ -9,6 +9,9 @@ export const getQuestions = async () => {
       include: {
         links: true,
       },
+      orderBy: {
+        name: "asc",
+      },
     });
   } catch (error) {
     logger.error(`Failed obtaining questions\n${error}`);
@@ -118,6 +121,27 @@ export const deleteQuestion = async (name?: string) => {
     });
   } catch (error) {
     logger.error(`Failed deleting question\n${error}`);
+    return null;
+  }
+};
+
+export const getNthQuestion = async (index?: number) => {
+  if (index === undefined) {
+    return null;
+  }
+
+  try {
+    return await database.question.findFirst({
+      include: {
+        links: true,
+      },
+      orderBy: {
+        name: "asc",
+      },
+      skip: index - 1,
+    });
+  } catch (error) {
+    logger.error(`Failed obtaining nth question\n${error}`);
     return null;
   }
 };

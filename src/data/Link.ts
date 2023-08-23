@@ -4,7 +4,11 @@ import { type Link, type Prisma } from "@prisma/client";
 
 export const getLinks = async () => {
   try {
-    return await database.link.findMany();
+    return await database.link.findMany({
+      orderBy: {
+        name: "asc",
+      },
+    });
   } catch (error) {
     logger.error(`Failed obtaining links\n${error}`);
     return [];
@@ -87,6 +91,24 @@ export const deleteLink = async (name?: string) => {
     });
   } catch (error) {
     logger.error(`Failed deleting link\n${error}`);
+    return null;
+  }
+};
+
+export const getNthLink = async (index?: number) => {
+  if (index === undefined) {
+    return null;
+  }
+
+  try {
+    return await database.link.findFirst({
+      orderBy: {
+        name: "asc",
+      },
+      skip: index - 1,
+    });
+  } catch (error) {
+    logger.error(`Failed obtaining link\n${error}`);
     return null;
   }
 };

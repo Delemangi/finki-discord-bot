@@ -1,6 +1,7 @@
 import {
   createQuestion,
   deleteQuestion,
+  getNthQuestion,
   getQuestion,
   updateQuestion,
 } from "../data/Question.js";
@@ -88,7 +89,9 @@ const handleQuestionGet = async (
   interaction: ChatInputCommandInteraction,
   keyword: string
 ) => {
-  const question = await getQuestion(keyword);
+  const question = Number.isNaN(Number(keyword))
+    ? await getQuestion(keyword)
+    : await getNthQuestion(Number(keyword));
 
   if (question === null) {
     await interaction.editReply("Не постои такво прашање.");
