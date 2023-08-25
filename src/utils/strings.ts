@@ -20,7 +20,6 @@ export const commandDescriptions = {
   "courses prerequisite": "Сите предмети според предуслов",
   "courses program": "Сите предмети според смер",
   "courses remove": "Отстрани улоги за предмети",
-  crosspost: "Вклучи или исклучи crossposting",
   embed: "Креирај ембед",
   "experience add": "Додади поени за активност на член",
   "experience get": "Ниво и активност за член",
