@@ -86,7 +86,6 @@ export const getApplicationId = () => {
   return env["APPLICATION_ID"] as string;
 };
 
-const anto: string[] = JSON.parse(readFileSync("./config/anto.json", "utf8"));
 const classrooms: Classroom[] = JSON.parse(
   readFileSync("./config/classrooms.json", "utf8")
 );
@@ -122,10 +121,6 @@ const sessions: { [index: string]: string } = JSON.parse(
   readFileSync("./config/sessions.json", "utf8")
 );
 const staff: Staff[] = JSON.parse(readFileSync("./config/staff.json", "utf8"));
-
-export const getAnto = () => {
-  return anto;
-};
 
 export const getClassrooms = () => {
   return classrooms;

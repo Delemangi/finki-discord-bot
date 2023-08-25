@@ -33,17 +33,16 @@ It's recommended, but not required to run this inside a Docker container.
 
 1. Create a `.env` file in the root directory containing the environment variables as specified in the `.env.sample` file in the repository
 2. Create a `config` folder in the root directory containing:
-   1. `anto.json` - an array of all Anto quotes
-   2. `classrooms.json` - an array of all the classrooms
-   3. `courses.json` - an array of the names of all courses
-   4. `information.json` - an array of all the course information
-   5. `participants.json` - an array of all courses and their number of participants
-   6. `prerequisites.json` - an array of course prerequisites
-   7. `professors.json` - an array of all courses and their professors and assistants
-   8. `roles.json` - roles for the scripts and for the embeds
-   9. `rules.json` - an array of the server rules
-   10. `sessions.json` - an object of all exam sessions
-   11. `staff.json` - an array of the staff
+   1. `classrooms.json` - an array of all the classrooms
+   2. `courses.json` - an array of the names of all courses
+   3. `information.json` - an array of all the course information
+   4. `participants.json` - an array of all courses and their number of participants
+   5. `prerequisites.json` - an array of course prerequisites
+   6. `professors.json` - an array of all courses and their professors and assistants
+   7. `roles.json` - roles for the scripts and for the embeds
+   8. `rules.json` - an array of the server rules
+   9. `sessions.json` - an object of all exam sessions
+   10. `staff.json` - an array of the staff
 
 ### Sessions
 

@@ -1,3 +1,4 @@
+import { createAnto, createAntos, deleteAnto } from "../data/Anto.js";
 import { createLink, deleteLink, getLink, updateLink } from "../data/Link.js";
 import {
   createQuestion,
@@ -9,6 +10,7 @@ import {
   createQuestionLinks,
   deleteQuestionLinksByQuestionId,
 } from "../data/QuestionLink.js";
+import { AntosSchema } from "../schemas/AntosSchema.js";
 import { LinksSchema } from "../schemas/LinksSchema.js";
 import {
   getLinkComponents,
@@ -114,6 +116,33 @@ export const data = new SlashCommandBuilder()
           .setDescription("Линк")
           .setRequired(true)
           .setAutocomplete(true)
+      )
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("anto-add")
+      .setDescription(commandDescriptions["manage anto-add"])
+      .addStringOption((option) =>
+        option.setName("anto").setDescription("Анто").setRequired(true)
+      )
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("anto-delete")
+      .setDescription(commandDescriptions["manage anto-delete"])
+      .addStringOption((option) =>
+        option.setName("anto").setDescription("Анто").setRequired(true)
+      )
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("anto-mass-add")
+      .setDescription(commandDescriptions["manage anto-mass-add"])
+      .addStringOption((option) =>
+        option
+          .setName("antos")
+          .setDescription("Анто-и во JSON формат")
+          .setRequired(true)
       )
   );
 
@@ -398,7 +427,74 @@ const handleManageLinkContent = async (
   );
 };
 
+const handleManageAntoAdd = async (
+  interaction: ChatInputCommandInteraction
+) => {
+  const anto = interaction.options.getString("anto", true);
+  const createdAnto = await createAnto({
+    quote: anto,
+    userId: interaction.user.id,
+  });
+
+  if (createdAnto === null) {
+    await interaction.editReply(
+      "Креирањето на Анто фактот беше неуспешно. Проверете дали е креирано."
+    );
+    return;
+  }
+
+  await interaction.editReply(createdAnto.quote);
+};
+
+const handleManageAntoDelete = async (
+  interaction: ChatInputCommandInteraction
+) => {
+  const anto = interaction.options.getString("anto", true);
+  const deletedAnto = await deleteAnto(anto);
+
+  if (deletedAnto === null) {
+    await interaction.editReply("Не постои таков Анто факт.");
+    return;
+  }
+
+  await interaction.editReply("Анто фактот е избришан.");
+};
+
+const handleManageAntoMassAdd = async (
+  interaction: ChatInputCommandInteraction
+) => {
+  const antos = interaction.options.getString("antos", true);
+  let parsedAntos;
+
+  try {
+    parsedAntos = AntosSchema.parse(JSON.parse(antos));
+  } catch (error) {
+    logger.error(`Failed parsing antos\n${error}`);
+    await interaction.editReply("Анто фактите не се во валиден JSON формат.");
+    return;
+  }
+
+  const createdAntos = await createAntos(
+    parsedAntos.map((anto) => ({
+      quote: anto,
+      userId: interaction.user.id,
+    }))
+  );
+
+  if (createdAntos === null) {
+    await interaction.editReply(
+      "Креирањето на Анто фактите беше неуспешно. Проверете дали се креирани."
+    );
+    return;
+  }
+
+  await interaction.editReply("Успешно се креирани сите Анто факти.");
+};
+
 const manageHandlers = {
+  "anto-add": handleManageAntoAdd,
+  "anto-delete": handleManageAntoDelete,
+  "anto-mass-add": handleManageAntoMassAdd,
   "link-content": handleManageLinkContent,
   "link-delete": handleManageLinkDelete,
   "link-set": handleManageLinkSet,
