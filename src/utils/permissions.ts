@@ -22,6 +22,10 @@ const commandPermissions: {
     permissions: [],
     roles: ["admin"],
   },
+  manage: {
+    permissions: [],
+    roles: ["admin", "fss"],
+  },
   "poll delete": {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
@@ -30,18 +34,6 @@ const commandPermissions: {
     permissions: [PermissionsBitField.Flags.ManageMessages],
     roles: [],
   },
-  "question content": {
-    permissions: [],
-    roles: ["admin", "fss"],
-  },
-  "question delete": {
-    permissions: [],
-    roles: ["admin", "fss"],
-  },
-  "question set": {
-    permissions: [],
-    roles: ["admin", "fss"],
-  },
   register: {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
@@ -49,18 +41,6 @@ const commandPermissions: {
   script: {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
-  },
-  "url content": {
-    permissions: [],
-    roles: ["admin", "fss"],
-  },
-  "url delete": {
-    permissions: [],
-    roles: ["admin", "fss"],
-  },
-  "url set": {
-    permissions: [],
-    roles: ["admin", "fss"],
   },
   "vip add": {
     permissions: [],
@@ -97,14 +77,14 @@ const getCommandPermission = (
 ): [bigint[], Array<string | undefined>] => {
   const topCommand = command.split(" ")[0];
 
-  if (Object.keys(commandDescriptions).includes(command)) {
+  if (Object.keys(commandPermissions).includes(command)) {
     return [
       commandPermissions[command]?.permissions ?? [],
       commandPermissions[command]?.roles.map((role) => getRole(role)?.id) ?? [],
     ];
   } else if (
     topCommand !== undefined &&
-    Object.keys(commandDescriptions).includes(topCommand)
+    Object.keys(commandPermissions).includes(topCommand)
   ) {
     return [
       commandPermissions[topCommand]?.permissions ?? [],
@@ -138,7 +118,7 @@ export const hasCommandPermission = (
   const tidiedRoles = roles.filter(Boolean) as string[];
 
   return (
-    member.permissions.has(permissions) ||
+    (permissions.length !== 0 && member.permissions.has(permissions)) ||
     (tidiedRoles.length !== 0 && member.roles.cache.hasAny(...tidiedRoles))
   );
 };

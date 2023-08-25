@@ -1,24 +1,11 @@
-import {
-  createQuestion,
-  deleteQuestion,
-  getNthQuestion,
-  getQuestion,
-  updateQuestion,
-} from "../data/Question.js";
-import {
-  createQuestionLinks,
-  deleteQuestionLinksByQuestionId,
-} from "../data/QuestionLink.js";
-import { LinksSchema } from "../schemas/LinksSchema.js";
+import { getNthQuestion, getQuestion } from "../data/Question.js";
 import {
   getQuestionComponents,
   getQuestionEmbed,
 } from "../utils/components.js";
-import { logger } from "../utils/logger.js";
 import { commandDescriptions } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
-  codeBlock,
   SlashCommandBuilder,
 } from "discord.js";
 
@@ -26,69 +13,17 @@ const name = "question";
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription("Прашање")
-  .addSubcommand((subcommand) =>
-    subcommand
-      .setName("get")
-      .setDescription(commandDescriptions["question get"])
-      .addStringOption((option) =>
-        option
-          .setName("question")
-          .setDescription("Прашање")
-          .setRequired(true)
-          .setAutocomplete(true)
-      )
-  )
-  .addSubcommand((subcommand) =>
-    subcommand
-      .setName("set")
-      .setDescription(commandDescriptions["question set"])
-      .addStringOption((option) =>
-        option
-          .setName("question")
-          .setDescription("Прашање")
-          .setRequired(true)
-          .setAutocomplete(true)
-      )
-      .addStringOption((option) =>
-        option.setName("answer").setDescription("Одговор").setRequired(true)
-      )
-      .addStringOption((option) =>
-        option
-          .setName("links")
-          .setDescription("Линкови во JSON формат")
-          .setRequired(false)
-      )
-  )
-  .addSubcommand((subcommand) =>
-    subcommand
-      .setName("delete")
-      .setDescription(commandDescriptions["question delete"])
-      .addStringOption((option) =>
-        option
-          .setName("question")
-          .setDescription("Прашање")
-          .setRequired(true)
-          .setAutocomplete(true)
-      )
-  )
-  .addSubcommand((subcommand) =>
-    subcommand
-      .setName("content")
-      .setDescription(commandDescriptions["question content"])
-      .addStringOption((option) =>
-        option
-          .setName("question")
-          .setDescription("Прашање")
-          .setRequired(true)
-          .setAutocomplete(true)
-      )
+  .setDescription(commandDescriptions[name])
+  .addStringOption((option) =>
+    option
+      .setName("question")
+      .setDescription("Прашање")
+      .setRequired(true)
+      .setAutocomplete(true)
   );
 
-const handleQuestionGet = async (
-  interaction: ChatInputCommandInteraction,
-  keyword: string
-) => {
+export const execute = async (interaction: ChatInputCommandInteraction) => {
+  const keyword = interaction.options.getString("question", true);
   const question = Number.isNaN(Number(keyword))
     ? await getQuestion(keyword)
     : await getNthQuestion(Number(keyword));
@@ -104,189 +39,4 @@ const handleQuestionGet = async (
     components,
     embeds: [embed],
   });
-};
-
-const handleQuestionSet = async (
-  interaction: ChatInputCommandInteraction,
-  keyword: string
-) => {
-  const answer = interaction.options
-    .getString("answer", true)
-    .replaceAll("\\n", "\n");
-  const links = interaction.options.getString("links");
-  const question = await getQuestion(keyword);
-  let parsedLinks;
-
-  if (links !== null) {
-    try {
-      parsedLinks = LinksSchema.parse(JSON.parse(links));
-    } catch {
-      await interaction.editReply("Линковите не се во валиден JSON формат.");
-      return;
-    }
-  }
-
-  if (question === null) {
-    const newQuestion = {
-      content: answer,
-      ...(links !== null && {
-        links: {
-          createMany: {
-            data: Object.entries(parsedLinks as Record<string, string>).map(
-              ([linkName, linkUrl]) => ({
-                name: linkName,
-                url: linkUrl,
-              })
-            ),
-          },
-        },
-      }),
-      name: keyword,
-      userId: interaction.user.id,
-    };
-
-    const createdQuestion = await createQuestion(newQuestion);
-
-    if (createdQuestion === null) {
-      await interaction.editReply(
-        "Креирањето на прашањето беше неуспешно. Проверете дали е креирано."
-      );
-      return;
-    }
-
-    try {
-      const questionEmbed = await getQuestionEmbed(createdQuestion);
-      const questionComponents = getQuestionComponents(createdQuestion);
-      await interaction.editReply({
-        components: questionComponents,
-        embeds: [questionEmbed],
-      });
-    } catch (error) {
-      logger.error(`Failed sending a question\n${error}`);
-      await interaction.editReply(
-        "Креирањето на прашањето беше неуспешно. Проверете дали е креирано."
-      );
-    }
-
-    return;
-  }
-
-  question.content = answer;
-  await updateQuestion(question);
-
-  if (links !== null) {
-    try {
-      LinksSchema.parse(JSON.parse(links));
-    } catch (error) {
-      logger.error(`Failed parsing links\n${error}`);
-      await interaction.editReply("Линковите не се во валиден JSON формат.");
-      return;
-    }
-
-    await deleteQuestionLinksByQuestionId(question.id);
-    await createQuestionLinks(
-      Object.entries(parsedLinks as Record<string, string>).map(
-        ([linkName, linkUrl]) => ({
-          name: linkName,
-          questionId: question.id,
-          url: linkUrl,
-        })
-      )
-    );
-  }
-
-  const updatedQuestion = await getQuestion(keyword);
-
-  if (updatedQuestion === null) {
-    await interaction.editReply(
-      "Креирањето на прашањето беше неуспешно. Проверете дали е креирано."
-    );
-    return;
-  }
-
-  try {
-    const embed = await getQuestionEmbed(updatedQuestion);
-    const components = getQuestionComponents(updatedQuestion);
-    await interaction.editReply({
-      components,
-      embeds: [embed],
-    });
-  } catch (error) {
-    logger.error(`Failed sending a question\n${error}`);
-    await interaction.editReply(
-      "Креирањето на прашањето беше неуспешно. Проверете дали е креирано."
-    );
-  }
-};
-
-const handleQuestionDelete = async (
-  interaction: ChatInputCommandInteraction,
-  keyword: string
-) => {
-  const question = await getQuestion(keyword);
-
-  if (question === null) {
-    await interaction.editReply("Не постои такво прашање.");
-    return;
-  }
-
-  await deleteQuestion(keyword);
-  await interaction.editReply("Прашањето е избришано.");
-};
-
-const handleQuestionContent = async (
-  interaction: ChatInputCommandInteraction,
-  keyword: string
-) => {
-  const question = await getQuestion(keyword);
-
-  if (question === null) {
-    await interaction.editReply("Не постои такво прашање.");
-    return;
-  }
-
-  await interaction.editReply(
-    "Име:" +
-      codeBlock(question.name) +
-      "\nОдговор:" +
-      codeBlock(question.content.replaceAll("\n", "\\n")) +
-      "\nЛинкови:" +
-      codeBlock(
-        JSON.stringify(
-          question.links
-            .map(({ name: linkName, url }) => ({
-              [linkName]: url,
-            }))
-            // eslint-disable-next-line unicorn/no-array-reduce
-            .reduce<Record<string, string>>(
-              (accumulator, currentValue) => ({
-                ...accumulator,
-                ...currentValue,
-              }),
-              {}
-            ),
-          null,
-          2
-        )
-      )
-  );
-};
-
-const questionHandlers = {
-  content: handleQuestionContent,
-  delete: handleQuestionDelete,
-  get: handleQuestionGet,
-  set: handleQuestionSet,
-};
-
-export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const subcommand = interaction.options.getSubcommand(true);
-  const keyword = interaction.options.getString("question", true);
-
-  if (Object.keys(questionHandlers).includes(subcommand)) {
-    await questionHandlers[subcommand as keyof typeof questionHandlers](
-      interaction,
-      keyword
-    );
-  }
 };
