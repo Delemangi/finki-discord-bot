@@ -19,11 +19,11 @@ const permission = PermissionFlagsBits.ManageMessages;
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription(commandDescriptions[name])
+  .setDescription("Конгифурација")
   .addSubcommand((subcommand) =>
     subcommand
       .setName("get")
-      .setDescription("Види ја конфигурацијата на ботот")
+      .setDescription(commandDescriptions["config get"])
       .addStringOption((option) =>
         option
           .setName("key")
@@ -37,7 +37,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((subcommand) =>
     subcommand
       .setName("set")
-      .setDescription("Постави конфигурација на ботот")
+      .setDescription(commandDescriptions["config set"])
       .addStringOption((option) =>
         option
           .setName("key")
