@@ -23,3 +23,15 @@ services:
       - ./config:/app/config
       - ./sessions:/app/sessions
       - ./bot.log:/app/bot.log
+
+  pgadmin:
+    container_name: finki-pgadmin
+    image: dpage/pgadmin4:latest
+    restart: unless-stopped
+    ports:
+      - "5050:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=test@test.com
+      - PGADMIN_DEFAULT_PASSWORD=test
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
