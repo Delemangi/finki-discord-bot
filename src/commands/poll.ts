@@ -16,6 +16,7 @@ import {
   getPollStatsComponents,
   getPollStatsEmbed,
 } from "../utils/components.js";
+import { getConfigProperty } from "../utils/config.js";
 import { logger } from "../utils/logger.js";
 import { startPoll } from "../utils/polls.js";
 import { commandDescriptions, errors } from "../utils/strings.js";
@@ -518,7 +519,7 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
   });
   const collector = message.createMessageComponentCollector({
     componentType: ComponentType.Button,
-    time: 30_000,
+    time: await getConfigProperty("buttonIdleTime"),
   });
 
   collector.on("collect", async (buttonInteraction) => {

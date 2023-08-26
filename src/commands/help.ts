@@ -5,6 +5,7 @@ import {
   getHelpNextPageEmbed,
   getPaginationComponents,
 } from "../utils/components.js";
+import { getConfigProperty } from "../utils/config.js";
 import { logger } from "../utils/logger.js";
 import { getCommandsWithPermission } from "../utils/permissions.js";
 import { commandDescriptions } from "../utils/strings.js";
@@ -44,7 +45,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   });
   const collector = message.createMessageComponentCollector({
     componentType: ComponentType.Button,
-    idle: 30_000,
+    idle: await getConfigProperty("buttonIdleTime"),
   });
 
   collector.on("collect", async (buttonInteraction) => {

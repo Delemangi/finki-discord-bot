@@ -16,6 +16,7 @@ import {
   getVipPollListFirstPageEmbed,
   getVipPollListNextPageEmbed,
 } from "../utils/components.js";
+import { getConfigProperty } from "../utils/config.js";
 import { handlePollButtonForVipVote } from "../utils/interactions.js";
 import { logger } from "../utils/logger.js";
 import { startVipPoll } from "../utils/polls.js";
@@ -492,7 +493,7 @@ const handleVipList = async (interaction: ChatInputCommandInteraction) => {
   const message = await interaction.editReply({ components, embeds: [embed] });
   const collector = message.createMessageComponentCollector({
     componentType: ComponentType.Button,
-    time: 30_000,
+    time: await getConfigProperty("buttonIdleTime"),
   });
 
   collector.on("collect", async (buttonInteraction) => {

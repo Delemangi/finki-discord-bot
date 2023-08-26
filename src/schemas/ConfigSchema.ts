@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const ConfigSchema = z.object({
+  buttonIdleTime: z.number(),
   channels: z.object({
     activity: z.string().nullable(),
     commands: z.string().nullable(),

@@ -3,6 +3,7 @@ import { type Roles } from "./Roles.js";
 import { type ColorResolvable } from "discord.js";
 
 export type BotConfig = {
+  buttonIdleTime: number;
   channels: { [K in ChannelName]: string };
   color: ColorResolvable;
   crosspostChannels: string[];

@@ -12,6 +12,7 @@ import {
   getExperienceLeaderboardNextPageEmbed,
   getPaginationComponents,
 } from "../utils/components.js";
+import { getConfigProperty } from "../utils/config.js";
 import { logger } from "../utils/logger.js";
 import { commandDescriptions } from "../utils/strings.js";
 import {
@@ -110,7 +111,7 @@ const handleExperienceLeaderboard = async (
   });
   const collector = message.createMessageComponentCollector({
     componentType: ComponentType.Button,
-    idle: 30_000,
+    idle: await getConfigProperty("buttonIdleTime"),
   });
 
   collector.on("collect", async (buttonInteraction) => {

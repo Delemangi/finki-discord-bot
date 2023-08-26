@@ -13,6 +13,7 @@ import { readFileSync } from "node:fs";
 import { env } from "node:process";
 
 const defaultConfig: BotConfig = {
+  buttonIdleTime: 60_000,
   channels: {
     activity: "",
     commands: "",
