@@ -14,6 +14,7 @@ export const refreshOnConfigChange = async (property: keyof BotConfig) => {
       await initializeRoles();
       break;
     default:
+      logger.info(`No refresh needed for ${property}`);
       break;
   }
 };
