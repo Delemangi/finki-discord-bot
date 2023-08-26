@@ -5,8 +5,8 @@ import { type ColorResolvable } from "discord.js";
 export type BotConfig = {
   channels: { [K in ChannelName]: string };
   color: ColorResolvable;
-  crosspost: boolean;
   crosspostChannels: string[];
+  crossposting: boolean;
   ephemeralReplyTime: number;
   guild: string;
   leveling: boolean;

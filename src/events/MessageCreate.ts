@@ -8,7 +8,7 @@ const crosspostChannels = await getConfigProperty("crosspostChannels");
 
 const crosspost = async (message: Message) => {
   if (
-    !(await getConfigProperty("crosspost")) ||
+    !(await getConfigProperty("crossposting")) ||
     crosspostChannels.length === 0 ||
     !crosspostChannels.includes(message.channel.id)
   ) {
