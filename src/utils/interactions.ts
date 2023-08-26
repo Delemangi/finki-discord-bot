@@ -943,6 +943,19 @@ export const handleChatInputCommand = async (
 ) => {
   const command = await getCommand(interaction.commandName);
 
+  logger.info(
+    `[Chat] ${interaction.user.tag}: ${interaction} [${
+      interaction.channel === null || interaction.channel.isDMBased()
+        ? "DM"
+        : "Guild"
+    }]`
+  );
+  await log(
+    await getChatInputCommandEmbed(interaction),
+    interaction,
+    "commands"
+  );
+
   if (command === undefined) {
     logger.warn(
       `No command was found for the chat input command ${interaction} by ${interaction.user.tag}`
@@ -972,25 +985,25 @@ export const handleChatInputCommand = async (
       `Failed to handle chat input command ${interaction} by ${interaction.user.tag}\n${error}`
     );
   }
-
-  logger.info(
-    `[Chat] ${interaction.user.tag}: ${interaction} [${
-      interaction.channel === null || interaction.channel.isDMBased()
-        ? "DM"
-        : "Guild"
-    }]`
-  );
-  await log(
-    await getChatInputCommandEmbed(interaction),
-    interaction,
-    "commands"
-  );
 };
 
 export const handleUserContextMenuCommand = async (
   interaction: UserContextMenuCommandInteraction
 ) => {
   const command = await getCommand(interaction.commandName);
+
+  logger.info(
+    `[User] ${interaction.user.tag}: ${interaction.commandName} [${
+      interaction.channel === null || interaction.channel.isDMBased()
+        ? "DM"
+        : "Guild"
+    }]`
+  );
+  await log(
+    await getUserContextMenuCommandEmbed(interaction),
+    interaction,
+    "commands"
+  );
 
   if (command === undefined) {
     logger.warn(
@@ -1007,19 +1020,6 @@ export const handleUserContextMenuCommand = async (
       `Failed to handle user context menu command ${interaction.commandName} by ${interaction.user.tag}\n${error}`
     );
   }
-
-  logger.info(
-    `[User] ${interaction.user.tag}: ${interaction.commandName} [${
-      interaction.channel === null || interaction.channel.isDMBased()
-        ? "DM"
-        : "Guild"
-    }]`
-  );
-  await log(
-    await getUserContextMenuCommandEmbed(interaction),
-    interaction,
-    "commands"
-  );
 };
 
 const buttonInteractionHandlers = {
@@ -1037,6 +1037,19 @@ const buttonInteractionHandlers = {
 
 export const handleButton = async (interaction: ButtonInteraction) => {
   const [command, ...args] = interaction.customId.split(":");
+
+  logger.info(
+    `[Button] ${interaction.user.tag}: ${interaction.customId} [${
+      interaction.channel === null || interaction.channel.isDMBased()
+        ? "DM"
+        : "Guild"
+    }]`
+  );
+  await log(
+    getButtonEmbed(interaction, command, args),
+    interaction,
+    "commands"
+  );
 
   if (command === undefined) {
     logger.warn(
@@ -1067,19 +1080,6 @@ export const handleButton = async (interaction: ButtonInteraction) => {
       `Received unknown button interaction ${interaction.customId} by ${interaction.user.tag}`
     );
   }
-
-  logger.info(
-    `[Button] ${interaction.user.tag}: ${interaction.customId} [${
-      interaction.channel === null || interaction.channel.isDMBased()
-        ? "DM"
-        : "Guild"
-    }]`
-  );
-  await log(
-    getButtonEmbed(interaction, command, args),
-    interaction,
-    "commands"
-  );
 };
 
 const autocompleteInteractionHandlers = {
@@ -1098,6 +1098,15 @@ export const handleAutocomplete = async (
 ) => {
   const option = interaction.options.getFocused(true);
 
+  logger.info(
+    `[Auto] ${interaction.user.tag}: ${option.name} [${
+      interaction.channel === null || interaction.channel.isDMBased()
+        ? "DM"
+        : "Guild"
+    }]`
+  );
+  await log(getAutocompleteEmbed(interaction), interaction, "commands");
+
   if (Object.keys(autocompleteInteractionHandlers).includes(option.name)) {
     await autocompleteInteractionHandlers[
       option.name as keyof typeof autocompleteInteractionHandlers
@@ -1107,13 +1116,4 @@ export const handleAutocomplete = async (
       `Received unknown autocomplete interaction ${option.name} by ${interaction.user.tag}`
     );
   }
-
-  logger.info(
-    `[Auto] ${interaction.user.tag}: ${option.name} [${
-      interaction.channel === null || interaction.channel.isDMBased()
-        ? "DM"
-        : "Guild"
-    }]`
-  );
-  await log(getAutocompleteEmbed(interaction), interaction, "commands");
 };
