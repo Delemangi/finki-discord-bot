@@ -3,9 +3,7 @@ import { type ClientEvents, Events } from "discord.js";
 
 export const name = Events.GuildMemberAdd;
 
-export const execute = async (...args: ClientEvents[typeof name]) => {
-  const member = args[0];
-
+export const execute = async (...[member]: ClientEvents[typeof name]) => {
   const experience = await getExperienceByUserId(member.id);
 
   if (experience === null) {

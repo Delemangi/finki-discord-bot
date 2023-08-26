@@ -24,9 +24,7 @@ const crosspost = async (message: Message) => {
   }
 };
 
-export const execute = async (...args: ClientEvents[typeof name]) => {
-  const message = args[0];
-
+export const execute = async (...[message]: ClientEvents[typeof name]) => {
   await crosspost(message);
   await addExperience(message);
 };
