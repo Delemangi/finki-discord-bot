@@ -941,6 +941,18 @@ const ignoredButtons = ["help", "polls", "exp"];
 export const handleChatInputCommand = async (
   interaction: ChatInputCommandInteraction
 ) => {
+  try {
+    await interaction.deferReply();
+  } catch (error) {
+    logger.error(
+      `Failed to defer reply for chat input command ${interaction} by ${interaction.user.tag}\n${error}`
+    );
+    await interaction.reply(
+      "Настана грешка при извршување на командата. Обидете се повторно, или пријавете ја грешката."
+    );
+    return;
+  }
+
   const command = await getCommand(interaction.commandName);
 
   logger.info(
@@ -973,12 +985,11 @@ export const handleChatInputCommand = async (
   if (
     !hasCommandPermission(interaction.member as GuildMember | null, fullCommand)
   ) {
-    await interaction.reply(errors.commandNoPermission);
+    await interaction.editReply(errors.commandNoPermission);
     return;
   }
 
   try {
-    await interaction.deferReply();
     await command.execute(interaction);
   } catch (error) {
     logger.error(
@@ -990,6 +1001,18 @@ export const handleChatInputCommand = async (
 export const handleUserContextMenuCommand = async (
   interaction: UserContextMenuCommandInteraction
 ) => {
+  try {
+    await interaction.deferReply();
+  } catch (error) {
+    logger.error(
+      `Failed to defer reply for user context menu command ${interaction.commandName} by ${interaction.user.tag}\n${error}`
+    );
+    await interaction.reply(
+      "Настана грешка при извршување на командата. Обидете се повторно, или пријавете ја грешката."
+    );
+    return;
+  }
+
   const command = await getCommand(interaction.commandName);
 
   logger.info(
@@ -1013,7 +1036,6 @@ export const handleUserContextMenuCommand = async (
   }
 
   try {
-    await interaction.deferReply();
     await command.execute(interaction);
   } catch (error) {
     logger.error(
