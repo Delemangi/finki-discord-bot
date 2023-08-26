@@ -101,10 +101,6 @@ export const hasCommandPermission = (
   member: GuildMember | null,
   command: string
 ) => {
-  if (member === null) {
-    return false;
-  }
-
   const [permissions, roles] = getCommandPermission(command);
 
   if (permissions.length === 0 && roles.length === 0) {
@@ -118,8 +114,8 @@ export const hasCommandPermission = (
   const tidiedRoles = roles.filter(Boolean) as string[];
 
   return (
-    (permissions.length !== 0 && member.permissions.has(permissions)) ||
-    (tidiedRoles.length !== 0 && member.roles.cache.hasAny(...tidiedRoles))
+    (permissions.length !== 0 && member?.permissions.has(permissions)) ||
+    (tidiedRoles.length !== 0 && member?.roles.cache.hasAny(...tidiedRoles))
   );
 };
 

@@ -130,8 +130,7 @@ export const data = new SlashCommandBuilder()
   )
   .addSubcommand((command) =>
     command.setName("list").setDescription(commandDescriptions["vip list"])
-  )
-  .setDMPermission(false);
+  );
 
 const handleVipMembers = async (interaction: ChatInputCommandInteraction) => {
   const embeds = await getVipEmbed(interaction);
