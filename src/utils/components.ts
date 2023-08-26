@@ -5,6 +5,7 @@ import {
   getPollVotesByPollId,
 } from "../data/PollVote.js";
 import { getQuestions } from "../data/Question.js";
+import { getRules } from "../data/Rule.js";
 import { type Classroom } from "../types/Classroom.js";
 import { type CourseInformation } from "../types/CourseInformation.js";
 import { type CourseParticipants } from "../types/CourseParticipants.js";
@@ -24,7 +25,6 @@ import {
   getParticipants,
   getPrerequisites,
   getProfessors,
-  getRules,
   getStaff,
 } from "./config.js";
 import { logger } from "./logger.js";
@@ -527,10 +527,12 @@ export const getRulesEmbed = async () => {
     .setTitle("Правила")
     .setThumbnail(await getConfigProperty("logo"))
     .setDescription(
-      `${getRules()
+      `${(await getRules())
         .map(
           (value, index) =>
-            `${inlineCode((index + 1).toString().padStart(2, "0"))} ${value}`
+            `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
+              value.rule
+            }`
         )
         .join("\n\n")} \n\n ${italic(
         "Евентуално кршење на правилата може да доведе до санкции"

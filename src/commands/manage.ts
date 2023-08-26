@@ -10,6 +10,7 @@ import {
   createQuestionLinks,
   deleteQuestionLinksByQuestionId,
 } from "../data/QuestionLink.js";
+import { createRule, deleteRule } from "../data/Rule.js";
 import { AntosSchema } from "../schemas/AntosSchema.js";
 import { LinksSchema } from "../schemas/LinksSchema.js";
 import {
@@ -143,6 +144,26 @@ export const data = new SlashCommandBuilder()
           .setName("antos")
           .setDescription("Анто-и во JSON формат")
           .setRequired(true)
+      )
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("rule-set")
+      .setDescription(commandDescriptions["manage rule-set"])
+      .addStringOption((option) =>
+        option.setName("rule").setDescription("Правило").setRequired(true)
+      )
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("rule-delete")
+      .setDescription(commandDescriptions["manage rule-delete"])
+      .addStringOption((option) =>
+        option
+          .setName("rule")
+          .setDescription("Правило")
+          .setRequired(true)
+          .setAutocomplete(true)
       )
   );
 
@@ -491,6 +512,29 @@ const handleManageAntoMassAdd = async (
   await interaction.editReply("Успешно се креирани сите Анто факти.");
 };
 
+const handleManageRuleSet = async (
+  interaction: ChatInputCommandInteraction
+) => {
+  const rule = interaction.options.getString("rule", true);
+
+  await createRule({
+    rule,
+    userId: interaction.user.id,
+  });
+
+  await interaction.editReply("Правилото е креирано.");
+};
+
+const handleManageRuleDelete = async (
+  interaction: ChatInputCommandInteraction
+) => {
+  const rule = interaction.options.getString("rule", true);
+
+  await deleteRule(rule);
+
+  await interaction.editReply("Правилото е избришано.");
+};
+
 const manageHandlers = {
   "anto-add": handleManageAntoAdd,
   "anto-delete": handleManageAntoDelete,
@@ -501,6 +545,8 @@ const manageHandlers = {
   "question-content": handleManageQuestionContent,
   "question-delete": handleManageQuestionDelete,
   "question-set": handleManageQuestionSet,
+  "rule-delete": handleManageRuleDelete,
+  "rule-set": handleManageRuleSet,
 };
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {

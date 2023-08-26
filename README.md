@@ -40,9 +40,8 @@ It's recommended, but not required to run this inside a Docker container.
    5. `prerequisites.json` - an array of course prerequisites
    6. `professors.json` - an array of all courses and their professors and assistants
    7. `roles.json` - roles for the scripts and for the embeds
-   8. `rules.json` - an array of the server rules
-   9. `sessions.json` - an object of all exam sessions
-   10. `staff.json` - an array of the staff
+   8. `sessions.json` - an object of all exam sessions
+   9. `staff.json` - an array of the staff
 
 ### Sessions
 

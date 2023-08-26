@@ -8,6 +8,7 @@ import {
   getPollVotesByPollIdAndUserId,
 } from "../data/PollVote.js";
 import { getQuestionNames } from "../data/Question.js";
+import { getRules } from "../data/Rule.js";
 import {
   deleteVipPoll,
   getVipPollById,
@@ -920,6 +921,19 @@ export const handleClassroomAutocomplete = async (
   );
 };
 
+export const handleRuleAutocomplete = async (
+  interaction: AutocompleteInteraction
+) => {
+  await interaction.respond(
+    createOptions(
+      Object.entries(
+        transformOptions((await getRules()).map(({ rule }) => rule))
+      ),
+      interaction.options.getFocused()
+    )
+  );
+};
+
 // Interactions
 
 const ignoredButtons = ["help", "polls", "exp"];
@@ -1075,6 +1089,7 @@ const autocompleteInteractionHandlers = {
   link: handleLinkAutocomplete,
   professor: handleProfessorAutocomplete,
   question: handleQuestionAutocomplete,
+  rule: handleRuleAutocomplete,
   session: handleSessionAutocomplete,
 };
 
