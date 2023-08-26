@@ -29,5 +29,6 @@ export const ConfigSchema = z.object({
     cron: z.string(),
     name: z.string(),
     parent: z.string(),
+    position: z.number(),
   }),
 });

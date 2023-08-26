@@ -41,6 +41,7 @@ const defaultConfig: BotConfig = {
     cron: "20 4 * * *",
     name: "🚪︱задни-соби",
     parent: "1060626238760300685",
+    position: 0,
   },
 };
 

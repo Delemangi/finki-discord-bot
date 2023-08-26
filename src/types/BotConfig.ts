@@ -16,5 +16,6 @@ export type BotConfig = {
     cron: string;
     name: string;
     parent: string;
+    position: number;
   };
 };
