@@ -28,6 +28,7 @@ services:
     container_name: finki-pgadmin
     image: dpage/pgadmin4:latest
     restart: unless-stopped
+    user: root
     ports:
       - "5050:80"
     environment:
