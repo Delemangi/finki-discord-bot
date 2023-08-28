@@ -5,7 +5,6 @@ import { type CourseInformation } from "../types/CourseInformation.js";
 import { type CourseParticipants } from "../types/CourseParticipants.js";
 import { type CoursePrerequisites } from "../types/CoursePrerequisites.js";
 import { type CourseStaff } from "../types/CourseStaff.js";
-import { type InfoBlock } from "../types/InfoBlock.js";
 import { type LevelConfig } from "../types/LevelConfig.js";
 import { type RoleConfig } from "../types/RoleConfig.js";
 import { type Staff } from "../types/Staff.js";
@@ -97,9 +96,6 @@ const companies: string[] = JSON.parse(
 const courses: string[] = JSON.parse(
   readFileSync("./config/courses.json", "utf8")
 );
-const info: InfoBlock[] = JSON.parse(
-  readFileSync("./config/info.json", "utf8")
-);
 const information: CourseInformation[] = JSON.parse(
   readFileSync("./config/information.json", "utf8")
 );
@@ -133,10 +129,6 @@ export const getCompanies = () => {
 
 export const getCourses = () => {
   return courses;
-};
-
-export const getInfo = () => {
-  return info;
 };
 
 export const getInformation = () => {

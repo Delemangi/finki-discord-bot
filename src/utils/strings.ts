@@ -34,6 +34,8 @@ export const commandDescriptions = {
   "manage anto-add": "Додади Анто факт",
   "manage anto-delete": "Избриши Анто факт",
   "manage anto-mass-add": "Додади многу Анто факти",
+  "manage infomessage-delete": "Избриши информативна порака",
+  "manage infomessage-set": "Додади или измени информативна порака",
   "manage link-content": "Прикажи содржина на линк",
   "manage link-delete": "Избриши линк",
   "manage link-set": "Додади или измени линк",

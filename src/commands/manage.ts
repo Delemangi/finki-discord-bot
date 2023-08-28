@@ -1,4 +1,5 @@
 import { createAnto, createAntos, deleteAnto } from "../data/Anto.js";
+import { createInfoMessage, getInfoMessage } from "../data/InfoMessage.js";
 import { createLink, deleteLink, getLink, updateLink } from "../data/Link.js";
 import {
   createQuestion,
@@ -21,6 +22,7 @@ import {
 } from "../utils/components.js";
 import { logger } from "../utils/logger.js";
 import { commandDescriptions } from "../utils/strings.js";
+import { InfoMessageType } from "@prisma/client";
 import {
   type ChatInputCommandInteraction,
   codeBlock,
@@ -164,6 +166,50 @@ export const data = new SlashCommandBuilder()
           .setDescription("Правило")
           .setRequired(true)
           .setAutocomplete(true)
+      )
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("infomessage-set")
+      .setDescription(commandDescriptions["manage infomessage-set"])
+      .addNumberOption((option) =>
+        option
+          .setName("index")
+          .setDescription("Број на порака")
+          .setRequired(true)
+      )
+      .addStringOption((option) =>
+        option
+          .setName("type")
+          .setDescription("Тип на порака")
+          .setRequired(true)
+          .setChoices(
+            {
+              name: "Текст",
+              value: "text",
+            },
+            {
+              name: "Слика",
+              value: "image",
+            }
+          )
+      )
+      .addStringOption((option) =>
+        option
+          .setName("content")
+          .setDescription("Содржина (текст или линк до слика)")
+          .setRequired(true)
+      )
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("infomessage-delete")
+      .setDescription(commandDescriptions["manage infomessage-delete"])
+      .addNumberOption((option) =>
+        option
+          .setName("index")
+          .setDescription("Број на порака")
+          .setRequired(true)
       )
   );
 
@@ -535,10 +581,49 @@ const handleManageRuleDelete = async (
   await interaction.editReply("Правилото е избришано.");
 };
 
+const handleMangeInfoMessageSet = async (
+  interaction: ChatInputCommandInteraction
+) => {
+  const index = interaction.options.getNumber("index", true);
+  const type = interaction.options.getString("type", true);
+  const content = interaction.options
+    .getString("content", true)
+    .replaceAll("\\n", "\n");
+  const infoMessage = await getInfoMessage(index);
+
+  if (infoMessage === null) {
+    await createInfoMessage({
+      content,
+      index,
+      type: type === "text" ? InfoMessageType.TEXT : InfoMessageType.IMAGE,
+      userId: interaction.user.id,
+    });
+  }
+
+  await interaction.editReply("Инфо пораката е поставена.");
+};
+
+const handleManageInfoMessageDelete = async (
+  interaction: ChatInputCommandInteraction
+) => {
+  const index = interaction.options.getNumber("index", true);
+
+  const infoMessage = await getInfoMessage(index);
+
+  if (infoMessage === null) {
+    await interaction.editReply("Не постои таква инфо порака.");
+    return;
+  }
+
+  await interaction.editReply("Инфо пораката е избришана.");
+};
+
 const manageHandlers = {
   "anto-add": handleManageAntoAdd,
   "anto-delete": handleManageAntoDelete,
   "anto-mass-add": handleManageAntoMassAdd,
+  "infomessage-delete": handleManageInfoMessageDelete,
+  "infomessage-set": handleMangeInfoMessageSet,
   "link-content": handleManageLinkContent,
   "link-delete": handleManageLinkDelete,
   "link-set": handleManageLinkSet,

@@ -1,3 +1,4 @@
+import { getInfoMessages } from "../data/InfoMessage.js";
 import { sendEmbed } from "../utils/channels.js";
 import { getCommands } from "../utils/commands.js";
 import {
@@ -24,11 +25,11 @@ import {
   getCompanies,
   getCourses,
   getFromRoleConfig,
-  getInfo,
   getToken,
 } from "../utils/config.js";
 import { logger } from "../utils/logger.js";
 import { commandDescriptions } from "../utils/strings.js";
+import { InfoMessageType } from "@prisma/client";
 import {
   type Channel,
   ChannelType,
@@ -423,24 +424,24 @@ const handleScriptInfo = async (interaction: ChatInputCommandInteraction) => {
     await interaction.editReply("Само текст канали се дозволени.");
   }
 
-  const info = getInfo();
+  const infoMessages = await getInfoMessages();
 
-  for (const block of info) {
-    if (block.type === "image") {
+  for (const message of infoMessages) {
+    if (message.type === InfoMessageType.IMAGE) {
       try {
         await (channel as GuildTextBasedChannel).send({
-          files: [`./files/${block.name}`],
+          files: [message.content],
         });
       } catch (error) {
         await interaction.editReply("Испраќањето беше неуспешно.");
         logger.error(`Couldn't send image\n${error}`);
         return;
       }
-    } else if (block.type === "text") {
+    } else if (message.type === InfoMessageType.TEXT) {
       try {
         await (channel as GuildTextBasedChannel).send({
           allowedMentions: { parse: [] },
-          content: block.text,
+          content: message.content.replaceAll("\\n", "\n"),
         });
       } catch (error) {
         await interaction.editReply("Испраќањето беше неуспешно.");

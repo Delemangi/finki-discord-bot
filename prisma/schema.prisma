@@ -73,6 +73,23 @@ model Rule {
   updatedAt DateTime @updatedAt
 }
 
+model InfoMessage {
+  id String @id @default(uuid())
+
+  index   Int             @unique
+  type    InfoMessageType
+  content String
+  userId  String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum InfoMessageType {
+  TEXT
+  IMAGE
+}
+
 model Experience {
   id String @id @default(uuid())
 
