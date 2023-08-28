@@ -1,3 +1,4 @@
+import { getCompanies } from "../data/Company.js";
 import { getLinkNames } from "../data/Link.js";
 import { decidePoll, getPollById } from "../data/Poll.js";
 import { getPollOptionById } from "../data/PollOption.js";
@@ -982,6 +983,25 @@ export const handleRuleAutocomplete = async (
   }
 };
 
+export const handleCompanyAutocomplete = async (
+  interaction: AutocompleteInteraction
+) => {
+  try {
+    await interaction.respond(
+      createOptions(
+        Object.entries(
+          transformOptions((await getCompanies()).map(({ name }) => name))
+        ),
+        interaction.options.getFocused()
+      )
+    );
+  } catch (error) {
+    logger.error(
+      `Failed to respond to company autocomplete interaction by ${interaction.user.tag}\n${error}`
+    );
+  }
+};
+
 // Interactions
 
 const ignoredButtons = ["help", "polls", "exp"];
@@ -1154,6 +1174,7 @@ export const handleButton = async (interaction: ButtonInteraction) => {
 
 const autocompleteInteractionHandlers = {
   classroom: handleClassroomAutocomplete,
+  company: handleCompanyAutocomplete,
   course: handleCourseAutocomplete,
   courserole: handleCourseRoleAutocomplete,
   link: handleLinkAutocomplete,

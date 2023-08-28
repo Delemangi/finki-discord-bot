@@ -90,9 +90,6 @@ export const getApplicationId = () => {
 const classrooms: Classroom[] = JSON.parse(
   readFileSync("./config/classrooms.json", "utf8")
 );
-const companies: string[] = JSON.parse(
-  readFileSync("./config/companies.json", "utf8")
-);
 const courses: string[] = JSON.parse(
   readFileSync("./config/courses.json", "utf8")
 );
@@ -121,10 +118,6 @@ const staff: Staff[] = JSON.parse(readFileSync("./config/staff.json", "utf8"));
 
 export const getClassrooms = () => {
   return classrooms;
-};
-
-export const getCompanies = () => {
-  return companies;
 };
 
 export const getCourses = () => {

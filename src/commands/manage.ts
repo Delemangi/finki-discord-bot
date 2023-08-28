@@ -1,4 +1,9 @@
 import { createAnto, createAntos, deleteAnto } from "../data/Anto.js";
+import {
+  createCompanies,
+  createCompany,
+  deleteCompany,
+} from "../data/Company.js";
 import { createInfoMessage, getInfoMessage } from "../data/InfoMessage.js";
 import { createLink, deleteLink, getLink, updateLink } from "../data/Link.js";
 import {
@@ -13,6 +18,7 @@ import {
 } from "../data/QuestionLink.js";
 import { createRule, deleteRule } from "../data/Rule.js";
 import { AntosSchema } from "../schemas/AntosSchema.js";
+import { CompaniesSchema } from "../schemas/CompaniesSchema.js";
 import { LinksSchema } from "../schemas/LinksSchema.js";
 import {
   getLinkComponents,
@@ -209,6 +215,40 @@ export const data = new SlashCommandBuilder()
         option
           .setName("index")
           .setDescription("Број на порака")
+          .setRequired(true)
+      )
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("company-set")
+      .setDescription(commandDescriptions["manage company-set"])
+      .addStringOption((option) =>
+        option
+          .setName("company")
+          .setDescription("Име на компанија")
+          .setRequired(true)
+      )
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("company-delete")
+      .setDescription(commandDescriptions["manage company-delete"])
+      .addStringOption((option) =>
+        option
+          .setName("company")
+          .setDescription("Име на компанија")
+          .setRequired(true)
+          .setAutocomplete(true)
+      )
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("company-mass-add")
+      .setDescription(commandDescriptions["manage company-mass-add"])
+      .addStringOption((option) =>
+        option
+          .setName("companies")
+          .setDescription("Компании во JSON формат")
           .setRequired(true)
       )
   );
@@ -618,10 +658,77 @@ const handleManageInfoMessageDelete = async (
   await interaction.editReply("Инфо пораката е избришана.");
 };
 
+const handleCompanySet = async (interaction: ChatInputCommandInteraction) => {
+  const company = interaction.options.getString("company", true);
+
+  const createdCompany = await createCompany({
+    name: company,
+    userId: interaction.user.id,
+  });
+
+  if (createdCompany === null) {
+    await interaction.editReply(
+      "Креирањето на компанијата беше неуспешно. Проверете дали е креирана."
+    );
+    return;
+  }
+
+  await interaction.editReply("Компанијата е креирана.");
+};
+
+const handleCompanyDelete = async (
+  interaction: ChatInputCommandInteraction
+) => {
+  const company = interaction.options.getString("company", true);
+
+  const deletedCompany = await deleteCompany(company);
+
+  if (deletedCompany === null) {
+    await interaction.editReply("Не постои таква компанија.");
+    return;
+  }
+
+  await interaction.editReply("Компанијата е избришана.");
+};
+
+const handleCompanyMassAdd = async (
+  interaction: ChatInputCommandInteraction
+) => {
+  const companies = interaction.options.getString("companies", true);
+  let parsedCompanies;
+
+  try {
+    parsedCompanies = CompaniesSchema.parse(JSON.parse(companies));
+  } catch (error) {
+    logger.error(`Failed parsing companies\n${error}`);
+    await interaction.editReply("Компаниите не се во валиден JSON формат.");
+    return;
+  }
+
+  const createdCompanies = await createCompanies(
+    parsedCompanies.map((company) => ({
+      name: company,
+      userId: interaction.user.id,
+    }))
+  );
+
+  if (createdCompanies === null) {
+    await interaction.editReply(
+      "Креирањето на компаниите беше неуспешно. Проверете дали се креирани."
+    );
+    return;
+  }
+
+  await interaction.editReply("Успешно се креирани сите компании.");
+};
+
 const manageHandlers = {
   "anto-add": handleManageAntoAdd,
   "anto-delete": handleManageAntoDelete,
   "anto-mass-add": handleManageAntoMassAdd,
+  "company-delete": handleCompanyDelete,
+  "company-mass-add": handleCompanyMassAdd,
+  "company-set": handleCompanySet,
   "infomessage-delete": handleManageInfoMessageDelete,
   "infomessage-set": handleMangeInfoMessageSet,
   "link-content": handleManageLinkContent,

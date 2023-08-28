@@ -1,3 +1,4 @@
+import { getCompanies } from "../data/Company.js";
 import { getInfoMessages } from "../data/InfoMessage.js";
 import { sendEmbed } from "../utils/channels.js";
 import { getCommands } from "../utils/commands.js";
@@ -22,7 +23,6 @@ import {
 } from "../utils/components.js";
 import {
   getApplicationId,
-  getCompanies,
   getCourses,
   getFromRoleConfig,
   getToken,
@@ -486,12 +486,12 @@ const handleCompaniesForum = async (
     await interaction.editReply("Само форуми се дозволени.");
   }
 
-  for (const company of getCompanies()) {
+  for (const company of await getCompanies()) {
     await (channel as ForumChannel).threads.create({
       message: {
-        content: `Овој канал е за компанијата ${inlineCode(company)}.`,
+        content: `Овој канал е за компанијата ${inlineCode(company.name)}.`,
       },
-      name: company,
+      name: company.name,
     });
   }
 };
