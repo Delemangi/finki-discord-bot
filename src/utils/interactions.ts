@@ -832,9 +832,15 @@ const handleCourseAutocomplete = async (
     transformedCourses = Object.entries(transformOptions(getCourses()));
   }
 
-  await interaction.respond(
-    createOptions(transformedCourses, interaction.options.getFocused())
-  );
+  try {
+    await interaction.respond(
+      createOptions(transformedCourses, interaction.options.getFocused())
+    );
+  } catch (error) {
+    logger.error(
+      `Failed to respond to course autocomplete interaction by ${interaction.user.tag}\n${error}`
+    );
+  }
 };
 
 const handleProfessorAutocomplete = async (
@@ -846,9 +852,15 @@ const handleProfessorAutocomplete = async (
     );
   }
 
-  await interaction.respond(
-    createOptions(transformedProfessors, interaction.options.getFocused())
-  );
+  try {
+    await interaction.respond(
+      createOptions(transformedProfessors, interaction.options.getFocused())
+    );
+  } catch (error) {
+    logger.error(
+      `Failed to respond to professor autocomplete interaction by ${interaction.user.tag}\n${error}`
+    );
+  }
 };
 
 const handleCourseRoleAutocomplete = async (
@@ -860,33 +872,51 @@ const handleCourseRoleAutocomplete = async (
     );
   }
 
-  await interaction.respond(
-    createOptions(transformedCourseRoles, interaction.options.getFocused())
-  );
+  try {
+    await interaction.respond(
+      createOptions(transformedCourseRoles, interaction.options.getFocused())
+    );
+  } catch (error) {
+    logger.error(
+      `Failed to respond to course role autocomplete interaction by ${interaction.user.tag}\n${error}`
+    );
+  }
 };
 
 const handleQuestionAutocomplete = async (
   interaction: AutocompleteInteraction
 ) => {
-  await interaction.respond(
-    createOptions(
-      Object.entries(
-        transformOptions((await getQuestionNames()).map(({ name }) => name))
-      ),
-      interaction.options.getFocused()
-    )
-  );
+  try {
+    await interaction.respond(
+      createOptions(
+        Object.entries(
+          transformOptions((await getQuestionNames()).map(({ name }) => name))
+        ),
+        interaction.options.getFocused()
+      )
+    );
+  } catch (error) {
+    logger.error(
+      `Failed to respond to question autocomplete interaction by ${interaction.user.tag}\n${error}`
+    );
+  }
 };
 
 const handleLinkAutocomplete = async (interaction: AutocompleteInteraction) => {
-  await interaction.respond(
-    createOptions(
-      Object.entries(
-        transformOptions((await getLinkNames()).map(({ name }) => name))
-      ),
-      interaction.options.getFocused()
-    )
-  );
+  try {
+    await interaction.respond(
+      createOptions(
+        Object.entries(
+          transformOptions((await getLinkNames()).map(({ name }) => name))
+        ),
+        interaction.options.getFocused()
+      )
+    );
+  } catch (error) {
+    logger.error(
+      `Failed to respond to link autocomplete interaction by ${interaction.user.tag}\n${error}`
+    );
+  }
 };
 
 export const handleSessionAutocomplete = async (
@@ -898,9 +928,15 @@ export const handleSessionAutocomplete = async (
     );
   }
 
-  await interaction.respond(
-    createOptions(transformedSessions, interaction.options.getFocused())
-  );
+  try {
+    await interaction.respond(
+      createOptions(transformedSessions, interaction.options.getFocused())
+    );
+  } catch (error) {
+    logger.error(
+      `Failed to respond to session autocomplete interaction by ${interaction.user.tag}\n${error}`
+    );
+  }
 };
 
 export const handleClassroomAutocomplete = async (
@@ -916,22 +952,34 @@ export const handleClassroomAutocomplete = async (
     );
   }
 
-  await interaction.respond(
-    createOptions(transformedClassrooms, interaction.options.getFocused())
-  );
+  try {
+    await interaction.respond(
+      createOptions(transformedClassrooms, interaction.options.getFocused())
+    );
+  } catch (error) {
+    logger.error(
+      `Failed to respond to classroom autocomplete interaction by ${interaction.user.tag}\n${error}`
+    );
+  }
 };
 
 export const handleRuleAutocomplete = async (
   interaction: AutocompleteInteraction
 ) => {
-  await interaction.respond(
-    createOptions(
-      Object.entries(
-        transformOptions((await getRules()).map(({ rule }) => rule))
-      ),
-      interaction.options.getFocused()
-    )
-  );
+  try {
+    await interaction.respond(
+      createOptions(
+        Object.entries(
+          transformOptions((await getRules()).map(({ rule }) => rule))
+        ),
+        interaction.options.getFocused()
+      )
+    );
+  } catch (error) {
+    logger.error(
+      `Failed to respond to rule autocomplete interaction by ${interaction.user.tag}\n${error}`
+    );
+  }
 };
 
 // Interactions
