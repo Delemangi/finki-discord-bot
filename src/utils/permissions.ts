@@ -26,6 +26,10 @@ const commandPermissions: {
     permissions: [],
     roles: ["admin", "fss"],
   },
+  message: {
+    permissions: [PermissionsBitField.Flags.Administrator],
+    roles: [],
+  },
   "poll delete": {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],

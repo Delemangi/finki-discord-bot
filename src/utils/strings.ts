@@ -48,6 +48,7 @@ export const commandDescriptions = {
   "manage rule-delete": "Избриши правило",
   "manage rule-set": "Додади или измени правило",
   members: "Број на членови на серверот",
+  message: "Испрати порака",
   ping: "Пинг на ботот",
   "poll add": "Додади опции на анкети",
   "poll close": "Затвори ја анкетата за гласање",
