@@ -56,9 +56,13 @@ const commandPermissions: {
   },
   "vip invite": {
     permissions: [],
-    roles: ["vipVoting"],
+    roles: ["admin"],
   },
   "vip invited": {
+    permissions: [],
+    roles: ["vip"],
+  },
+  "vip list": {
     permissions: [],
     roles: ["vipVoting"],
   },
@@ -71,6 +75,10 @@ const commandPermissions: {
     roles: ["vipVoting"],
   },
   "vip remove": {
+    permissions: [],
+    roles: ["vipVoting"],
+  },
+  "vip upgrade": {
     permissions: [],
     roles: ["vipVoting"],
   },
