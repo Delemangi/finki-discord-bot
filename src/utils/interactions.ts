@@ -500,7 +500,7 @@ export const handlePollButtonForVipVote = async (
 
   const vipPoll = await getVipPollById(poll.id);
 
-  if (vipPoll?.type === "add" || vipPoll?.type === "forceAdd") {
+  if (vipPoll?.type === "add") {
     await handlePollButtonForVipAddVote(poll, vipPoll);
   } else if (vipPoll?.type === "remove") {
     await handlePollButtonForVipRemoveVote(poll, vipPoll, member);

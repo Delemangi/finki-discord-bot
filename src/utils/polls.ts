@@ -50,7 +50,7 @@ export const startVipPoll = async (
   let title;
   let description;
 
-  if (type === "add" || type === "forceAdd") {
+  if (type === "add") {
     title = `Влез во ВИП за ${vipUser.tag}`;
     description = `Дали сте за да стане корисникот ${
       vipUser.tag

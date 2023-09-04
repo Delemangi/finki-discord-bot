@@ -80,7 +80,7 @@ export const data = new SlashCommandBuilder()
           .setDescription("Тип на анкета")
           .setRequired(true)
           .addChoices(
-            ...["add", "remove", "upgrade", "forceAdd"].map((choice) => ({
+            ...["add", "remove", "upgrade"].map((choice) => ({
               name: choice,
               value: choice,
             }))
@@ -157,11 +157,15 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
   const vipRole = getRole("vip");
   const adminRole = getRole("admin");
   const vipInvitedRole = getRole("vipInvited");
+  const boosterRole = getRole("booster");
+  const contributorRole = getRole("contributor");
 
   if (
     vipRole === undefined ||
     adminRole === undefined ||
-    vipInvitedRole === undefined
+    vipInvitedRole === undefined ||
+    boosterRole === undefined ||
+    contributorRole === undefined
   ) {
     await interaction.editReply(
       "Улогите за пристап до ВИП или не се конфигурирани или не постојат."
@@ -178,12 +182,16 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (!member.roles.cache.has(vipInvitedRole.id)) {
+  if (
+    !member.roles.cache.has(vipInvitedRole.id) &&
+    !member.roles.cache.has(boosterRole.id) &&
+    !member.roles.cache.has(contributorRole.id)
+  ) {
     await interaction.editReply("Корисникот не е поканет да биде член на ВИП.");
     return;
   }
 
-  const pollId = await startVipPoll(interaction, user, "forceAdd", 0.67);
+  const pollId = await startVipPoll(interaction, user, "add", 0.67);
 
   if (pollId === null) {
     await interaction.editReply("Веќе постои предлог за овој корисник.");
