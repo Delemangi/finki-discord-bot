@@ -113,6 +113,10 @@ export const hasCommandPermission = (
   member: GuildMember | null,
   command: string
 ) => {
+  if (member?.permissions.has(PermissionsBitField.Flags.Administrator)) {
+    return true;
+  }
+
   const [permissions, roles] = getCommandPermission(command);
 
   if (permissions.length === 0 && roles.length === 0) {
