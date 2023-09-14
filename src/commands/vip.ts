@@ -3,6 +3,7 @@ import { getPollVotesByPollId } from "../data/PollVote.js";
 import {
   deleteVipPollByPollId,
   getVipPollById,
+  getVipPollByPollId,
   getVipPollByUserAndType,
   getVipPolls,
 } from "../data/VipPoll.js";
@@ -191,10 +192,17 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
+  const existingPoll = await getVipPollByUserAndType(user.id, "add");
+
+  if (existingPoll !== null) {
+    await interaction.editReply("Веќе постои предлог за овој корисник.");
+    return;
+  }
+
   const pollId = await startVipPoll(interaction, user, "add", 0.67);
 
   if (pollId === null) {
-    await interaction.editReply("Веќе постои предлог за овој корисник.");
+    await interaction.editReply("Настана грешка при креирање на анкетата.");
     return;
   }
 
@@ -367,10 +375,11 @@ const handleVipOverride = async (interaction: ChatInputCommandInteraction) => {
 const handleVipDelete = async (interaction: ChatInputCommandInteraction) => {
   const pollId = interaction.options.getString("poll", true);
 
-  const vipPoll = await getVipPollById(pollId);
+  const vipPoll =
+    (await getVipPollByPollId(pollId)) ?? (await getVipPollById(pollId));
   const poll = await getPollById(pollId);
 
-  if (vipPoll === null || poll === null) {
+  if (vipPoll === null && poll === null) {
     await interaction.editReply("Таа анкета не постои.");
     return;
   }
@@ -390,7 +399,7 @@ const handleVipRemaining = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const vipPoll = await getVipPollById(pollId);
+  const vipPoll = await getVipPollByPollId(pollId);
 
   if (vipPoll === null) {
     await interaction.editReply("Таа ВИП анкета не постои.");

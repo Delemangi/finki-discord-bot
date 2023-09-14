@@ -57,6 +57,21 @@ export const getPollVotesByOptionId = async (optionId?: string) => {
   }
 };
 
+export const countPollVotesByOptionId = async (optionId?: string) => {
+  if (optionId === undefined) {
+    return 0;
+  }
+
+  try {
+    return await database.pollVote.count({
+      where: { option: { id: optionId } },
+    });
+  } catch (error) {
+    logger.error(`Failed counting poll votes by option ID\n${error}`);
+    return 0;
+  }
+};
+
 export const createPollVote = async (pollVote?: Prisma.PollVoteCreateInput) => {
   if (pollVote === undefined) {
     return null;

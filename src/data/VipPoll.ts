@@ -2,7 +2,24 @@ import { logger } from "../utils/logger.js";
 import { database } from "./database.js";
 import { type Prisma } from "@prisma/client";
 
-export const getVipPollById = async (pollId?: string) => {
+export const getVipPollById = async (id?: string) => {
+  if (id === undefined) {
+    return null;
+  }
+
+  try {
+    return await database.vipPoll.findFirst({
+      where: {
+        id,
+      },
+    });
+  } catch (error) {
+    logger.error(`Failed obtaining VIP poll by ID\n${error}`);
+    return null;
+  }
+};
+
+export const getVipPollByPollId = async (pollId?: string) => {
   if (pollId === undefined) {
     return null;
   }

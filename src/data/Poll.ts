@@ -2,7 +2,7 @@ import { type PollWithOptions } from "../types/PollWithOptions.js";
 import { logger } from "../utils/logger.js";
 import { getMembersWithRoles } from "../utils/roles.js";
 import { database } from "./database.js";
-import { getPollVotesByOptionId } from "./PollVote.js";
+import { countPollVotesByOptionId } from "./PollVote.js";
 import { type Prisma } from "@prisma/client";
 import { type Interaction } from "discord.js";
 
@@ -97,26 +97,34 @@ export const decidePoll = async (pollId: string, interaction: Interaction) => {
     interaction.guild,
     ...poll.roles
   );
-  const threshold = Math.ceil(totalVoters.length * poll.threshold);
+  const rawThreshold = totalVoters.length * poll.threshold;
+  const threshold = Number.isInteger(rawThreshold)
+    ? rawThreshold + 1
+    : Math.ceil(rawThreshold);
 
   for (const option of poll.options) {
-    votes[option.name] = (await getPollVotesByOptionId(option.id)).length;
+    votes[option.name] = await countPollVotesByOptionId(option.id);
   }
 
   const decision = Object.entries(votes)
     .sort((a, b) => b[1] - a[1])
-    .find(([, numberVotes]) => numberVotes > threshold);
+    .find(([, numberVotes]) => numberVotes >= threshold);
 
-  if (Object.keys(votes).length === totalVoters.length) {
+  if (decision !== undefined) {
     poll.done = true;
+    poll.decision = decision[0];
 
     await updatePoll(poll);
     return;
   }
 
-  if (decision !== undefined) {
+  const totalVotes = Object.values(votes).reduce(
+    (total, optionVotes) => total + optionVotes,
+    0
+  );
+
+  if (totalVotes === totalVoters.length) {
     poll.done = true;
-    poll.decision = decision[0];
 
     await updatePoll(poll);
   }

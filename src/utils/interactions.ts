@@ -12,9 +12,10 @@ import { getQuestionNames } from "../data/Question.js";
 import { getRules } from "../data/Rule.js";
 import {
   deleteVipPoll,
-  getVipPollById,
+  getVipPollByPollId,
   getVipPollByUserAndType,
 } from "../data/VipPoll.js";
+import { type PollWithOptions } from "../types/PollWithOptions.js";
 import { deleteResponse, getChannel, log } from "./channels.js";
 import { getCommand } from "./commands.js";
 import {
@@ -498,14 +499,25 @@ export const handlePollButtonForVipVote = async (
     return;
   }
 
-  const vipPoll = await getVipPollById(poll.id);
+  const vipPoll = await getVipPollByPollId(poll.id);
+  const type = vipPoll?.type;
 
-  if (vipPoll?.type === "add") {
-    await handlePollButtonForVipAddVote(poll, vipPoll);
-  } else if (vipPoll?.type === "remove") {
-    await handlePollButtonForVipRemoveVote(poll, vipPoll, member);
-  } else if (vipPoll?.type === "upgrade") {
-    await handlePollButtonForVipUpgradeVote(poll, vipPoll, member);
+  if (vipPoll === null || type === undefined) {
+    return;
+  }
+
+  switch (type) {
+    case "add":
+      await handlePollButtonForVipAddVote(poll, vipPoll);
+      break;
+    case "remove":
+      await handlePollButtonForVipRemoveVote(poll, vipPoll, member);
+      break;
+    case "upgrade":
+      await handlePollButtonForVipUpgradeVote(poll, vipPoll, member);
+      break;
+    default:
+      break;
   }
 };
 
@@ -638,17 +650,19 @@ const handlePollButton = async (
   await handleVote(interaction, poll, optionId, option);
   await decidePoll(poll.id, interaction);
 
-  const embed = await getPollEmbed(poll);
-  const components = getPollComponents(poll);
+  const decidedPoll = await getPollById(poll.id);
+
+  const embed = await getPollEmbed(decidedPoll as PollWithOptions);
+  const components = getPollComponents(decidedPoll as PollWithOptions);
   await interaction.message.edit({
     components,
     embeds: [embed],
   });
 
-  const vipPoll = await getVipPollById(poll.id);
+  const vipPoll = await getVipPollByPollId(poll.id);
   if (vipPoll !== null) {
     const member = await interaction.guild.members.fetch(vipPoll.userId);
-    await handlePollButtonForVipVote(poll, member);
+    await handlePollButtonForVipVote(decidedPoll as PollWithOptions, member);
   }
 };
 
