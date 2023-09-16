@@ -10,9 +10,11 @@ export const refreshOnConfigChange = async (property: keyof BotConfig) => {
     case "channels":
       await initializeChannels();
       break;
+
     case "roles":
       await initializeRoles();
       break;
+
     default:
       logger.info(`No refresh needed for ${property}`);
       break;

@@ -534,18 +534,23 @@ export const handlePollButtonForVipVote = async (
     case "add":
       await handlePollButtonForVipAddVote(poll, vipPoll);
       break;
+
     case "remove":
       await handlePollButtonForVipRemoveVote(poll, vipPoll, member);
       break;
+
     case "upgrade":
       await handlePollButtonForVipUpgradeVote(poll, vipPoll, member);
       break;
+
     case "ban":
       await handlePollButtonForVipBanVote(poll, vipPoll);
       break;
+
     case "unban":
       await handlePollButtonForVipUnbanVote(poll, vipPoll);
       break;
+
     default:
       break;
   }

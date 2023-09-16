@@ -94,8 +94,10 @@ const getButtonCommand = (command?: string) => {
   switch (command) {
     case undefined:
       return "Unknown";
+
     case "pollStats":
       return "Poll Stats";
+
     default:
       return command[0]?.toUpperCase() + command.slice(1);
   }
@@ -114,6 +116,7 @@ const getButtonInfo = (
           getRoleFromSet(interaction.guild, "courses", args[0])?.id ?? "Unknown"
         ),
       };
+
     case "year":
     case "program":
     case "notification":
@@ -124,6 +127,7 @@ const getButtonInfo = (
           getRoleFromSet(interaction.guild, command, args[0])?.id ?? "Unknown"
         ),
       };
+
     case "help":
     case "exp":
     case "polls":
@@ -136,6 +140,7 @@ const getButtonInfo = (
         name: getButtonCommand(command),
         value: args[0] === undefined ? "Unknown" : inlineCode(args[0]),
       };
+
     default:
       return {
         name: "Unknown",
