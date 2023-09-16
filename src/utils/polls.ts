@@ -65,6 +65,16 @@ export const startVipPoll = async (
     description = `Дали сте за да му биде дадено право на глас на корисникот ${
       vipUser.tag
     } (${userMention(vipUser.id)})?`;
+  } else if (type === "ban") {
+    title = `Бан за ${vipUser.tag}`;
+    description = `Дали сте за да биде баниран корисникот ${
+      vipUser.tag
+    } (${userMention(vipUser.id)}) од ВИП?`;
+  } else if (type === "unban") {
+    title = `Бришење бан за ${vipUser.tag}`;
+    description = `Дали сте за да биде избришан банот на корисникот ${
+      vipUser.tag
+    } (${userMention(vipUser.id)}) од ВИП?`;
   } else {
     title = `Непознат тип на анкета за ${vipUser.tag}`;
     description = "Настана некоја грешка со анкетата.";

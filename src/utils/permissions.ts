@@ -50,6 +50,14 @@ const commandPermissions: {
     permissions: [],
     roles: ["vipVoting"],
   },
+  "vip ban": {
+    permissions: [],
+    roles: ["vipVoting"],
+  },
+  "vip bans": {
+    permissions: [],
+    roles: ["vip"],
+  },
   "vip delete": {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
@@ -75,6 +83,10 @@ const commandPermissions: {
     roles: ["vipVoting"],
   },
   "vip remove": {
+    permissions: [],
+    roles: ["vipVoting"],
+  },
+  "vip unban": {
     permissions: [],
     roles: ["vipVoting"],
   },

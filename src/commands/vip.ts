@@ -1,5 +1,6 @@
 import { deletePoll, getPollById, updatePoll } from "../data/Poll.js";
 import { getPollVotesByPollId } from "../data/PollVote.js";
+import { getVipBanByUserId, getVipBans } from "../data/VipBan.js";
 import {
   deleteVipPollByPollId,
   getVipPollById,
@@ -20,13 +21,18 @@ import {
 import { getConfigProperty } from "../utils/config.js";
 import { handlePollButtonForVipVote } from "../utils/interactions.js";
 import { logger } from "../utils/logger.js";
+import {
+  isMemberAdmin,
+  isMemberInVip,
+  isMemberInvitedToVip,
+  isVipVotingMember,
+} from "../utils/members.js";
 import { startVipPoll } from "../utils/polls.js";
-import { getMembersWithRoles, getRole } from "../utils/roles.js";
+import { getMembersWithRoles } from "../utils/roles.js";
 import { commandDescriptions, errors } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,
-  PermissionFlagsBits,
   SlashCommandBuilder,
   userMention,
 } from "discord.js";
@@ -81,7 +87,7 @@ export const data = new SlashCommandBuilder()
           .setDescription("Тип на анкета")
           .setRequired(true)
           .addChoices(
-            ...["add", "remove", "upgrade"].map((choice) => ({
+            ...["add", "remove", "upgrade", "ban", "unban"].map((choice) => ({
               name: choice,
               value: choice,
             }))
@@ -131,6 +137,25 @@ export const data = new SlashCommandBuilder()
   )
   .addSubcommand((command) =>
     command.setName("list").setDescription(commandDescriptions["vip list"])
+  )
+  .addSubcommand((command) =>
+    command
+      .setName("ban")
+      .setDescription(commandDescriptions["vip ban"])
+      .addUserOption((option) =>
+        option.setName("user").setDescription("Корисник").setRequired(true)
+      )
+  )
+  .addSubcommand((command) =>
+    command.setName("bans").setDescription(commandDescriptions["vip bans"])
+  )
+  .addSubcommand((command) =>
+    command
+      .setName("unban")
+      .setDescription(commandDescriptions["vip unban"])
+      .addUserOption((option) =>
+        option.setName("user").setDescription("Корисник").setRequired(true)
+      )
   );
 
 const handleVipMembers = async (interaction: ChatInputCommandInteraction) => {
@@ -146,6 +171,13 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
+  const vipBan = await getVipBanByUserId(user.id);
+
+  if (vipBan !== null) {
+    await interaction.editReply("Корисникот е баниран од ВИП.");
+    return;
+  }
+
   const member = interaction.guild?.members.cache.find(
     (mem) => mem.id === user.id
   );
@@ -155,39 +187,12 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const vipRole = getRole("vip");
-  const adminRole = getRole("admin");
-  const vipInvitedRole = getRole("vipInvited");
-  const boosterRole = getRole("booster");
-  const contributorRole = getRole("contributor");
-
-  if (
-    vipRole === undefined ||
-    adminRole === undefined ||
-    vipInvitedRole === undefined ||
-    boosterRole === undefined ||
-    contributorRole === undefined
-  ) {
-    await interaction.editReply(
-      "Улогите за пристап до ВИП или не се конфигурирани или не постојат."
-    );
-    return;
-  }
-
-  if (
-    member.roles.cache.has(vipRole.id) ||
-    member.roles.cache.has(adminRole.id) ||
-    member.permissions.has(PermissionFlagsBits.Administrator)
-  ) {
+  if (await isMemberInVip(member)) {
     await interaction.editReply("Корисникот е веќе член на ВИП.");
     return;
   }
 
-  if (
-    !member.roles.cache.has(vipInvitedRole.id) &&
-    !member.roles.cache.has(boosterRole.id) &&
-    !member.roles.cache.has(contributorRole.id)
-  ) {
+  if (!(await isMemberInvitedToVip(member))) {
     await interaction.editReply("Корисникот не е поканет да биде член на ВИП.");
     return;
   }
@@ -232,27 +237,15 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
 
   if (member === undefined) {
     await interaction.editReply("Корисникот не е член на овој сервер.");
-  }
-
-  const vipRole = getRole("vip");
-  const adminRole = getRole("admin");
-
-  if (vipRole === undefined || adminRole === undefined) {
-    await interaction.editReply(
-      "Улогите за пристап до ВИП или не се конфигурирани или не постојат."
-    );
     return;
   }
 
-  if (
-    member?.roles.cache.has(adminRole.id) ||
-    member?.permissions.has(PermissionFlagsBits.Administrator)
-  ) {
+  if (await isMemberAdmin(member)) {
     await interaction.editReply("Корисникот е администратор.");
     return;
   }
 
-  if (!member?.roles.cache.has(vipRole.id)) {
+  if (!(await isMemberInVip(member))) {
     await interaction.editReply("Корисникот не е член на ВИП.");
     return;
   }
@@ -293,32 +286,17 @@ const handleVipUpgrade = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const vipRole = getRole("vip");
-  const vipVotingRole = getRole("vipVoting");
-  const adminRole = getRole("admin");
-
-  if (
-    vipRole === undefined ||
-    adminRole === undefined ||
-    vipVotingRole === undefined
-  ) {
-    await interaction.editReply(
-      "Улогите за пристап до ВИП или не се конфигурирани или не постојат."
-    );
-    return;
-  }
-
-  if (member.roles.cache.has(adminRole.id)) {
+  if (await isMemberAdmin(member)) {
     await interaction.editReply("Корисникот е администратор.");
     return;
   }
 
-  if (!member.roles.cache.has(vipRole.id)) {
+  if (!(await isMemberInVip(member))) {
     await interaction.editReply("Корисникот не е член на ВИП.");
     return;
   }
 
-  if (member.roles.cache.has(vipVotingRole.id)) {
+  if (await isVipVotingMember(member)) {
     await interaction.editReply("Корисникот е полноправен член на ВИП.");
     return;
   }
@@ -420,25 +398,6 @@ const handleVipRemaining = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handleVipInvited = async (interaction: ChatInputCommandInteraction) => {
-  const vipInvitedRole = getRole("vipInvited");
-  const boosterRole = getRole("booster");
-  const contributorRole = getRole("contributor");
-  const adminRole = getRole("admin");
-  const vipRole = getRole("vip");
-
-  if (
-    vipInvitedRole === undefined ||
-    boosterRole === undefined ||
-    contributorRole === undefined ||
-    adminRole === undefined ||
-    vipRole === undefined
-  ) {
-    await interaction.editReply(
-      "Улогите за ВИП не се конфигурирани или не постојат."
-    );
-    return;
-  }
-
   const embed = await getVipInvitedEmbed();
   await interaction.editReply({
     embeds: [embed],
@@ -454,44 +413,25 @@ const handleVipInvite = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const vipInvitedRole = getRole("vipInvited");
-  const boosterRole = getRole("booster");
-  const contributorRole = getRole("contributor");
-  const adminRole = getRole("admin");
-  const vipRole = getRole("vip");
+  const vipBan = await getVipBanByUserId(user.id);
 
-  if (
-    vipInvitedRole === undefined ||
-    boosterRole === undefined ||
-    contributorRole === undefined ||
-    adminRole === undefined ||
-    vipRole === undefined
-  ) {
-    await interaction.editReply(
-      "Улогите за ВИП не се конфигурирани или не постојат."
-    );
+  if (vipBan !== null) {
+    await interaction.editReply("Корисникот е баниран од ВИП.");
     return;
   }
 
-  if (
-    member.roles.cache.has(vipRole.id) ||
-    member.roles.cache.has(adminRole.id) ||
-    member.permissions.has(PermissionFlagsBits.Administrator)
-  ) {
+  if (await isMemberInVip(member)) {
     await interaction.editReply("Корисникот е веќе член на ВИП.");
     return;
   }
 
-  if (
-    member.roles.cache.has(vipInvitedRole.id) ||
-    member.roles.cache.has(boosterRole.id) ||
-    member.roles.cache.has(contributorRole.id)
-  ) {
+  if (await isMemberInvitedToVip(member)) {
     await interaction.editReply("Корисникот е веќе поканет за ВИП.");
     return;
   }
 
-  await member.roles.add(vipInvitedRole.id);
+  const vipInvitedRole = (await getConfigProperty("roles")).vipInvited;
+  await member.roles.add(vipInvitedRole);
 
   await interaction.editReply("Успешно е поканет корисникот за ВИП.");
 };
@@ -584,8 +524,100 @@ const handleVipList = async (interaction: ChatInputCommandInteraction) => {
   });
 };
 
+const handleVipBan = async (interaction: ChatInputCommandInteraction) => {
+  const user = interaction.options.getUser("user", true);
+
+  if (user.bot) {
+    await interaction.editReply("Корисникот не смее да биде бот.");
+    return;
+  }
+
+  const member = interaction.guild?.members.cache.find(
+    (mem) => mem.id === user.id
+  );
+
+  if (member === undefined) {
+    await interaction.editReply("Корисникот не е член на овој сервер.");
+    return;
+  }
+
+  if (await isMemberAdmin(member)) {
+    await interaction.editReply("Корисникот е администратор.");
+    return;
+  }
+
+  if (await isMemberInVip(member)) {
+    await interaction.editReply("Корисникот е член на ВИП.");
+    return;
+  }
+
+  const pollId = await startVipPoll(interaction, user, "ban", 0.67);
+
+  if (pollId === null) {
+    await interaction.editReply("Веќе постои предлог за овој корисник.");
+    return;
+  }
+
+  const poll = await getPollById(pollId);
+
+  if (poll === null) {
+    await interaction.editReply("Таа анкета не постои.");
+    return;
+  }
+
+  const embed = await getPollEmbed(poll);
+  const components = getPollComponents(poll);
+  await interaction.editReply({ components, embeds: [embed] });
+};
+
+const handleVipBans = async (interaction: ChatInputCommandInteraction) => {
+  const vipBans = await getVipBans();
+
+  if (vipBans.length === 0) {
+    await interaction.editReply("Нема банирани корисници.");
+    return;
+  }
+
+  await interaction.editReply({
+    allowedMentions: {
+      parse: [],
+    },
+    content: vipBans.map(({ userId }) => userMention(userId)).join(", "),
+  });
+};
+
+const handleVipUnban = async (interaction: ChatInputCommandInteraction) => {
+  const user = interaction.options.getUser("user", true);
+  const vipBan = await getVipBanByUserId(user.id);
+
+  if (vipBan === null) {
+    await interaction.editReply("Корисникот не е баниран од ВИП.");
+    return;
+  }
+
+  const pollId = await startVipPoll(interaction, user, "unban", 0.67);
+
+  if (pollId === null) {
+    await interaction.editReply("Веќе постои предлог за овој корисник.");
+    return;
+  }
+
+  const poll = await getPollById(pollId);
+
+  if (poll === null) {
+    await interaction.editReply("Таа анкета не постои.");
+    return;
+  }
+
+  const embed = await getPollEmbed(poll);
+  const components = getPollComponents(poll);
+  await interaction.editReply({ components, embeds: [embed] });
+};
+
 const vipHandlers = {
   add: handleVipAdd,
+  ban: handleVipBan,
+  bans: handleVipBans,
   delete: handleVipDelete,
   invite: handleVipInvite,
   invited: handleVipInvited,
@@ -594,6 +626,7 @@ const vipHandlers = {
   override: handleVipOverride,
   remaining: handleVipRemaining,
   remove: handleVipRemove,
+  unban: handleVipUnban,
   upgrade: handleVipUpgrade,
 };
 

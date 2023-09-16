@@ -10,6 +10,7 @@ import {
 } from "../data/PollVote.js";
 import { getQuestionNames } from "../data/Question.js";
 import { getRules } from "../data/Rule.js";
+import { createVipBan, deleteVipBan } from "../data/VipBan.js";
 import {
   deleteVipPoll,
   getVipPollByPollId,
@@ -42,6 +43,7 @@ import {
 } from "./config.js";
 import { createOptions } from "./functions.js";
 import { logger } from "./logger.js";
+import { isMemberInVip } from "./members.js";
 import { transformOptions } from "./options.js";
 import { hasCommandPermission } from "./permissions.js";
 import { startVipPoll } from "./polls.js";
@@ -60,7 +62,6 @@ import {
   type GuildMember,
   type GuildMemberRoleManager,
   inlineCode,
-  PermissionsBitField,
   roleMention,
   type UserContextMenuCommandInteraction,
   userMention,
@@ -491,6 +492,49 @@ const handlePollButtonForVipUpgradeVote = async (
   }
 };
 
+const handlePollButtonForVipBanVote = async (poll: Poll, vipPoll: VipPoll) => {
+  const vipChannel = getChannel("vip");
+
+  if (poll.decision === "Да") {
+    await vipChannel?.send(
+      `Корисникот ${userMention(vipPoll.userId)} е баниран од ВИП.`
+    );
+
+    await deleteVipPoll(vipPoll.id);
+    await createVipBan({
+      userId: vipPoll.userId,
+    });
+  } else {
+    await vipChannel?.send(
+      `Корисникот ${userMention(vipPoll.userId)} не е баниран од ВИП.`
+    );
+
+    await deleteVipPoll(vipPoll.id);
+  }
+};
+
+const handlePollButtonForVipUnbanVote = async (
+  poll: Poll,
+  vipPoll: VipPoll
+) => {
+  const vipChannel = getChannel("vip");
+
+  if (poll.decision === "Да") {
+    await vipChannel?.send(
+      `Корисникот ${userMention(vipPoll.userId)} е одбаниран од ВИП.`
+    );
+
+    await deleteVipPoll(vipPoll.id);
+    await deleteVipBan(vipPoll.userId);
+  } else {
+    await vipChannel?.send(
+      `Корисникот ${userMention(vipPoll.userId)} не е одбаниран од ВИП.`
+    );
+
+    await deleteVipPoll(vipPoll.id);
+  }
+};
+
 export const handlePollButtonForVipVote = async (
   poll: Poll,
   member: GuildMember
@@ -515,6 +559,12 @@ export const handlePollButtonForVipVote = async (
       break;
     case "upgrade":
       await handlePollButtonForVipUpgradeVote(poll, vipPoll, member);
+      break;
+    case "ban":
+      await handlePollButtonForVipBanVote(poll, vipPoll);
+      break;
+    case "unban":
+      await handlePollButtonForVipUnbanVote(poll, vipPoll);
       break;
     default:
       break;
@@ -721,11 +771,7 @@ const handleVipButton = async (
 ) => {
   const member = interaction.member as GuildMember;
 
-  if (
-    member.permissions.has(PermissionsBitField.Flags.Administrator) ||
-    member.roles.cache.has(getRole("vip")?.id ?? "") ||
-    member.roles.cache.has(getRole("admin")?.id ?? "")
-  ) {
+  if (await isMemberInVip(member)) {
     const message = await interaction.reply({
       content: "Веќе сте член на ВИП.",
       ephemeral: true,

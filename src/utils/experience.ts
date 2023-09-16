@@ -3,10 +3,11 @@ import {
   getExperienceByUserId,
   updateExperience,
 } from "../data/Experience.js";
+import { getVipBanByUserId } from "../data/VipBan.js";
 import { getChannel } from "./channels.js";
 import { getConfigProperty, getLevels } from "./config.js";
 import { logger } from "./logger.js";
-import { getUsername } from "./members.js";
+import { getUsername, isMemberInVip } from "./members.js";
 import AsyncLock from "async-lock";
 import { type GuildMember, type Message } from "discord.js";
 
@@ -63,7 +64,18 @@ const awardMember = async (member: GuildMember | null, level: number) => {
     return;
   }
 
-  await member.roles.add(roles.add);
+  const vipBan = await getVipBanByUserId(member.id);
+  if ((await isMemberInVip(member)) || vipBan !== null) {
+    const vipInvitedRole = (await getConfigProperty("roles")).vipInvited;
+    await member.roles.add(roles.add.filter((role) => role !== vipInvitedRole));
+
+    logger.info(
+      `User ${member.user.tag} does not qualify for VIP, skipping giving him the role...`
+    );
+  } else {
+    await member.roles.add(roles.add);
+  }
+
   await member.roles.remove(roles.remove);
 };
 
