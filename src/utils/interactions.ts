@@ -38,6 +38,7 @@ import {
   getClassrooms,
   getCourses,
   getFromRoleConfig,
+  getRoleProperty,
   getSessions,
   getStaff,
 } from "./config.js";
@@ -435,15 +436,15 @@ const handlePollButtonForVipRemoveVote = async (
   if (poll.decision === "Да") {
     await deleteVipPoll(vipPoll.id);
 
-    const vipRole = getRole("vip");
-    const vipVotingRole = getRole("vipVoting");
+    const vipRoleId = await getRoleProperty("vip");
+    const vipVotingRoleId = await getRoleProperty("vipVoting");
 
-    if (vipRole !== undefined) {
-      await member.roles.remove(vipRole);
+    if (vipRoleId !== undefined) {
+      await member.roles.remove(vipRoleId);
     }
 
-    if (vipVotingRole !== undefined) {
-      await member.roles.remove(vipVotingRole);
+    if (vipVotingRoleId !== undefined) {
+      await member.roles.remove(vipVotingRoleId);
     }
 
     await vipChannel?.send(
@@ -1111,7 +1112,10 @@ export const handleChatInputCommand = async (
   ).trim();
 
   if (
-    !hasCommandPermission(interaction.member as GuildMember | null, fullCommand)
+    !(await hasCommandPermission(
+      interaction.member as GuildMember | null,
+      fullCommand
+    ))
   ) {
     await interaction.editReply(errors.commandNoPermission);
     return;

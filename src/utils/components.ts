@@ -25,14 +25,12 @@ import {
   getParticipants,
   getPrerequisites,
   getProfessors,
+  getRoleProperty,
   getStaff,
 } from "./config.js";
 import { logger } from "./logger.js";
 import { getUsername } from "./members.js";
-import {
-  getCommandsWithPermission,
-  hasCommandPermission,
-} from "./permissions.js";
+import { getCommandsWithPermission } from "./permissions.js";
 import {
   getMembersWithAndWithoutRoles,
   getMembersWithRoles,
@@ -64,7 +62,6 @@ import {
   inlineCode,
   type Interaction,
   italic,
-  type Role,
   roleMention,
   type User,
   type UserContextMenuCommandInteraction,
@@ -1114,15 +1111,15 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
 };
 
 export const getVipInvitedEmbed = async () => {
-  const vipInvitedRole = getRole("vipInvited") as Role;
-  const boosterRole = getRole("booster") as Role;
-  const contributorRole = getRole("contributor") as Role;
-  const adminRole = getRole("admin") as Role;
-  const vipRole = getRole("vip") as Role;
+  const vipInvitedRoleId = await getRoleProperty("vipInvited");
+  const boosterRoleId = await getRoleProperty("booster");
+  const contributorRoleId = await getRoleProperty("contributor");
+  const adminRoleId = await getRoleProperty("admin");
+  const vipRoleId = await getRoleProperty("vip");
 
   const memberIds = await getMembersWithAndWithoutRoles(
-    [vipInvitedRole.id, boosterRole.id, contributorRole.id],
-    [adminRole.id, vipRole.id]
+    [vipInvitedRoleId, boosterRoleId, contributorRoleId],
+    [adminRoleId, vipRoleId]
   );
   const guild = client.guilds.cache.get(await getConfigProperty("guild"));
   const members = await Promise.all(
@@ -1363,7 +1360,7 @@ export const getHelpFirstPageEmbed = async (
   member: GuildMember | null,
   commandsPerPage: number = 8
 ) => {
-  const totalCommands = getCommandsWithPermission(member).length;
+  const commands = getCommandsWithPermission(member);
 
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
@@ -1372,19 +1369,16 @@ export const getHelpFirstPageEmbed = async (
       "Ова се сите достапни команди за вас. Командите може да ги повикате во овој сервер, или во приватна порака."
     )
     .addFields(
-      ...Object.entries(commandDescriptions)
-        .filter((command) => hasCommandPermission(member, command[0]))
-        .slice(0, commandsPerPage)
-        .map(([command, description]) => ({
-          name: commandMention(command),
-          value: description,
-        }))
+      ...commands.slice(0, commandsPerPage).map((command) => ({
+        name: commandMention(command),
+        value: commandDescriptions[command as keyof typeof commandDescriptions],
+      }))
     )
     .setFooter({
       text: `Страна: 1 / ${Math.max(
         1,
-        Math.ceil(totalCommands / commandsPerPage)
-      )}  •  Команди: ${totalCommands}`,
+        Math.ceil(commands.length / commandsPerPage)
+      )}  •  Команди: ${commands.length}`,
     })
     .setTimestamp();
 };
@@ -1394,7 +1388,7 @@ export const getHelpNextPageEmbed = async (
   page: number,
   commandsPerPage: number = 8
 ) => {
-  const totalCommands = getCommandsWithPermission(member).length;
+  const commands = getCommandsWithPermission(member);
 
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
@@ -1403,19 +1397,19 @@ export const getHelpNextPageEmbed = async (
       "Ова се сите достапни команди за вас. Командите може да ги извршите во овој сервер, или во приватна порака."
     )
     .addFields(
-      ...Object.entries(commandDescriptions)
-        .filter((command) => hasCommandPermission(member, command[0]))
+      ...commands
         .slice(commandsPerPage * page, commandsPerPage * (page + 1))
-        .map(([command, description]) => ({
+        .map((command) => ({
           name: commandMention(command),
-          value: description,
+          value:
+            commandDescriptions[command as keyof typeof commandDescriptions],
         }))
     )
     .setFooter({
       text: `Страна: ${page + 1} / ${Math.max(
         1,
-        Math.ceil(totalCommands / commandsPerPage)
-      )}  •  Команди: ${totalCommands}`,
+        Math.ceil(commands.length / commandsPerPage)
+      )}  •  Команди: ${commands.length}`,
     })
     .setTimestamp();
 };

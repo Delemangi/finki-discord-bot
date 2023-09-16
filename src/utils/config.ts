@@ -7,6 +7,7 @@ import { type CoursePrerequisites } from "../types/CoursePrerequisites.js";
 import { type CourseStaff } from "../types/CourseStaff.js";
 import { type LevelConfig } from "../types/LevelConfig.js";
 import { type RoleConfig } from "../types/RoleConfig.js";
+import { type Roles } from "../types/Roles.js";
 import { type Staff } from "../types/Staff.js";
 import { readFileSync } from "node:fs";
 import { env } from "node:process";
@@ -73,6 +74,10 @@ export const setConfigProperty = async <T extends keyof BotConfig>(
   config[key] = value;
 
   return (await setConfig(config))?.value;
+};
+
+export const getRoleProperty = async <T extends Roles>(key: T) => {
+  return config.roles[key] ?? defaultConfig.roles[key];
 };
 
 export const getConfigKeys = () => {

@@ -18,7 +18,7 @@ import {
   getVipPollListFirstPageEmbed,
   getVipPollListNextPageEmbed,
 } from "../utils/components.js";
-import { getConfigProperty } from "../utils/config.js";
+import { getConfigProperty, getRoleProperty } from "../utils/config.js";
 import { handlePollButtonForVipVote } from "../utils/interactions.js";
 import { logger } from "../utils/logger.js";
 import {
@@ -430,7 +430,7 @@ const handleVipInvite = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const vipInvitedRole = (await getConfigProperty("roles")).vipInvited;
+  const vipInvitedRole = await getRoleProperty("vipInvited");
   await member.roles.add(vipInvitedRole);
 
   await interaction.editReply("Успешно е поканет корисникот за ВИП.");

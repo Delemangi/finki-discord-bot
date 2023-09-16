@@ -1,5 +1,5 @@
 import { client } from "./client.js";
-import { getConfigProperty } from "./config.js";
+import { getRoleProperty } from "./config.js";
 import { type GuildMember, PermissionsBitField } from "discord.js";
 
 export const getUsername = async (userId: string) => {
@@ -13,24 +13,29 @@ export const isMemberInVip = async (member: GuildMember) => {
     return true;
   }
 
-  const { vip, admin } = await getConfigProperty("roles");
+  const vipRoleId = await getRoleProperty("vip");
+  const adminRoleId = await getRoleProperty("admin");
 
-  return member.roles.cache.has(vip) || member.roles.cache.has(admin);
+  return (
+    member.roles.cache.has(vipRoleId) || member.roles.cache.has(adminRoleId)
+  );
 };
 
 export const isVipVotingMember = async (member: GuildMember) => {
-  const { vipVoting } = await getConfigProperty("roles");
+  const vipVotingRoleId = await getRoleProperty("vipVoting");
 
-  return member.roles.cache.has(vipVoting);
+  return member.roles.cache.has(vipVotingRoleId);
 };
 
 export const isMemberInvitedToVip = async (member: GuildMember) => {
-  const { booster, contributor, vipInvited } = await getConfigProperty("roles");
+  const boosterRoleId = await getRoleProperty("booster");
+  const contributorRoleId = await getRoleProperty("contributor");
+  const vipInvitedRoleId = await getRoleProperty("vipInvited");
 
   return (
-    member.roles.cache.has(booster) ||
-    member.roles.cache.has(contributor) ||
-    member.roles.cache.has(vipInvited)
+    member.roles.cache.has(boosterRoleId) ||
+    member.roles.cache.has(contributorRoleId) ||
+    member.roles.cache.has(vipInvitedRoleId)
   );
 };
 
@@ -39,7 +44,7 @@ export const isMemberAdmin = async (member: GuildMember) => {
     return true;
   }
 
-  const { admin } = await getConfigProperty("roles");
+  const adminRoleId = await getRoleProperty("admin");
 
-  return member.roles.cache.has(admin);
+  return member.roles.cache.has(adminRoleId);
 };

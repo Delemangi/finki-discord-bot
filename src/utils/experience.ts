@@ -5,7 +5,7 @@ import {
 } from "../data/Experience.js";
 import { getVipBanByUserId } from "../data/VipBan.js";
 import { getChannel } from "./channels.js";
-import { getConfigProperty, getLevels } from "./config.js";
+import { getConfigProperty, getLevels, getRoleProperty } from "./config.js";
 import { logger } from "./logger.js";
 import { getUsername, isMemberInVip } from "./members.js";
 import AsyncLock from "async-lock";
@@ -66,8 +66,10 @@ const awardMember = async (member: GuildMember | null, level: number) => {
 
   const vipBan = await getVipBanByUserId(member.id);
   if ((await isMemberInVip(member)) || vipBan !== null) {
-    const vipInvitedRole = (await getConfigProperty("roles")).vipInvited;
-    await member.roles.add(roles.add.filter((role) => role !== vipInvitedRole));
+    const vipInvitedRoleId = await getRoleProperty("vipInvited");
+    await member.roles.add(
+      roles.add.filter((role) => role !== vipInvitedRoleId)
+    );
 
     logger.info(
       `User ${member.user.tag} does not qualify for VIP, skipping giving him the role...`

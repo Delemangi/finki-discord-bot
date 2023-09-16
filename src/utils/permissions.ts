@@ -1,6 +1,5 @@
 import { type Roles } from "../types/Roles.js";
-import { logger } from "./logger.js";
-import { getRole } from "./roles.js";
+import { getRoleProperty } from "./config.js";
 import { commandDescriptions } from "./strings.js";
 import { type GuildMember, PermissionsBitField } from "discord.js";
 
@@ -96,15 +95,19 @@ const commandPermissions: {
   },
 };
 
-const getCommandPermission = (
+const getCommandPermission = async (
   command: string
-): [bigint[], Array<string | undefined>] => {
+): Promise<[bigint[], string[]]> => {
   const topCommand = command.split(" ")[0];
 
   if (Object.keys(commandPermissions).includes(command)) {
     return [
       commandPermissions[command]?.permissions ?? [],
-      commandPermissions[command]?.roles.map((role) => getRole(role)?.id) ?? [],
+      await Promise.all(
+        commandPermissions[command]?.roles.map(
+          async (role) => await getRoleProperty(role)
+        ) ?? []
+      ),
     ];
   } else if (
     topCommand !== undefined &&
@@ -112,8 +115,11 @@ const getCommandPermission = (
   ) {
     return [
       commandPermissions[topCommand]?.permissions ?? [],
-      commandPermissions[topCommand]?.roles.map((role) => getRole(role)?.id) ??
-        [],
+      await Promise.all(
+        commandPermissions[topCommand]?.roles.map(
+          async (role) => await getRoleProperty(role)
+        ) ?? []
+      ),
     ];
   } else {
     return [[], []];
@@ -121,7 +127,7 @@ const getCommandPermission = (
 };
 
 // Check whether the member has all the command permissions, or any of the roles
-export const hasCommandPermission = (
+export const hasCommandPermission = async (
   member: GuildMember | null,
   command: string
 ) => {
@@ -129,14 +135,10 @@ export const hasCommandPermission = (
     return true;
   }
 
-  const [permissions, roles] = getCommandPermission(command);
+  const [permissions, roles] = await getCommandPermission(command);
 
   if (permissions.length === 0 && roles.length === 0) {
     return true;
-  }
-
-  if (roles.includes(undefined)) {
-    logger.warn(`Found undefined roles in command permissions for ${command}`);
   }
 
   const tidiedRoles = roles.filter(Boolean) as string[];
@@ -148,7 +150,7 @@ export const hasCommandPermission = (
 };
 
 export const getCommandsWithPermission = (member: GuildMember | null) => {
-  return Object.keys(commandDescriptions).filter((command) =>
-    hasCommandPermission(member, command)
+  return Object.keys(commandDescriptions).filter(
+    async (command) => await hasCommandPermission(member, command)
   );
 };
