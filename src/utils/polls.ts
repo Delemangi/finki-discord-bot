@@ -50,34 +50,46 @@ export const startVipPoll = async (
   let title;
   let description;
 
-  if (type === "add") {
-    title = `Влез во ВИП за ${vipUser.tag}`;
-    description = `Дали сте за да стане корисникот ${
-      vipUser.tag
-    } (${userMention(vipUser.id)}) член на ВИП?`;
-  } else if (type === "remove") {
-    title = `Недоверба против ${vipUser.tag}`;
-    description = `Дали сте за да биде корисникот ${vipUser.tag} (${userMention(
-      vipUser.id
-    )}) избркан од ВИП?`;
-  } else if (type === "upgrade") {
-    title = `Гласачки права за ${vipUser.tag}`;
-    description = `Дали сте за да му биде дадено право на глас на корисникот ${
-      vipUser.tag
-    } (${userMention(vipUser.id)})?`;
-  } else if (type === "ban") {
-    title = `Бан за ${vipUser.tag}`;
-    description = `Дали сте за да биде баниран корисникот ${
-      vipUser.tag
-    } (${userMention(vipUser.id)}) од ВИП?`;
-  } else if (type === "unban") {
-    title = `Бришење бан за ${vipUser.tag}`;
-    description = `Дали сте за да биде избришан банот на корисникот ${
-      vipUser.tag
-    } (${userMention(vipUser.id)}) од ВИП?`;
-  } else {
-    title = `Непознат тип на анкета за ${vipUser.tag}`;
-    description = "Настана некоја грешка со анкетата.";
+  switch (type) {
+    case "add":
+      title = `Влез во ВИП за ${vipUser.tag}`;
+      description = `Дали сте за да стане корисникот ${
+        vipUser.tag
+      } (${userMention(vipUser.id)}) член на ВИП?`;
+      break;
+
+    case "remove":
+      title = `Недоверба против ${vipUser.tag}`;
+      description = `Дали сте за да биде корисникот ${
+        vipUser.tag
+      } (${userMention(vipUser.id)}) избркан од ВИП?`;
+      break;
+
+    case "upgrade":
+      title = `Гласачки права за ${vipUser.tag}`;
+      description = `Дали сте за да му биде дадено право на глас на корисникот ${
+        vipUser.tag
+      } (${userMention(vipUser.id)})?`;
+      break;
+
+    case "ban":
+      title = `Бан за ${vipUser.tag}`;
+      description = `Дали сте за да биде баниран корисникот ${
+        vipUser.tag
+      } (${userMention(vipUser.id)}) од ВИП?`;
+      break;
+
+    case "unban":
+      title = `Бришење бан за ${vipUser.tag}`;
+      description = `Дали сте за да биде избришан банот на корисникот ${
+        vipUser.tag
+      } (${userMention(vipUser.id)}) од ВИП?`;
+      break;
+
+    default:
+      title = `Непознат тип на анкета за ${vipUser.tag}`;
+      description = "Настана некоја грешка со анкетата.";
+      break;
   }
 
   const poll: Prisma.PollCreateInput = {
