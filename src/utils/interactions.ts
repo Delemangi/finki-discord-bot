@@ -853,7 +853,12 @@ const handleVipButton = async (
     return;
   }
 
-  const vipPollId = await startVipPoll(interaction, interaction.user, "add");
+  const vipPollId = await startVipPoll(
+    interaction,
+    interaction.user,
+    "add",
+    0.67,
+  );
   const channel = getChannel("polls");
 
   if (channel?.isTextBased() && vipPollId !== null) {
