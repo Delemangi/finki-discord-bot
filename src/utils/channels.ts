@@ -6,7 +6,7 @@ import {
   logErrorFunctions,
   logMessageFunctions,
   logMessages,
-  threadMessageFunctions,
+  vipStringFunctions,
 } from "./strings.js";
 import { Cron } from "croner";
 import {
@@ -90,7 +90,7 @@ export const scheduleVipTemporaryChannel = async () => {
       const channel = await guild.channels.create({
         name,
         parent,
-        topic: threadMessageFunctions.tempVipTopic(
+        topic: vipStringFunctions.tempVipTopic(
           await getNextVipCronRun("mk-MK", 2),
         ),
         type: ChannelType.GuildText,
