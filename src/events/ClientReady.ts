@@ -5,6 +5,7 @@ import {
 import { client as bot } from "../utils/client.js";
 import { logger } from "../utils/logger.js";
 import { initializeRoles } from "../utils/roles.js";
+import { logMessageFunctions } from "../utils/strings.js";
 import { type ClientEvents, Events } from "discord.js";
 
 export const name = Events.ClientReady;
@@ -15,6 +16,5 @@ export const execute = async (...[client]: ClientEvents[typeof name]) => {
   await initializeRoles();
   void scheduleVipTemporaryChannel();
   await client.application?.commands.fetch();
-  logger.info(`Logged in as ${bot.user?.tag}`);
-  logger.info("Bot ready");
+  logger.info(logMessageFunctions.loggedIn(bot.user?.tag));
 };

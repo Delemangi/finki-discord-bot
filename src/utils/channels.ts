@@ -2,6 +2,12 @@ import { type ChannelName } from "../types/ChannelName.js";
 import { client } from "./client.js";
 import { getConfigProperty } from "./config.js";
 import { logger } from "./logger.js";
+import {
+  logErrorFunctions,
+  logMessageFunctions,
+  logMessages,
+  threadMessageFunctions,
+} from "./strings.js";
 import { Cron } from "croner";
 import {
   type ActionRowBuilder,
@@ -15,7 +21,9 @@ import {
 } from "discord.js";
 import { setTimeout } from "node:timers/promises";
 
-const channels: { [K in ChannelName]?: GuildTextBasedChannel | undefined } = {};
+const channels: {
+  [K in ChannelName]?: GuildTextBasedChannel | undefined;
+} = {};
 
 export const initializeChannels = async () => {
   const channelIds = await getConfigProperty("channels");
@@ -30,11 +38,11 @@ export const initializeChannels = async () => {
     }
 
     channels[channelName as ChannelName] = client.channels.cache.get(
-      channelId
+      channelId,
     ) as GuildTextBasedChannel;
   }
 
-  logger.info("Channels initialized");
+  logger.info(logMessages.channelsInitialized);
 };
 
 export const getChannel = (type: ChannelName) => channels[type];
@@ -59,51 +67,54 @@ export const scheduleVipTemporaryChannel = async () => {
   const { cron, name, parent } = await getConfigProperty("temporaryVIPChannel");
   const guildId = await getConfigProperty("guild");
 
-  Cron(cron, { timezone: "CET" }, async () => {
-    const existingChannel = client.channels.cache.find(
-      (ch) => ch.type !== ChannelType.DM && ch.name === name
-    );
+  Cron(
+    cron,
+    {
+      timezone: "CET",
+    },
+    async () => {
+      const existingChannel = client.channels.cache.find(
+        (ch) => ch.type !== ChannelType.DM && ch.name === name,
+      );
 
-    if (existingChannel !== undefined) {
-      await existingChannel.delete();
-    }
+      if (existingChannel !== undefined) {
+        await existingChannel.delete();
+      }
 
-    const guild = client.guilds.cache.get(guildId);
+      const guild = client.guilds.cache.get(guildId);
 
-    if (guild === undefined) {
-      return;
-    }
+      if (guild === undefined) {
+        return;
+      }
 
-    const channel = await guild.channels.create({
-      name,
-      parent,
-      topic: `Задните соби на ВИП. Следно бришење е во ${await getNextVipCronRun(
-        "mk-MK",
-        2
-      )}`,
-      type: ChannelType.GuildText,
-    });
-    await channel.setPosition(
-      (
-        await getConfigProperty("temporaryVIPChannel")
-      ).position,
-      { relative: true }
-    );
+      const channel = await guild.channels.create({
+        name,
+        parent,
+        topic: threadMessageFunctions.tempVipTopic(
+          await getNextVipCronRun("mk-MK", 2),
+        ),
+        type: ChannelType.GuildText,
+      });
+      await channel.setPosition(
+        (await getConfigProperty("temporaryVIPChannel")).position,
+        {
+          relative: true,
+        },
+      );
 
-    logger.info(
-      `Temporary VIP channel recreated. Next recreation is scheduled for ${await getNextVipCronRun()}`
-    );
-  });
-
-  logger.info(
-    `Temporary VIP channel recreation is scheduled for ${await getNextVipCronRun()}`
+      logger.info(
+        logMessageFunctions.tempVipScheduled(await getNextVipCronRun()),
+      );
+    },
   );
+
+  logger.info(logMessageFunctions.tempVipScheduled(await getNextVipCronRun()));
 };
 
 export const log = async (
   embed: EmbedBuilder,
   interaction: Interaction,
-  type: ChannelName
+  type: ChannelName,
 ) => {
   const channel = channels[type];
 
@@ -112,11 +123,11 @@ export const log = async (
   }
 
   try {
-    await channel.send({ embeds: [embed] });
+    await channel.send({
+      embeds: [embed],
+    });
   } catch (error) {
-    logger.error(
-      `Failed to send log for interaction ${interaction.id}\n${error}`
-    );
+    logger.error(logErrorFunctions.interactionLogError(interaction.id, error));
   }
 };
 
@@ -124,7 +135,7 @@ export const sendEmbed = async (
   channel: GuildTextBasedChannel,
   embed: EmbedBuilder,
   components: Array<ActionRowBuilder<ButtonBuilder>>,
-  newlines?: number
+  newlines?: number,
 ) => {
   return newlines === undefined || Number.isNaN(newlines)
     ? await channel.send({
@@ -140,7 +151,7 @@ export const sendEmbed = async (
 
 export const deleteResponse = async (
   message: InteractionResponse | Message,
-  interval?: number
+  interval?: number,
 ) => {
   const ephemeralReplyTime = await getConfigProperty("ephemeralReplyTime");
 
@@ -149,6 +160,6 @@ export const deleteResponse = async (
   try {
     await message.delete();
   } catch (error) {
-    logger.error(`Failed to delete message ${message.id}\n${error}`);
+    logger.error(logErrorFunctions.responseDeleteError(message.id, error));
   }
 };

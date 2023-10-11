@@ -7,21 +7,20 @@ import { getVipBanByUserId } from "../data/VipBan.js";
 import { getChannel } from "./channels.js";
 import { getConfigProperty, getLevels, getRoleProperty } from "./config.js";
 import { logger } from "./logger.js";
-import { getUsername, isMemberInVip } from "./members.js";
+import { isMemberInVip } from "./members.js";
+import { emojiRegex, urlRegex } from "./regex.js";
+import { experienceMessages, logMessageFunctions } from "./strings.js";
 import AsyncLock from "async-lock";
 import { type GuildMember, type Message } from "discord.js";
 
 const coefficient = (1 + Math.sqrt(5)) / 2 - 1;
 
 const cleanMessage = (message: string) => {
-  return message
-    .trim()
-    .replaceAll(/<:(\w)+:\d+>/gu, "$1")
-    .replaceAll(/\bhttps?:\/\/\S+/gu, "");
+  return message.trim().replaceAll(emojiRegex, "$1").replaceAll(urlRegex, "");
 };
 
 const countLinks = (message: string) => {
-  return message.match(/\bhttps?:\/\/\S+/gu)?.length ?? 0;
+  return urlRegex.exec(message)?.length ?? 0;
 };
 
 const getExperienceFromMessage = async (message: Message) => {
@@ -38,9 +37,9 @@ const getExperienceFromMessage = async (message: Message) => {
           5 * message.mentions.users.size ** coefficient +
           5 * message.mentions.roles.size ** coefficient +
           5 * message.mentions.channels.size ** coefficient +
-          5 * message.stickers.size
-      )
-    )
+          5 * message.stickers.size,
+      ),
+    ),
   );
 };
 
@@ -68,12 +67,10 @@ const awardMember = async (member: GuildMember | null, level: number) => {
   if ((await isMemberInVip(member)) || vipBan !== null) {
     const vipInvitedRoleId = await getRoleProperty("vipInvited");
     await member.roles.add(
-      roles.add.filter((role) => role !== vipInvitedRoleId)
+      roles.add.filter((role) => role !== vipInvitedRoleId),
     );
 
-    logger.info(
-      `User ${member.user.tag} does not qualify for VIP, skipping giving him the role...`
-    );
+    logger.info(logMessageFunctions.userNotQualifiedForVip(member.user.tag));
   } else {
     await member.roles.add(roles.add);
   }
@@ -109,11 +106,6 @@ export const addExperience = async (message: Message) => {
       }));
 
     if (currentLevel === null) {
-      logger.warn(
-        `Couldn't get or create experience for user ${await getUsername(
-          message.author.id
-        )}`
-      );
       return;
     }
 
@@ -127,13 +119,15 @@ export const addExperience = async (message: Message) => {
       currentLevel.level = level;
 
       const channel = getChannel("activity");
-
-      if (channel !== undefined) {
-        await channel.send({
-          allowedMentions: { parse: [] },
-          content: `Честитки, ${message.author}! Сега сте ниво ${currentLevel.level}!`,
-        });
-      }
+      await channel?.send({
+        allowedMentions: {
+          parse: [],
+        },
+        content: experienceMessages.levelUp(
+          message.author.id,
+          currentLevel.level,
+        ),
+      });
 
       await awardMember(message.member, currentLevel.level);
     }

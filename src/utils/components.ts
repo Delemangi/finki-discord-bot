@@ -11,6 +11,7 @@ import { type CourseInformation } from "../types/CourseInformation.js";
 import { type CourseParticipants } from "../types/CourseParticipants.js";
 import { type CoursePrerequisites } from "../types/CoursePrerequisites.js";
 import { type CourseStaff } from "../types/CourseStaff.js";
+import { type PaginationPosition } from "../types/PaginationPosition.js";
 import { type PollWithOptions } from "../types/PollWithOptions.js";
 import { type ProgramName } from "../types/ProgramName.js";
 import { type ProgramShorthand } from "../types/ProgramShorthand.js";
@@ -37,7 +38,19 @@ import {
   getRole,
   getRoleFromSet,
 } from "./roles.js";
-import { commandDescriptions, programMapping, vipStrings } from "./strings.js";
+import {
+  aboutString,
+  botName,
+  commandDescriptions,
+  embedMessageFunctions,
+  embedMessages,
+  logEmbedStrings,
+  logErrorFunctions,
+  paginationStringFunctions,
+  programMapping,
+  shortStrings,
+  vipStrings,
+} from "./strings.js";
 import {
   type Experience,
   type Link,
@@ -58,7 +71,6 @@ import {
   EmbedBuilder,
   type Guild,
   type GuildMember,
-  hyperlink,
   inlineCode,
   type Interaction,
   italic,
@@ -84,7 +96,7 @@ const truncateString = (string: string | null | undefined, length: number) => {
 
 const getChannel = (interaction: Interaction) => {
   if (interaction.channel === null || interaction.channel.isDMBased()) {
-    return "DM";
+    return shortStrings.dm;
   }
 
   return channelMention(interaction.channel.id);
@@ -93,10 +105,10 @@ const getChannel = (interaction: Interaction) => {
 const getButtonCommand = (command?: string) => {
   switch (command) {
     case undefined:
-      return "Unknown";
+      return logEmbedStrings.unknown;
 
     case "pollStats":
-      return "Poll Stats";
+      return logEmbedStrings.pollStats;
 
     default:
       return command[0]?.toUpperCase() + command.slice(1);
@@ -106,14 +118,15 @@ const getButtonCommand = (command?: string) => {
 const getButtonInfo = (
   interaction: ButtonInteraction,
   command: string,
-  args: string[]
+  args: string[],
 ) => {
   switch (command) {
     case "course":
       return {
         name: getButtonCommand(command),
         value: roleMention(
-          getRoleFromSet(interaction.guild, "courses", args[0])?.id ?? "Unknown"
+          getRoleFromSet(interaction.guild, "courses", args[0])?.id ??
+            logEmbedStrings.unknown,
         ),
       };
 
@@ -124,7 +137,8 @@ const getButtonInfo = (
       return {
         name: getButtonCommand(command),
         value: roleMention(
-          getRoleFromSet(interaction.guild, command, args[0])?.id ?? "Unknown"
+          getRoleFromSet(interaction.guild, command, args[0])?.id ??
+            logEmbedStrings.unknown,
         ),
       };
 
@@ -138,13 +152,14 @@ const getButtonInfo = (
     case "vip":
       return {
         name: getButtonCommand(command),
-        value: args[0] === undefined ? "Unknown" : inlineCode(args[0]),
+        value:
+          args[0] === undefined ? logEmbedStrings.unknown : inlineCode(args[0]),
       };
 
     default:
       return {
-        name: "Unknown",
-        value: "Unknown",
+        name: logEmbedStrings.unknown,
+        value: logEmbedStrings.unknown,
       };
   }
 };
@@ -161,13 +176,13 @@ const linkProfessors = (professors: string) => {
       getStaff().find((staff) => professor.includes(staff.name))?.finki,
     ])
     .map(([professor, finki]) =>
-      finki ? `[${professor}](${finki})` : professor
+      finki ? `[${professor}](${finki})` : professor,
     )
     .join("\n");
 };
 
 const fetchMessageUrl = async (
-  interaction: ChatInputCommandInteraction | UserContextMenuCommandInteraction
+  interaction: ChatInputCommandInteraction | UserContextMenuCommandInteraction,
 ) => {
   if (
     interaction.channel === null ||
@@ -178,18 +193,18 @@ const fetchMessageUrl = async (
   }
 
   try {
-    return { url: (await interaction.fetchReply()).url };
-  } catch {
-    logger.warn(
-      `Failed to fetch message URL for interaction by ${interaction.user.tag} in ${interaction.channel.name}`
-    );
+    return {
+      url: (await interaction.fetchReply()).url,
+    };
+  } catch (error) {
+    logger.warn(logErrorFunctions.messageUrlFetchError(interaction.id, error));
     return {};
   }
 };
 
 const transformCoursePrerequisites = (
   program: ProgramShorthand,
-  semester: number
+  semester: number,
 ) => {
   return getPrerequisites()
     .filter((prerequisite) => prerequisite.semester === semester)
@@ -198,20 +213,20 @@ const transformCoursePrerequisites = (
         prerequisite[program] === "задолжителен" ||
         prerequisite[program] === "изборен" ||
         prerequisite[program] === "нема" ||
-        prerequisite[program] === "задолжителен (изб.)"
+        prerequisite[program] === "задолжителен (изб.)",
     )
     .map((prerequisite) =>
       prerequisite[program] === "нема"
         ? {
             course: prerequisite.course,
-            prerequisite: "Нема",
+            prerequisite: shortStrings.none,
             type: "изборен",
           }
         : {
             course: prerequisite.course,
             prerequisite: prerequisite.prerequisite,
             type: prerequisite[program],
-          }
+          },
     );
 };
 
@@ -220,10 +235,10 @@ export const generatePollPercentageBar = (percentage: number) => {
     return ".".repeat(20);
   }
 
-  const pb =
+  const progressBar =
     "█".repeat(Math.floor(percentage / 5)) +
     (percentage - Math.floor(percentage) >= 0.5 ? "▌" : "");
-  return pb + ".".repeat(Math.max(0, 20 - pb.length));
+  return progressBar + ".".repeat(Math.max(0, 20 - progressBar.length));
 };
 
 // Scripts
@@ -231,11 +246,11 @@ export const generatePollPercentageBar = (percentage: number) => {
 export const getColorsEmbed = async (image: string) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle("Боја на име")
+    .setTitle(embedMessages.nameColor)
     .setThumbnail(await getConfigProperty("logo"))
-    .setDescription("Изберете боја за вашето име.")
+    .setDescription(embedMessages.chooseNameColor)
     .setFooter({
-      text: "(може да изберете само една опција, секоја нова опција ја заменува старата)",
+      text: embedMessages.onlyOneOption,
     })
     .setImage(image);
 };
@@ -271,19 +286,21 @@ export const getColorsComponents = () => {
 export const getCoursesEmbed = async (roleSet: string, roles: string[]) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle(`${roleSet.length > 1 ? "" : "Семестар"} ${roleSet}`)
+    .setTitle(`${roleSet.length > 1 ? "" : embedMessages.semester} ${roleSet}`)
     .setThumbnail(await getConfigProperty("logo"))
     .setDescription(
       roles
         .map(
-          (role, index_) =>
-            `${inlineCode((index_ + 1).toString().padStart(2, "0"))} ${
+          (role, index) =>
+            `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
               getFromRoleConfig("courses")[role]
-            }`
+            }`,
         )
-        .join("\n")
+        .join("\n"),
     )
-    .setFooter({ text: "(може да изберете повеќе опции)" });
+    .setFooter({
+      text: embedMessages.multipleOptions,
+    });
 };
 
 export const getCoursesComponents = (roles: string[]) => {
@@ -316,12 +333,12 @@ export const getCoursesComponents = (roles: string[]) => {
 export const getCoursesAddEmbed = async () => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle("Масовно земање предмети")
+    .setTitle(embedMessages.massCourseAdd)
     .setThumbnail(await getConfigProperty("logo"))
-    .setDescription(
-      "Земете предмети од одредени семестри чии канали сакате да ги гледате."
-    )
-    .setFooter({ text: "(може да изберете повеќе опции)" });
+    .setDescription(embedMessages.chooseSemesterMassCourseAdd)
+    .setFooter({
+      text: embedMessages.multipleOptions,
+    });
 };
 
 export const getCoursesAddComponents = (roleSets: string[]) => {
@@ -334,7 +351,7 @@ export const getCoursesAddComponents = (roleSets: string[]) => {
     if (index1 >= roleSets.length) {
       const addAllButton = new ButtonBuilder()
         .setCustomId(`addCourses:all`)
-        .setLabel("Сите")
+        .setLabel(embedMessages.all)
         .setStyle(ButtonStyle.Success);
 
       const addAllRow = new ActionRowBuilder<ButtonBuilder>();
@@ -351,7 +368,7 @@ export const getCoursesAddComponents = (roleSets: string[]) => {
 
       const button = new ButtonBuilder()
         .setCustomId(`addCourses:${roleSets[index2]}`)
-        .setLabel(`Семестар ${roleSets[index2]}`)
+        .setLabel(embedMessageFunctions.semesterN(roleSets[index2]))
         .setStyle(ButtonStyle.Success);
 
       buttons.push(button);
@@ -367,12 +384,12 @@ export const getCoursesAddComponents = (roleSets: string[]) => {
 export const getCoursesRemoveEmbed = async () => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle("Масовно отстранување предмети")
+    .setTitle(embedMessages.massCourseRemove)
     .setThumbnail(await getConfigProperty("logo"))
-    .setDescription(
-      "Отстранете предмети од одредени семестри чии канали не сакате да ги гледате."
-    )
-    .setFooter({ text: "(може да изберете повеќе опции)" });
+    .setDescription(embedMessages.chooseSemesterMassCourseRemove)
+    .setFooter({
+      text: embedMessages.multipleOptions,
+    });
 };
 
 export const getCoursesRemoveComponents = (roleSets: string[]) => {
@@ -385,7 +402,7 @@ export const getCoursesRemoveComponents = (roleSets: string[]) => {
     if (index1 >= roleSets.length) {
       const removeAllButton = new ButtonBuilder()
         .setCustomId(`removeCourses:all`)
-        .setLabel("Сите")
+        .setLabel(embedMessages.all)
         .setStyle(ButtonStyle.Danger);
 
       const removeAllRow = new ActionRowBuilder<ButtonBuilder>();
@@ -402,7 +419,7 @@ export const getCoursesRemoveComponents = (roleSets: string[]) => {
 
       const button = new ButtonBuilder()
         .setCustomId(`removeCourses:${roleSets[index2]}`)
-        .setLabel(`Семестар ${roleSets[index2]}`)
+        .setLabel(embedMessageFunctions.semesterN(roleSets[index2]))
         .setStyle(ButtonStyle.Danger);
 
       buttons.push(button);
@@ -418,12 +435,12 @@ export const getCoursesRemoveComponents = (roleSets: string[]) => {
 export const getNotificationsEmbed = async () => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle("Нотификации")
+    .setTitle(embedMessages.notifications)
     .setThumbnail(await getConfigProperty("logo"))
-    .setDescription(
-      "Изберете за кои типови на објави сакате да добиете нотификации."
-    )
-    .setFooter({ text: "(може да изберете повеќе опции)" });
+    .setDescription(embedMessages.chooseNotifications)
+    .setFooter({
+      text: embedMessages.multipleOptions,
+    });
 };
 
 export const getNotificationsComponents = () => {
@@ -459,9 +476,9 @@ export const getProgramsEmbed = async () => {
     .setColor(await getConfigProperty("color"))
     .setTitle("Смер")
     .setThumbnail(await getConfigProperty("logo"))
-    .setDescription("Изберете го смерот на кој студирате.")
+    .setDescription(embedMessages.chooseProgram)
     .setFooter({
-      text: "(може да изберете само една опција, секоја нова опција ја заменува старата)",
+      text: embedMessages.onlyOneOption,
     });
 };
 
@@ -498,9 +515,9 @@ export const getYearsEmbed = async () => {
     .setColor(await getConfigProperty("color"))
     .setTitle("Година на студирање")
     .setThumbnail(await getConfigProperty("logo"))
-    .setDescription("Изберете ја годината на студирање.")
+    .setDescription(embedMessages.chooseYear)
     .setFooter({
-      text: "(може да изберете само една опција, секоја нова опција ја заменува старата)",
+      text: embedMessages.onlyOneOption,
     });
 };
 
@@ -534,11 +551,9 @@ export const getRulesEmbed = async () => {
           (value, index) =>
             `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
               value.rule
-            }`
+            }`,
         )
-        .join("\n\n")} \n\n ${italic(
-        "Евентуално кршење на правилата може да доведе до санкции"
-      )}.`
+        .join("\n\n")} \n\n ${italic(embedMessages.breakRules)}.`,
     );
 };
 
@@ -557,7 +572,7 @@ export const getVipRequestComponents = () => {
     new ButtonBuilder()
       .setCustomId("vip:request")
       .setLabel(vipStrings.vipRequestButton)
-      .setStyle(ButtonStyle.Primary)
+      .setStyle(ButtonStyle.Primary),
   );
   components.push(row);
 
@@ -567,7 +582,7 @@ export const getVipRequestComponents = () => {
 export const getVipConfirmEmbed = async () => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle("Заклетва")
+    .setTitle(vipStrings.vipAcceptedTitle)
     .setDescription(vipStrings.vipConfirm);
 };
 
@@ -578,8 +593,8 @@ export const getVipConfirmComponents = () => {
   row.addComponents(
     new ButtonBuilder()
       .setCustomId("vip:confirm")
-      .setLabel("Прифаќам")
-      .setStyle(ButtonStyle.Success)
+      .setLabel(vipStrings.vipAcceptButton)
+      .setStyle(ButtonStyle.Success),
   );
   components.push(row);
 
@@ -593,8 +608,8 @@ export const getVipAcknowledgeComponents = () => {
   row.addComponents(
     new ButtonBuilder()
       .setCustomId("vip:acknowledge")
-      .setLabel("Прифаќам")
-      .setStyle(ButtonStyle.Success)
+      .setLabel(vipStrings.vipAcceptButton)
+      .setStyle(ButtonStyle.Success),
   );
   components.push(row);
 
@@ -606,19 +621,10 @@ export const getVipAcknowledgeComponents = () => {
 export const getAboutEmbed = async () => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle("ФИНКИ Discord бот")
+    .setTitle(botName)
     .setThumbnail(await getConfigProperty("logo"))
     .setDescription(
-      `Овој бот е развиен од ${userMention(
-        "198249751001563136"
-      )} за потребите на Discord серверот на студентите на ФИНКИ. Ботот е open source и може да се најде на ${hyperlink(
-        "GitHub",
-        "https://github.com/Delemangi/finki-discord-bot"
-      )}. Ако имате било какви прашања, предлози или проблеми, контактирајте нè на Discord или на GitHub. \n\nНапишете ${commandMention(
-        "help"
-      )} за да ги видите сите достапни команди, или ${commandMention(
-        "list questions"
-      )} за да ги видите сите достапни прашања.`
+      aboutString(commandMention("help"), commandMention("list questions")),
     )
     .setTimestamp();
 };
@@ -630,46 +636,43 @@ export const getClassroomEmbed = async (information: Classroom) => {
     .addFields(
       {
         inline: true,
-        name: "Тип",
+        name: shortStrings.type,
         value: information.type,
       },
       {
         inline: true,
-        name: "Локација",
+        name: shortStrings.location,
         value: information.location,
       },
       {
         inline: true,
-        name: "Спрат",
+        name: shortStrings.floor,
         value: information.floor.toString(),
       },
       {
         inline: true,
-        name: "Капацитет",
+        name: shortStrings.capacity,
         value: information.capacity.toString(),
-      }
+      },
     )
     .setTimestamp();
 };
 
 export const getCourseParticipantsEmbed = async (
-  information: CourseParticipants
+  information: CourseParticipants,
 ) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
     .setTitle(information.course)
+    .setDescription(embedMessages.courseParticipantsInfo)
     .addFields(
-      {
-        name: "Број на запишани студенти",
-        value: "\u200B",
-      },
       ...Object.entries(information)
         .filter(([year]) => year !== "course")
         .map(([year, participants]) => ({
           inline: true,
           name: year,
           value: participants.toString(),
-        }))
+        })),
     )
     .setTimestamp();
 };
@@ -681,29 +684,31 @@ export const getCourseProfessorsEmbed = async (information: CourseStaff) => {
     .addFields(
       {
         inline: true,
-        name: "Професори",
+        name: shortStrings.professors,
         value: linkProfessors(information.professors),
       },
       {
         inline: true,
-        name: "Асистенти",
+        name: shortStrings.assistants,
         value: linkProfessors(information.assistants),
-      }
+      },
     )
     .setTimestamp();
 };
 
 export const getCoursePrerequisiteEmbed = async (
-  information: CoursePrerequisites
+  information: CoursePrerequisites,
 ) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
     .setTitle(information.course)
     .addFields({
       inline: true,
-      name: "Предуслови",
+      name: shortStrings.prerequisites,
       value:
-        information.prerequisite === "" ? "Нема" : information.prerequisite,
+        information.prerequisite === ""
+          ? shortStrings.none
+          : information.prerequisite,
     })
     .setTimestamp();
 };
@@ -715,19 +720,19 @@ export const getCourseInfoEmbed = async (information: CourseInformation) => {
     .addFields(
       {
         inline: true,
-        name: "Информации",
-        value: `[Линк](${information.link})`,
+        name: shortStrings.accreditation,
+        value: `[${shortStrings.link}](${information.link})`,
       },
       {
         inline: true,
-        name: "Код",
+        name: shortStrings.code,
         value: information.code,
       },
       {
         inline: true,
-        name: "Ниво",
+        name: shortStrings.level,
         value: information.level.toString(),
-      }
+      },
     )
     .setTimestamp();
 };
@@ -735,98 +740,101 @@ export const getCourseInfoEmbed = async (information: CourseInformation) => {
 export const getCourseSummaryEmbed = async (course: string | null) => {
   if (course === null) {
     return [
-      new EmbedBuilder().setDescription("Нема информации за овој предмет."),
+      new EmbedBuilder().setDescription(embedMessages.noCourseInformation),
     ];
   }
 
   const info = getInformation().find(
-    (item) => item.course.toLowerCase() === course?.toLowerCase()
+    (item) => item.course.toLowerCase() === course?.toLowerCase(),
   );
   const prerequisite = getPrerequisites().find(
-    (item) => item.course.toLowerCase() === course?.toLowerCase()
+    (item) => item.course.toLowerCase() === course?.toLowerCase(),
   );
   const professors = getProfessors().find(
-    (item) => item.course.toLowerCase() === course?.toLowerCase()
+    (item) => item.course.toLowerCase() === course?.toLowerCase(),
   );
   const participants = getParticipants().find(
-    (item) => item.course.toLowerCase() === course?.toLowerCase()
+    (item) => item.course.toLowerCase() === course?.toLowerCase(),
   );
 
   return [
     new EmbedBuilder()
       .setColor(await getConfigProperty("color"))
       .setTitle(course)
-      .setDescription("Ова се сите достапни информации за предметот."),
+      .setDescription(embedMessages.courseSummaryInfo),
     new EmbedBuilder().setColor(await getConfigProperty("color")).addFields(
       {
-        name: "Предуслови",
+        name: shortStrings.prerequisites,
         value:
           prerequisite === undefined || prerequisite.prerequisite === ""
-            ? "Нема"
+            ? shortStrings.none
             : prerequisite.prerequisite,
       },
       {
         inline: true,
-        name: "Информации",
-        value: info === undefined ? "-" : `[Линк](${info.link})`,
+        name: shortStrings.accreditation,
+        value:
+          info === undefined
+            ? shortStrings.unknown
+            : `[${shortStrings.link}](${info.link})`,
       },
       {
         inline: true,
-        name: "Код",
-        value: info === undefined ? "-" : info.code,
+        name: shortStrings.code,
+        value: info === undefined ? shortStrings.unknown : info.code,
       },
       {
         inline: true,
-        name: "Ниво",
-        value: info === undefined ? "-" : info.level.toString(),
-      }
+        name: shortStrings.level,
+        value:
+          info === undefined ? shortStrings.unknown : info.level.toString(),
+      },
     ),
     new EmbedBuilder().setColor(await getConfigProperty("color")).addFields(
       {
         inline: true,
-        name: "Професори",
+        name: shortStrings.professors,
         value:
           professors === undefined
-            ? "-"
+            ? shortStrings.unknown
             : linkProfessors(professors.professors),
       },
       {
         inline: true,
-        name: "Асистенти",
+        name: shortStrings.assistants,
         value:
           professors === undefined
-            ? "-"
+            ? shortStrings.unknown
             : linkProfessors(professors.assistants),
-      }
-    ),
-    new EmbedBuilder().setColor(await getConfigProperty("color")).addFields(
-      {
-        name: "Број на запишани студенти",
-        value: "\u200B",
       },
-      ...Object.entries(participants ?? {})
-        .filter(([year]) => year !== "course")
-        .map(([year, part]) => ({
-          inline: true,
-          name: year,
-          value: part.toString(),
-        }))
     ),
+    new EmbedBuilder()
+      .setColor(await getConfigProperty("color"))
+      .setDescription(embedMessages.courseParticipantsInfo)
+      .addFields(
+        ...Object.entries(participants ?? {})
+          .filter(([year]) => year !== "course")
+          .map(([year, part]) => ({
+            inline: true,
+            name: year,
+            value: part.toString(),
+          })),
+      ),
   ];
 };
 
 export const getCoursesProgramEmbed = async (
   program: ProgramName,
-  semester: number
+  semester: number,
 ) => {
   const courses = transformCoursePrerequisites(
     programMapping[program],
-    semester
+    semester,
   );
   const elective = courses.filter((course) => course.type === "изборен");
   const mandatory = courses.filter(
     (course) =>
-      course.type === "задолжителен" || course.type === "задолжителен (изб.)"
+      course.type === "задолжителен" || course.type === "задолжителен (изб.)",
   );
 
   return [
@@ -839,7 +847,7 @@ export const getCoursesProgramEmbed = async (
       .setTitle("Задолжителни")
       .setDescription(
         mandatory.length === 0
-          ? "Нема"
+          ? shortStrings.none
           : mandatory
               .map(
                 (course, index) =>
@@ -849,54 +857,58 @@ export const getCoursesProgramEmbed = async (
                     course.type === "задолжителен (изб.)"
                       ? "(изборен за 3 год. студии)"
                       : ""
-                  }`
+                  }`,
               )
-              .join("\n")
+              .join("\n"),
       ),
     new EmbedBuilder()
       .setColor(await getConfigProperty("color"))
       .setTitle("Задолжителни - предуслови")
       .setDescription(
         mandatory.length === 0
-          ? "Нема"
+          ? shortStrings.none
           : mandatory
               .map(
                 (course, index) =>
                   `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
-                    course.prerequisite === "" ? "Нема" : course.prerequisite
-                  }`
+                    course.prerequisite === ""
+                      ? shortStrings.none
+                      : course.prerequisite
+                  }`,
               )
-              .join("\n")
+              .join("\n"),
       ),
     new EmbedBuilder()
       .setColor(await getConfigProperty("color"))
       .setTitle("Изборни")
       .setDescription(
         elective.length === 0
-          ? "Нема"
+          ? shortStrings.none
           : elective
               .map(
                 (course, index) =>
                   `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
                     course.course
-                  }`
+                  }`,
               )
-              .join("\n")
+              .join("\n"),
       ),
     new EmbedBuilder()
       .setColor(await getConfigProperty("color"))
       .setTitle("Изборни - предуслови")
       .setDescription(
         elective.length === 0
-          ? "Нема"
+          ? shortStrings.none
           : elective
               .map(
                 (course, index) =>
                   `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
-                    course.prerequisite === "" ? "Нема" : course.prerequisite
-                  }`
+                    course.prerequisite === ""
+                      ? shortStrings.none
+                      : course.prerequisite
+                  }`,
               )
-              .join("\n")
+              .join("\n"),
       )
       .setTimestamp(),
   ];
@@ -904,7 +916,7 @@ export const getCoursesProgramEmbed = async (
 
 export const getCoursesPrerequisiteEmbed = async (course: string) => {
   const courses = getPrerequisites().filter((prerequisite) =>
-    prerequisite.prerequisite.toLowerCase().includes(course.toLowerCase())
+    prerequisite.prerequisite.toLowerCase().includes(course.toLowerCase()),
   );
 
   return new EmbedBuilder()
@@ -912,15 +924,15 @@ export const getCoursesPrerequisiteEmbed = async (course: string) => {
     .setTitle(`Предмети со предуслов ${course}`)
     .setDescription(
       courses.length === 0
-        ? "Нема"
+        ? shortStrings.none
         : courses
             .map(
               (prerequisite, index) =>
                 `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
                   prerequisite.course
-                }`
+                }`,
             )
-            .join("\n")
+            .join("\n"),
     )
     .setTimestamp();
 };
@@ -968,32 +980,32 @@ export const getStaffEmbed = async (information: Staff) => {
           information.konsultacii === ""
             ? "-"
             : `[Линк](${information.konsultacii})`,
-      }
+      },
     )
     .setTimestamp();
 };
 
 export const getStudentInfoEmbed = async (
-  member: GuildMember | null | undefined
+  member: GuildMember | null | undefined,
 ) => {
   if (member === null || member === undefined) {
     return new EmbedBuilder()
       .setColor(await getConfigProperty("color"))
-      .setTitle("Информации за студентот")
-      .setDescription("Студентот не постои.");
+      .setTitle(embedMessages.studentInformation)
+      .setDescription(embedMessages.studentNotFound);
   }
 
   const yearRole = member.roles.cache.find((role) =>
-    getFromRoleConfig("year").includes(role.name)
+    getFromRoleConfig("year").includes(role.name),
   );
   const programRole = member.roles.cache.find((role) =>
-    getFromRoleConfig("program").includes(role.name)
+    getFromRoleConfig("program").includes(role.name),
   );
   const colorRole = member.roles.cache.find((role) =>
-    getFromRoleConfig("color").includes(role.name)
+    getFromRoleConfig("color").includes(role.name),
   );
   const levelRole = member.roles.cache.find((role) =>
-    getFromRoleConfig("level").includes(role.name)
+    getFromRoleConfig("level").includes(role.name),
   );
   const notificationRoles = member.roles.cache
     .filter((role) => getFromRoleConfig("notification").includes(role.name))
@@ -1001,11 +1013,11 @@ export const getStudentInfoEmbed = async (
     .join("\n");
   const courseRoles = member.roles.cache
     .filter((role) =>
-      Object.keys(getFromRoleConfig("courses")).includes(role.name)
+      Object.keys(getFromRoleConfig("courses")).includes(role.name),
     )
     .map(
       (role) =>
-        `${roleMention(role.id)}: ${getFromRoleConfig("courses")[role.name]}`
+        `${roleMention(role.id)}: ${getFromRoleConfig("courses")[role.name]}`,
     )
     .join("\n");
   const other = member.roles.cache
@@ -1019,41 +1031,51 @@ export const getStudentInfoEmbed = async (
       iconURL: member.user.displayAvatarURL(),
       name: member.user.tag,
     })
-    .setTitle("Информации за студентот")
+    .setTitle(embedMessages.studentInformation)
     .addFields(
       {
         inline: true,
-        name: "Година",
-        value: yearRole === undefined ? "Нема" : roleMention(yearRole.id),
+        name: shortStrings.year,
+        value:
+          yearRole === undefined ? shortStrings.none : roleMention(yearRole.id),
       },
       {
         inline: true,
-        name: "Смер",
-        value: programRole === undefined ? "Нема" : roleMention(programRole.id),
+        name: shortStrings.program,
+        value:
+          programRole === undefined
+            ? shortStrings.none
+            : roleMention(programRole.id),
       },
       {
         inline: true,
-        name: "Боја",
-        value: colorRole === undefined ? "Нема" : roleMention(colorRole.id),
+        name: shortStrings.color,
+        value:
+          colorRole === undefined
+            ? shortStrings.none
+            : roleMention(colorRole.id),
       },
       {
         inline: true,
-        name: "Ниво",
-        value: levelRole === undefined ? "Нема" : roleMention(levelRole.id),
+        name: shortStrings.level,
+        value:
+          levelRole === undefined
+            ? shortStrings.none
+            : roleMention(levelRole.id),
       },
       {
         inline: true,
-        name: "Нотификации",
-        value: notificationRoles === "" ? "Нема" : notificationRoles,
+        name: shortStrings.notifications,
+        value: notificationRoles === "" ? shortStrings.none : notificationRoles,
       },
       {
-        name: "Предмети",
-        value: courseRoles === "" ? "Нема" : courseRoles,
+        name: shortStrings.courses,
+        value: courseRoles === "" ? shortStrings.none : courseRoles,
       },
       {
-        name: "Друго",
-        value: other === "" ? "Нема" : other,
-      }
+        name: shortStrings.other,
+        value: other === "" ? shortStrings.none : other,
+      },
     )
     .setTimestamp();
 };
@@ -1091,10 +1113,10 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
               .map(
                 (member) =>
                   `${member?.user.tag} (${userMention(
-                    member?.user.id as string
-                  )})`
+                    member?.user.id as string,
+                  )})`,
               )
-              .join("\n")
+              .join("\n"),
       ),
     new EmbedBuilder()
       .setColor(await getConfigProperty("color"))
@@ -1106,10 +1128,10 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
               .map(
                 (member) =>
                   `${member?.user.tag} (${userMention(
-                    member?.user.id as string
-                  )})`
+                    member?.user.id as string,
+                  )})`,
               )
-              .join("\n")
+              .join("\n"),
       )
       .setTimestamp(),
   ];
@@ -1124,11 +1146,11 @@ export const getVipInvitedEmbed = async () => {
 
   const memberIds = await getMembersWithAndWithoutRoles(
     [vipInvitedRoleId, boosterRoleId, contributorRoleId],
-    [adminRoleId, vipRoleId]
+    [adminRoleId, vipRoleId],
   );
   const guild = client.guilds.cache.get(await getConfigProperty("guild"));
   const members = await Promise.all(
-    memberIds.map(async (memberId) => await guild?.members.fetch(memberId))
+    memberIds.map(async (memberId) => await guild?.members.fetch(memberId)),
   );
 
   return new EmbedBuilder()
@@ -1141,10 +1163,10 @@ export const getVipInvitedEmbed = async () => {
             .map(
               (member) =>
                 `${member?.user.tag} (${userMention(
-                  member?.user.id as string
-                )})`
+                  member?.user.id as string,
+                )})`,
             )
-            .join("\n")
+            .join("\n"),
     )
     .setTimestamp();
 };
@@ -1182,7 +1204,7 @@ export const getExperienceEmbed = async (experience: Experience) => {
         inline: true,
         name: "Поени",
         value: experience.experience.toString(),
-      }
+      },
     )
     .setTimestamp();
 };
@@ -1190,27 +1212,27 @@ export const getExperienceEmbed = async (experience: Experience) => {
 export const getExperienceLeaderboardFirstPageEmbed = async (
   experience: Experience[],
   all: number | null,
-  perPage: number = 8
+  perPage: number = 8,
 ) => {
   const total = experience.length;
 
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle("Активност")
+    .setTitle(shortStrings.activity)
     .addFields(
       await Promise.all(
         experience.slice(0, perPage).map(async (exp, index) => ({
           name: "\u200B",
           value: `${index + 1}. ${await getUsername(exp.userId)} (${userMention(
-            exp.userId
+            exp.userId,
           )}): Ниво: ${exp.level} | Поени: ${exp.experience}`,
-        }))
-      )
+        })),
+      ),
     )
     .setFooter({
       text: `Страна: 1 / ${Math.max(
         1,
-        Math.ceil(total / perPage)
+        Math.ceil(total / perPage),
       )}  •  Членови: ${total} / ${all ?? "-"}`,
     })
     .setTimestamp();
@@ -1220,13 +1242,13 @@ export const getExperienceLeaderboardNextPageEmbed = async (
   experience: Experience[],
   page: number,
   all: number | null,
-  perPage: number = 8
+  perPage: number = 8,
 ) => {
   const total = experience.length;
 
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle("Активност")
+    .setTitle(shortStrings.activity)
     .addFields(
       await Promise.all(
         experience
@@ -1234,17 +1256,17 @@ export const getExperienceLeaderboardNextPageEmbed = async (
           .map(async (exp, index) => ({
             name: "\u200B",
             value: `${perPage * page + index + 1}. ${await getUsername(
-              exp.userId
+              exp.userId,
             )} (${userMention(exp.userId)}): Ниво: ${exp.level} | Поени: ${
               exp.experience
             }`,
-          }))
-      )
+          })),
+      ),
     )
     .setFooter({
       text: `Страна: ${page + 1} / ${Math.max(
         1,
-        Math.ceil(total / perPage)
+        Math.ceil(total / perPage),
       )}  •  Членови: ${total} / ${all ?? "-"}`,
     })
     .setTimestamp();
@@ -1315,8 +1337,8 @@ export const getLinkComponents = (link: Link) => {
     new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
         .setURL(link.url.startsWith("http") ? link.url : `https://${link.url}`)
-        .setLabel("Линк")
-        .setStyle(ButtonStyle.Link)
+        .setLabel(shortStrings.link)
+        .setStyle(ButtonStyle.Link),
     ),
   ];
 };
@@ -1324,18 +1346,18 @@ export const getLinkComponents = (link: Link) => {
 export const getListQuestionsEmbed = async () => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle("Прашања")
+    .setTitle(shortStrings.questions)
     .setDescription(
-      `Ова се сите достапни прашања. Користете ${commandMention(
-        "faq"
-      )} за да ги добиете одговорите.\n\n${(await getQuestions())
+      `${embedMessageFunctions.allQuestions(commandMention("faq"))}\n\n${(
+        await getQuestions()
+      )
         .map(
           (question, index) =>
             `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
               question.name
-            }`
+            }`,
         )
-        .join("\n")}`
+        .join("\n")}`,
     )
     .setTimestamp();
 };
@@ -1343,18 +1365,18 @@ export const getListQuestionsEmbed = async () => {
 export const getListLinksEmbed = async () => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle("Линкови")
+    .setTitle(shortStrings.links)
     .setDescription(
-      `Ова се сите достапни линкови. Користете ${commandMention(
-        "link"
-      )} за да ги добиете линковите.\n\n${(await getLinks())
+      `${embedMessageFunctions.allLinks(commandMention("link"))}\n\n${(
+        await getLinks()
+      )
         .map(
           (link, index) =>
             `${inlineCode((index + 1).toString().padStart(2, "0"))} [${
               link.name
-            }](${link.url})`
+            }](${link.url})`,
         )
-        .join("\n")}`
+        .join("\n")}`,
     )
     .setTimestamp();
 };
@@ -1363,27 +1385,26 @@ export const getListLinksEmbed = async () => {
 
 export const getHelpFirstPageEmbed = async (
   member: GuildMember | null,
-  commandsPerPage: number = 8
+  commandsPerPage: number = 8,
 ) => {
   const commands = getCommandsWithPermission(member);
 
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle("Команди")
-    .setDescription(
-      "Ова се сите достапни команди за вас. Командите може да ги повикате во овој сервер, или во приватна порака."
-    )
+    .setTitle(shortStrings.commands)
+    .setDescription(embedMessages.allCommands)
     .addFields(
       ...commands.slice(0, commandsPerPage).map((command) => ({
         name: commandMention(command),
         value: commandDescriptions[command as keyof typeof commandDescriptions],
-      }))
+      })),
     )
     .setFooter({
-      text: `Страна: 1 / ${Math.max(
+      text: paginationStringFunctions.commandPage(
         1,
-        Math.ceil(commands.length / commandsPerPage)
-      )}  •  Команди: ${commands.length}`,
+        Math.max(1, Math.ceil(commands.length / commandsPerPage)),
+        commands.length,
+      ),
     })
     .setTimestamp();
 };
@@ -1391,16 +1412,14 @@ export const getHelpFirstPageEmbed = async (
 export const getHelpNextPageEmbed = async (
   member: GuildMember | null,
   page: number,
-  commandsPerPage: number = 8
+  commandsPerPage: number = 8,
 ) => {
   const commands = getCommandsWithPermission(member);
 
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle("Команди")
-    .setDescription(
-      "Ова се сите достапни команди за вас. Командите може да ги извршите во овој сервер, или во приватна порака."
-    )
+    .setTitle(shortStrings.commands)
+    .setDescription(embedMessages.allCommands)
     .addFields(
       ...commands
         .slice(commandsPerPage * page, commandsPerPage * (page + 1))
@@ -1408,13 +1427,14 @@ export const getHelpNextPageEmbed = async (
           name: commandMention(command),
           value:
             commandDescriptions[command as keyof typeof commandDescriptions],
-        }))
+        })),
     )
     .setFooter({
-      text: `Страна: ${page + 1} / ${Math.max(
-        1,
-        Math.ceil(commands.length / commandsPerPage)
-      )}  •  Команди: ${commands.length}`,
+      text: paginationStringFunctions.commandPage(
+        page + 1,
+        Math.max(1, Math.ceil(commands.length / commandsPerPage)),
+        commands.length,
+      ),
     })
     .setTimestamp();
 };
@@ -1426,7 +1446,13 @@ export const getPollEmbed = async (poll: PollWithOptions) => {
 
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setAuthor(poll.done ? { name: "ГЛАСАЊЕТО Е ЗАВРШЕНО" } : null)
+    .setAuthor(
+      poll.done
+        ? {
+            name: embedMessages.pollEnded,
+          }
+        : null,
+    )
     .setTitle(truncateString(poll.title, 256))
     .setDescription(
       `${italic(truncateString(poll.description, 1_000))}\n${codeBlock(
@@ -1444,24 +1470,26 @@ export const getPollEmbed = async (poll: PollWithOptions) => {
               return `${(index + 1)
                 .toString()
                 .padStart(2, "0")} ${option.name.padEnd(
-                Math.max(...poll.options.map((opt) => opt.name.length))
+                Math.max(...poll.options.map((opt) => opt.name.length)),
               )} - [${bar}] - ${optionVotes} [${
                 votes > 0 ? fraction.toFixed(2).padStart(5, "0") : "00"
               }%]`;
-            })
+            }),
           )
-        ).join("\n")
+        ).join("\n"),
       )}${
         poll.done
-          ? `\nРезултат: ${inlineCode(
+          ? `\n${shortStrings.result}: ${inlineCode(
               poll.decision ??
                 (await getMostPopularOptionByPollId(poll.id))?.name ??
-                "-"
+                "-",
             )}\n`
           : ""
-      }`
+      }`,
     )
-    .setFooter({ text: `Анкета: ${poll.id}` })
+    .setFooter({
+      text: `${shortStrings.poll}: ${poll.id}`,
+    })
     .setTimestamp();
 };
 
@@ -1473,7 +1501,7 @@ export const getPollComponents = (poll: PollWithOptions) => {
 
   const infoButton = new ButtonBuilder()
     .setCustomId(`poll:${poll.id}:info`)
-    .setLabel("Информации")
+    .setLabel(embedMessages.pollInformation)
     .setStyle(ButtonStyle.Secondary);
 
   firstButtons.push(infoButton);
@@ -1533,61 +1561,63 @@ export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
     .addFields(
       {
         inline: true,
-        name: "Повеќекратна?",
-        value: poll.multiple ? "Да" : "Не",
+        name: shortStrings.multipleChoice,
+        value: poll.multiple ? shortStrings.yes : shortStrings.no,
       },
       {
         inline: true,
-        name: "Анонимна?",
-        value: poll.anonymous ? "Да" : "Не",
+        name: shortStrings.anonymous,
+        value: poll.anonymous ? shortStrings.yes : shortStrings.no,
       },
       {
         inline: true,
-        name: "Отворена?",
-        value: poll.open ? "Да" : "Не",
+        name: shortStrings.open,
+        value: poll.open ? shortStrings.yes : shortStrings.no,
       },
       {
         inline: true,
-        name: "Автор",
+        name: shortStrings.author,
         value: userMention(poll.userId),
       },
       {
         inline: true,
-        name: "Гласови",
+        name: shortStrings.votes,
         value: `${votes} ${poll.roles.length > 0 ? turnout : ""}`,
       },
       {
         inline: true,
-        name: "Право на глас",
+        name: shortStrings.rightToVote,
         value:
           poll.roles.length === 0
-            ? "Сите"
+            ? shortStrings.all
             : (
                 await getMembersWithRoles(guild, ...poll.roles)
               ).length.toString(),
       },
       {
         inline: true,
-        name: "Потребно мнозинство",
+        name: shortStrings.requiredMajority,
         value: `${poll.threshold * 100}% (${
           voters.length % 2 === 0 ? threshold + 1 : threshold
         })`,
       },
       {
         inline: true,
-        name: "Улоги",
+        name: shortStrings.roles,
         value:
           poll.roles.length > 0
             ? poll.roles.map((role) => roleMention(role)).join(", ")
-            : "Нема",
+            : shortStrings.none,
       },
       {
         inline: true,
         name: "\u200B",
         value: "\u200B",
-      }
+      },
     )
-    .setFooter({ text: `Анкета: ${poll.id}` })
+    .setFooter({
+      text: `${shortStrings.poll}: ${poll.id}`,
+    })
     .setTimestamp();
 };
 
@@ -1599,34 +1629,36 @@ export const getPollStatsEmbed = async (poll: PollWithOptions) => {
     .addFields(
       {
         inline: true,
-        name: "Опции",
+        name: shortStrings.options,
         value: (
           await Promise.all(
             poll.options.map(
               async (option, index) =>
                 `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
                   option.name
-                }`
-            )
+                }`,
+            ),
           )
         ).join("\n"),
       },
       {
         inline: true,
-        name: "Гласови",
+        name: shortStrings.votes,
         value: (
           await Promise.all(
             poll.options.map(
               async (option, index) =>
                 `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
                   (await getPollVotesByOptionId(option.id))?.length ?? 0
-                }`
-            )
+                }`,
+            ),
           )
         ).join("\n"),
-      }
+      },
     )
-    .setFooter({ text: `Анкета: ${poll.id}` })
+    .setFooter({
+      text: `${shortStrings.poll}: ${poll.id}`,
+    })
     .setTimestamp();
 };
 
@@ -1660,47 +1692,57 @@ export const getPollStatsComponents = (poll: PollWithOptions) => {
 export const getPollStatsButtonEmbed = async (
   id: string,
   option: string,
-  votes: PollVote[]
+  votes: PollVote[],
 ) => {
   const users = votes.map(async (vote) => await getUsername(vote.userId));
 
   return votes.length > 0
     ? new EmbedBuilder()
         .setColor(await getConfigProperty("color"))
-        .setTitle("Резултати од анкета")
+        .setTitle(shortStrings.pollResults)
         .setDescription(
-          `Гласачи за ${inlineCode(option)}:\n${codeBlock(users.join("\n"))}`
+          `${shortStrings.votersFor} ${inlineCode(option)}:\n${codeBlock(
+            users.join("\n"),
+          )}`,
         )
         .setTimestamp()
-        .setFooter({ text: `Анкета: ${id}` })
+        .setFooter({
+          text: `${shortStrings.poll}: ${id}`,
+        })
     : new EmbedBuilder()
         .setColor(await getConfigProperty("color"))
-        .setTitle("Резултати од анкета")
-        .setDescription(`Никој не гласал за ${inlineCode(option)}`)
+        .setTitle(shortStrings.pollResults)
+        .setDescription(`${shortStrings.noVotersFor} ${inlineCode(option)}`)
         .setTimestamp()
-        .setFooter({ text: `Анкета: ${id}` });
+        .setFooter({
+          text: `${shortStrings.poll}: ${id}`,
+        });
 };
 
 export const getPollListFirstPageEmbed = async (
   polls: Poll[],
   all: boolean = false,
-  pollsPerPage: number = 8
+  pollsPerPage: number = 8,
 ) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle("Анкети")
-    .setDescription(`Ова се сите ${all ? "" : "активни"} анкети.`)
+    .setTitle(shortStrings.polls)
+    .setDescription(embedMessageFunctions.allPolls(all))
     .addFields(
       ...polls.slice(0, pollsPerPage).map((poll) => ({
-        name: all && poll.done ? `${poll.title} (затворена)` : poll.title,
+        name:
+          all && poll.done
+            ? `${poll.title} (${shortStrings.closed})`
+            : poll.title,
         value: poll.id,
-      }))
+      })),
     )
     .setFooter({
-      text: `Страна: 1 / ${Math.max(
+      text: paginationStringFunctions.pollPage(
         1,
-        Math.ceil(polls.length / pollsPerPage)
-      )}  •  Анкети: ${polls.length}`,
+        Math.max(1, Math.ceil(polls.length / pollsPerPage)),
+        polls.length,
+      ),
     })
     .setTimestamp();
 };
@@ -1709,50 +1751,55 @@ export const getPollListNextPageEmbed = async (
   polls: Poll[],
   page: number,
   all: boolean = false,
-  pollsPerPage: number = 8
+  pollsPerPage: number = 8,
 ) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle("Анкети")
-    .setDescription(`Ова се сите ${all ? "" : "активни"} анкети.`)
+    .setTitle(shortStrings.polls)
+    .setDescription(embedMessageFunctions.allPolls(all))
     .addFields(
       ...polls
         .slice(pollsPerPage * page, pollsPerPage * (page + 1))
         .map((poll) => ({
-          name: all && poll.done ? `${poll.title} (затворена)` : poll.title,
+          name:
+            all && poll.done
+              ? `${poll.title} (${shortStrings.closed})`
+              : poll.title,
           value: poll.id,
-        }))
+        })),
     )
     .setFooter({
-      text: `Страна: ${page + 1} / ${Math.max(
-        1,
-        Math.ceil(polls.length / pollsPerPage)
-      )}  •  Анкети: ${polls.length}`,
+      text: paginationStringFunctions.pollPage(
+        page + 1,
+        Math.max(1, Math.ceil(polls.length / pollsPerPage)),
+        polls.length,
+      ),
     })
     .setTimestamp();
 };
 
 export const getVipPollListFirstPageEmbed = async (
   polls: VipPoll[],
-  pollsPerPage: number = 8
+  pollsPerPage: number = 8,
 ) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle("Анкети")
-    .setDescription("Ова се сите ВИП анкети.")
+    .setTitle(shortStrings.polls)
+    .setDescription(embedMessages.allVipPolls)
     .addFields(
       ...(await Promise.all(
         polls.slice(0, pollsPerPage).map(async (poll) => ({
           name: `${poll.type} (${await getUsername(poll.userId)})`,
           value: poll.id,
-        }))
-      ))
+        })),
+      )),
     )
     .setFooter({
-      text: `Страна: 1 / ${Math.max(
+      text: paginationStringFunctions.pollPage(
         1,
-        Math.ceil(polls.length / pollsPerPage)
-      )}  •  Анкети: ${polls.length}`,
+        Math.max(1, Math.ceil(polls.length / pollsPerPage)),
+        polls.length,
+      ),
     })
     .setTimestamp();
 };
@@ -1760,12 +1807,12 @@ export const getVipPollListFirstPageEmbed = async (
 export const getVipPollListNextPageEmbed = async (
   polls: VipPoll[],
   page: number,
-  pollsPerPage: number = 8
+  pollsPerPage: number = 8,
 ) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle("Анкети")
-    .setDescription("Ова се сите ВИП анкети.")
+    .setTitle(shortStrings.polls)
+    .setDescription(embedMessages.allVipPolls)
     .addFields(
       ...(await Promise.all(
         polls
@@ -1773,14 +1820,15 @@ export const getVipPollListNextPageEmbed = async (
           .map(async (poll) => ({
             name: `${poll.type} (${await getUsername(poll.userId)})`,
             value: poll.id,
-          }))
-      ))
+          })),
+      )),
     )
     .setFooter({
-      text: `Страна: ${page + 1} / ${Math.max(
-        1,
-        Math.ceil(polls.length / pollsPerPage)
-      )}  •  Анкети: ${polls.length}`,
+      text: paginationStringFunctions.pollPage(
+        page + 1,
+        Math.max(1, Math.ceil(polls.length / pollsPerPage)),
+        polls.length,
+      ),
     })
     .setTimestamp();
 };
@@ -1789,7 +1837,7 @@ export const getVipPollListNextPageEmbed = async (
 
 export const getPaginationComponents = (
   name: string,
-  position: "end" | "middle" | "none" | "start" = "none"
+  position: PaginationPosition = "none",
 ) => {
   if (position === "none") {
     return new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -1812,7 +1860,7 @@ export const getPaginationComponents = (
         .setCustomId(`${name}:last`)
         .setEmoji("⏩")
         .setStyle(ButtonStyle.Primary)
-        .setDisabled(true)
+        .setDisabled(true),
     );
   }
 
@@ -1835,7 +1883,7 @@ export const getPaginationComponents = (
       new ButtonBuilder()
         .setCustomId(`${name}:last`)
         .setEmoji("⏩")
-        .setStyle(ButtonStyle.Primary)
+        .setStyle(ButtonStyle.Primary),
     );
   } else if (position === "middle") {
     return new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -1854,7 +1902,7 @@ export const getPaginationComponents = (
       new ButtonBuilder()
         .setCustomId(`${name}:last`)
         .setEmoji("⏩")
-        .setStyle(ButtonStyle.Primary)
+        .setStyle(ButtonStyle.Primary),
     );
   } else {
     return new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -1875,7 +1923,7 @@ export const getPaginationComponents = (
         .setCustomId(`${name}:last`)
         .setEmoji("⏩")
         .setStyle(ButtonStyle.Primary)
-        .setDisabled(true)
+        .setDisabled(true),
     );
   }
 };
@@ -1883,11 +1931,11 @@ export const getPaginationComponents = (
 // Logs
 
 export const getChatInputCommandEmbed = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   return new EmbedBuilder()
     .setColor(color)
-    .setTitle("Chat Input Command")
+    .setTitle(logEmbedStrings.chatInputInteraction)
     .setAuthor({
       iconURL: interaction.user.displayAvatarURL(),
       name: interaction.user.tag,
@@ -1896,34 +1944,36 @@ export const getChatInputCommandEmbed = async (
     .addFields(
       {
         inline: true,
-        name: "Author",
+        name: logEmbedStrings.author,
         value: userMention(interaction.user.id),
       },
       {
         inline: true,
-        name: "Channel",
+        name: logEmbedStrings.channel,
         value: getChannel(interaction),
       },
       {
         inline: true,
-        name: "Command",
+        name: logEmbedStrings.command,
         value: inlineCode(
           interaction.toString().length > 300
             ? interaction.toString().slice(0, 300)
-            : interaction.toString()
+            : interaction.toString(),
         ),
-      }
+      },
     )
-    .setFooter({ text: interaction.id })
+    .setFooter({
+      text: interaction.id,
+    })
     .setTimestamp();
 };
 
 export const getUserContextMenuCommandEmbed = async (
-  interaction: UserContextMenuCommandInteraction
+  interaction: UserContextMenuCommandInteraction,
 ) => {
   return new EmbedBuilder()
     .setColor(color)
-    .setTitle("User Context Menu Command")
+    .setTitle(logEmbedStrings.userContextMenuInteraction)
     .setAuthor({
       iconURL: interaction.user.displayAvatarURL(),
       name: interaction.user.tag,
@@ -1931,34 +1981,36 @@ export const getUserContextMenuCommandEmbed = async (
     })
     .addFields(
       {
-        name: "Author",
+        name: logEmbedStrings.author,
         value: userMention(interaction.user.id),
       },
       {
-        name: "Channel",
+        name: logEmbedStrings.channel,
         value: getChannel(interaction),
       },
       {
-        name: "Command",
+        name: logEmbedStrings.command,
         value: inlineCode(interaction.commandName),
       },
       {
-        name: "Target",
+        name: logEmbedStrings.target,
         value: userMention(interaction.targetUser.id),
-      }
+      },
     )
-    .setFooter({ text: interaction.id })
+    .setFooter({
+      text: interaction.id,
+    })
     .setTimestamp();
 };
 
 export const getButtonEmbed = (
   interaction: ButtonInteraction,
   command: string = "unknown",
-  args: string[] = []
+  args: string[] = [],
 ) => {
   return new EmbedBuilder()
     .setColor(color)
-    .setTitle("Button")
+    .setTitle(logEmbedStrings.buttonInteraction)
     .setAuthor({
       iconURL: interaction.user.displayAvatarURL(),
       name: interaction.user.tag,
@@ -1966,25 +2018,27 @@ export const getButtonEmbed = (
     .addFields(
       {
         inline: true,
-        name: "Author",
+        name: logEmbedStrings.author,
         value: userMention(interaction.user.id),
       },
       {
         inline: true,
-        name: "Channel",
+        name: logEmbedStrings.channel,
         value: getChannel(interaction),
       },
       {
         inline: true,
-        name: "Command",
+        name: logEmbedStrings.command,
         value: getButtonCommand(command),
       },
       {
         inline: true,
         ...getButtonInfo(interaction, command, args),
-      }
+      },
     )
-    .setFooter({ text: interaction.id })
+    .setFooter({
+      text: interaction.id,
+    })
     .setTimestamp();
 };
 
@@ -1993,7 +2047,7 @@ export const getAutocompleteEmbed = (interaction: AutocompleteInteraction) => {
 
   return new EmbedBuilder()
     .setColor(color)
-    .setTitle("Autocomplete")
+    .setTitle(logEmbedStrings.autocompleteInteraction)
     .setAuthor({
       iconURL: interaction.user.displayAvatarURL(),
       name: interaction.user.tag,
@@ -2001,25 +2055,30 @@ export const getAutocompleteEmbed = (interaction: AutocompleteInteraction) => {
     .addFields(
       {
         inline: true,
-        name: "Author",
+        name: logEmbedStrings.author,
         value: userMention(interaction.user.id),
       },
       {
         inline: true,
-        name: "Channel",
+        name: logEmbedStrings.channel,
         value: getChannel(interaction),
       },
       {
         inline: true,
-        name: "Option",
+        name: logEmbedStrings.command,
         value: inlineCode(focused.name),
       },
       {
         inline: true,
-        name: "Value",
-        value: focused.value === "" ? "Empty" : inlineCode(focused.value),
-      }
+        name: logEmbedStrings.value,
+        value:
+          focused.value === ""
+            ? logEmbedStrings.empty
+            : inlineCode(focused.value),
+      },
     )
-    .setFooter({ text: interaction.id })
+    .setFooter({
+      text: interaction.id,
+    })
     .setTimestamp();
 };

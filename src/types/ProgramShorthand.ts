@@ -1,1 +1,8 @@
-export type ProgramShorthand = "imb" | "ke" | "ki" | "kn" | "pit" | "siis";
+export type ProgramShorthand =
+  | "imb"
+  | "ke"
+  | "ki"
+  | "kn"
+  | "pit"
+  | "siis"
+  | "psp";

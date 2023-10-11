@@ -4,7 +4,9 @@ import { type ColorResolvable } from "discord.js";
 
 export type BotConfig = {
   buttonIdleTime: number;
-  channels: { [K in ChannelName]: string };
+  channels: {
+    [K in ChannelName]: string;
+  };
   color: ColorResolvable;
   crosspostChannels: string[];
   crossposting: boolean;
@@ -12,7 +14,9 @@ export type BotConfig = {
   guild: string;
   leveling: boolean;
   logo: string;
-  roles: { [K in Roles]: string };
+  roles: {
+    [K in Roles]: string;
+  };
   temporaryVIPChannel: {
     cron: string;
     name: string;

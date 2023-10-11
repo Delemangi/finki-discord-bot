@@ -1,6 +1,6 @@
 import { getLink, getNthLink } from "../data/Link.js";
 import { getLinkComponents, getLinkEmbed } from "../utils/components.js";
-import { commandDescriptions } from "../utils/strings.js";
+import { commandDescriptions, commandErrors } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -16,7 +16,7 @@ export const data = new SlashCommandBuilder()
       .setName("link")
       .setDescription("Линк")
       .setRequired(true)
-      .setAutocomplete(true)
+      .setAutocomplete(true),
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
@@ -26,7 +26,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     : await getNthLink(Number(keyword));
 
   if (link === null) {
-    await interaction.editReply("Не постои таков линк.");
+    await interaction.editReply(commandErrors.linkNotFound);
     return;
   }
 

@@ -1,5 +1,6 @@
 import { type QuestionWithLinks } from "../types/QuestionWithLinks.js";
 import { logger } from "../utils/logger.js";
+import { databaseErrorFunctions } from "../utils/strings.js";
 import { database } from "./database.js";
 import { type Prisma } from "@prisma/client";
 
@@ -14,7 +15,7 @@ export const getQuestions = async () => {
       },
     });
   } catch (error) {
-    logger.error(`Failed obtaining questions\n${error}`);
+    logger.error(databaseErrorFunctions.getQuestionsError(error));
     return [];
   }
 };
@@ -27,7 +28,7 @@ export const getQuestionNames = async () => {
       },
     });
   } catch (error) {
-    logger.error(`Failed obtaining question names\n${error}`);
+    logger.error(databaseErrorFunctions.getQuestionNamesError(error));
     return [];
   }
 };
@@ -47,7 +48,7 @@ export const getQuestion = async (name?: string) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed obtaining question\n${error}`);
+    logger.error(databaseErrorFunctions.getQuestionError(error));
     return null;
   }
 };
@@ -65,7 +66,7 @@ export const createQuestion = async (question?: Prisma.QuestionCreateInput) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed creating question\n${error}`);
+    logger.error(databaseErrorFunctions.createQuestionError(error));
     return null;
   }
 };
@@ -100,7 +101,7 @@ export const updateQuestion = async (question?: QuestionWithLinks) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed updating question\n${error}`);
+    logger.error(databaseErrorFunctions.updateQuestionError(error));
     return null;
   }
 };
@@ -120,7 +121,7 @@ export const deleteQuestion = async (name?: string) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed deleting question\n${error}`);
+    logger.error(databaseErrorFunctions.deleteQuestionError(error));
     return null;
   }
 };
@@ -141,7 +142,7 @@ export const getNthQuestion = async (index?: number) => {
       skip: index - 1,
     });
   } catch (error) {
-    logger.error(`Failed obtaining nth question\n${error}`);
+    logger.error(databaseErrorFunctions.getNthQuestionError(error));
     return null;
   }
 };

@@ -1,4 +1,5 @@
 import { logger } from "../utils/logger.js";
+import { databaseErrorFunctions } from "../utils/strings.js";
 import { database } from "./database.js";
 import { type Prisma } from "@prisma/client";
 
@@ -6,7 +7,7 @@ export const getCompanies = async () => {
   try {
     return await database.company.findMany();
   } catch (error) {
-    logger.error(`Failed getting companies\n${error}`);
+    logger.error(databaseErrorFunctions.getCompaniesError(error));
     return [];
   }
 };
@@ -21,7 +22,7 @@ export const createCompany = async (company?: Prisma.CompanyCreateInput) => {
       data: company,
     });
   } catch (error) {
-    logger.error(`Failed creating company\n${error}`);
+    logger.error(databaseErrorFunctions.createCompanyError(error));
     return null;
   }
 };
@@ -38,13 +39,13 @@ export const deleteCompany = async (company?: string) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed deleting company\n${error}`);
+    logger.error(databaseErrorFunctions.deleteCompanyError(error));
     return null;
   }
 };
 
 export const createCompanies = async (
-  companies?: Prisma.CompanyCreateManyInput[]
+  companies?: Prisma.CompanyCreateManyInput[],
 ) => {
   if (companies === undefined) {
     return null;
@@ -55,7 +56,7 @@ export const createCompanies = async (
       data: companies,
     });
   } catch (error) {
-    logger.error(`Failed creating companies\n${error}`);
+    logger.error(databaseErrorFunctions.createCompaniesError(error));
     return null;
   }
 };

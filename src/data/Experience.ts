@@ -1,9 +1,10 @@
 import { logger } from "../utils/logger.js";
+import { databaseErrorFunctions } from "../utils/strings.js";
 import { database } from "./database.js";
 import { type Experience, type Prisma } from "@prisma/client";
 
 export const createExperience = async (
-  experience?: Prisma.ExperienceCreateInput
+  experience?: Prisma.ExperienceCreateInput,
 ) => {
   if (experience === undefined) {
     return null;
@@ -14,7 +15,7 @@ export const createExperience = async (
       data: experience,
     });
   } catch (error) {
-    logger.error(`Failed creating experience\n${error}`);
+    logger.error(databaseErrorFunctions.createExperienceError(error));
     return null;
   }
 };
@@ -31,7 +32,7 @@ export const getExperienceByUserId = async (userId?: string) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed getting experience by user ID\n${error}`);
+    logger.error(databaseErrorFunctions.getExperienceByUserIdError(error));
     return null;
   }
 };
@@ -40,7 +41,7 @@ export const getExperienceCount = async () => {
   try {
     return await database.experience.count();
   } catch (error) {
-    logger.error(`Failed getting experience count\n${error}`);
+    logger.error(databaseErrorFunctions.getExperienceCountError(error));
     return null;
   }
 };
@@ -54,7 +55,7 @@ export const getExperienceSorted = async (limit: number = 512) => {
       take: limit,
     });
   } catch (error) {
-    logger.error(`Failed getting experience sorted\n${error}`);
+    logger.error(databaseErrorFunctions.getExperienceSortedError(error));
     return null;
   }
 };
@@ -72,14 +73,14 @@ export const updateExperience = async (experience?: Experience) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed updating experience\n${error}`);
+    logger.error(databaseErrorFunctions.updateExperienceError(error));
     return null;
   }
 };
 
 export const addExperienceByUserId = async (
   userId?: string,
-  experience: number = 0
+  experience: number = 0,
 ) => {
   if (userId === undefined) {
     return null;
@@ -103,7 +104,7 @@ export const addExperienceByUserId = async (
       },
     });
   } catch (error) {
-    logger.error(`Failed adding experience by user ID\n${error}`);
+    logger.error(databaseErrorFunctions.addExperienceByUserIdError(error));
     return null;
   }
 };
@@ -131,7 +132,7 @@ export const addLevelByUserId = async (userId?: string, level: number = 1) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed adding experience by user ID\n${error}`);
+    logger.error(databaseErrorFunctions.addLevelByUserIdError(error));
     return null;
   }
 };

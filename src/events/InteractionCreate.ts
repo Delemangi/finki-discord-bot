@@ -5,6 +5,7 @@ import {
   handleUserContextMenuCommand,
 } from "../utils/interactions.js";
 import { logger } from "../utils/logger.js";
+import { logErrorFunctions } from "../utils/strings.js";
 import { type ClientEvents, Events } from "discord.js";
 
 export const name = Events.InteractionCreate;
@@ -19,6 +20,6 @@ export const execute = async (...[interaction]: ClientEvents[typeof name]) => {
   } else if (interaction.isAutocomplete()) {
     await handleAutocomplete(interaction);
   } else {
-    logger.warn(`Received unknown interaction by ${interaction.user.id}`);
+    logger.warn(logErrorFunctions.unknownInteractionError(interaction.user.id));
   }
 };

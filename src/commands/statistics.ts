@@ -20,32 +20,32 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName("color")
-      .setDescription(commandDescriptions["statistics color"])
+      .setDescription(commandDescriptions["statistics color"]),
   )
   .addSubcommand((command) =>
     command
       .setName("program")
-      .setDescription(commandDescriptions["statistics program"])
+      .setDescription(commandDescriptions["statistics program"]),
   )
   .addSubcommand((command) =>
     command
       .setName("year")
-      .setDescription(commandDescriptions["statistics year"])
+      .setDescription(commandDescriptions["statistics year"]),
   )
   .addSubcommand((command) =>
     command
       .setName("course")
-      .setDescription(commandDescriptions["statistics course"])
+      .setDescription(commandDescriptions["statistics course"]),
   )
   .addSubcommand((command) =>
     command
       .setName("notification")
-      .setDescription(commandDescriptions["statistics notification"])
+      .setDescription(commandDescriptions["statistics notification"]),
   )
   .addSubcommand((command) =>
     command
       .setName("server")
-      .setDescription(commandDescriptions["statistics server"])
+      .setDescription(commandDescriptions["statistics server"]),
   )
   .setDMPermission(false);
 
@@ -67,11 +67,11 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   ) {
     const roles = getRoles(
       interaction.guild,
-      subcommand === "course" ? "courses" : subcommand
+      subcommand === "course" ? "courses" : subcommand,
     );
     roles.sort((a, b) => b.members.size - a.members.size);
     const output = roles.map(
-      (role) => `${roleMention(role.id)}: ${role.members.size}`
+      (role) => `${roleMention(role.id)}: ${role.members.size}`,
     );
 
     if (subcommand === "course") {
@@ -80,12 +80,16 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       for (const message of splitMessage(output.join("\n"))) {
         if (followUp) {
           await interaction.followUp({
-            allowedMentions: { parse: [] },
+            allowedMentions: {
+              parse: [],
+            },
             content: message,
           });
         } else {
           await interaction.editReply({
-            allowedMentions: { parse: [] },
+            allowedMentions: {
+              parse: [],
+            },
             content: message,
           });
         }
@@ -97,7 +101,9 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     }
 
     await interaction.editReply({
-      allowedMentions: { parse: [] },
+      allowedMentions: {
+        parse: [],
+      },
       content: output.join("\n"),
     });
   } else {
@@ -110,7 +116,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
         interaction.guild === null
           ? "-"
           : userMention(interaction.guild.ownerId)
-      }`
+      }`,
     );
     output.push(`Членови: ${interaction.guild.memberCount}`);
     await interaction.guild.channels.fetch();
@@ -118,9 +124,9 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     output.push(
       `Канали (без нишки): ${
         interaction.guild.channels.cache.filter(
-          (channel) => !channel.isThread()
+          (channel) => !channel.isThread(),
         ).size
-      } / 500`
+      } / 500`,
     );
     await interaction.guild.roles.fetch();
     output.push(`Улоги: ${interaction.guild.roles.cache.size} / 250`);
@@ -128,19 +134,21 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     output.push(
       `Емоџиња: ${
         interaction.guild.emojis.cache.size
-      } / ${getMaxEmojisByBoostLevel(boostLevel)}`
+      } / ${getMaxEmojisByBoostLevel(boostLevel)}`,
     );
     await interaction.guild.stickers.fetch();
     output.push(
       `Стикери: ${
         interaction.guild.stickers.cache.size
-      } / ${getMaxStickersByBoostLevel(boostLevel)}`
+      } / ${getMaxStickersByBoostLevel(boostLevel)}`,
     );
     await interaction.guild.invites.fetch();
     output.push(`Покани: ${interaction.guild.invites.cache.size}`);
 
     await interaction.editReply({
-      allowedMentions: { parse: [] },
+      allowedMentions: {
+        parse: [],
+      },
       content: output.join("\n"),
     });
   }

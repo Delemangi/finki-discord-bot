@@ -1,5 +1,5 @@
 import { getSessions } from "../utils/config.js";
-import { commandDescriptions } from "../utils/strings.js";
+import { commandDescriptions, commandErrors } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -15,22 +15,22 @@ export const data = new SlashCommandBuilder()
       .setName("session")
       .setDescription("Сесија")
       .setRequired(true)
-      .setAutocomplete(true)
+      .setAutocomplete(true),
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const session = interaction.options.getString("session", true);
   const information = Object.entries(getSessions()).find(
-    ([key]) => key.toLowerCase() === session.toLowerCase()
+    ([key]) => key.toLowerCase() === session.toLowerCase(),
   );
 
   if (information === undefined) {
-    await interaction.editReply("Не постои таа сесија.");
+    await interaction.editReply(commandErrors.sessionNotFound);
     return;
   }
 
   await interaction.editReply({
-    content: `Сесија: ${information[0]}`,
+    content: information[0],
     files: [`./sessions/${information[1]}`],
   });
 };

@@ -5,7 +5,13 @@ const intents = [
   GatewayIntentBits.GuildMessages,
   GatewayIntentBits.GuildMembers,
 ];
-const presence = { activities: [{ name: "World Domination" }] };
+const presence = {
+  activities: [
+    {
+      name: "World Domination",
+    },
+  ],
+};
 
 export const client = new Client({
   intents,

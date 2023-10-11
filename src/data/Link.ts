@@ -1,4 +1,5 @@
 import { logger } from "../utils/logger.js";
+import { databaseErrorFunctions } from "../utils/strings.js";
 import { database } from "./database.js";
 import { type Link, type Prisma } from "@prisma/client";
 
@@ -10,7 +11,7 @@ export const getLinks = async () => {
       },
     });
   } catch (error) {
-    logger.error(`Failed obtaining links\n${error}`);
+    logger.error(databaseErrorFunctions.getLinksError(error));
     return [];
   }
 };
@@ -23,7 +24,7 @@ export const getLinkNames = async () => {
       },
     });
   } catch (error) {
-    logger.error(`Failed obtaining link names\n${error}`);
+    logger.error(databaseErrorFunctions.getLinkNamesError(error));
     return [];
   }
 };
@@ -40,7 +41,7 @@ export const getLink = async (name?: string) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed obtaining link\n${error}`);
+    logger.error(databaseErrorFunctions.getLinkError(error));
     return null;
   }
 };
@@ -55,7 +56,7 @@ export const createLink = async (link?: Prisma.LinkCreateInput) => {
       data: link,
     });
   } catch (error) {
-    logger.error(`Failed creating link\n${error}`);
+    logger.error(databaseErrorFunctions.createLinkError(error));
     return null;
   }
 };
@@ -73,7 +74,7 @@ export const updateLink = async (link?: Link) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed updating link\n${error}`);
+    logger.error(databaseErrorFunctions.updateLinkError(error));
     return null;
   }
 };
@@ -90,7 +91,7 @@ export const deleteLink = async (name?: string) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed deleting link\n${error}`);
+    logger.error(databaseErrorFunctions.deleteLinkError(error));
     return null;
   }
 };
@@ -108,7 +109,7 @@ export const getNthLink = async (index?: number) => {
       skip: index - 1,
     });
   } catch (error) {
-    logger.error(`Failed obtaining link\n${error}`);
+    logger.error(databaseErrorFunctions.getNthLinkError(error));
     return null;
   }
 };

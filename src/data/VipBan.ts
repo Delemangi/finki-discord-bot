@@ -1,4 +1,5 @@
 import { logger } from "../utils/logger.js";
+import { databaseErrorFunctions } from "../utils/strings.js";
 import { database } from "./database.js";
 import { type Prisma } from "@prisma/client";
 
@@ -10,7 +11,7 @@ export const getVipBans = async () => {
       },
     });
   } catch (error) {
-    logger.error(`Failed obtaining vip bans\n${error}`);
+    logger.error(databaseErrorFunctions.getVipBansError(error));
     return [];
   }
 };
@@ -27,7 +28,7 @@ export const getVipBanByUserId = async (userId?: string) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed obtaining vip ban\n${error}`);
+    logger.error(databaseErrorFunctions.getVipBanByUserIdError(error));
     return null;
   }
 };
@@ -42,7 +43,7 @@ export const createVipBan = async (vipBan?: Prisma.VipBanCreateInput) => {
       data: vipBan,
     });
   } catch (error) {
-    logger.error(`Failed creating vip ban\n${error}`);
+    logger.error(databaseErrorFunctions.createVipBanError(error));
     return null;
   }
 };
@@ -59,7 +60,7 @@ export const deleteVipBan = async (userId?: string) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed deleting vip ban\n${error}`);
+    logger.error(databaseErrorFunctions.deleteVipBanError(error));
     return null;
   }
 };

@@ -1,5 +1,5 @@
 import { getRandomAnto } from "../data/Anto.js";
-import { commandDescriptions } from "../utils/strings.js";
+import { commandDescriptions, commandErrors } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -13,5 +13,5 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const anto = await getRandomAnto();
-  await interaction.editReply(anto?.quote ?? "Нема Анто факти.");
+  await interaction.editReply(anto?.quote ?? commandErrors.noAnto);
 };

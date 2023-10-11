@@ -2,12 +2,12 @@ import { createPoll } from "../data/Poll.js";
 import { createVipPoll } from "../data/VipPoll.js";
 import { client } from "./client.js";
 import { getRoleProperty } from "./config.js";
+import { vipStringFunctions } from "./strings.js";
 import { type Prisma } from "@prisma/client";
 import {
   type ButtonInteraction,
   type ChatInputCommandInteraction,
   type User,
-  userMention,
 } from "discord.js";
 
 export const startPoll = async (
@@ -19,7 +19,7 @@ export const startPoll = async (
   open: boolean,
   options: string[],
   roles: string[],
-  threshold: number
+  threshold: number,
 ) => {
   const poll: Prisma.PollCreateInput = {
     anonymous,
@@ -28,7 +28,9 @@ export const startPoll = async (
     multiple,
     open,
     options: {
-      create: options.map((opt) => ({ name: opt })),
+      create: options.map((opt) => ({
+        name: opt,
+      })),
     },
     roles,
     threshold,
@@ -45,51 +47,43 @@ export const startVipPoll = async (
   interaction: ButtonInteraction | ChatInputCommandInteraction,
   vipUser: User,
   type: string,
-  threshold?: number
+  threshold?: number,
 ) => {
   let title;
   let description;
+  const partialUser = {
+    id: vipUser.id,
+    tag: vipUser.tag,
+  };
 
   switch (type) {
     case "add":
-      title = `Влез во ВИП за ${vipUser.tag}`;
-      description = `Дали сте за да стане корисникот ${
-        vipUser.tag
-      } (${userMention(vipUser.id)}) член на ВИП?`;
+      title = vipStringFunctions.vipAddTitle(vipUser.tag);
+      description = vipStringFunctions.vipAddDescription(partialUser);
       break;
 
     case "remove":
-      title = `Недоверба против ${vipUser.tag}`;
-      description = `Дали сте за да биде корисникот ${
-        vipUser.tag
-      } (${userMention(vipUser.id)}) избркан од ВИП?`;
+      title = vipStringFunctions.vipRemoveTitle(vipUser.tag);
+      description = vipStringFunctions.vipRemoveDescription(partialUser);
       break;
 
     case "upgrade":
-      title = `Гласачки права за ${vipUser.tag}`;
-      description = `Дали сте за да му биде дадено право на глас на корисникот ${
-        vipUser.tag
-      } (${userMention(vipUser.id)})?`;
+      title = vipStringFunctions.vipUpgradeTitle(vipUser.tag);
+      description = vipStringFunctions.vipUpgradeDescription(partialUser);
       break;
 
     case "ban":
-      title = `Бан за ${vipUser.tag}`;
-      description = `Дали сте за да биде баниран корисникот ${
-        vipUser.tag
-      } (${userMention(vipUser.id)}) од ВИП?`;
+      title = vipStringFunctions.vipBanTitle(vipUser.tag);
+      description = vipStringFunctions.vipBanDescription(partialUser);
       break;
 
     case "unban":
-      title = `Бришење бан за ${vipUser.tag}`;
-      description = `Дали сте за да биде избришан банот на корисникот ${
-        vipUser.tag
-      } (${userMention(vipUser.id)}) од ВИП?`;
+      title = vipStringFunctions.vipUnbanTitle(vipUser.tag);
+      description = vipStringFunctions.vipUnbanDescription(partialUser);
       break;
 
     default:
-      title = `Непознат тип на анкета за ${vipUser.tag}`;
-      description = "Настана некоја грешка со анкетата.";
-      break;
+      return null;
   }
 
   const poll: Prisma.PollCreateInput = {

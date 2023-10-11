@@ -12,6 +12,6 @@ export type Command = {
     | SlashCommandBuilder
     | SlashCommandSubcommandGroupBuilder;
   execute: (
-    interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction
+    interaction: ChatInputCommandInteraction | ContextMenuCommandInteraction,
   ) => Promise<void>;
 };

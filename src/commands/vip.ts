@@ -29,7 +29,12 @@ import {
 } from "../utils/members.js";
 import { startVipPoll } from "../utils/polls.js";
 import { getMembersWithRoles } from "../utils/roles.js";
-import { commandDescriptions, errors } from "../utils/strings.js";
+import {
+  commandDescriptions,
+  commandErrors,
+  commandResponses,
+  logErrorFunctions,
+} from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,
@@ -45,7 +50,7 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName("members")
-      .setDescription(commandDescriptions["vip members"])
+      .setDescription(commandDescriptions["vip members"]),
   )
   .addSubcommand((command) =>
     command
@@ -55,31 +60,31 @@ export const data = new SlashCommandBuilder()
         option
           .setName("user")
           .setDescription("Предлог корисник за член на ВИП")
-          .setRequired(true)
-      )
+          .setRequired(true),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("remove")
       .setDescription(commandDescriptions["vip remove"])
       .addUserOption((option) =>
-        option.setName("user").setDescription("Член на ВИП").setRequired(true)
-      )
+        option.setName("user").setDescription("Член на ВИП").setRequired(true),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("upgrade")
       .setDescription(commandDescriptions["vip upgrade"])
       .addUserOption((option) =>
-        option.setName("user").setDescription("Корисник").setRequired(true)
-      )
+        option.setName("user").setDescription("Корисник").setRequired(true),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("override")
       .setDescription(commandDescriptions["vip override"])
       .addUserOption((option) =>
-        option.setName("user").setDescription("Корисник").setRequired(true)
+        option.setName("user").setDescription("Корисник").setRequired(true),
       )
       .addStringOption((option) =>
         option
@@ -90,8 +95,8 @@ export const data = new SlashCommandBuilder()
             ...["add", "remove", "upgrade", "ban", "unban"].map((choice) => ({
               name: choice,
               value: choice,
-            }))
-          )
+            })),
+          ),
       )
       .addStringOption((option) =>
         option
@@ -99,30 +104,33 @@ export const data = new SlashCommandBuilder()
           .setDescription("Одлука")
           .setRequired(true)
           .addChoices(
-            ...["Да", "Не"].map((choice) => ({ name: choice, value: choice }))
-          )
-      )
+            ...["Да", "Не"].map((choice) => ({
+              name: choice,
+              value: choice,
+            })),
+          ),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("delete")
       .setDescription(commandDescriptions["vip delete"])
       .addStringOption((option) =>
-        option.setName("poll").setDescription("Анкета").setRequired(true)
-      )
+        option.setName("poll").setDescription("Анкета").setRequired(true),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("remaining")
       .setDescription(commandDescriptions["vip remaining"])
       .addStringOption((option) =>
-        option.setName("poll").setDescription("Анкета").setRequired(true)
-      )
+        option.setName("poll").setDescription("Анкета").setRequired(true),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("invited")
-      .setDescription(commandDescriptions["vip invited"])
+      .setDescription(commandDescriptions["vip invited"]),
   )
   .addSubcommand((command) =>
     command
@@ -132,192 +140,203 @@ export const data = new SlashCommandBuilder()
         option
           .setName("user")
           .setDescription("Предлог корисник за покана")
-          .setRequired(true)
-      )
+          .setRequired(true),
+      ),
   )
   .addSubcommand((command) =>
-    command.setName("list").setDescription(commandDescriptions["vip list"])
+    command.setName("list").setDescription(commandDescriptions["vip list"]),
   )
   .addSubcommand((command) =>
     command
       .setName("ban")
       .setDescription(commandDescriptions["vip ban"])
       .addUserOption((option) =>
-        option.setName("user").setDescription("Корисник").setRequired(true)
-      )
+        option.setName("user").setDescription("Корисник").setRequired(true),
+      ),
   )
   .addSubcommand((command) =>
-    command.setName("bans").setDescription(commandDescriptions["vip bans"])
+    command.setName("bans").setDescription(commandDescriptions["vip bans"]),
   )
   .addSubcommand((command) =>
     command
       .setName("unban")
       .setDescription(commandDescriptions["vip unban"])
       .addUserOption((option) =>
-        option.setName("user").setDescription("Корисник").setRequired(true)
-      )
+        option.setName("user").setDescription("Корисник").setRequired(true),
+      ),
   );
 
 const handleVipMembers = async (interaction: ChatInputCommandInteraction) => {
   const embeds = await getVipEmbed(interaction);
-  await interaction.editReply({ embeds });
+  await interaction.editReply({
+    embeds,
+  });
 };
 
 const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser("user", true);
 
   if (user.bot) {
-    await interaction.editReply("Корисникот не смее да биде бот.");
+    await interaction.editReply(commandErrors.userBot);
     return;
   }
 
   const vipBan = await getVipBanByUserId(user.id);
 
   if (vipBan !== null) {
-    await interaction.editReply("Корисникот е баниран од ВИП.");
+    await interaction.editReply(commandErrors.userVipBanned);
     return;
   }
 
   const member = interaction.guild?.members.cache.find(
-    (mem) => mem.id === user.id
+    (mem) => mem.id === user.id,
   );
 
   if (member === undefined) {
-    await interaction.editReply("Корисникот не е член на овој сервер.");
+    await interaction.editReply(commandErrors.userNotMember);
     return;
   }
 
   if (await isMemberInVip(member)) {
-    await interaction.editReply("Корисникот е веќе член на ВИП.");
+    await interaction.editReply(commandErrors.userVipMember);
     return;
   }
 
   if (!(await isMemberInvitedToVip(member))) {
-    await interaction.editReply("Корисникот не е поканет да биде член на ВИП.");
+    await interaction.editReply(commandErrors.userNotVipInvited);
     return;
   }
 
   const existingPoll = await getVipPollByUserAndType(user.id, "add");
 
   if (existingPoll !== null) {
-    await interaction.editReply("Веќе постои предлог за овој корисник.");
+    await interaction.editReply(commandErrors.userVipPending);
     return;
   }
 
   const pollId = await startVipPoll(interaction, user, "add", 0.67);
 
   if (pollId === null) {
-    await interaction.editReply("Настана грешка при креирање на анкетата.");
+    await interaction.editReply(commandErrors.pollCreationFailed);
     return;
   }
 
   const poll = await getPollById(pollId);
 
   if (poll === null) {
-    await interaction.editReply("Таа анкета не постои.");
+    await interaction.editReply(commandErrors.pollNotFound);
     return;
   }
 
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
-  await interaction.editReply({ components, embeds: [embed] });
+  await interaction.editReply({
+    components,
+    embeds: [embed],
+  });
 };
 
 const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser("user", true);
 
   if (user.bot) {
-    await interaction.editReply("Корисникот не смее да биде бот.");
+    await interaction.editReply(commandErrors.userBot);
     return;
   }
 
   const member = interaction.guild?.members.cache.find(
-    (mem) => mem.id === user.id
+    (mem) => mem.id === user.id,
   );
 
   if (member === undefined) {
-    await interaction.editReply("Корисникот не е член на овој сервер.");
+    await interaction.editReply(commandErrors.userNotMember);
     return;
   }
 
   if (await isMemberAdmin(member)) {
-    await interaction.editReply("Корисникот е администратор.");
+    await interaction.editReply(commandErrors.userAdmin);
     return;
   }
 
   if (!(await isMemberInVip(member))) {
-    await interaction.editReply("Корисникот не е член на ВИП.");
+    await interaction.editReply(commandErrors.userNotVipMember);
     return;
   }
 
   const pollId = await startVipPoll(interaction, user, "remove", 0.67);
 
   if (pollId === null) {
-    await interaction.editReply("Веќе постои предлог за овој корисник.");
+    await interaction.editReply(commandErrors.userVipPending);
     return;
   }
 
   const poll = await getPollById(pollId);
 
   if (poll === null) {
-    await interaction.editReply("Таа анкета не постои.");
+    await interaction.editReply(commandErrors.pollNotFound);
     return;
   }
 
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
-  await interaction.editReply({ components, embeds: [embed] });
+  await interaction.editReply({
+    components,
+    embeds: [embed],
+  });
 };
 
 const handleVipUpgrade = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser("user", true);
 
   if (user.bot) {
-    await interaction.editReply("Корисникот не смее да биде бот.");
+    await interaction.editReply(commandErrors.userBot);
     return;
   }
 
   const member = interaction.guild?.members.cache.find(
-    (mem) => mem.id === user.id
+    (mem) => mem.id === user.id,
   );
 
   if (member === undefined) {
-    await interaction.editReply("Корисникот не е член на овој сервер.");
+    await interaction.editReply(commandErrors.userNotMember);
     return;
   }
 
   if (await isMemberAdmin(member)) {
-    await interaction.editReply("Корисникот е администратор.");
+    await interaction.editReply(commandErrors.userAdmin);
     return;
   }
 
   if (!(await isMemberInVip(member))) {
-    await interaction.editReply("Корисникот не е член на ВИП.");
+    await interaction.editReply(commandErrors.userNotVipMember);
     return;
   }
 
   if (await isVipVotingMember(member)) {
-    await interaction.editReply("Корисникот е полноправен член на ВИП.");
+    await interaction.editReply(commandErrors.userFullVipMember);
     return;
   }
 
   const pollId = await startVipPoll(interaction, user, "upgrade", 0.5);
 
   if (pollId === null) {
-    await interaction.editReply("Веќе постои предлог за овој корисник.");
+    await interaction.editReply(commandErrors.userVipPending);
     return;
   }
 
   const poll = await getPollById(pollId);
 
   if (poll === null) {
-    await interaction.editReply("Таа анкета не постои.");
+    await interaction.editReply(commandErrors.pollNotFound);
     return;
   }
 
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
-  await interaction.editReply({ components, embeds: [embed] });
+  await interaction.editReply({
+    components,
+    embeds: [embed],
+  });
 };
 
 const handleVipOverride = async (interaction: ChatInputCommandInteraction) => {
@@ -329,7 +348,7 @@ const handleVipOverride = async (interaction: ChatInputCommandInteraction) => {
   const poll = await getPollById(vipPoll?.pollId);
 
   if (vipPoll === null || poll === null) {
-    await interaction.editReply("Не постои анкета за овој корисник.");
+    await interaction.editReply(commandErrors.pollNotFound);
     return;
   }
 
@@ -341,13 +360,13 @@ const handleVipOverride = async (interaction: ChatInputCommandInteraction) => {
   const member = interaction.guild?.members.cache.get(vipPoll.userId);
 
   if (member === undefined) {
-    await interaction.editReply("Корисникот не е член на овој сервер.");
+    await interaction.editReply(commandErrors.userNotMember);
     return;
   }
 
   await handlePollButtonForVipVote(poll, member);
 
-  await interaction.editReply("Успешно е затворена и спроведена анкетата.");
+  await interaction.editReply(commandResponses.pollOverriden);
 };
 
 const handleVipDelete = async (interaction: ChatInputCommandInteraction) => {
@@ -358,7 +377,7 @@ const handleVipDelete = async (interaction: ChatInputCommandInteraction) => {
   const poll = await getPollById(pollId);
 
   if (vipPoll === null && poll === null) {
-    await interaction.editReply("Таа анкета не постои.");
+    await interaction.editReply(commandErrors.pollNotFound);
     return;
   }
 
@@ -373,14 +392,14 @@ const handleVipRemaining = async (interaction: ChatInputCommandInteraction) => {
   const poll = await getPollById(pollId);
 
   if (poll === null) {
-    await interaction.editReply("Таа анкета не постои.");
+    await interaction.editReply(commandErrors.pollNotFound);
     return;
   }
 
   const vipPoll = await getVipPollByPollId(pollId);
 
   if (vipPoll === null) {
-    await interaction.editReply("Таа ВИП анкета не постои.");
+    await interaction.editReply(commandErrors.pollNotFound);
     return;
   }
 
@@ -389,7 +408,9 @@ const handleVipRemaining = async (interaction: ChatInputCommandInteraction) => {
   const allVoters = await getMembersWithRoles(interaction.guild, ...poll.roles);
 
   await interaction.editReply({
-    allowedMentions: { parse: [] },
+    allowedMentions: {
+      parse: [],
+    },
     content: allVoters
       .filter((voter) => !voters.includes(voter))
       .map((voter) => userMention(voter))
@@ -409,31 +430,31 @@ const handleVipInvite = async (interaction: ChatInputCommandInteraction) => {
   const member = interaction.guild?.members.cache.get(user.id);
 
   if (member === undefined) {
-    await interaction.editReply("Корисникот не е член на овој сервер.");
+    await interaction.editReply(commandErrors.userNotMember);
     return;
   }
 
   const vipBan = await getVipBanByUserId(user.id);
 
   if (vipBan !== null) {
-    await interaction.editReply("Корисникот е баниран од ВИП.");
+    await interaction.editReply(commandErrors.userVipBanned);
     return;
   }
 
   if (await isMemberInVip(member)) {
-    await interaction.editReply("Корисникот е веќе член на ВИП.");
+    await interaction.editReply(commandErrors.userVipMember);
     return;
   }
 
   if (await isMemberInvitedToVip(member)) {
-    await interaction.editReply("Корисникот е веќе поканет за ВИП.");
+    await interaction.editReply(commandErrors.userVipInvited);
     return;
   }
 
   const vipInvitedRole = await getRoleProperty("vipInvited");
   await member.roles.add(vipInvitedRole);
 
-  await interaction.editReply("Успешно е поканет корисникот за ВИП.");
+  await interaction.editReply(commandResponses.userVipInvited);
 };
 
 const handleVipList = async (interaction: ChatInputCommandInteraction) => {
@@ -446,7 +467,10 @@ const handleVipList = async (interaction: ChatInputCommandInteraction) => {
       ? getPaginationComponents("polls")
       : getPaginationComponents("polls", "start"),
   ];
-  const message = await interaction.editReply({ components, embeds: [embed] });
+  const message = await interaction.editReply({
+    components,
+    embeds: [embed],
+  });
   const collector = message.createMessageComponentCollector({
     componentType: ComponentType.Button,
     time: await getConfigProperty("buttonIdleTime"),
@@ -458,7 +482,7 @@ const handleVipList = async (interaction: ChatInputCommandInteraction) => {
       buttonInteraction.message.interaction?.user.id
     ) {
       const mess = await buttonInteraction.reply({
-        content: "Ова не е ваша команда.",
+        content: commandErrors.buttonNoPermission,
         ephemeral: true,
       });
       void deleteResponse(mess);
@@ -467,14 +491,14 @@ const handleVipList = async (interaction: ChatInputCommandInteraction) => {
 
     const id = buttonInteraction.customId.split(":")[1];
 
-    if (id === "undefined") {
+    if (id === undefined) {
       return;
     }
 
     let buttons;
     let page =
       Number(
-        buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.[0]
+        buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.[0],
       ) - 1;
 
     if (id === "first") {
@@ -500,7 +524,7 @@ const handleVipList = async (interaction: ChatInputCommandInteraction) => {
     const nextEmbed = await getVipPollListNextPageEmbed(
       vipPolls,
       page,
-      pollsPerPage
+      pollsPerPage,
     );
 
     try {
@@ -509,7 +533,12 @@ const handleVipList = async (interaction: ChatInputCommandInteraction) => {
         embeds: [nextEmbed],
       });
     } catch (error) {
-      logger.error(`Failed to update poll list command\n${error}`);
+      logger.error(
+        logErrorFunctions.interactionUpdateError(
+          buttonInteraction.customId,
+          error,
+        ),
+      );
     }
   });
 
@@ -519,7 +548,7 @@ const handleVipList = async (interaction: ChatInputCommandInteraction) => {
         components: [getPaginationComponents("polls")],
       });
     } catch (error) {
-      logger.error(`Failed to update poll list command\n${error}`);
+      logger.error(logErrorFunctions.collectorEndError(name, error));
     }
   });
 };
@@ -528,53 +557,56 @@ const handleVipBan = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser("user", true);
 
   if (user.bot) {
-    await interaction.editReply("Корисникот не смее да биде бот.");
+    await interaction.editReply(commandErrors.userBot);
     return;
   }
 
   const member = interaction.guild?.members.cache.find(
-    (mem) => mem.id === user.id
+    (mem) => mem.id === user.id,
   );
 
   if (member === undefined) {
-    await interaction.editReply("Корисникот не е член на овој сервер.");
+    await interaction.editReply(commandErrors.userNotMember);
     return;
   }
 
   if (await isMemberAdmin(member)) {
-    await interaction.editReply("Корисникот е администратор.");
+    await interaction.editReply(commandErrors.userAdmin);
     return;
   }
 
   if (await isMemberInVip(member)) {
-    await interaction.editReply("Корисникот е член на ВИП.");
+    await interaction.editReply(commandErrors.userVipMember);
     return;
   }
 
   const pollId = await startVipPoll(interaction, user, "ban", 0.67);
 
   if (pollId === null) {
-    await interaction.editReply("Веќе постои предлог за овој корисник.");
+    await interaction.editReply(commandErrors.userVipPending);
     return;
   }
 
   const poll = await getPollById(pollId);
 
   if (poll === null) {
-    await interaction.editReply("Таа анкета не постои.");
+    await interaction.editReply(commandErrors.pollNotFound);
     return;
   }
 
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
-  await interaction.editReply({ components, embeds: [embed] });
+  await interaction.editReply({
+    components,
+    embeds: [embed],
+  });
 };
 
 const handleVipBans = async (interaction: ChatInputCommandInteraction) => {
   const vipBans = await getVipBans();
 
   if (vipBans.length === 0) {
-    await interaction.editReply("Нема банирани корисници.");
+    await interaction.editReply(commandResponses.noVipBanned);
     return;
   }
 
@@ -591,27 +623,30 @@ const handleVipUnban = async (interaction: ChatInputCommandInteraction) => {
   const vipBan = await getVipBanByUserId(user.id);
 
   if (vipBan === null) {
-    await interaction.editReply("Корисникот не е баниран од ВИП.");
+    await interaction.editReply(commandErrors.userNotVipBanned);
     return;
   }
 
   const pollId = await startVipPoll(interaction, user, "unban", 0.67);
 
   if (pollId === null) {
-    await interaction.editReply("Веќе постои предлог за овој корисник.");
+    await interaction.editReply(commandErrors.userVipPending);
     return;
   }
 
   const poll = await getPollById(pollId);
 
   if (poll === null) {
-    await interaction.editReply("Таа анкета не постои.");
+    await interaction.editReply(commandErrors.pollNotFound);
     return;
   }
 
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
-  await interaction.editReply({ components, embeds: [embed] });
+  await interaction.editReply({
+    components,
+    embeds: [embed],
+  });
 };
 
 const vipHandlers = {
@@ -636,7 +671,9 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     !interaction.channel.isTextBased() ||
     interaction.channel.isDMBased()
   ) {
-    await interaction.editReply({ content: errors.serverOnlyCommand });
+    await interaction.editReply({
+      content: commandErrors.serverOnlyCommand,
+    });
     return;
   }
 

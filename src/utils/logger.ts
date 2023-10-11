@@ -4,8 +4,12 @@ export const logger = createLogger({
   transports: [
     new transports.Console({
       format: format.combine(
-        format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
-        format.errors({ stack: true }),
+        format.timestamp({
+          format: "YYYY-MM-DD HH:mm:ss",
+        }),
+        format.errors({
+          stack: true,
+        }),
         format.colorize({
           colors: {
             debug: "gray",
@@ -19,8 +23,8 @@ export const logger = createLogger({
         }),
         format.printf(
           ({ level, message, timestamp }) =>
-            `${timestamp} - ${level}: ${message}`
-        )
+            `${timestamp} - ${level}: ${message}`,
+        ),
       ),
       handleExceptions: true,
       level: "info",
@@ -28,16 +32,22 @@ export const logger = createLogger({
     new transports.File({
       filename: "bot.log",
       format: format.combine(
-        format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
-        format.errors({ stack: true }),
+        format.timestamp({
+          format: "YYYY-MM-DD HH:mm:ss",
+        }),
+        format.errors({
+          stack: true,
+        }),
         format.printf(
           ({ level, message, timestamp }) =>
-            `${timestamp} - ${level}: ${message}`
-        )
+            `${timestamp} - ${level}: ${message}`,
+        ),
       ),
       handleExceptions: true,
       level: "debug",
-      options: { flags: "w" },
+      options: {
+        flags: "w",
+      },
     }),
   ],
 });

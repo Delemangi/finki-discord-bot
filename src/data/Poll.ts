@@ -1,6 +1,7 @@
 import { type PollWithOptions } from "../types/PollWithOptions.js";
 import { logger } from "../utils/logger.js";
 import { getMembersWithRoles } from "../utils/roles.js";
+import { databaseErrorFunctions } from "../utils/strings.js";
 import { database } from "./database.js";
 import { countPollVotesByOptionId } from "./PollVote.js";
 import { type Prisma } from "@prisma/client";
@@ -16,7 +17,7 @@ export const createPoll = async (poll?: Prisma.PollCreateInput) => {
       data: poll,
     });
   } catch (error) {
-    logger.error(`Failed creating poll\n${error}`);
+    logger.error(databaseErrorFunctions.createPollError(error));
     return null;
   }
 };
@@ -47,7 +48,7 @@ export const updatePoll = async (poll?: PollWithOptions) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed updating poll\n${error}`);
+    logger.error(databaseErrorFunctions.updatePollError(error));
     return null;
   }
 };
@@ -56,7 +57,7 @@ export const getPolls = async () => {
   try {
     return await database.poll.findMany();
   } catch (error) {
-    logger.error(`Failed loading polls\n${error}`);
+    logger.error(databaseErrorFunctions.getPollsError(error));
     return [];
   }
 };
@@ -76,7 +77,7 @@ export const getPollById = async (pollId?: string) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed obtaining poll by poll ID\n${error}`);
+    logger.error(databaseErrorFunctions.getPollByIdError(error));
     return null;
   }
 };
@@ -95,7 +96,7 @@ export const decidePoll = async (pollId: string, interaction: Interaction) => {
   const votes: { [index: string]: number } = {};
   const totalVoters = await getMembersWithRoles(
     interaction.guild,
-    ...poll.roles
+    ...poll.roles,
   );
   const rawThreshold = totalVoters.length * poll.threshold;
   const threshold = Number.isInteger(rawThreshold)
@@ -120,7 +121,7 @@ export const decidePoll = async (pollId: string, interaction: Interaction) => {
 
   const totalVotes = Object.values(votes).reduce(
     (total, optionVotes) => total + optionVotes,
-    0
+    0,
   );
 
   if (totalVotes === totalVoters.length) {
@@ -142,7 +143,7 @@ export const deletePoll = async (pollId?: string) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed deleting poll\n${error}`);
+    logger.error(databaseErrorFunctions.deletePollError(error));
     return null;
   }
 };

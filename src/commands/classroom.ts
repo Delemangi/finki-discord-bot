@@ -1,6 +1,9 @@
 import { getClassroomEmbed } from "../utils/components.js";
 import { getClassrooms } from "../utils/config.js";
-import { commandDescriptions } from "../utils/strings.js";
+import {
+  commandDescriptions,
+  commandResponseFunctions,
+} from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -16,7 +19,7 @@ export const data = new SlashCommandBuilder()
       .setName("classroom")
       .setDescription("Просторија")
       .setRequired(true)
-      .setAutocomplete(true)
+      .setAutocomplete(true),
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
@@ -26,23 +29,23 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     (cl) =>
       cl.classroom.toString().toLowerCase() === classroomName?.toLowerCase() &&
       cl.location.toString().toLowerCase() ===
-        classroomLocation?.slice(1, -1).toLowerCase()
+        classroomLocation?.slice(1, -1).toLowerCase(),
   );
 
   if (information === undefined) {
     const classrooms = getClassrooms().filter(
       (cl) =>
-        cl.classroom.toString().toLowerCase() === classroomName?.toLowerCase()
+        cl.classroom.toString().toLowerCase() === classroomName?.toLowerCase(),
     );
 
     const embeds = await Promise.all(
-      classrooms.map(async (cl) => await getClassroomEmbed(cl))
+      classrooms.map(async (cl) => await getClassroomEmbed(cl)),
     );
     await interaction.editReply({
       embeds,
       ...(embeds.length > 1
         ? {
-            content: `Внимание: просторијата ${classroom} постои на повеќе факултети.`,
+            content: commandResponseFunctions.multipleClassrooms(classroom),
           }
         : {}),
     });
@@ -50,5 +53,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const embed = await getClassroomEmbed(information);
-  await interaction.editReply({ embeds: [embed] });
+  await interaction.editReply({
+    embeds: [embed],
+  });
 };

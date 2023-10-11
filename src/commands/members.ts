@@ -1,4 +1,7 @@
-import { commandDescriptions } from "../utils/strings.js";
+import {
+  commandDescriptions,
+  commandResponseFunctions,
+} from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -13,6 +16,6 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply(
-    `Серверот има ${interaction.guild?.memberCount} членови.`
+    commandResponseFunctions.serverMembers(interaction.guild?.memberCount),
   );
 };

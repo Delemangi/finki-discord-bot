@@ -1,6 +1,12 @@
 import { getCommands } from "../utils/commands.js";
 import { getApplicationId, getToken } from "../utils/config.js";
-import { commandDescriptions } from "../utils/strings.js";
+import { logger } from "../utils/logger.js";
+import {
+  commandDescriptions,
+  commandErrors,
+  commandResponses,
+  logErrorFunctions,
+} from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   PermissionFlagsBits,
@@ -30,8 +36,9 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     await rest.put(Routes.applicationCommands(getApplicationId()), {
       body: commands,
     });
-    await interaction.editReply("Успешно се регистрирани сите команди.");
+    await interaction.editReply(commandResponses.commandsRegistered);
   } catch (error) {
-    throw new Error(`Failed to register application commands\n${error}`);
+    await interaction.editReply(commandErrors.commandsNotRegistered);
+    logger.error(logErrorFunctions.commandsRegistrationError(error));
   }
 };

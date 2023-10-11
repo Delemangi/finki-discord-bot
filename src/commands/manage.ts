@@ -27,7 +27,13 @@ import {
   getQuestionEmbed,
 } from "../utils/components.js";
 import { logger } from "../utils/logger.js";
-import { commandDescriptions } from "../utils/strings.js";
+import { linkRegex } from "../utils/regex.js";
+import {
+  commandDescriptions,
+  commandErrors,
+  commandResponses,
+  logErrorFunctions,
+} from "../utils/strings.js";
 import { InfoMessageType } from "@prisma/client";
 import {
   type ChatInputCommandInteraction,
@@ -49,17 +55,17 @@ export const data = new SlashCommandBuilder()
           .setName("question")
           .setDescription("Прашање")
           .setRequired(true)
-          .setAutocomplete(true)
+          .setAutocomplete(true),
       )
       .addStringOption((option) =>
-        option.setName("answer").setDescription("Одговор").setRequired(true)
+        option.setName("answer").setDescription("Одговор").setRequired(true),
       )
       .addStringOption((option) =>
         option
           .setName("links")
           .setDescription("Линкови во JSON формат")
-          .setRequired(false)
-      )
+          .setRequired(false),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -70,8 +76,8 @@ export const data = new SlashCommandBuilder()
           .setName("question")
           .setDescription("Прашање")
           .setRequired(true)
-          .setAutocomplete(true)
-      )
+          .setAutocomplete(true),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -82,8 +88,8 @@ export const data = new SlashCommandBuilder()
           .setName("question")
           .setDescription("Прашање")
           .setRequired(true)
-          .setAutocomplete(true)
-      )
+          .setAutocomplete(true),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -94,14 +100,17 @@ export const data = new SlashCommandBuilder()
           .setName("link")
           .setDescription("Име на линк")
           .setRequired(true)
-          .setAutocomplete(true)
+          .setAutocomplete(true),
       )
       .addStringOption((option) =>
-        option.setName("url").setDescription("Линк до ресурс").setRequired(true)
+        option
+          .setName("url")
+          .setDescription("Линк до ресурс")
+          .setRequired(true),
       )
       .addStringOption((option) =>
-        option.setName("description").setDescription("Опис").setRequired(false)
-      )
+        option.setName("description").setDescription("Опис").setRequired(false),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -112,8 +121,8 @@ export const data = new SlashCommandBuilder()
           .setName("link")
           .setDescription("Линк")
           .setRequired(true)
-          .setAutocomplete(true)
-      )
+          .setAutocomplete(true),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -124,24 +133,24 @@ export const data = new SlashCommandBuilder()
           .setName("link")
           .setDescription("Линк")
           .setRequired(true)
-          .setAutocomplete(true)
-      )
+          .setAutocomplete(true),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName("anto-add")
       .setDescription(commandDescriptions["manage anto-add"])
       .addStringOption((option) =>
-        option.setName("anto").setDescription("Анто").setRequired(true)
-      )
+        option.setName("anto").setDescription("Анто").setRequired(true),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName("anto-delete")
       .setDescription(commandDescriptions["manage anto-delete"])
       .addStringOption((option) =>
-        option.setName("anto").setDescription("Анто").setRequired(true)
-      )
+        option.setName("anto").setDescription("Анто").setRequired(true),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -151,16 +160,16 @@ export const data = new SlashCommandBuilder()
         option
           .setName("antos")
           .setDescription("Анто-и во JSON формат")
-          .setRequired(true)
-      )
+          .setRequired(true),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName("rule-set")
       .setDescription(commandDescriptions["manage rule-set"])
       .addStringOption((option) =>
-        option.setName("rule").setDescription("Правило").setRequired(true)
-      )
+        option.setName("rule").setDescription("Правило").setRequired(true),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -171,8 +180,8 @@ export const data = new SlashCommandBuilder()
           .setName("rule")
           .setDescription("Правило")
           .setRequired(true)
-          .setAutocomplete(true)
-      )
+          .setAutocomplete(true),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -182,7 +191,7 @@ export const data = new SlashCommandBuilder()
         option
           .setName("index")
           .setDescription("Број на порака")
-          .setRequired(true)
+          .setRequired(true),
       )
       .addStringOption((option) =>
         option
@@ -197,15 +206,15 @@ export const data = new SlashCommandBuilder()
             {
               name: "Слика",
               value: "image",
-            }
-          )
+            },
+          ),
       )
       .addStringOption((option) =>
         option
           .setName("content")
           .setDescription("Содржина (текст или линк до слика)")
-          .setRequired(true)
-      )
+          .setRequired(true),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -215,8 +224,8 @@ export const data = new SlashCommandBuilder()
         option
           .setName("index")
           .setDescription("Број на порака")
-          .setRequired(true)
-      )
+          .setRequired(true),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -226,8 +235,8 @@ export const data = new SlashCommandBuilder()
         option
           .setName("company")
           .setDescription("Име на компанија")
-          .setRequired(true)
-      )
+          .setRequired(true),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -238,8 +247,8 @@ export const data = new SlashCommandBuilder()
           .setName("company")
           .setDescription("Име на компанија")
           .setRequired(true)
-          .setAutocomplete(true)
-      )
+          .setAutocomplete(true),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -249,12 +258,12 @@ export const data = new SlashCommandBuilder()
         option
           .setName("companies")
           .setDescription("Компании во JSON формат")
-          .setRequired(true)
-      )
+          .setRequired(true),
+      ),
   );
 
 const handleManageQuestionSet = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const keyword = interaction.options.getString("question", true);
   const answer = interaction.options
@@ -268,7 +277,7 @@ const handleManageQuestionSet = async (
     try {
       parsedLinks = LinksSchema.parse(JSON.parse(links));
     } catch {
-      await interaction.editReply("Линковите не се во валиден JSON формат.");
+      await interaction.editReply(commandErrors.invalidLinks);
       return;
     }
   }
@@ -283,7 +292,7 @@ const handleManageQuestionSet = async (
               ([linkName, linkUrl]) => ({
                 name: linkName,
                 url: linkUrl,
-              })
+              }),
             ),
           },
         },
@@ -295,9 +304,7 @@ const handleManageQuestionSet = async (
     const createdQuestion = await createQuestion(newQuestion);
 
     if (createdQuestion === null) {
-      await interaction.editReply(
-        "Креирањето на прашањето беше неуспешно. Проверете дали е креирано."
-      );
+      await interaction.editReply(commandErrors.faqCreationFailed);
       return;
     }
 
@@ -309,10 +316,8 @@ const handleManageQuestionSet = async (
         embeds: [questionEmbed],
       });
     } catch (error) {
-      logger.error(`Failed sending a question\n${error}`);
-      await interaction.editReply(
-        "Креирањето на прашањето беше неуспешно. Проверете дали е креирано."
-      );
+      logger.error(logErrorFunctions.faqSendError(error));
+      await interaction.editReply(commandErrors.faqSendFailed);
     }
 
     return;
@@ -325,8 +330,8 @@ const handleManageQuestionSet = async (
     try {
       LinksSchema.parse(JSON.parse(links));
     } catch (error) {
-      logger.error(`Failed parsing links\n${error}`);
-      await interaction.editReply("Линковите не се во валиден JSON формат.");
+      logger.error(logErrorFunctions.linksParseError(error));
+      await interaction.editReply(commandErrors.invalidLinks);
       return;
     }
 
@@ -337,17 +342,15 @@ const handleManageQuestionSet = async (
           name: linkName,
           questionId: question.id,
           url: linkUrl,
-        })
-      )
+        }),
+      ),
     );
   }
 
   const updatedQuestion = await getQuestion(keyword);
 
   if (updatedQuestion === null) {
-    await interaction.editReply(
-      "Креирањето на прашањето беше неуспешно. Проверете дали е креирано."
-    );
+    await interaction.editReply(commandErrors.faqCreationFailed);
     return;
   }
 
@@ -359,36 +362,34 @@ const handleManageQuestionSet = async (
       embeds: [embed],
     });
   } catch (error) {
-    logger.error(`Failed sending a question\n${error}`);
-    await interaction.editReply(
-      "Креирањето на прашањето беше неуспешно. Проверете дали е креирано."
-    );
+    logger.error(logErrorFunctions.faqSendError(error));
+    await interaction.editReply(commandErrors.faqSendFailed);
   }
 };
 
 const handleManageQuestionDelete = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const keyword = interaction.options.getString("question", true);
   const question = await getQuestion(keyword);
 
   if (question === null) {
-    await interaction.editReply("Не постои такво прашање.");
+    await interaction.editReply(commandErrors.faqNotFound);
     return;
   }
 
   await deleteQuestion(keyword);
-  await interaction.editReply("Прашањето е избришано.");
+  await interaction.editReply(commandResponses.faqDeleted);
 };
 
 const handleManageQuestionContent = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const keyword = interaction.options.getString("question", true);
   const question = await getQuestion(keyword);
 
   if (question === null) {
-    await interaction.editReply("Не постои такво прашање.");
+    await interaction.editReply(commandErrors.faqNotFound);
     return;
   }
 
@@ -410,17 +411,17 @@ const handleManageQuestionContent = async (
                 ...accumulator,
                 ...currentValue,
               }),
-              {}
+              {},
             ),
           null,
-          2
-        )
-      )
+          2,
+        ),
+      ),
   );
 };
 
 const handleManageLinkSet = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const keyword = interaction.options.getString("link", true);
   const description = interaction.options
@@ -429,8 +430,8 @@ const handleManageLinkSet = async (
   const url = interaction.options.getString("url", true);
   const link = await getLink(keyword);
 
-  if (!/https?:\/\/\S+\.\S+/u.test(url)) {
-    await interaction.editReply("Линкот не е валиден.");
+  if (!linkRegex.test(url)) {
+    await interaction.editReply(commandErrors.invalidLink);
     return;
   }
 
@@ -444,9 +445,7 @@ const handleManageLinkSet = async (
     const createdLink = await createLink(newLink);
 
     if (createdLink === null) {
-      await interaction.editReply(
-        "Креирањето на линкот беше неуспешно. Проверете дали е креиран."
-      );
+      await interaction.editReply(commandErrors.linkCreationFailed);
       return;
     }
 
@@ -458,10 +457,8 @@ const handleManageLinkSet = async (
         embeds: [linkEmbed],
       });
     } catch (error) {
-      logger.error(`Failed sending a link\n${error}`);
-      await interaction.editReply(
-        "Креирањето на линкот беше неуспешно. Проверете дали е креиран."
-      );
+      logger.error(logErrorFunctions.linkSendError(error));
+      await interaction.editReply(commandErrors.linkSendFailed);
     }
 
     return;
@@ -477,9 +474,7 @@ const handleManageLinkSet = async (
   const updatedLink = await getLink(keyword);
 
   if (updatedLink === null) {
-    await interaction.editReply(
-      "Креирањето на линкот беше неуспешно. Проверете дали е креиран."
-    );
+    await interaction.editReply(commandErrors.linkCreationFailed);
     return;
   }
 
@@ -491,36 +486,34 @@ const handleManageLinkSet = async (
       embeds: [embed],
     });
   } catch (error) {
-    logger.error(`Failed sending a link\n${error}`);
-    await interaction.editReply(
-      "Креирањето на линкот беше неуспешно. Проверете дали е креиран."
-    );
+    logger.error(logErrorFunctions.linkSendError(error));
+    await interaction.editReply(commandErrors.linkSendFailed);
   }
 };
 
 const handleManageLinkDelete = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const keyword = interaction.options.getString("link", true);
   const link = await getLink(keyword);
 
   if (link === null) {
-    await interaction.editReply("Не постои таков линк.");
+    await interaction.editReply(commandErrors.linkNotFound);
     return;
   }
 
   await deleteLink(keyword);
-  await interaction.editReply("Линкот е избришан.");
+  await interaction.editReply(commandResponses.linkDeleted);
 };
 
 const handleManageLinkContent = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const keyword = interaction.options.getString("link", true);
   const link = await getLink(keyword);
 
   if (link === null) {
-    await interaction.editReply("Не постои такво прашање.");
+    await interaction.editReply(commandErrors.linkNotFound);
     return;
   }
 
@@ -530,12 +523,12 @@ const handleManageLinkContent = async (
       "\nОпис:" +
       codeBlock(link.description?.replaceAll("\n", "\\n") ?? "-") +
       "\nЛинк:" +
-      codeBlock(link.url)
+      codeBlock(link.url),
   );
 };
 
 const handleManageAntoAdd = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const anto = interaction.options.getString("anto", true);
   const createdAnto = await createAnto({
@@ -544,9 +537,7 @@ const handleManageAntoAdd = async (
   });
 
   if (createdAnto === null) {
-    await interaction.editReply(
-      "Креирањето на Анто фактот беше неуспешно. Проверете дали е креирано."
-    );
+    await interaction.editReply(commandErrors.antoCreationFailed);
     return;
   }
 
@@ -554,21 +545,21 @@ const handleManageAntoAdd = async (
 };
 
 const handleManageAntoDelete = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const anto = interaction.options.getString("anto", true);
   const deletedAnto = await deleteAnto(anto);
 
   if (deletedAnto === null) {
-    await interaction.editReply("Не постои таков Анто факт.");
+    await interaction.editReply(commandErrors.antoNotFound);
     return;
   }
 
-  await interaction.editReply("Анто фактот е избришан.");
+  await interaction.editReply(commandResponses.antoDeleted);
 };
 
 const handleManageAntoMassAdd = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const antos = interaction.options.getString("antos", true);
   let parsedAntos;
@@ -576,8 +567,8 @@ const handleManageAntoMassAdd = async (
   try {
     parsedAntos = AntosSchema.parse(JSON.parse(antos));
   } catch (error) {
-    logger.error(`Failed parsing antos\n${error}`);
-    await interaction.editReply("Анто фактите не се во валиден JSON формат.");
+    logger.error(logErrorFunctions.antosParseError(error));
+    await interaction.editReply(commandErrors.invalidAntos);
     return;
   }
 
@@ -585,21 +576,19 @@ const handleManageAntoMassAdd = async (
     parsedAntos.map((anto) => ({
       quote: anto,
       userId: interaction.user.id,
-    }))
+    })),
   );
 
   if (createdAntos === null) {
-    await interaction.editReply(
-      "Креирањето на Анто фактите беше неуспешно. Проверете дали се креирани."
-    );
+    await interaction.editReply(commandErrors.antosCreationFailed);
     return;
   }
 
-  await interaction.editReply("Успешно се креирани сите Анто факти.");
+  await interaction.editReply(commandResponses.antosCreated);
 };
 
 const handleManageRuleSet = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const rule = interaction.options.getString("rule", true);
 
@@ -608,21 +597,21 @@ const handleManageRuleSet = async (
     userId: interaction.user.id,
   });
 
-  await interaction.editReply("Правилото е креирано.");
+  await interaction.editReply(commandResponses.ruleCreated);
 };
 
 const handleManageRuleDelete = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const rule = interaction.options.getString("rule", true);
 
   await deleteRule(rule);
 
-  await interaction.editReply("Правилото е избришано.");
+  await interaction.editReply(commandResponses.ruleDeleted);
 };
 
 const handleMangeInfoMessageSet = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const index = interaction.options.getNumber("index", true);
   const type = interaction.options.getString("type", true);
@@ -640,22 +629,22 @@ const handleMangeInfoMessageSet = async (
     });
   }
 
-  await interaction.editReply("Инфо пораката е поставена.");
+  await interaction.editReply(commandResponses.infoCreated);
 };
 
 const handleManageInfoMessageDelete = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const index = interaction.options.getNumber("index", true);
 
   const infoMessage = await getInfoMessage(index);
 
   if (infoMessage === null) {
-    await interaction.editReply("Не постои таква инфо порака.");
+    await interaction.editReply(commandErrors.infoNotFound);
     return;
   }
 
-  await interaction.editReply("Инфо пораката е избришана.");
+  await interaction.editReply(commandResponses.infoDeleted);
 };
 
 const handleCompanySet = async (interaction: ChatInputCommandInteraction) => {
@@ -667,32 +656,30 @@ const handleCompanySet = async (interaction: ChatInputCommandInteraction) => {
   });
 
   if (createdCompany === null) {
-    await interaction.editReply(
-      "Креирањето на компанијата беше неуспешно. Проверете дали е креирана."
-    );
+    await interaction.editReply(commandErrors.companyCreationFailed);
     return;
   }
 
-  await interaction.editReply("Компанијата е креирана.");
+  await interaction.editReply(commandResponses.companyCreated);
 };
 
 const handleCompanyDelete = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const company = interaction.options.getString("company", true);
 
   const deletedCompany = await deleteCompany(company);
 
   if (deletedCompany === null) {
-    await interaction.editReply("Не постои таква компанија.");
+    await interaction.editReply(commandErrors.companyNotFound);
     return;
   }
 
-  await interaction.editReply("Компанијата е избришана.");
+  await interaction.editReply(commandResponses.companyDeleted);
 };
 
 const handleCompanyMassAdd = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const companies = interaction.options.getString("companies", true);
   let parsedCompanies;
@@ -700,8 +687,8 @@ const handleCompanyMassAdd = async (
   try {
     parsedCompanies = CompaniesSchema.parse(JSON.parse(companies));
   } catch (error) {
-    logger.error(`Failed parsing companies\n${error}`);
-    await interaction.editReply("Компаниите не се во валиден JSON формат.");
+    logger.error(logErrorFunctions.companiesParseError(error));
+    await interaction.editReply(commandErrors.invalidCompanies);
     return;
   }
 
@@ -709,17 +696,15 @@ const handleCompanyMassAdd = async (
     parsedCompanies.map((company) => ({
       name: company,
       userId: interaction.user.id,
-    }))
+    })),
   );
 
   if (createdCompanies === null) {
-    await interaction.editReply(
-      "Креирањето на компаниите беше неуспешно. Проверете дали се креирани."
-    );
+    await interaction.editReply(commandErrors.companiesCreationFailed);
     return;
   }
 
-  await interaction.editReply("Успешно се креирани сите компании.");
+  await interaction.editReply(commandResponses.companiesCreated);
 };
 
 const manageHandlers = {
@@ -746,7 +731,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   if (Object.keys(manageHandlers).includes(subcommand)) {
     await manageHandlers[subcommand as keyof typeof manageHandlers](
-      interaction
+      interaction,
     );
   }
 };

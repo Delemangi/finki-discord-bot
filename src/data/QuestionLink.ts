@@ -1,9 +1,10 @@
 import { logger } from "../utils/logger.js";
+import { databaseErrorFunctions } from "../utils/strings.js";
 import { database } from "./database.js";
 import { type Prisma } from "@prisma/client";
 
 export const createQuestionLink = async (
-  link?: Prisma.QuestionLinkCreateInput
+  link?: Prisma.QuestionLinkCreateInput,
 ) => {
   if (link === undefined) {
     return null;
@@ -14,13 +15,13 @@ export const createQuestionLink = async (
       data: link,
     });
   } catch (error) {
-    logger.error(`Failed creating question link\n${error}`);
+    logger.error(databaseErrorFunctions.createQuestionLinkError(error));
     return null;
   }
 };
 
 export const createQuestionLinks = async (
-  links?: Prisma.QuestionLinkCreateManyInput[]
+  links?: Prisma.QuestionLinkCreateManyInput[],
 ) => {
   if (links === undefined) {
     return [];
@@ -31,7 +32,7 @@ export const createQuestionLinks = async (
       data: links,
     });
   } catch (error) {
-    logger.error(`Failed creating question links\n${error}`);
+    logger.error(databaseErrorFunctions.createQuestionLinksError(error));
     return [];
   }
 };
@@ -48,7 +49,9 @@ export const deleteQuestionLinksByQuestionId = async (questionId?: string) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed deleting question links\n${error}`);
+    logger.error(
+      databaseErrorFunctions.deleteQuestionLinksByQuestionIdError(error),
+    );
     return null;
   }
 };

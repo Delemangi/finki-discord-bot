@@ -2,6 +2,7 @@ import { type BotConfig } from "../types/BotConfig.js";
 import { initializeChannels } from "./channels.js";
 import { logger } from "./logger.js";
 import { initializeRoles } from "./roles.js";
+import { logMessageFunctions } from "./strings.js";
 
 export const refreshOnConfigChange = async (property: keyof BotConfig) => {
   logger.info(`Config property ${property} changed, refreshing...`);
@@ -16,7 +17,7 @@ export const refreshOnConfigChange = async (property: keyof BotConfig) => {
       break;
 
     default:
-      logger.info(`No refresh needed for ${property}`);
+      logger.info(logMessageFunctions.noRefreshNeeded(property));
       break;
   }
 };

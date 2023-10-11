@@ -1,4 +1,5 @@
 import { logger } from "../utils/logger.js";
+import { databaseErrorFunctions } from "../utils/strings.js";
 import { database } from "./database.js";
 import { type Prisma } from "@prisma/client";
 
@@ -6,7 +7,7 @@ export const getReminders = async () => {
   try {
     return await database.reminder.findMany();
   } catch (error) {
-    logger.error(`Failed loading reminders\n${error}`);
+    logger.error(databaseErrorFunctions.getRemindersError(error));
     return [];
   }
 };
@@ -21,7 +22,7 @@ export const createReminder = async (reminder?: Prisma.ReminderCreateInput) => {
       data: reminder,
     });
   } catch (error) {
-    logger.error(`Failed saving reminder\n${error}`);
+    logger.error(databaseErrorFunctions.createReminderError(error));
     return null;
   }
 };
@@ -40,7 +41,7 @@ export const deleteReminders = async (reminderIds?: string[]) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed deleting reminders\n${error}`);
+    logger.error(databaseErrorFunctions.deleteRemindersError(error));
     return null;
   }
 };

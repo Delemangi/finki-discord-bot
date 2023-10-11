@@ -5,6 +5,7 @@ import { registerCommands } from "./utils/commands.js";
 import { checkEnvironmentVariables, getToken } from "./utils/config.js";
 import { attachEventListeners } from "./utils/events.js";
 import { remind } from "./utils/reminders.js";
+import { logErrorFunctions } from "./utils/strings.js";
 
 // Initialization
 
@@ -20,5 +21,5 @@ void remind();
 try {
   await client.login(getToken());
 } catch (error) {
-  throw new Error(`Failed to login\n${error}`);
+  throw new Error(logErrorFunctions.loginFailed(error));
 }

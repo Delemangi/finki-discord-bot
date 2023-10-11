@@ -1,4 +1,5 @@
 import { logger } from "../utils/logger.js";
+import { databaseErrorFunctions } from "../utils/strings.js";
 import { database } from "./database.js";
 import { type Prisma } from "@prisma/client";
 
@@ -6,7 +7,7 @@ export const getRules = async () => {
   try {
     return await database.rule.findMany();
   } catch (error) {
-    logger.error(`Failed getting rules\n${error}`);
+    logger.error(databaseErrorFunctions.getRulesError(error));
     return [];
   }
 };
@@ -21,7 +22,7 @@ export const createRule = async (rule?: Prisma.RuleCreateInput) => {
       data: rule,
     });
   } catch (error) {
-    logger.error(`Failed creating rule\n${error}`);
+    logger.error(databaseErrorFunctions.createRuleError(error));
     return null;
   }
 };
@@ -38,7 +39,7 @@ export const deleteRule = async (rule?: string) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed deleting rule\n${error}`);
+    logger.error(databaseErrorFunctions.deleteRuleError(error));
     return null;
   }
 };

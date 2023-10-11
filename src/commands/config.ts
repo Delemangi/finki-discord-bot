@@ -6,7 +6,10 @@ import {
   setConfigProperty,
 } from "../utils/config.js";
 import { refreshOnConfigChange } from "../utils/refresh.js";
-import { commandDescriptions } from "../utils/strings.js";
+import {
+  commandDescriptions,
+  commandErrorFunctions,
+} from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   codeBlock,
@@ -30,9 +33,12 @@ export const data = new SlashCommandBuilder()
           .setDescription("Клуч на конфигурација")
           .setRequired(true)
           .addChoices(
-            ...getConfigKeys().map((key) => ({ name: key, value: key }))
-          )
-      )
+            ...getConfigKeys().map((key) => ({
+              name: key,
+              value: key,
+            })),
+          ),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -44,15 +50,18 @@ export const data = new SlashCommandBuilder()
           .setDescription("Клуч на конфигурација")
           .setRequired(true)
           .addChoices(
-            ...getConfigKeys().map((key) => ({ name: key, value: key }))
-          )
+            ...getConfigKeys().map((key) => ({
+              name: key,
+              value: key,
+            })),
+          ),
       )
       .addStringOption((option) =>
         option
           .setName("value")
           .setDescription("Вредност на конфигурација")
-          .setRequired(true)
-      )
+          .setRequired(true),
+      ),
   )
   .setDMPermission(false)
   .setDefaultMemberPermissions(permission);
@@ -62,7 +71,16 @@ const handleConfigGet = async (interaction: ChatInputCommandInteraction) => {
   const value = await getConfigProperty(key);
 
   await interaction.editReply(
-    codeBlock("json", JSON.stringify({ [key]: value }, null, 2))
+    codeBlock(
+      "json",
+      JSON.stringify(
+        {
+          [key]: value,
+        },
+        null,
+        2,
+      ),
+    ),
   );
 };
 
@@ -76,14 +94,20 @@ const handleConfigSet = async (interaction: ChatInputCommandInteraction) => {
   } catch (error) {
     await interaction.editReply(
       // @ts-expect-error error is not null
-      `Дадената конфигурација не е валидна: ${codeBlock("json", error)}`
+      commandErrorFunctions.invalidConfiguration(error.message),
     );
     return;
   }
 
   const newConfig = await setConfigProperty(key, value);
-  // @ts-expect-error newConfig is not null
-  const newProperty = JSON.stringify({ [key]: newConfig[key] }, null, 2);
+  const newProperty = JSON.stringify(
+    {
+      // @ts-expect-error newConfig is not null
+      [key]: newConfig[key],
+    },
+    null,
+    2,
+  );
 
   void refreshOnConfigChange(key);
   await interaction.editReply(codeBlock("json", newProperty));
@@ -99,7 +123,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   if (Object.keys(configHandlers).includes(subcommand)) {
     await configHandlers[subcommand as keyof typeof configHandlers](
-      interaction
+      interaction,
     );
   }
 };

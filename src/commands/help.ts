@@ -8,7 +8,11 @@ import {
 import { getConfigProperty } from "../utils/config.js";
 import { logger } from "../utils/logger.js";
 import { getCommandsWithPermission } from "../utils/permissions.js";
-import { commandDescriptions } from "../utils/strings.js";
+import {
+  commandDescriptions,
+  commandErrors,
+  logErrorFunctions,
+} from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,
@@ -28,11 +32,11 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const commandsPerPage = 8;
   const pages = Math.ceil(
     getCommandsWithPermission(interaction.member as GuildMember | null).length /
-      commandsPerPage
+      commandsPerPage,
   );
   const embed = await getHelpFirstPageEmbed(
     interaction.member as GuildMember | null,
-    commandsPerPage
+    commandsPerPage,
   );
   const components = [
     pages === 0 || pages === 1
@@ -54,7 +58,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       buttonInteraction.message.interaction?.user.id
     ) {
       const mess = await buttonInteraction.reply({
-        content: "Ова не е ваша команда.",
+        content: commandErrors.buttonNoPermission,
         ephemeral: true,
       });
       void deleteResponse(mess);
@@ -70,7 +74,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     let buttons;
     let page =
       Number(
-        buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.[0]
+        buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.[0],
       ) - 1;
 
     if (id === "first") {
@@ -96,7 +100,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     const nextEmbed = await getHelpNextPageEmbed(
       interaction.member as GuildMember | null,
       page,
-      commandsPerPage
+      commandsPerPage,
     );
 
     try {
@@ -105,7 +109,12 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
         embeds: [nextEmbed],
       });
     } catch (error) {
-      logger.error(`Failed to update help command\n${error}`);
+      logger.error(
+        logErrorFunctions.interactionUpdateError(
+          buttonInteraction.customId,
+          error,
+        ),
+      );
     }
   });
 
@@ -115,7 +124,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
         components: [getPaginationComponents("help")],
       });
     } catch (error) {
-      logger.error(`Failed to end help command\n${error}`);
+      logger.error(logErrorFunctions.collectorEndError(name, error));
     }
   });
 };

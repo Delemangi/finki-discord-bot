@@ -1,5 +1,5 @@
 /* eslint-disable id-length */
-const transformations: { [index: string]: string[] } = {
+const transformations = {
   а: ["a"],
   А: ["A"],
   б: ["b"],

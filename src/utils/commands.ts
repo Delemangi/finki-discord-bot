@@ -2,6 +2,7 @@ import { type Command } from "../types/Command.js";
 import { client } from "./client.js";
 import { getApplicationId, getToken } from "./config.js";
 import { logger } from "./logger.js";
+import { logErrorFunctions, logMessages } from "./strings.js";
 import { Collection, REST, Routes } from "discord.js";
 import { readdirSync } from "node:fs";
 
@@ -11,7 +12,7 @@ const refreshCommands = async () => {
   commands.clear();
 
   for (const file of readdirSync("./dist/commands").filter((fi) =>
-    fi.endsWith(".js")
+    fi.endsWith(".js"),
   )) {
     const command: Command = await import(`../commands/${file}`);
     commands.set(command.data.name, command);
@@ -40,7 +41,7 @@ export const commandMention = (name: string | undefined) => {
   }
 
   const command = client.application?.commands.cache.find(
-    (cmd) => cmd.name === (name.includes(" ") ? name.split(" ")[0] : name)
+    (cmd) => cmd.name === (name.includes(" ") ? name.split(" ")[0] : name),
   );
 
   if (command === undefined) {
@@ -62,8 +63,8 @@ export const registerCommands = async () => {
     await rest.put(Routes.applicationCommands(getApplicationId()), {
       body: cmds,
     });
-    logger.info("Registered commands");
+    logger.info(logMessages.commandsRegistered);
   } catch (error) {
-    throw new Error(`Failed to register application commands\n${error}`);
+    logger.error(logErrorFunctions.commandsRegistrationError(error));
   }
 };

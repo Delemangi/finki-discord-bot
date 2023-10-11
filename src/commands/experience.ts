@@ -14,7 +14,12 @@ import {
 } from "../utils/components.js";
 import { getConfigProperty } from "../utils/config.js";
 import { logger } from "../utils/logger.js";
-import { commandDescriptions } from "../utils/strings.js";
+import {
+  commandDescriptions,
+  commandErrors,
+  commandResponseFunctions,
+  logErrorFunctions,
+} from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,
@@ -31,29 +36,29 @@ export const data = new SlashCommandBuilder()
       .setName("get")
       .setDescription(commandDescriptions["experience get"])
       .addUserOption((option) =>
-        option.setName("user").setDescription("Корисник").setRequired(false)
-      )
+        option.setName("user").setDescription("Корисник").setRequired(false),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName("add")
       .setDescription(commandDescriptions["experience add"])
       .addUserOption((option) =>
-        option.setName("user").setDescription("Корисник").setRequired(true)
+        option.setName("user").setDescription("Корисник").setRequired(true),
       )
       .addNumberOption((option) =>
-        option.setName("experience").setDescription("Поени").setRequired(true)
-      )
+        option.setName("experience").setDescription("Поени").setRequired(true),
+      ),
   )
   .addSubcommand((subcommand) =>
     subcommand
       .setName("leaderboard")
-      .setDescription(commandDescriptions["experience leaderboard"])
+      .setDescription(commandDescriptions["experience leaderboard"]),
   )
   .setDMPermission(false);
 
 const handleExperienceGet = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const user = interaction.options.getUser("user") ?? interaction.user;
   const userId = user.id;
@@ -72,27 +77,34 @@ const handleExperienceGet = async (
   }
 
   const embed = await getExperienceEmbed(experience);
-  await interaction.editReply({ embeds: [embed] });
+  await interaction.editReply({
+    embeds: [embed],
+  });
 };
 
 const handleExperienceAdd = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const user = interaction.options.getUser("user", true);
   const experience = interaction.options.getNumber("experience", true);
 
   await addExperienceByUserId(user.id, experience);
 
-  await interaction.editReply(`Успешно се додадени ${experience} поени.`);
+  await interaction.editReply({
+    allowedMentions: {
+      parse: [],
+    },
+    content: commandResponseFunctions.experienceAdded(experience, user.id),
+  });
 };
 
 const handleExperienceLeaderboard = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const experience = await getExperienceSorted();
 
   if (experience === null) {
-    await interaction.editReply("Настана грешка при превземање на податоците.");
+    await interaction.editReply(commandErrors.dataFetchFailed);
     return;
   }
 
@@ -120,7 +132,7 @@ const handleExperienceLeaderboard = async (
       buttonInteraction.message.interaction?.user.id
     ) {
       const mess = await buttonInteraction.reply({
-        content: "Ова не е ваша команда.",
+        content: commandErrors.buttonNoPermission,
         ephemeral: true,
       });
       void deleteResponse(mess);
@@ -136,7 +148,7 @@ const handleExperienceLeaderboard = async (
     let buttons;
     let page =
       Number(
-        buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.[0]
+        buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.[0],
       ) - 1;
 
     if (id === "first") {
@@ -162,7 +174,7 @@ const handleExperienceLeaderboard = async (
     const nextEmbed = await getExperienceLeaderboardNextPageEmbed(
       experience,
       page,
-      total
+      total,
     );
 
     try {
@@ -171,7 +183,12 @@ const handleExperienceLeaderboard = async (
         embeds: [nextEmbed],
       });
     } catch (error) {
-      logger.error(`Failed to update exp command\n${error}`);
+      logger.error(
+        logErrorFunctions.interactionUpdateError(
+          buttonInteraction.customId,
+          error,
+        ),
+      );
     }
   });
 
@@ -181,7 +198,7 @@ const handleExperienceLeaderboard = async (
         components: [getPaginationComponents("exp")],
       });
     } catch (error) {
-      logger.error(`Failed to end exp command\n${error}`);
+      logger.error(logErrorFunctions.collectorEndError(name, error));
     }
   });
 };
@@ -197,7 +214,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   if (Object.keys(experienceHandlers).includes(subcommand)) {
     await experienceHandlers[subcommand as keyof typeof experienceHandlers](
-      interaction
+      interaction,
     );
   }
 };

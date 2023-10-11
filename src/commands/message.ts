@@ -1,4 +1,8 @@
-import { commandDescriptions } from "../utils/strings.js";
+import {
+  commandDescriptions,
+  commandErrors,
+  commandResponses,
+} from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   type GuildBasedChannel,
@@ -16,13 +20,13 @@ export const data = new SlashCommandBuilder()
     option
       .setName("channel")
       .setDescription("Канал во кој ќе се испрати пораката")
-      .setRequired(true)
+      .setRequired(true),
   )
   .addStringOption((option) =>
     option
       .setName("message")
       .setDescription("Порака која ќе се испрати")
-      .setRequired(true)
+      .setRequired(true),
   )
   .setDMPermission(false)
   .setDefaultMemberPermissions(permission);
@@ -30,15 +34,15 @@ export const data = new SlashCommandBuilder()
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const channel = interaction.options.getChannel(
     "channel",
-    true
+    true,
   ) as GuildBasedChannel;
   const message = interaction.options.getString("message", true);
 
   if (!channel.isTextBased()) {
-    await interaction.editReply("Каналот мора да е текстуален.");
+    await interaction.editReply(commandErrors.invalidChannel);
     return;
   }
 
   await channel.send(message);
-  await interaction.editReply("Пораката е испратена.");
+  await interaction.editReply(commandResponses.messageCreated);
 };

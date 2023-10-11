@@ -1,9 +1,10 @@
 import { logger } from "../utils/logger.js";
+import { databaseErrorFunctions } from "../utils/strings.js";
 import { database } from "./database.js";
 import { type InfoMessage, type Prisma } from "@prisma/client";
 
 export const createInfoMessage = async (
-  message?: Prisma.InfoMessageCreateInput
+  message?: Prisma.InfoMessageCreateInput,
 ) => {
   if (message === undefined) {
     return null;
@@ -14,7 +15,7 @@ export const createInfoMessage = async (
       data: message,
     });
   } catch (error) {
-    logger.error(`Failed creating info message\n${error}`);
+    logger.error(databaseErrorFunctions.createInfoMessageError(error));
     return null;
   }
 };
@@ -31,7 +32,7 @@ export const getInfoMessage = async (index?: number) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed getting info message\n${error}`);
+    logger.error(databaseErrorFunctions.getInfoMessageError(error));
     return null;
   }
 };
@@ -44,7 +45,7 @@ export const getInfoMessages = async () => {
       },
     });
   } catch (error) {
-    logger.error(`Failed getting info messages\n${error}`);
+    logger.error(databaseErrorFunctions.getInfoMessagesError(error));
     return [];
   }
 };
@@ -62,7 +63,7 @@ export const updateInfoMessage = async (message?: InfoMessage) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed updating info message\n${error}`);
+    logger.error(databaseErrorFunctions.updateInfoMessageError(error));
     return null;
   }
 };
@@ -79,7 +80,7 @@ export const deleteInfoMessage = async (index?: number) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed deleting info message\n${error}`);
+    logger.error(databaseErrorFunctions.deleteInfoMessageError(error));
     return null;
   }
 };

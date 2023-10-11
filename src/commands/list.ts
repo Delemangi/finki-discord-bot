@@ -16,22 +16,26 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName("questions")
-      .setDescription(commandDescriptions["list questions"])
+      .setDescription(commandDescriptions["list questions"]),
   )
   .addSubcommand((command) =>
-    command.setName("links").setDescription(commandDescriptions["list links"])
+    command.setName("links").setDescription(commandDescriptions["list links"]),
   );
 
 const handleListQuestions = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const embed = await getListQuestionsEmbed();
-  await interaction.editReply({ embeds: [embed] });
+  await interaction.editReply({
+    embeds: [embed],
+  });
 };
 
 const handleListLinks = async (interaction: ChatInputCommandInteraction) => {
   const embed = await getListLinksEmbed();
-  await interaction.editReply({ embeds: [embed] });
+  await interaction.editReply({
+    embeds: [embed],
+  });
 };
 
 const listHandlers = {

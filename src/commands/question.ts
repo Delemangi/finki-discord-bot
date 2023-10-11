@@ -3,7 +3,7 @@ import {
   getQuestionComponents,
   getQuestionEmbed,
 } from "../utils/components.js";
-import { commandDescriptions } from "../utils/strings.js";
+import { commandDescriptions, commandErrors } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -19,7 +19,7 @@ export const data = new SlashCommandBuilder()
       .setName("question")
       .setDescription("Прашање")
       .setRequired(true)
-      .setAutocomplete(true)
+      .setAutocomplete(true),
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
@@ -29,7 +29,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     : await getNthQuestion(Number(keyword));
 
   if (question === null) {
-    await interaction.editReply("Не постои такво прашање.");
+    await interaction.editReply(commandErrors.faqNotFound);
     return;
   }
 

@@ -1,5 +1,10 @@
 import { logger } from "../utils/logger.js";
-import { commandDescriptions, errors } from "../utils/strings.js";
+import {
+  commandDescriptions,
+  commandErrors,
+  commandResponses,
+  logErrorFunctions,
+} from "../utils/strings.js";
 import {
   type Channel,
   type ChatInputCommandInteraction,
@@ -15,16 +20,16 @@ export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription(commandDescriptions[name])
   .addChannelOption((option) =>
-    option.setName("channel").setDescription("Канал").setRequired(true)
+    option.setName("channel").setDescription("Канал").setRequired(true),
   )
   .addStringOption((option) =>
-    option.setName("json").setDescription("JSON").setRequired(true)
+    option.setName("json").setDescription("JSON").setRequired(true),
   )
   .addBooleanOption((option) =>
     option
       .setName("timestamp")
       .setDescription("Дали да се додаде време?")
-      .setRequired(false)
+      .setRequired(false),
   )
   .setDMPermission(false)
   .setDefaultMemberPermissions(permission);
@@ -35,7 +40,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const timestamp = interaction.options.getBoolean("timestamp") ?? false;
 
   if (!channel.isTextBased() || channel.isDMBased()) {
-    await interaction.editReply(errors.invalidChannel);
+    await interaction.editReply(commandErrors.invalidChannel);
     return;
   }
 
@@ -51,17 +56,19 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       embed.setColor(parsed.color);
     }
   } catch {
-    await interaction.editReply("Невалидна боја.");
+    await interaction.editReply(commandErrors.invalidColor);
     return;
   }
 
   try {
-    await channel.send({ embeds: [embed] });
+    await channel.send({
+      embeds: [embed],
+    });
 
-    await interaction.editReply("Креиран е embed.");
+    await interaction.editReply(commandResponses.embedCreated);
   } catch (error) {
-    logger.error(`Error sending embed\n${error}`);
+    logger.error(logErrorFunctions.embedSendError(error));
 
-    await interaction.editReply("Креирањето embed беше неуспешно.");
+    await interaction.editReply(commandErrors.embedSendError);
   }
 };

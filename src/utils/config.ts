@@ -9,6 +9,7 @@ import { type LevelConfig } from "../types/LevelConfig.js";
 import { type RoleConfig } from "../types/RoleConfig.js";
 import { type Roles } from "../types/Roles.js";
 import { type Staff } from "../types/Staff.js";
+import { configErrors } from "./strings.js";
 import { readFileSync } from "node:fs";
 import { env } from "node:process";
 
@@ -55,11 +56,11 @@ export const checkEnvironmentVariables = async () => {
   const applicationId = env["APPLICATION_ID"];
 
   if (token === undefined) {
-    throw new Error("TOKEN environment variable is not defined");
+    throw new Error(configErrors.noToken);
   }
 
   if (applicationId === undefined) {
-    throw new Error("APPLICATION_ID environment variable is not defined");
+    throw new Error(configErrors.noApplicationId);
   }
 };
 
@@ -69,7 +70,7 @@ export const getConfigProperty = async <T extends keyof BotConfig>(key: T) => {
 
 export const setConfigProperty = async <T extends keyof BotConfig>(
   key: T,
-  value: BotConfig[T]
+  value: BotConfig[T],
 ) => {
   config[key] = value;
 
@@ -93,32 +94,32 @@ export const getApplicationId = () => {
 };
 
 const classrooms: Classroom[] = JSON.parse(
-  readFileSync("./config/classrooms.json", "utf8")
+  readFileSync("./config/classrooms.json", "utf8"),
 );
 const courses: string[] = JSON.parse(
-  readFileSync("./config/courses.json", "utf8")
+  readFileSync("./config/courses.json", "utf8"),
 );
 const information: CourseInformation[] = JSON.parse(
-  readFileSync("./config/information.json", "utf8")
+  readFileSync("./config/information.json", "utf8"),
 );
 const levels: LevelConfig = JSON.parse(
-  readFileSync("./config/levels.json", "utf8")
+  readFileSync("./config/levels.json", "utf8"),
 );
 const participants: CourseParticipants[] = JSON.parse(
-  readFileSync("./config/participants.json", "utf8")
+  readFileSync("./config/participants.json", "utf8"),
 );
 const prerequisites: CoursePrerequisites[] = JSON.parse(
-  readFileSync("./config/prerequisites.json", "utf8")
+  readFileSync("./config/prerequisites.json", "utf8"),
 );
 const professors: CourseStaff[] = JSON.parse(
-  readFileSync("./config/professors.json", "utf8")
+  readFileSync("./config/professors.json", "utf8"),
 );
 const roles: RoleConfig = JSON.parse(
-  readFileSync("./config/roles.json", "utf8")
+  readFileSync("./config/roles.json", "utf8"),
 );
-const sessions: { [index: string]: string } = JSON.parse(
-  readFileSync("./config/sessions.json", "utf8")
-);
+const sessions: {
+  [index: string]: string;
+} = JSON.parse(readFileSync("./config/sessions.json", "utf8"));
 const staff: Staff[] = JSON.parse(readFileSync("./config/staff.json", "utf8"));
 
 export const getClassrooms = () => {

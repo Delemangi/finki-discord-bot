@@ -14,10 +14,12 @@ export const data = new ContextMenuCommandBuilder()
   .setDMPermission(false);
 
 export const execute = async (
-  interaction: UserContextMenuCommandInteraction
+  interaction: UserContextMenuCommandInteraction,
 ) => {
   const embed = await getStudentInfoEmbed(
-    interaction.targetMember as GuildMember
+    interaction.targetMember as GuildMember,
   );
-  await interaction.editReply({ embeds: [embed] });
+  await interaction.editReply({
+    embeds: [embed],
+  });
 };

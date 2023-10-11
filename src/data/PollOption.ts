@@ -1,4 +1,5 @@
 import { logger } from "../utils/logger.js";
+import { databaseErrorFunctions } from "../utils/strings.js";
 import { database } from "./database.js";
 import { type Prisma } from "@prisma/client";
 
@@ -14,14 +15,14 @@ export const getPollOptionById = async (optionId?: string) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed obtaining poll option ID\n${error}`);
+    logger.error(databaseErrorFunctions.getPollOptionByIdError(error));
     return null;
   }
 };
 
 export const getPollOptionByPollIdAndName = async (
   pollId?: string,
-  optionName?: string
+  optionName?: string,
 ) => {
   if (pollId === undefined || optionName === undefined) {
     return null;
@@ -36,7 +37,7 @@ export const getPollOptionByPollIdAndName = async (
     });
   } catch (error) {
     logger.error(
-      `Failed obtaining poll option by poll ID and option name\n${error}`
+      databaseErrorFunctions.getPollOptionByPollIdAndNameError(error),
     );
     return null;
   }
@@ -49,8 +50,16 @@ export const getMostPopularOptionByPollId = async (pollId?: string) => {
 
   try {
     const pollVotes = await database.pollVote.findMany({
-      include: { option: true },
-      where: { option: { poll: { id: pollId } } },
+      include: {
+        option: true,
+      },
+      where: {
+        option: {
+          poll: {
+            id: pollId,
+          },
+        },
+      },
     });
 
     if (pollVotes.length === 0) {
@@ -61,7 +70,7 @@ export const getMostPopularOptionByPollId = async (pollId?: string) => {
     optionIds.sort(
       (a, b) =>
         optionIds.filter((option) => option === a).length -
-        optionIds.filter((option) => option === b).length
+        optionIds.filter((option) => option === b).length,
     );
     const optionId = optionIds.shift();
 
@@ -70,11 +79,13 @@ export const getMostPopularOptionByPollId = async (pollId?: string) => {
     }
 
     return await database.pollOption.findUnique({
-      where: { id: optionId },
+      where: {
+        id: optionId,
+      },
     });
   } catch (error) {
     logger.error(
-      `Failed obtaining most popular poll option by poll ID\n${error}`
+      databaseErrorFunctions.getMostPopularOptionByPollIdError(error),
     );
     return null;
   }
@@ -92,13 +103,13 @@ export const deletePollOption = async (optionId?: string) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed deleting poll option by option ID\n${error}`);
+    logger.error(databaseErrorFunctions.deletePollOptionError(error));
     return null;
   }
 };
 
 export const createPollOption = async (
-  pollOption?: Prisma.PollOptionCreateInput
+  pollOption?: Prisma.PollOptionCreateInput,
 ) => {
   if (pollOption === undefined) {
     return null;
@@ -109,14 +120,14 @@ export const createPollOption = async (
       data: pollOption,
     });
   } catch (error) {
-    logger.error(`Failed creating poll option\n${error}`);
+    logger.error(databaseErrorFunctions.createPollOptionError(error));
     return null;
   }
 };
 
 export const deletePollOptionsByPollIdAndName = async (
   pollId?: string,
-  optionName?: string
+  optionName?: string,
 ) => {
   if (pollId === undefined || optionName === undefined) {
     return null;
@@ -131,7 +142,7 @@ export const deletePollOptionsByPollIdAndName = async (
     });
   } catch (error) {
     logger.error(
-      `Failed deleting poll options by poll ID and option name\n${error}`
+      databaseErrorFunctions.deletePollOptionsByPollIdAndNameError(error),
     );
     return null;
   }

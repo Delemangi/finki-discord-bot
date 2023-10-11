@@ -6,7 +6,8 @@ import {
 import { getCourseRolesBySemester } from "../utils/roles.js";
 import {
   commandDescriptions,
-  errors,
+  commandErrors,
+  commandResponseFunctions,
   programMapping,
 } from "../utils/strings.js";
 import {
@@ -33,8 +34,8 @@ export const data = new SlashCommandBuilder()
             ...Object.keys(programMapping).map((program) => ({
               name: program,
               value: program,
-            }))
-          )
+            })),
+          ),
       )
       .addNumberOption((option) =>
         option
@@ -42,8 +43,8 @@ export const data = new SlashCommandBuilder()
           .setDescription("Семестар")
           .setRequired(true)
           .setMinValue(1)
-          .setMaxValue(8)
-      )
+          .setMaxValue(8),
+      ),
   )
   .addSubcommand((command) =>
     command
@@ -54,8 +55,8 @@ export const data = new SlashCommandBuilder()
           .setName("course")
           .setDescription("Курс")
           .setRequired(true)
-          .setAutocomplete(true)
-      )
+          .setAutocomplete(true),
+      ),
   )
   .addSubcommand((command) =>
     command
@@ -67,8 +68,8 @@ export const data = new SlashCommandBuilder()
           .setDescription("Семестар")
           .setRequired(true)
           .setMinValue(1)
-          .setMaxValue(8)
-      )
+          .setMaxValue(8),
+      ),
   )
   .addSubcommand((command) =>
     command
@@ -80,32 +81,36 @@ export const data = new SlashCommandBuilder()
           .setDescription("Семестар")
           .setRequired(true)
           .setMinValue(1)
-          .setMaxValue(8)
-      )
+          .setMaxValue(8),
+      ),
   );
 
 const handleCoursesProgram = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const program = interaction.options.getString("program", true) as ProgramName;
   const semester = interaction.options.getNumber("semester", true);
 
   const embeds = await getCoursesProgramEmbed(program, semester);
-  await interaction.editReply({ embeds });
+  await interaction.editReply({
+    embeds,
+  });
 };
 
 const handleCoursesPrerequisite = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const course = interaction.options.getString("course", true);
 
   const embed = await getCoursesPrerequisiteEmbed(course);
-  await interaction.editReply({ embeds: [embed] });
+  await interaction.editReply({
+    embeds: [embed],
+  });
 };
 
 const handleCoursesAdd = async (interaction: ChatInputCommandInteraction) => {
   if (interaction.guild === null) {
-    await interaction.editReply(errors.serverOnlyCommand);
+    await interaction.editReply(commandErrors.serverOnlyCommand);
     return;
   }
 
@@ -115,15 +120,15 @@ const handleCoursesAdd = async (interaction: ChatInputCommandInteraction) => {
 
   await member.roles.add(roles);
   await interaction.editReply(
-    `Ги земавте улогите за предметите од семестар ${semester}.`
+    commandResponseFunctions.semesterCoursesAdded(semester),
   );
 };
 
 const handleCoursesRemove = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   if (interaction.guild === null) {
-    await interaction.editReply(errors.serverOnlyCommand);
+    await interaction.editReply(commandErrors.serverOnlyCommand);
     return;
   }
 
@@ -133,7 +138,7 @@ const handleCoursesRemove = async (
 
   await member.roles.remove(roles);
   await interaction.editReply(
-    `Ги отстранете улогите за предметите од семестар ${semester}.`
+    commandResponseFunctions.semesterCoursesRemoved(semester),
   );
 };
 
@@ -149,7 +154,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   if (Object.keys(coursesHandlers).includes(subcommand)) {
     await coursesHandlers[subcommand as keyof typeof coursesHandlers](
-      interaction
+      interaction,
     );
   }
 };

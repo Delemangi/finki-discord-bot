@@ -48,13 +48,23 @@ import { isMemberInVip } from "./members.js";
 import { transformOptions } from "./options.js";
 import { hasCommandPermission } from "./permissions.js";
 import { startVipPoll } from "./polls.js";
+import { userIdRegex } from "./regex.js";
 import {
   getCourseRolesBySemester,
   getRole,
   getRoleFromSet,
   getRoles,
 } from "./roles.js";
-import { errors } from "./strings.js";
+import {
+  commandErrorFunctions,
+  commandErrors,
+  commandResponseFunctions,
+  commandResponses,
+  logErrorFunctions,
+  logShortStrings,
+  vipStringFunctions,
+  vipStrings,
+} from "./strings.js";
 import { type Poll, type PollOption, type VipPoll } from "@prisma/client";
 import {
   type AutocompleteInteraction,
@@ -62,23 +72,20 @@ import {
   type ChatInputCommandInteraction,
   type GuildMember,
   type GuildMemberRoleManager,
-  inlineCode,
-  roleMention,
   type UserContextMenuCommandInteraction,
-  userMention,
 } from "discord.js";
 
 // Buttons
 
-const userIdRegex = /(?<=<@)\d+(?=>)/u;
-
 const handleCourseButton = async (
   interaction: ButtonInteraction,
-  args: string[]
+  args: string[],
 ) => {
   if (interaction.guild === null) {
     logger.warn(
-      `Received button interaction ${interaction.customId} by ${interaction.user.tag} outside of a guild`
+      logErrorFunctions.buttonInteractionOutsideGuildError(
+        interaction.customId,
+      ),
     );
     return;
   }
@@ -87,7 +94,7 @@ const handleCourseButton = async (
 
   if (role === undefined) {
     logger.warn(
-      `The role for button interaction ${interaction.customId} by ${interaction.user.tag} was not found`
+      logErrorFunctions.buttonInteractionRoleError(interaction.customId),
     );
     return;
   }
@@ -105,28 +112,27 @@ const handleCourseButton = async (
 
   try {
     const mess = await interaction.reply({
-      content: `Го ${
-        removed ? "отстранивте" : "земавте"
-      } предметот ${inlineCode(
-        getFromRoleConfig("courses")[role.name] ?? "None"
-      )}.`,
+      allowedMentions: {
+        parse: [],
+      },
+      content: commandResponseFunctions.courseAddedOrRemoved(role.id, removed),
       ephemeral: true,
     });
     void deleteResponse(mess);
   } catch (error) {
-    logger.warn(
-      `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`
-    );
+    logger.warn(logErrorFunctions.buttonInteractionResponseError(error));
   }
 };
 
 const handleYearButton = async (
   interaction: ButtonInteraction,
-  args: string[]
+  args: string[],
 ) => {
   if (interaction.guild === null || interaction.member === null) {
     logger.warn(
-      `Received button interaction ${interaction.customId} by ${interaction.user.tag} outside of a guild`
+      logErrorFunctions.buttonInteractionOutsideGuildError(
+        interaction.customId,
+      ),
     );
     return;
   }
@@ -135,7 +141,7 @@ const handleYearButton = async (
 
   if (role === undefined) {
     logger.warn(
-      `The role for button interaction ${interaction.customId} by ${interaction.user.tag} was not found`
+      logErrorFunctions.buttonInteractionRoleError(interaction.customId),
     );
     return;
   }
@@ -153,26 +159,27 @@ const handleYearButton = async (
 
   try {
     const mess = await interaction.reply({
-      content: `Ја ${removed ? "отстранивте" : "земавте"} годината ${inlineCode(
-        role.name
-      )}.`,
+      allowedMentions: {
+        parse: [],
+      },
+      content: commandResponseFunctions.yearAddedOrRemoved(role.id, removed),
       ephemeral: true,
     });
     void deleteResponse(mess);
   } catch (error) {
-    logger.warn(
-      `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`
-    );
+    logger.warn(logErrorFunctions.buttonInteractionResponseError(error));
   }
 };
 
 const handleProgramButton = async (
   interaction: ButtonInteraction,
-  args: string[]
+  args: string[],
 ) => {
   if (interaction.guild === null || interaction.member === null) {
     logger.warn(
-      `Received button interaction ${interaction.customId} by ${interaction.user.tag} outside of a guild`
+      logErrorFunctions.buttonInteractionOutsideGuildError(
+        interaction.customId,
+      ),
     );
     return;
   }
@@ -181,7 +188,7 @@ const handleProgramButton = async (
 
   if (role === undefined) {
     logger.warn(
-      `The role for button interaction ${interaction.customId} by ${interaction.user.tag} was not found`
+      logErrorFunctions.buttonInteractionRoleError(interaction.customId),
     );
     return;
   }
@@ -199,26 +206,27 @@ const handleProgramButton = async (
 
   try {
     const mess = await interaction.reply({
-      content: `Го ${removed ? "отстранивте" : "земавте"} смерот ${inlineCode(
-        role.name
-      )}.`,
+      allowedMentions: {
+        parse: [],
+      },
+      content: commandResponseFunctions.programAddedOrRemoved(role.id, removed),
       ephemeral: true,
     });
     void deleteResponse(mess);
   } catch (error) {
-    logger.warn(
-      `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`
-    );
+    logger.warn(logErrorFunctions.buttonInteractionResponseError(error));
   }
 };
 
 const handleNotificationButton = async (
   interaction: ButtonInteraction,
-  args: string[]
+  args: string[],
 ) => {
   if (interaction.guild === null || interaction.member === null) {
     logger.warn(
-      `Received button interaction ${interaction.customId} by ${interaction.user.tag} outside of a guild`
+      logErrorFunctions.buttonInteractionOutsideGuildError(
+        interaction.customId,
+      ),
     );
     return;
   }
@@ -227,7 +235,7 @@ const handleNotificationButton = async (
 
   if (role === undefined) {
     logger.warn(
-      `The role for button interaction ${interaction.customId} by ${interaction.user.tag} was not found`
+      logErrorFunctions.buttonInteractionRoleError(interaction.customId),
     );
     return;
   }
@@ -244,26 +252,30 @@ const handleNotificationButton = async (
 
   try {
     const mess = await interaction.reply({
-      content: `${
-        removed ? "Исклучивте" : "Вклучивте"
-      } нотификации за ${inlineCode(role.name)}.`,
+      allowedMentions: {
+        parse: [],
+      },
+      content: commandResponseFunctions.notificationAddedOrRemoved(
+        role.id,
+        removed,
+      ),
       ephemeral: true,
     });
     void deleteResponse(mess);
   } catch (error) {
-    logger.warn(
-      `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`
-    );
+    logger.warn(logErrorFunctions.buttonInteractionResponseError(error));
   }
 };
 
 const handleColorButton = async (
   interaction: ButtonInteraction,
-  args: string[]
+  args: string[],
 ) => {
   if (interaction.guild === null || interaction.member === null) {
     logger.warn(
-      `Received button interaction ${interaction.customId} by ${interaction.user.tag} outside of a guild`
+      logErrorFunctions.buttonInteractionOutsideGuildError(
+        interaction.customId,
+      ),
     );
     return;
   }
@@ -272,7 +284,7 @@ const handleColorButton = async (
 
   if (role === undefined) {
     logger.warn(
-      `The role for button interaction ${interaction.customId} by ${interaction.user.tag} was not found`
+      logErrorFunctions.buttonInteractionRoleError(interaction.customId),
     );
     return;
   }
@@ -290,33 +302,34 @@ const handleColorButton = async (
 
   try {
     const mess = await interaction.reply({
-      content: `Ја ${removed ? "отстранивте" : "земавте"} бојата ${inlineCode(
-        role.name
-      )}.`,
+      allowedMentions: {
+        parse: [],
+      },
+      content: commandResponseFunctions.colorAddedOrRemoved(role.id, removed),
       ephemeral: true,
     });
     void deleteResponse(mess);
   } catch (error) {
-    logger.warn(
-      `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`
-    );
+    logger.warn(logErrorFunctions.buttonInteractionResponseError(error));
   }
 };
 
 const handleAddCoursesButton = async (
   interaction: ButtonInteraction,
-  args: string[]
+  args: string[],
 ) => {
   if (interaction.guild === null || interaction.member === null) {
     logger.warn(
-      `Received button interaction ${interaction.customId} by ${interaction.user.tag} outside of a guild`
+      logErrorFunctions.buttonInteractionOutsideGuildError(
+        interaction.customId,
+      ),
     );
     return;
   }
 
   if (args[0] === undefined) {
     logger.warn(
-      `Received button interaction ${interaction.customId} by ${interaction.user.tag} without arguments`
+      logErrorFunctions.invalidButtonInteractionError(interaction.customId),
     );
     return;
   }
@@ -334,30 +347,30 @@ const handleAddCoursesButton = async (
     await interaction.editReply({
       content:
         args[0] === "all"
-          ? "Ги земавте сите предмети."
-          : `Ги земавте предметите од семестар ${semester}.`,
+          ? commandResponses.allCoursesAdded
+          : commandResponseFunctions.semesterCoursesAdded(semester),
     });
   } catch (error) {
-    logger.warn(
-      `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`
-    );
+    logger.warn(logErrorFunctions.buttonInteractionResponseError(error));
   }
 };
 
 const handleRemoveCoursesButton = async (
   interaction: ButtonInteraction,
-  args: string[]
+  args: string[],
 ) => {
   if (interaction.guild === null || interaction.member === null) {
     logger.warn(
-      `Received button interaction ${interaction.customId} by ${interaction.user.tag} outside of a guild`
+      logErrorFunctions.buttonInteractionOutsideGuildError(
+        interaction.customId,
+      ),
     );
     return;
   }
 
   if (args[0] === undefined) {
     logger.warn(
-      `Received button interaction ${interaction.customId} by ${interaction.user.tag} without arguments`
+      logErrorFunctions.invalidButtonInteractionError(interaction.customId),
     );
     return;
   }
@@ -375,13 +388,11 @@ const handleRemoveCoursesButton = async (
     await interaction.editReply({
       content:
         args[0] === "all"
-          ? "Ги отстранивте сите предмети."
-          : `Ги отстранивте предметите за семестар ${semester}.`,
+          ? commandResponses.allCoursesRemoved
+          : commandResponseFunctions.semesterCoursesRemoved(semester),
     });
   } catch (error) {
-    logger.warn(
-      `Failed to respond to button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`
-    );
+    logger.warn(logErrorFunctions.buttonInteractionResponseError(error));
   }
 };
 
@@ -393,14 +404,10 @@ const handlePollButtonForVipAddVote = async (poll: Poll, vipPoll: VipPoll) => {
     const rejectComponents = getVipAcknowledgeComponents();
     await oathChannel?.send({
       components: rejectComponents,
-      content: `${userMention(
-        vipPoll.userId
-      )} Вашата молба за член на ВИП беше одбиена.`,
+      content: vipStringFunctions.vipAddRequestRejected(vipPoll.userId),
     });
 
-    await vipChannel?.send(
-      `Корисникот ${userMention(vipPoll.userId)} не е одобрен како член на ВИП.`
-    );
+    await vipChannel?.send(vipStringFunctions.vipAddRejected(vipPoll.userId));
 
     return;
   }
@@ -409,31 +416,23 @@ const handlePollButtonForVipAddVote = async (poll: Poll, vipPoll: VipPoll) => {
   const confirmComponents = getVipConfirmComponents();
   await oathChannel?.send({
     components: confirmComponents,
-    content: `${userMention(vipPoll.userId)} ${
-      vipPoll.type === "add"
-        ? "Вашата молба за член на ВИП беше одобрена."
-        : "Вие сте поканети да бидете член на ВИП."
-    }`,
+    content: vipStringFunctions.vipAddRequestAccepted(vipPoll.userId),
     embeds: [confirmEmbed],
   });
 
-  await vipChannel?.send(
-    `Корисникот ${userMention(vipPoll.userId)} е одобрен како член на ВИП.`
-  );
+  await vipChannel?.send(vipStringFunctions.vipAddAccepted(vipPoll.userId));
 };
 
 const handlePollButtonForVipRemoveVote = async (
   poll: Poll,
   vipPoll: VipPoll,
-  member: GuildMember
+  member: GuildMember,
 ) => {
   const vipChannel = getChannel("vip");
 
   if (poll.decision !== "Да") {
     await vipChannel?.send(
-      `Не е изгласана недоверба против членот на ВИП ${userMention(
-        vipPoll.userId
-      )}.`
+      vipStringFunctions.vipRemoveRejected(vipPoll.userId),
     );
 
     return;
@@ -444,23 +443,19 @@ const handlePollButtonForVipRemoveVote = async (
   await member.roles.remove(vipRoleId);
   await member.roles.remove(vipVotingRoleId);
 
-  await vipChannel?.send(
-    `Изгласана е недоверба против членот на ВИП ${userMention(vipPoll.userId)}.`
-  );
+  await vipChannel?.send(vipStringFunctions.vipRemoveAccepted(vipPoll.userId));
 };
 
 const handlePollButtonForVipUpgradeVote = async (
   poll: Poll,
   vipPoll: VipPoll,
-  member: GuildMember
+  member: GuildMember,
 ) => {
   const vipChannel = getChannel("vip");
 
   if (poll.decision !== "Да") {
     await vipChannel?.send(
-      `Корисникот ${userMention(
-        vipPoll.userId
-      )} не е одобрен како полноправен член на ВИП.`
+      vipStringFunctions.vipUpgradeRejected(vipPoll.userId),
     );
 
     return;
@@ -469,18 +464,14 @@ const handlePollButtonForVipUpgradeVote = async (
   const vipVotingRole = await getRoleProperty("vipVoting");
   await member.roles.add(vipVotingRole);
 
-  await vipChannel?.send(
-    `Корисникот ${userMention(vipPoll.userId)} е сега полноправен член на ВИП.`
-  );
+  await vipChannel?.send(vipStringFunctions.vipUpgradeAccepted(vipPoll.userId));
 };
 
 const handlePollButtonForVipBanVote = async (poll: Poll, vipPoll: VipPoll) => {
   const vipChannel = getChannel("vip");
 
   if (poll.decision !== "Да") {
-    await vipChannel?.send(
-      `Корисникот ${userMention(vipPoll.userId)} не е баниран од ВИП.`
-    );
+    await vipChannel?.send(vipStringFunctions.vipBanRejected(vipPoll.userId));
 
     return;
   }
@@ -489,35 +480,29 @@ const handlePollButtonForVipBanVote = async (poll: Poll, vipPoll: VipPoll) => {
     userId: vipPoll.userId,
   });
 
-  await vipChannel?.send(
-    `Корисникот ${userMention(vipPoll.userId)} е баниран од ВИП.`
-  );
+  await vipChannel?.send(vipStringFunctions.vipBanAccepted(vipPoll.userId));
 };
 
 const handlePollButtonForVipUnbanVote = async (
   poll: Poll,
-  vipPoll: VipPoll
+  vipPoll: VipPoll,
 ) => {
   const vipChannel = getChannel("vip");
 
   if (poll.decision !== "Да") {
-    await vipChannel?.send(
-      `Корисникот ${userMention(vipPoll.userId)} не е одбаниран од ВИП.`
-    );
+    await vipChannel?.send(vipStringFunctions.vipUnbanRejected(vipPoll.userId));
 
     return;
   }
 
   await deleteVipBan(vipPoll.userId);
 
-  await vipChannel?.send(
-    `Корисникот ${userMention(vipPoll.userId)} е одбаниран од ВИП.`
-  );
+  await vipChannel?.send(vipStringFunctions.vipUnbanAccepted(vipPoll.userId));
 };
 
 export const handlePollButtonForVipVote = async (
   poll: Poll,
-  member: GuildMember
+  member: GuildMember,
 ) => {
   if (!poll.done) {
     return;
@@ -562,11 +547,11 @@ const handleVote = async (
   interaction: ButtonInteraction,
   poll: Poll,
   optionId: string,
-  option: PollOption
+  option: PollOption,
 ) => {
   const votes = await getPollVotesByPollIdAndUserId(
     poll.id,
-    interaction.user.id
+    interaction.user.id,
   );
   let replyMessage;
 
@@ -576,39 +561,63 @@ const handleVote = async (
       !votes.some((vote) => vote.option.id === optionId)
     ) {
       await createPollVote({
-        option: { connect: { id: optionId } },
-        poll: { connect: { id: poll.id } },
+        option: {
+          connect: {
+            id: optionId,
+          },
+        },
+        poll: {
+          connect: {
+            id: poll.id,
+          },
+        },
         userId: interaction.user.id,
       });
-      replyMessage = `Гласавте за опцијата ${inlineCode(option.name)}.`;
+      replyMessage = commandResponseFunctions.voteAdded(option.name);
     } else {
       await deletePollVote(
-        votes.find((vote) => vote.option.id === optionId)?.id
+        votes.find((vote) => vote.option.id === optionId)?.id,
       );
-      replyMessage = "Го тргнавте вашиот глас.";
+      replyMessage = commandResponses.voteRemoved;
     }
   } else {
     const vote = votes[0] ?? null;
 
     if (vote === null) {
       await createPollVote({
-        option: { connect: { id: optionId } },
-        poll: { connect: { id: poll.id } },
+        option: {
+          connect: {
+            id: optionId,
+          },
+        },
+        poll: {
+          connect: {
+            id: poll.id,
+          },
+        },
         userId: interaction.user.id,
       });
-      replyMessage = `Гласавте за опцијата ${inlineCode(option.name)}.`;
+      replyMessage = commandResponseFunctions.voteAdded(option.name);
     } else if (vote !== null && vote.option.id === optionId) {
       await deletePollVote(vote.id);
-      replyMessage = "Го тргнавте вашиот глас.";
+      replyMessage = commandResponses.voteRemoved;
     } else {
       await deletePollVote(vote.id);
       await createPollVote({
-        option: { connect: { id: optionId } },
-        poll: { connect: { id: poll.id } },
+        option: {
+          connect: {
+            id: optionId,
+          },
+        },
+        poll: {
+          connect: {
+            id: poll.id,
+          },
+        },
         userId: interaction.user.id,
       });
 
-      replyMessage = `Гласавте за опцијата ${inlineCode(option.name)}.`;
+      replyMessage = commandResponseFunctions.voteAdded(option.name);
     }
   }
 
@@ -621,11 +630,13 @@ const handleVote = async (
 
 const handlePollButton = async (
   interaction: ButtonInteraction,
-  args: string[]
+  args: string[],
 ) => {
   if (interaction.guild === null || interaction.member === null) {
     logger.warn(
-      `Received button interaction ${interaction.id}: ${interaction.customId} from ${interaction.user.tag} outside of a guild`
+      logErrorFunctions.buttonInteractionOutsideGuildError(
+        interaction.customId,
+      ),
     );
     return;
   }
@@ -651,7 +662,7 @@ const handlePollButton = async (
     optionId === undefined
   ) {
     const mess = await interaction.reply({
-      content: "Веќе не постои анкетата или опцијата.",
+      content: commandErrors.pollOrOptionNotFound,
       ephemeral: true,
     });
     void deleteResponse(mess);
@@ -673,10 +684,10 @@ const handlePollButton = async (
 
     if (!roles.cache.some((role) => poll.roles.includes(role.id))) {
       const mess = await interaction.reply({
-        allowedMentions: { parse: [] },
-        content: `Немате дозвола да гласате на оваа анкета. Потребна ви е една од улогите: ${poll.roles
-          .map((role) => roleMention(role))
-          .join(", ")}`,
+        allowedMentions: {
+          parse: [],
+        },
+        content: commandErrorFunctions.pollNoVotePermission(poll.roles),
         ephemeral: true,
       });
       void deleteResponse(mess);
@@ -705,11 +716,13 @@ const handlePollButton = async (
 
 const handlePollStatsButton = async (
   interaction: ButtonInteraction,
-  args: string[]
+  args: string[],
 ) => {
   if (interaction.guild === null || interaction.member === null) {
     logger.warn(
-      `Received button interaction ${interaction.id}: ${interaction.customId} from ${interaction.user.tag} outside of a guild`
+      logErrorFunctions.buttonInteractionOutsideGuildError(
+        interaction.customId,
+      ),
     );
     return;
   }
@@ -720,7 +733,9 @@ const handlePollStatsButton = async (
 
   if (poll === null || pollId === undefined || optionId === undefined) {
     logger.warn(
-      `Received button interaction ${interaction.id}: ${interaction.customId} from ${interaction.user.tag} for a non-existent poll or option`
+      logErrorFunctions.buttonInteractionPollOrOptionNotFoundError(
+        interaction.customId,
+      ),
     );
     await interaction.deferUpdate();
     return;
@@ -730,7 +745,7 @@ const handlePollStatsButton = async (
 
   if (pollOption === null) {
     const mess = await interaction.reply({
-      content: "Оваа опција не постои.",
+      content: commandErrors.optionNotFound,
       ephemeral: true,
     });
     void deleteResponse(mess);
@@ -754,13 +769,13 @@ const handlePollStatsButton = async (
 
 const handleVipButton = async (
   interaction: ButtonInteraction,
-  args: string[]
+  args: string[],
 ) => {
   const member = interaction.member as GuildMember;
 
   if (await isMemberInVip(member)) {
     const message = await interaction.reply({
-      content: "Веќе сте член на ВИП.",
+      content: commandErrors.alreadyVipMember,
       ephemeral: true,
     });
     void deleteResponse(message);
@@ -774,7 +789,7 @@ const handleVipButton = async (
       interaction.user.id !== userIdRegex.exec(interaction.message.content)?.[0]
     ) {
       const resp = await interaction.reply({
-        content: "Ова не е ваша заклетва.",
+        content: commandErrors.oathNoPermission,
         ephemeral: true,
       });
       void deleteResponse(resp);
@@ -791,7 +806,7 @@ const handleVipButton = async (
       interaction.user.id !== userIdRegex.exec(interaction.message.content)?.[0]
     ) {
       const resp = await interaction.reply({
-        content: "Ова не е ваша заклетва.",
+        content: commandErrors.oathNoPermission,
         ephemeral: true,
       });
       void deleteResponse(resp);
@@ -801,9 +816,7 @@ const handleVipButton = async (
     const vipChannel = getChannel("vip");
 
     if (vipChannel?.isTextBased()) {
-      await vipChannel.send(
-        `${userMention(interaction.user.id)} е сега член на ВИП.`
-      );
+      await vipChannel.send(vipStringFunctions.vipWelcome(interaction.user.id));
     }
 
     if (vipRole !== undefined) {
@@ -811,7 +824,7 @@ const handleVipButton = async (
     }
 
     const message = await interaction.reply({
-      content: "Сега сте член на ВИП.",
+      content: vipStringFunctions.vipWelcome(interaction.user.id),
       ephemeral: true,
     });
     void deleteResponse(message);
@@ -829,11 +842,11 @@ const handleVipButton = async (
 
   const existingPoll = await getVipPollByUserAndType(
     interaction.user.id,
-    "add"
+    "add",
   );
   if (existingPoll !== null) {
     const message = await interaction.reply({
-      content: "Веќе имате активна молба за ВИП.",
+      content: vipStrings.vipRequestActive,
       ephemeral: true,
     });
     void deleteResponse(message);
@@ -847,7 +860,6 @@ const handleVipButton = async (
     const pollWithOptions = await getPollById(vipPollId);
 
     if (pollWithOptions === null) {
-      logger.error("Couldn't find the VIP poll");
       return;
     }
 
@@ -858,8 +870,7 @@ const handleVipButton = async (
   }
 
   const mess = await interaction.reply({
-    content:
-      "Испратена е молба за разгледување до членовите на ВИП. Ќе добиете повратна порака штом е донесена одлука. Со среќа! :grin:",
+    content: vipStrings.vipRequestSent,
     ephemeral: true,
   });
   void deleteResponse(mess);
@@ -874,7 +885,7 @@ let transformedSessions: Array<[string, string]> | null = null;
 let transformedClassrooms: Array<[string, string]> | null = null;
 
 const handleCourseAutocomplete = async (
-  interaction: AutocompleteInteraction
+  interaction: AutocompleteInteraction,
 ) => {
   if (transformedCourses === null) {
     transformedCourses = Object.entries(transformOptions(getCourses()));
@@ -882,70 +893,70 @@ const handleCourseAutocomplete = async (
 
   try {
     await interaction.respond(
-      createOptions(transformedCourses, interaction.options.getFocused())
+      createOptions(transformedCourses, interaction.options.getFocused()),
     );
   } catch (error) {
     logger.error(
-      `Failed to respond to course autocomplete interaction by ${interaction.user.tag}\n${error}`
+      logErrorFunctions.autocompleteResponseError(interaction.user.tag, error),
     );
   }
 };
 
 const handleProfessorAutocomplete = async (
-  interaction: AutocompleteInteraction
+  interaction: AutocompleteInteraction,
 ) => {
   if (transformedProfessors === null) {
     transformedProfessors = Object.entries(
-      transformOptions(getStaff().map((professor) => professor.name))
+      transformOptions(getStaff().map((professor) => professor.name)),
     );
   }
 
   try {
     await interaction.respond(
-      createOptions(transformedProfessors, interaction.options.getFocused())
+      createOptions(transformedProfessors, interaction.options.getFocused()),
     );
   } catch (error) {
     logger.error(
-      `Failed to respond to professor autocomplete interaction by ${interaction.user.tag}\n${error}`
+      logErrorFunctions.autocompleteResponseError(interaction.user.tag, error),
     );
   }
 };
 
 const handleCourseRoleAutocomplete = async (
-  interaction: AutocompleteInteraction
+  interaction: AutocompleteInteraction,
 ) => {
   if (transformedCourseRoles === null) {
     transformedCourseRoles = Object.entries(
-      transformOptions(Object.values(getFromRoleConfig("courses")))
+      transformOptions(Object.values(getFromRoleConfig("courses"))),
     );
   }
 
   try {
     await interaction.respond(
-      createOptions(transformedCourseRoles, interaction.options.getFocused())
+      createOptions(transformedCourseRoles, interaction.options.getFocused()),
     );
   } catch (error) {
     logger.error(
-      `Failed to respond to course role autocomplete interaction by ${interaction.user.tag}\n${error}`
+      logErrorFunctions.autocompleteResponseError(interaction.user.tag, error),
     );
   }
 };
 
 const handleQuestionAutocomplete = async (
-  interaction: AutocompleteInteraction
+  interaction: AutocompleteInteraction,
 ) => {
   try {
     await interaction.respond(
       createOptions(
         Object.entries(
-          transformOptions((await getQuestionNames()).map(({ name }) => name))
+          transformOptions((await getQuestionNames()).map(({ name }) => name)),
         ),
-        interaction.options.getFocused()
-      )
+        interaction.options.getFocused(),
+      ),
     );
   } catch (error) {
     logger.error(
-      `Failed to respond to question autocomplete interaction by ${interaction.user.tag}\n${error}`
+      logErrorFunctions.autocompleteResponseError(interaction.user.tag, error),
     );
   }
 };
@@ -955,96 +966,96 @@ const handleLinkAutocomplete = async (interaction: AutocompleteInteraction) => {
     await interaction.respond(
       createOptions(
         Object.entries(
-          transformOptions((await getLinkNames()).map(({ name }) => name))
+          transformOptions((await getLinkNames()).map(({ name }) => name)),
         ),
-        interaction.options.getFocused()
-      )
+        interaction.options.getFocused(),
+      ),
     );
   } catch (error) {
     logger.error(
-      `Failed to respond to link autocomplete interaction by ${interaction.user.tag}\n${error}`
+      logErrorFunctions.autocompleteResponseError(interaction.user.tag, error),
     );
   }
 };
 
 export const handleSessionAutocomplete = async (
-  interaction: AutocompleteInteraction
+  interaction: AutocompleteInteraction,
 ) => {
   if (transformedSessions === null) {
     transformedSessions = Object.entries(
-      transformOptions(Object.keys(getSessions()))
+      transformOptions(Object.keys(getSessions())),
     );
   }
 
   try {
     await interaction.respond(
-      createOptions(transformedSessions, interaction.options.getFocused())
+      createOptions(transformedSessions, interaction.options.getFocused()),
     );
   } catch (error) {
     logger.error(
-      `Failed to respond to session autocomplete interaction by ${interaction.user.tag}\n${error}`
+      logErrorFunctions.autocompleteResponseError(interaction.user.tag, error),
     );
   }
 };
 
 export const handleClassroomAutocomplete = async (
-  interaction: AutocompleteInteraction
+  interaction: AutocompleteInteraction,
 ) => {
   if (transformedClassrooms === null) {
     transformedClassrooms = Object.entries(
       transformOptions(
         getClassrooms().map(
-          (classroom) => `${classroom.classroom} (${classroom.location})`
-        )
-      )
+          (classroom) => `${classroom.classroom} (${classroom.location})`,
+        ),
+      ),
     );
   }
 
   try {
     await interaction.respond(
-      createOptions(transformedClassrooms, interaction.options.getFocused())
+      createOptions(transformedClassrooms, interaction.options.getFocused()),
     );
   } catch (error) {
     logger.error(
-      `Failed to respond to classroom autocomplete interaction by ${interaction.user.tag}\n${error}`
+      logErrorFunctions.autocompleteResponseError(interaction.user.tag, error),
     );
   }
 };
 
 export const handleRuleAutocomplete = async (
-  interaction: AutocompleteInteraction
+  interaction: AutocompleteInteraction,
 ) => {
   try {
     await interaction.respond(
       createOptions(
         Object.entries(
-          transformOptions((await getRules()).map(({ rule }) => rule))
+          transformOptions((await getRules()).map(({ rule }) => rule)),
         ),
-        interaction.options.getFocused()
-      )
+        interaction.options.getFocused(),
+      ),
     );
   } catch (error) {
     logger.error(
-      `Failed to respond to rule autocomplete interaction by ${interaction.user.tag}\n${error}`
+      logErrorFunctions.autocompleteResponseError(interaction.user.tag, error),
     );
   }
 };
 
 export const handleCompanyAutocomplete = async (
-  interaction: AutocompleteInteraction
+  interaction: AutocompleteInteraction,
 ) => {
   try {
     await interaction.respond(
       createOptions(
         Object.entries(
-          transformOptions((await getCompanies()).map(({ name }) => name))
+          transformOptions((await getCompanies()).map(({ name }) => name)),
         ),
-        interaction.options.getFocused()
-      )
+        interaction.options.getFocused(),
+      ),
     );
   } catch (error) {
     logger.error(
-      `Failed to respond to company autocomplete interaction by ${interaction.user.tag}\n${error}`
+      logErrorFunctions.autocompleteResponseError(interaction.user.tag, error),
     );
   }
 };
@@ -1054,40 +1065,36 @@ export const handleCompanyAutocomplete = async (
 const ignoredButtons = ["help", "polls", "exp"];
 
 export const handleChatInputCommand = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   try {
     await interaction.deferReply();
   } catch (error) {
     logger.error(
-      `Failed to defer reply for chat input command ${interaction} by ${interaction.user.tag}\n${error}`
+      logErrorFunctions.chatInputInteractionDeferError(interaction, error),
     );
-    await interaction.reply(
-      "Настана грешка при извршување на командата. Обидете се повторно, или пријавете ја грешката."
-    );
+    await interaction.reply(commandErrors.commandError);
     return;
   }
 
   const command = await getCommand(interaction.commandName);
 
   logger.info(
-    `[Chat] ${interaction.user.tag}: ${interaction} [${
+    `${logShortStrings.chat} ${interaction.user.tag}: ${interaction} [${
       interaction.channel === null || interaction.channel.isDMBased()
-        ? "DM"
-        : "Guild"
-    }]`
+        ? logShortStrings.dm
+        : logShortStrings.guild
+    }]`,
   );
   await log(
     await getChatInputCommandEmbed(interaction),
     interaction,
-    "commands"
+    "commands",
   );
 
   if (command === undefined) {
-    logger.warn(
-      `No command was found for the chat input command ${interaction} by ${interaction.user.tag}`
-    );
-    await interaction.editReply(errors.commandNotFound);
+    logger.warn(logErrorFunctions.commandNotFound(interaction.id));
+    await interaction.editReply(commandErrors.commandNotFound);
     return;
   }
 
@@ -1100,10 +1107,10 @@ export const handleChatInputCommand = async (
   if (
     !(await hasCommandPermission(
       interaction.member as GuildMember | null,
-      fullCommand
+      fullCommand,
     ))
   ) {
-    await interaction.editReply(errors.commandNoPermission);
+    await interaction.editReply(commandErrors.commandNoPermission);
     return;
   }
 
@@ -1111,45 +1118,46 @@ export const handleChatInputCommand = async (
     await command.execute(interaction);
   } catch (error) {
     logger.error(
-      `Failed to handle chat input command ${interaction} by ${interaction.user.tag}\n${error}`
+      logErrorFunctions.chatInputInteractionError(interaction, error),
     );
   }
 };
 
 export const handleUserContextMenuCommand = async (
-  interaction: UserContextMenuCommandInteraction
+  interaction: UserContextMenuCommandInteraction,
 ) => {
   try {
     await interaction.deferReply();
   } catch (error) {
     logger.error(
-      `Failed to defer reply for user context menu command ${interaction.commandName} by ${interaction.user.tag}\n${error}`
+      logErrorFunctions.userContextMenuInteractionDeferError(
+        interaction,
+        error,
+      ),
     );
-    await interaction.reply(
-      "Настана грешка при извршување на командата. Обидете се повторно, или пријавете ја грешката."
-    );
+    await interaction.reply(commandErrors.commandError);
     return;
   }
 
   const command = await getCommand(interaction.commandName);
 
   logger.info(
-    `[User] ${interaction.user.tag}: ${interaction.commandName} [${
+    `${logShortStrings.user} ${interaction.user.tag}: ${
+      interaction.commandName
+    } [${
       interaction.channel === null || interaction.channel.isDMBased()
-        ? "DM"
-        : "Guild"
-    }]`
+        ? logShortStrings.dm
+        : logShortStrings.guild
+    }]`,
   );
   await log(
     await getUserContextMenuCommandEmbed(interaction),
     interaction,
-    "commands"
+    "commands",
   );
 
   if (command === undefined) {
-    logger.warn(
-      `No command was found for the user context menu command ${interaction.commandName} by ${interaction.user.tag}`
-    );
+    logger.warn(logErrorFunctions.commandNotFound(interaction.id));
     return;
   }
 
@@ -1157,7 +1165,7 @@ export const handleUserContextMenuCommand = async (
     await command.execute(interaction);
   } catch (error) {
     logger.error(
-      `Failed to handle user context menu command ${interaction.commandName} by ${interaction.user.tag}\n${error}`
+      logErrorFunctions.userContextMenuInteractionError(interaction, error),
     );
   }
 };
@@ -1179,32 +1187,34 @@ export const handleButton = async (interaction: ButtonInteraction) => {
   const [command, ...args] = interaction.customId.split(":");
 
   logger.info(
-    `[Button] ${interaction.user.tag}: ${interaction.customId} [${
+    `${logShortStrings.button} ${interaction.user.tag}: ${
+      interaction.customId
+    } [${
       interaction.channel === null || interaction.channel.isDMBased()
-        ? "DM"
-        : "Guild"
-    }]`
+        ? logShortStrings.dm
+        : logShortStrings.guild
+    }]`,
   );
   await log(
     getButtonEmbed(interaction, command, args),
     interaction,
-    "commands"
+    "commands",
   );
 
   if (command === undefined) {
-    logger.warn(
-      `Received bad button interaction ${interaction.customId} by ${interaction.user.tag}`
-    );
+    logger.warn(logErrorFunctions.commandNotFound(interaction.id));
     return;
   }
 
   if (command === "removeCourses" || command === "addCourses") {
     try {
-      const mess = await interaction.deferReply({ ephemeral: true });
+      const mess = await interaction.deferReply({
+        ephemeral: true,
+      });
       void deleteResponse(mess, 10_000);
     } catch (error) {
       logger.error(
-        `Failed to defer reply for button interaction ${interaction.customId} by ${interaction.user.tag}\n${error}`
+        logErrorFunctions.buttonInteractionDeferError(interaction, error),
       );
     }
   }
@@ -1216,9 +1226,7 @@ export const handleButton = async (interaction: ButtonInteraction) => {
   } else if (ignoredButtons.includes(command)) {
     // Do nothing
   } else {
-    logger.warn(
-      `Received unknown button interaction ${interaction.customId} by ${interaction.user.tag}`
-    );
+    logger.warn(logErrorFunctions.commandNotFound(interaction.id));
   }
 };
 
@@ -1235,16 +1243,16 @@ const autocompleteInteractionHandlers = {
 };
 
 export const handleAutocomplete = async (
-  interaction: AutocompleteInteraction
+  interaction: AutocompleteInteraction,
 ) => {
   const option = interaction.options.getFocused(true);
 
   logger.info(
-    `[Auto] ${interaction.user.tag}: ${option.name} [${
+    `${logShortStrings.auto} ${interaction.user.tag}: ${option.name} [${
       interaction.channel === null || interaction.channel.isDMBased()
-        ? "DM"
-        : "Guild"
-    }]`
+        ? logShortStrings.dm
+        : logShortStrings.guild
+    }]`,
   );
   await log(getAutocompleteEmbed(interaction), interaction, "commands");
 
@@ -1253,8 +1261,6 @@ export const handleAutocomplete = async (
       option.name as keyof typeof autocompleteInteractionHandlers
     ](interaction);
   } else {
-    logger.warn(
-      `Received unknown autocomplete interaction ${option.name} by ${interaction.user.tag}`
-    );
+    logger.warn(logErrorFunctions.commandNotFound(interaction.id));
   }
 };

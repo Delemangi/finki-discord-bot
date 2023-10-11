@@ -19,7 +19,13 @@ import {
 import { getConfigProperty } from "../utils/config.js";
 import { logger } from "../utils/logger.js";
 import { startPoll } from "../utils/polls.js";
-import { commandDescriptions, errors } from "../utils/strings.js";
+import {
+  commandDescriptions,
+  commandErrors,
+  commandResponseFunctions,
+  commandResponses,
+  logErrorFunctions,
+} from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,
@@ -36,139 +42,139 @@ export const data = new SlashCommandBuilder()
       .setName("create")
       .setDescription(commandDescriptions["poll create"])
       .addStringOption((option) =>
-        option.setName("title").setDescription("Наслов").setRequired(true)
+        option.setName("title").setDescription("Наслов").setRequired(true),
       )
       .addStringOption((option) =>
-        option.setName("description").setDescription("Опис").setRequired(true)
+        option.setName("description").setDescription("Опис").setRequired(true),
       )
       .addStringOption((option) =>
         option
           .setName("options")
           .setDescription(
-            "Опции (максимум 24, минимум 1, уникатни, разделени со запирки)"
+            "Опции (максимум 24, минимум 1, уникатни, разделени со запирки)",
           )
-          .setRequired(true)
+          .setRequired(true),
       )
       .addBooleanOption((option) =>
         option
           .setName("anonymous")
           .setDescription("Дали е анонимна анкетата?")
-          .setRequired(false)
+          .setRequired(false),
       )
       .addBooleanOption((option) =>
         option
           .setName("multiple")
           .setDescription("Дали е анкетата multiple choice?")
-          .setRequired(false)
+          .setRequired(false),
       )
       .addBooleanOption((option) =>
         option
           .setName("open")
           .setDescription(
-            "Дали е анкетата отворена (ажурирање од други корисници)?"
+            "Дали е анкетата отворена (ажурирање од други корисници)?",
           )
-          .setRequired(false)
+          .setRequired(false),
       )
       .addStringOption((option) =>
         option
           .setName("roles")
           .setDescription("Улоги за кои е анкетата (IDs, разделени со запирки)")
-          .setRequired(false)
+          .setRequired(false),
       )
       .addNumberOption((option) =>
         option
           .setName("threshold")
           .setDescription("Праг за завршување на анкетата")
-          .setRequired(false)
-      )
+          .setRequired(false),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("edit")
       .setDescription(commandDescriptions["poll edit"])
       .addStringOption((option) =>
-        option.setName("id").setDescription("Анкета").setRequired(true)
+        option.setName("id").setDescription("Анкета").setRequired(true),
       )
       .addStringOption((option) =>
-        option.setName("title").setDescription("Наслов").setRequired(false)
+        option.setName("title").setDescription("Наслов").setRequired(false),
       )
       .addStringOption((option) =>
-        option.setName("description").setDescription("Опис").setRequired(false)
+        option.setName("description").setDescription("Опис").setRequired(false),
       )
       .addStringOption((option) =>
         option
           .setName("roles")
           .setDescription("Улоги за кои е анкетата (IDs, разделени со запирки)")
-          .setRequired(false)
-      )
+          .setRequired(false),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("stats")
       .setDescription(commandDescriptions["poll stats"])
       .addStringOption((option) =>
-        option.setName("id").setDescription("Анкета").setRequired(true)
-      )
+        option.setName("id").setDescription("Анкета").setRequired(true),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("show")
       .setDescription(commandDescriptions["poll show"])
       .addStringOption((option) =>
-        option.setName("id").setDescription("Анкета").setRequired(true)
-      )
+        option.setName("id").setDescription("Анкета").setRequired(true),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("add")
       .setDescription(commandDescriptions["poll add"])
       .addStringOption((option) =>
-        option.setName("id").setDescription("Анкета").setRequired(true)
+        option.setName("id").setDescription("Анкета").setRequired(true),
       )
       .addStringOption((option) =>
         option
           .setName("options")
           .setDescription("Опции (максимум 24, уникатни, разделени со запирки)")
-          .setRequired(true)
-      )
+          .setRequired(true),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("remove")
       .setDescription(commandDescriptions["poll remove"])
       .addStringOption((option) =>
-        option.setName("id").setDescription("Анкета").setRequired(true)
+        option.setName("id").setDescription("Анкета").setRequired(true),
       )
       .addStringOption((option) =>
         option
           .setName("options")
           .setDescription("Опции (индекси)")
-          .setRequired(true)
-      )
+          .setRequired(true),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("delete")
       .setDescription(commandDescriptions["poll delete"])
       .addStringOption((option) =>
-        option.setName("id").setDescription("Анкета").setRequired(true)
-      )
+        option.setName("id").setDescription("Анкета").setRequired(true),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("open")
       .setDescription(commandDescriptions["poll open"])
       .addStringOption((option) =>
-        option.setName("id").setDescription("Анкета").setRequired(true)
-      )
+        option.setName("id").setDescription("Анкета").setRequired(true),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("close")
       .setDescription(commandDescriptions["poll close"])
       .addStringOption((option) =>
-        option.setName("id").setDescription("Анкета").setRequired(true)
-      )
+        option.setName("id").setDescription("Анкета").setRequired(true),
+      ),
   )
   .addSubcommand((command) =>
     command
@@ -178,16 +184,16 @@ export const data = new SlashCommandBuilder()
         option
           .setName("all")
           .setDescription("Дали да се листаат сите анкети?")
-          .setRequired(false)
-      )
+          .setRequired(false),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("info")
       .setDescription(commandDescriptions["poll info"])
       .addStringOption((option) =>
-        option.setName("id").setDescription("Анкета").setRequired(true)
-      )
+        option.setName("id").setDescription("Анкета").setRequired(true),
+      ),
   )
   .setDMPermission(false);
 
@@ -200,8 +206,8 @@ const handlePollCreate = async (interaction: ChatInputCommandInteraction) => {
         .getString("options", true)
         .split(",")
         .filter(Boolean)
-        .map((option) => option.trim())
-    )
+        .map((option) => option.trim()),
+    ),
   );
   const anonymous = interaction.options.getBoolean("anonymous") ?? true;
   const multiple = interaction.options.getBoolean("multiple") ?? false;
@@ -212,12 +218,12 @@ const handlePollCreate = async (interaction: ChatInputCommandInteraction) => {
   const threshold = interaction.options.getNumber("threshold") ?? 0.5;
 
   if (options.length === 0) {
-    await interaction.editReply("Анкетата мора да има опции.");
+    await interaction.editReply(commandErrors.pollNoOptions);
     return;
   }
 
   if (options.length > 24) {
-    await interaction.editReply("Анкетата не може да има повеќе од 24 опции.");
+    await interaction.editReply(commandErrors.pollTooManyOptions);
     return;
   }
 
@@ -230,22 +236,18 @@ const handlePollCreate = async (interaction: ChatInputCommandInteraction) => {
     open,
     options,
     roles,
-    threshold
+    threshold,
   );
 
   if (pollId === null) {
-    await interaction.editReply(
-      "Анкетата не беше креирана. Обидете се повторно."
-    );
+    await interaction.editReply(commandErrors.pollCreationFailed);
     return;
   }
 
   const poll = await getPollById(pollId);
 
   if (poll === null) {
-    await interaction.editReply(
-      "Анкетата не беше креирана. Обидете се повторно."
-    );
+    await interaction.editReply(commandErrors.pollNotFound);
     return;
   }
 
@@ -272,7 +274,7 @@ const handlePollEdit = async (interaction: ChatInputCommandInteraction) => {
   const poll = await getPollById(id);
 
   if (poll === null) {
-    await interaction.editReply(errors.pollNotFound);
+    await interaction.editReply(commandErrors.pollNotFound);
     return;
   }
 
@@ -294,9 +296,9 @@ const handlePollEdit = async (interaction: ChatInputCommandInteraction) => {
   await updatePoll(poll);
 
   await interaction.editReply(
-    `Анкетата е ажурирана (${changed.join(", ")}). Користете ${commandMention(
-      "poll show"
-    )} за да ги видите промените.`
+    commandResponseFunctions.pollEdited(changed.join(", ")) +
+      ". " +
+      commandResponseFunctions.seePollChanges(commandMention("poll show")),
   );
 };
 
@@ -305,12 +307,12 @@ const handlePollStats = async (interaction: ChatInputCommandInteraction) => {
   const poll = await getPollById(id);
 
   if (poll === null) {
-    await interaction.editReply(errors.pollNotFound);
+    await interaction.editReply(commandErrors.pollNotFound);
     return;
   }
 
   if (poll.anonymous) {
-    await interaction.editReply("Анкетата е анонимна.");
+    await interaction.editReply(commandErrors.pollAnonymous);
     return;
   }
 
@@ -327,7 +329,7 @@ const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
   const poll = await getPollById(id);
 
   if (poll === null) {
-    await interaction.editReply(errors.pollNotFound);
+    await interaction.editReply(commandErrors.pollNotFound);
     return;
   }
 
@@ -350,22 +352,22 @@ const handlePollAdd = async (interaction: ChatInputCommandInteraction) => {
   const poll = await getPollById(id);
 
   if (poll === null) {
-    await interaction.editReply(errors.pollNotFound);
+    await interaction.editReply(commandErrors.pollNotFound);
     return;
   }
 
   if (!poll.open && poll.userId !== interaction.user.id) {
-    await interaction.editReply(errors.pollNoPermission);
+    await interaction.editReply(commandErrors.pollNoPermission);
     return;
   }
 
   if (options.length === 0) {
-    await interaction.editReply("Анкетата мора да има опции.");
+    await interaction.editReply(commandErrors.pollNoOptions);
     return;
   }
 
   if (poll.options.length + options.length > 24) {
-    await interaction.editReply("Анкетата не може да има повеќе од 24 опции.");
+    await interaction.editReply(commandErrors.pollTooManyOptions);
     return;
   }
 
@@ -376,15 +378,19 @@ const handlePollAdd = async (interaction: ChatInputCommandInteraction) => {
         async (option) =>
           await createPollOption({
             name: option,
-            poll: { connect: { id: poll.id } },
-          })
-      )
+            poll: {
+              connect: {
+                id: poll.id,
+              },
+            },
+          }),
+      ),
   );
 
   await interaction.editReply(
-    `Опциите се додадени. Користете ${commandMention(
-      "poll show"
-    )} за да ги видите промените.`
+    commandResponses.pollOptionsAdded +
+      ". " +
+      commandResponseFunctions.seePollChanges(commandMention("poll show")),
   );
 };
 
@@ -398,12 +404,12 @@ const handlePollRemove = async (interaction: ChatInputCommandInteraction) => {
   const poll = await getPollById(id);
 
   if (poll === null) {
-    await interaction.editReply(errors.pollNotFound);
+    await interaction.editReply(commandErrors.pollNotFound);
     return;
   }
 
   if (poll.userId !== interaction.user.id) {
-    await interaction.editReply(errors.pollNoPermission);
+    await interaction.editReply(commandErrors.pollNoPermission);
     return;
   }
 
@@ -414,16 +420,14 @@ const handlePollRemove = async (interaction: ChatInputCommandInteraction) => {
 
   if (poll.options.length === 0) {
     await deletePoll(id);
-    await interaction.editReply(
-      "Ги тргнавте сите опции и со тоа ја избришавте анкетата."
-    );
+    await interaction.editReply(commandResponses.pollDeleted);
     return;
   }
 
   await interaction.editReply(
-    `Опциите се избришани. Користете ${commandMention(
-      "poll show"
-    )} за да ги видите промените.`
+    commandResponses.pollOptionsDeleted +
+      ". " +
+      commandResponseFunctions.seePollChanges(commandMention("poll show")),
   );
 };
 
@@ -432,13 +436,13 @@ const handlePollDelete = async (interaction: ChatInputCommandInteraction) => {
   const poll = await getPollById(id);
 
   if (poll === null) {
-    await interaction.reply(errors.pollNotFound);
+    await interaction.reply(commandErrors.pollNotFound);
     return;
   }
 
   await deletePoll(id);
 
-  await interaction.editReply("Анкетата е избришана.");
+  await interaction.editReply(commandResponses.pollDeleted);
 };
 
 const handlePollOpen = async (interaction: ChatInputCommandInteraction) => {
@@ -446,24 +450,24 @@ const handlePollOpen = async (interaction: ChatInputCommandInteraction) => {
   const poll = await getPollById(id);
 
   if (poll === null) {
-    await interaction.editReply(errors.pollNotFound);
+    await interaction.editReply(commandErrors.pollNotFound);
     return;
   }
 
   if (poll.userId !== interaction.user.id) {
-    await interaction.editReply(errors.pollNoPermission);
+    await interaction.editReply(commandErrors.pollNoPermission);
     return;
   }
 
   if (!poll.done) {
-    await interaction.editReply("Анкетата е веќе отворена.");
+    await interaction.editReply(commandResponses.pollOpen);
     return;
   }
 
   poll.done = false;
   await updatePoll(poll);
 
-  await interaction.editReply("Анкетата е сега отворена. Може да се гласа.");
+  await interaction.editReply(commandResponses.pollOpen);
 };
 
 const handlePollClose = async (interaction: ChatInputCommandInteraction) => {
@@ -471,17 +475,17 @@ const handlePollClose = async (interaction: ChatInputCommandInteraction) => {
   const poll = await getPollById(id);
 
   if (poll === null) {
-    await interaction.editReply(errors.pollNotFound);
+    await interaction.editReply(commandErrors.pollNotFound);
     return;
   }
 
   if (poll.userId !== interaction.user.id) {
-    await interaction.editReply(errors.pollNoPermission);
+    await interaction.editReply(commandErrors.pollNoPermission);
     return;
   }
 
   if (poll.done) {
-    await interaction.editReply("Анкетата е веќе затворена.");
+    await interaction.editReply(commandResponses.pollClosed);
     return;
   }
 
@@ -494,9 +498,7 @@ const handlePollClose = async (interaction: ChatInputCommandInteraction) => {
 
   await updatePoll(poll);
 
-  await interaction.editReply(
-    "Анкетата е сега затворена. Не може повеќе да се гласа."
-  );
+  await interaction.editReply(commandResponses.pollClosed);
 };
 
 const handlePollList = async (interaction: ChatInputCommandInteraction) => {
@@ -528,7 +530,7 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
       buttonInteraction.message.interaction?.user.id
     ) {
       const mess = await buttonInteraction.reply({
-        content: "Ова не е ваша команда.",
+        content: commandErrors.buttonNoPermission,
         ephemeral: true,
       });
       void deleteResponse(mess);
@@ -537,14 +539,14 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
 
     const id = buttonInteraction.customId.split(":")[1];
 
-    if (id === "undefined") {
+    if (id === undefined) {
       return;
     }
 
     let buttons;
     let page =
       Number(
-        buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.[0]
+        buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.[0],
       ) - 1;
 
     if (id === "first") {
@@ -575,7 +577,12 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
         embeds: [nextEmbed],
       });
     } catch (error) {
-      logger.error(`Failed to update poll list command\n${error}`);
+      logger.error(
+        logErrorFunctions.interactionUpdateError(
+          buttonInteraction.customId,
+          error,
+        ),
+      );
     }
   });
 
@@ -585,7 +592,7 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
         components: [getPaginationComponents("polls")],
       });
     } catch (error) {
-      logger.error(`Failed to update poll list command\n${error}`);
+      logger.error(logErrorFunctions.collectorEndError(name, error));
     }
   });
 };
@@ -596,17 +603,19 @@ const handlePollInfo = async (interaction: ChatInputCommandInteraction) => {
   const poll = await getPollById(id);
 
   if (poll === null) {
-    await interaction.editReply(errors.pollNotFound);
+    await interaction.editReply(commandErrors.pollNotFound);
     return;
   }
 
   if (interaction.guild === null) {
-    await interaction.editReply(errors.serverOnlyCommand);
+    await interaction.editReply(commandErrors.serverOnlyCommand);
     return;
   }
 
   const embed = await getPollInfoEmbed(interaction.guild, poll);
-  await interaction.editReply({ embeds: [embed] });
+  await interaction.editReply({
+    embeds: [embed],
+  });
 };
 
 const pollHandlers = {

@@ -28,7 +28,13 @@ import {
   getToken,
 } from "../utils/config.js";
 import { logger } from "../utils/logger.js";
-import { commandDescriptions } from "../utils/strings.js";
+import {
+  commandDescriptions,
+  commandErrors,
+  commandResponses,
+  logErrorFunctions,
+  threadMessageFunctions,
+} from "../utils/strings.js";
 import { InfoMessageType } from "@prisma/client";
 import {
   type Channel,
@@ -37,7 +43,6 @@ import {
   type ForumChannel,
   type GuildBasedChannel,
   type GuildTextBasedChannel,
-  inlineCode,
   PermissionFlagsBits,
   REST,
   Routes,
@@ -55,144 +60,144 @@ export const data = new SlashCommandBuilder()
       .setName("courses")
       .setDescription(commandDescriptions["script courses"])
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true)
+        option.setName("channel").setDescription("Канал").setRequired(true),
       )
       .addNumberOption((option) =>
         option
           .setName("newlines")
           .setDescription("Број на празни редови")
-          .setRequired(false)
+          .setRequired(false),
       )
       .addStringOption((option) =>
         option
           .setName("rolesets")
           .setDescription("Сетови на улоги")
-          .setRequired(false)
-      )
+          .setRequired(false),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("colors")
       .setDescription(commandDescriptions["script colors"])
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true)
+        option.setName("channel").setDescription("Канал").setRequired(true),
       )
       .addStringOption((option) =>
-        option.setName("image").setDescription("Слика").setRequired(true)
+        option.setName("image").setDescription("Слика").setRequired(true),
       )
       .addNumberOption((option) =>
         option
           .setName("newlines")
           .setDescription("Број на празни редови")
-          .setRequired(false)
-      )
+          .setRequired(false),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("notifications")
       .setDescription(commandDescriptions["script notifications"])
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true)
+        option.setName("channel").setDescription("Канал").setRequired(true),
       )
       .addNumberOption((option) =>
         option
           .setName("newlines")
           .setDescription("Број на празни редови")
-          .setRequired(false)
-      )
+          .setRequired(false),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("programs")
       .setDescription(commandDescriptions["script programs"])
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true)
+        option.setName("channel").setDescription("Канал").setRequired(true),
       )
       .addNumberOption((option) =>
         option
           .setName("newlines")
           .setDescription("Број на празни редови")
-          .setRequired(false)
-      )
+          .setRequired(false),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("years")
       .setDescription(commandDescriptions["script years"])
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true)
+        option.setName("channel").setDescription("Канал").setRequired(true),
       )
       .addNumberOption((option) =>
         option
           .setName("newlines")
           .setDescription("Број на празни редови")
-          .setRequired(false)
-      )
+          .setRequired(false),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("rules")
       .setDescription(commandDescriptions["script rules"])
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true)
-      )
+        option.setName("channel").setDescription("Канал").setRequired(true),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("register")
-      .setDescription(commandDescriptions["script register"])
+      .setDescription(commandDescriptions["script register"]),
   )
   .addSubcommand((command) =>
     command
       .setName("vip")
       .setDescription(commandDescriptions["script vip"])
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true)
-      )
+        option.setName("channel").setDescription("Канал").setRequired(true),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("info")
       .setDescription(commandDescriptions["script info"])
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true)
-      )
+        option.setName("channel").setDescription("Канал").setRequired(true),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("coursesforum")
       .setDescription("Courses forum")
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true)
-      )
+        option.setName("channel").setDescription("Канал").setRequired(true),
+      ),
   )
   .addSubcommand((command) =>
     command
       .setName("companiesforum")
       .setDescription("Companies forum")
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true)
-      )
+        option.setName("channel").setDescription("Канал").setRequired(true),
+      ),
   )
   .setDMPermission(false)
   .setDefaultMemberPermissions(permission);
 
 const handleScriptCourses = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const channel = interaction.options.getChannel("channel", true) as Channel;
   const newlines = interaction.options.getNumber("newlines") ?? 0;
   const roleSets = interaction.options.getString("rolesets")?.split(",") ?? [];
 
   if (!channel.isTextBased() || channel.isDMBased()) {
-    await interaction.editReply("Само текст канали се дозволени.");
+    await interaction.editReply(commandErrors.invalidChannel);
   }
 
   for (const roleSet of roleSets.length === 0 ? "12345678" : roleSets) {
     const roles = getFromRoleConfig("course")[roleSet];
 
     if (roles === undefined) {
-      await interaction.editReply("Невалиден сет на улоги.");
+      await interaction.editReply(commandErrors.invalidRoles);
       return;
     }
 
@@ -203,49 +208,49 @@ const handleScriptCourses = async (
         channel as GuildTextBasedChannel,
         embed,
         components,
-        Number(newlines)
+        Number(newlines),
       );
-      await interaction.editReply("Успешно испратено.");
+      await interaction.editReply(commandResponses.scriptExecuted);
     } catch (error) {
-      await interaction.editReply("Испраќањето беше неуспешно.");
-      logger.error(`Couldn't send embed\n${error}`);
+      await interaction.editReply(commandErrors.scriptNotExecuted);
+      logger.error(logErrorFunctions.scriptExecutionError(error));
       return;
     }
   }
 
   const addEmbed = await getCoursesAddEmbed();
   const addComponents = getCoursesAddComponents(
-    roleSets.length === 0 ? Array.from("12345678") : roleSets
+    roleSets.length === 0 ? Array.from("12345678") : roleSets,
   );
   try {
     await sendEmbed(
       channel as GuildTextBasedChannel,
       addEmbed,
       addComponents,
-      Number(newlines)
+      Number(newlines),
     );
-    await interaction.editReply("Успешно испратено.");
+    await interaction.editReply(commandResponses.scriptExecuted);
   } catch (error) {
-    await interaction.editReply("Испраќањето беше неуспешно.");
-    logger.error(`Couldn't send embed\n${error}`);
+    await interaction.editReply(commandErrors.scriptNotExecuted);
+    logger.error(logErrorFunctions.scriptExecutionError(error));
     return;
   }
 
   const removeEmbed = await getCoursesRemoveEmbed();
   const removeComponents = getCoursesRemoveComponents(
-    roleSets.length === 0 ? Array.from("12345678") : roleSets
+    roleSets.length === 0 ? Array.from("12345678") : roleSets,
   );
   try {
     await sendEmbed(
       channel as GuildTextBasedChannel,
       removeEmbed,
       removeComponents,
-      Number(newlines)
+      Number(newlines),
     );
-    await interaction.editReply("Успешно испратено.");
+    await interaction.editReply(commandResponses.scriptExecuted);
   } catch (error) {
-    await interaction.editReply("Испраќањето беше неуспешно.");
-    logger.error(`Couldn't send embed\n${error}`);
+    await interaction.editReply(commandErrors.scriptNotExecuted);
+    logger.error(logErrorFunctions.scriptExecutionError(error));
   }
 };
 
@@ -255,7 +260,7 @@ const handleScriptColors = async (interaction: ChatInputCommandInteraction) => {
   const newlines = interaction.options.getNumber("newlines") ?? 0;
 
   if (!channel.isTextBased() || channel.isDMBased()) {
-    await interaction.editReply("Само текст канали се дозволени.");
+    await interaction.editReply(commandErrors.invalidChannel);
   }
 
   const embed = await getColorsEmbed(image);
@@ -265,23 +270,23 @@ const handleScriptColors = async (interaction: ChatInputCommandInteraction) => {
       channel as GuildTextBasedChannel,
       embed,
       components,
-      Number(newlines)
+      Number(newlines),
     );
-    await interaction.editReply("Успешно испратено.");
+    await interaction.editReply(commandResponses.scriptExecuted);
   } catch (error) {
-    await interaction.editReply("Испраќањето беше неуспешно.");
-    logger.error(`Couldn't send embed\n${error}`);
+    await interaction.editReply(commandErrors.scriptNotExecuted);
+    logger.error(logErrorFunctions.scriptExecutionError(error));
   }
 };
 
 const handleScriptNotifications = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const channel = interaction.options.getChannel("channel", true) as Channel;
   const newlines = interaction.options.getNumber("newlines") ?? 0;
 
   if (!channel.isTextBased() || channel.isDMBased()) {
-    await interaction.editReply("Само текст канали се дозволени.");
+    await interaction.editReply(commandErrors.invalidChannel);
   }
 
   const embed = await getNotificationsEmbed();
@@ -291,23 +296,23 @@ const handleScriptNotifications = async (
       channel as GuildTextBasedChannel,
       embed,
       components,
-      Number(newlines)
+      Number(newlines),
     );
-    await interaction.editReply("Успешно испратено.");
+    await interaction.editReply(commandResponses.scriptExecuted);
   } catch (error) {
-    await interaction.editReply("Испраќањето беше неуспешно.");
-    logger.error(`Couldn't send embed\n${error}`);
+    await interaction.editReply(commandErrors.scriptNotExecuted);
+    logger.error(logErrorFunctions.scriptExecutionError(error));
   }
 };
 
 const handleScriptPrograms = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const channel = interaction.options.getChannel("channel", true) as Channel;
   const newlines = interaction.options.getNumber("newlines") ?? 0;
 
   if (!channel.isTextBased() || channel.isDMBased()) {
-    await interaction.editReply("Само текст канали се дозволени.");
+    await interaction.editReply(commandErrors.invalidChannel);
   }
 
   const embed = await getProgramsEmbed();
@@ -317,12 +322,12 @@ const handleScriptPrograms = async (
       channel as GuildTextBasedChannel,
       embed,
       components,
-      Number(newlines)
+      Number(newlines),
     );
-    await interaction.editReply("Успешно испратено.");
+    await interaction.editReply(commandResponses.scriptExecuted);
   } catch (error) {
-    await interaction.editReply("Испраќањето беше неуспешно.");
-    logger.error(`Couldn't send embed\n${error}`);
+    await interaction.editReply(commandErrors.scriptNotExecuted);
+    logger.error(logErrorFunctions.scriptExecutionError(error));
   }
 };
 
@@ -331,7 +336,7 @@ const handleScriptYears = async (interaction: ChatInputCommandInteraction) => {
   const newlines = interaction.options.getNumber("newlines") ?? 0;
 
   if (!channel.isTextBased() || channel.isDMBased()) {
-    await interaction.editReply("Само текст канали се дозволени.");
+    await interaction.editReply(commandErrors.invalidChannel);
   }
 
   const embed = await getYearsEmbed();
@@ -341,17 +346,17 @@ const handleScriptYears = async (interaction: ChatInputCommandInteraction) => {
       channel as GuildTextBasedChannel,
       embed,
       [components],
-      Number(newlines)
+      Number(newlines),
     );
-    await interaction.editReply("Успешно испратено.");
+    await interaction.editReply(commandResponses.scriptExecuted);
   } catch (error) {
-    await interaction.editReply("Испраќањето беше неуспешно.");
-    logger.error(`Couldn't send embed\n${error}`);
+    await interaction.editReply(commandErrors.scriptNotExecuted);
+    logger.error(logErrorFunctions.scriptExecutionError(error));
   }
 };
 
 const handleScriptRegister = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const rest = new REST().setToken(getToken());
   const commandsToRegister = [];
@@ -364,10 +369,10 @@ const handleScriptRegister = async (
     await rest.put(Routes.applicationCommands(getApplicationId()), {
       body: commandsToRegister,
     });
-    await interaction.editReply("Командите се успешно синхронизирани.");
+    await interaction.editReply(commandResponses.commandsRegistered);
   } catch (error) {
-    await interaction.editReply("Синхронизацијата беше неуспешна.");
-    logger.error(`Couldn't register commands\n${error}`);
+    await interaction.editReply(commandErrors.commandsNotRegistered);
+    logger.error(logErrorFunctions.commandsRegistrationError(error));
   }
 };
 
@@ -375,7 +380,7 @@ const handleScriptRules = async (interaction: ChatInputCommandInteraction) => {
   const channel = interaction.options.getChannel("channel", true) as Channel;
 
   if (!channel.isTextBased() || channel.isDMBased()) {
-    await interaction.editReply("Само текст канали се дозволени.");
+    await interaction.editReply(commandErrors.invalidChannel);
   }
 
   const embed = await getRulesEmbed();
@@ -383,21 +388,21 @@ const handleScriptRules = async (interaction: ChatInputCommandInteraction) => {
     await (channel as GuildTextBasedChannel).send({
       embeds: [embed],
     });
-    await interaction.editReply("Успешно испратено.");
+    await interaction.editReply(commandResponses.scriptExecuted);
   } catch (error) {
-    await interaction.editReply("Испраќањето беше неуспешно.");
-    logger.error(`Couldn't send embed\n${error}`);
+    await interaction.editReply(commandErrors.scriptNotExecuted);
+    logger.error(logErrorFunctions.scriptExecutionError(error));
   }
 };
 
 const handleScriptVip = async (interaction: ChatInputCommandInteraction) => {
   const channel = interaction.options.getChannel(
     "channel",
-    true
+    true,
   ) as GuildBasedChannel;
 
   if (!channel.isTextBased() || channel.isDMBased()) {
-    await interaction.editReply("Само текст канали се дозволени.");
+    await interaction.editReply(commandErrors.invalidChannel);
   }
 
   const embed = await getVipRequestEmbed();
@@ -407,21 +412,21 @@ const handleScriptVip = async (interaction: ChatInputCommandInteraction) => {
       components,
       embeds: [embed],
     });
-    await interaction.editReply("Успешно испратено.");
+    await interaction.editReply(commandResponses.scriptExecuted);
   } catch (error) {
-    await interaction.editReply("Испраќањето беше неуспешно.");
-    logger.error(`Couldn't send embed\n${error}`);
+    await interaction.editReply(commandErrors.scriptNotExecuted);
+    logger.error(logErrorFunctions.scriptExecutionError(error));
   }
 };
 
 const handleScriptInfo = async (interaction: ChatInputCommandInteraction) => {
   const channel = interaction.options.getChannel(
     "channel",
-    true
+    true,
   ) as GuildBasedChannel;
 
   if (!channel.isTextBased() || channel.isDMBased()) {
-    await interaction.editReply("Само текст канали се дозволени.");
+    await interaction.editReply(commandErrors.invalidChannel);
   }
 
   const infoMessages = await getInfoMessages();
@@ -433,41 +438,43 @@ const handleScriptInfo = async (interaction: ChatInputCommandInteraction) => {
           files: [message.content],
         });
       } catch (error) {
-        await interaction.editReply("Испраќањето беше неуспешно.");
-        logger.error(`Couldn't send image\n${error}`);
+        await interaction.editReply(commandErrors.scriptNotExecuted);
+        logger.error(logErrorFunctions.scriptExecutionError(error));
         return;
       }
     } else if (message.type === InfoMessageType.TEXT) {
       try {
         await (channel as GuildTextBasedChannel).send({
-          allowedMentions: { parse: [] },
+          allowedMentions: {
+            parse: [],
+          },
           content: message.content.replaceAll("\\n", "\n"),
         });
       } catch (error) {
-        await interaction.editReply("Испраќањето беше неуспешно.");
-        logger.error(`Couldn't send text\n${error}`);
+        await interaction.editReply(commandErrors.scriptNotExecuted);
+        logger.error(logErrorFunctions.scriptExecutionError(error));
         return;
       }
     }
   }
 
-  await interaction.editReply("Успешно испратено.");
+  await interaction.editReply(commandResponses.scriptExecuted);
 };
 
 const handleCoursesForum = async (interaction: ChatInputCommandInteraction) => {
   const channel = interaction.options.getChannel(
     "channel",
-    true
+    true,
   ) as GuildBasedChannel;
 
   if (channel.type !== ChannelType.GuildForum) {
-    await interaction.editReply("Само форуми се дозволени.");
+    await interaction.editReply(commandErrors.invalidChannel);
   }
 
   for (const course of getCourses()) {
     await (channel as ForumChannel).threads.create({
       message: {
-        content: `Овој канал е за предметот ${inlineCode(course)}.`,
+        content: threadMessageFunctions.courseThreadMessage(course),
       },
       name: course,
     });
@@ -475,21 +482,21 @@ const handleCoursesForum = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handleCompaniesForum = async (
-  interaction: ChatInputCommandInteraction
+  interaction: ChatInputCommandInteraction,
 ) => {
   const channel = interaction.options.getChannel(
     "channel",
-    true
+    true,
   ) as GuildBasedChannel;
 
   if (channel.type !== ChannelType.GuildForum) {
-    await interaction.editReply("Само форуми се дозволени.");
+    await interaction.editReply(commandErrors.invalidChannel);
   }
 
   for (const company of await getCompanies()) {
     await (channel as ForumChannel).threads.create({
       message: {
-        content: `Овој канал е за компанијата ${inlineCode(company.name)}.`,
+        content: threadMessageFunctions.companyThreadMessage(company.name),
       },
       name: company.name,
     });

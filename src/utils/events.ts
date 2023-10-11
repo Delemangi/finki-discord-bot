@@ -5,7 +5,7 @@ import { readdirSync } from "node:fs";
 
 export const attachEventListeners = async () => {
   for (const file of readdirSync("./dist/events").filter((fi) =>
-    fi.endsWith(".js")
+    fi.endsWith(".js"),
   )) {
     const event: ClientEvent<keyof ClientEvents> = await import(
       `../events/${file}`

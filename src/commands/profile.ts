@@ -11,14 +11,16 @@ export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription(commandDescriptions[name])
   .addUserOption((option) =>
-    option.setName("user").setDescription("Корисник").setRequired(false)
+    option.setName("user").setDescription("Корисник").setRequired(false),
   )
   .setDMPermission(false);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const member = interaction.guild?.members.cache.get(
-    (interaction.options.getUser("user") ?? interaction.user).id
+    (interaction.options.getUser("user") ?? interaction.user).id,
   );
   const embed = await getStudentInfoEmbed(member);
-  await interaction.editReply({ embeds: [embed] });
+  await interaction.editReply({
+    embeds: [embed],
+  });
 };

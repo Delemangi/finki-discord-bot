@@ -13,7 +13,11 @@ import {
   getProfessors,
 } from "../utils/config.js";
 import { getCourseRoleByCourseName } from "../utils/roles.js";
-import { commandDescriptions, errors } from "../utils/strings.js";
+import {
+  commandDescriptions,
+  commandErrors,
+  commandResponseFunctions,
+} from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   type GuildMember,
@@ -35,8 +39,8 @@ export const data = new SlashCommandBuilder()
           .setName("course")
           .setDescription("Предмет")
           .setRequired(true)
-          .setAutocomplete(true)
-      )
+          .setAutocomplete(true),
+      ),
   )
   .addSubcommand((command) =>
     command
@@ -47,8 +51,8 @@ export const data = new SlashCommandBuilder()
           .setName("course")
           .setDescription("Предмет")
           .setRequired(true)
-          .setAutocomplete(true)
-      )
+          .setAutocomplete(true),
+      ),
   )
   .addSubcommand((command) =>
     command
@@ -59,8 +63,8 @@ export const data = new SlashCommandBuilder()
           .setName("courserole")
           .setDescription("Предмет")
           .setRequired(true)
-          .setAutocomplete(true)
-      )
+          .setAutocomplete(true),
+      ),
   )
   .addSubcommand((command) =>
     command
@@ -71,8 +75,8 @@ export const data = new SlashCommandBuilder()
           .setName("course")
           .setDescription("Предмет")
           .setRequired(true)
-          .setAutocomplete(true)
-      )
+          .setAutocomplete(true),
+      ),
   )
   .addSubcommand((command) =>
     command
@@ -83,8 +87,8 @@ export const data = new SlashCommandBuilder()
           .setName("course")
           .setDescription("Предмет")
           .setRequired(true)
-          .setAutocomplete(true)
-      )
+          .setAutocomplete(true),
+      ),
   )
   .addSubcommand((command) =>
     command
@@ -95,8 +99,8 @@ export const data = new SlashCommandBuilder()
           .setName("course")
           .setDescription("Предмет")
           .setRequired(true)
-          .setAutocomplete(true)
-      )
+          .setAutocomplete(true),
+      ),
   )
   .addSubcommand((command) =>
     command
@@ -107,129 +111,141 @@ export const data = new SlashCommandBuilder()
           .setName("courserole")
           .setDescription("Предмет")
           .setRequired(true)
-          .setAutocomplete(true)
-      )
+          .setAutocomplete(true),
+      ),
   );
 
 const handleCourseParticipants = async (
   interaction: ChatInputCommandInteraction,
-  course: string | null
+  course: string | null,
 ) => {
   const information = getParticipants().find(
     (participants) =>
-      participants.course.toLowerCase() === course?.toLowerCase()
+      participants.course.toLowerCase() === course?.toLowerCase(),
   );
 
   if (information === undefined) {
-    await interaction.editReply(errors.courseNotFound);
+    await interaction.editReply(commandErrors.courseNotFound);
     return;
   }
 
   const embed = await getCourseParticipantsEmbed(information);
-  await interaction.editReply({ embeds: [embed] });
+  await interaction.editReply({
+    embeds: [embed],
+  });
 };
 
 const handleCourseProfessors = async (
   interaction: ChatInputCommandInteraction,
-  course: string | null
+  course: string | null,
 ) => {
   const information = getProfessors().find(
-    (staff) => staff.course.toLowerCase() === course?.toLowerCase()
+    (staff) => staff.course.toLowerCase() === course?.toLowerCase(),
   );
 
   if (information === undefined) {
-    await interaction.editReply(errors.courseNotFound);
+    await interaction.editReply(commandErrors.courseNotFound);
     return;
   }
 
   const embed = await getCourseProfessorsEmbed(information);
-  await interaction.editReply({ embeds: [embed] });
+  await interaction.editReply({
+    embeds: [embed],
+  });
 };
 
 const handleCourseRole = async (
   interaction: ChatInputCommandInteraction,
-  courseRole: string | null
+  courseRole: string | null,
 ) => {
   if (interaction.guild === null) {
-    await interaction.editReply(errors.serverOnlyCommand);
+    await interaction.editReply(commandErrors.serverOnlyCommand);
     return;
   }
 
   await interaction.guild.members.fetch();
 
   const roleEntry = Object.entries(getFromRoleConfig("courses")).find(
-    ([, course]) => course.toLowerCase() === courseRole?.toLowerCase()
+    ([, course]) => course.toLowerCase() === courseRole?.toLowerCase(),
   );
 
   if (roleEntry === undefined) {
-    await interaction.editReply(errors.courseNotFound);
+    await interaction.editReply(commandErrors.courseNotFound);
     return;
   }
 
   const role = interaction.guild.roles.cache.find(
-    (ro) => ro.name.toLowerCase() === roleEntry[0].toLowerCase()
+    (ro) => ro.name.toLowerCase() === roleEntry[0].toLowerCase(),
   );
 
   if (role === undefined) {
-    await interaction.editReply(errors.courseNotFound);
+    await interaction.editReply(commandErrors.courseNotFound);
     return;
   }
 
   await interaction.editReply({
-    allowedMentions: { parse: [] },
+    allowedMentions: {
+      parse: [],
+    },
     content: `${roleMention(role.id)}: ${role.members.size}`,
   });
 };
 
 const handleCoursePrerequisite = async (
   interaction: ChatInputCommandInteraction,
-  course: string | null
+  course: string | null,
 ) => {
   const information = getPrerequisites().find(
     (prerequisites) =>
-      prerequisites.course.toLowerCase() === course?.toLowerCase()
+      prerequisites.course.toLowerCase() === course?.toLowerCase(),
   );
 
   if (information === undefined) {
-    await interaction.editReply(errors.courseNotFound);
+    await interaction.editReply(commandErrors.courseNotFound);
     return;
   }
 
   const embed = await getCoursePrerequisiteEmbed(information);
-  await interaction.editReply({ embeds: [embed] });
+  await interaction.editReply({
+    embeds: [embed],
+  });
 };
 
 const handleCourseInfo = async (
   interaction: ChatInputCommandInteraction,
-  course: string | null
+  course: string | null,
 ) => {
   const information = getInformation().find(
-    (info) => info.course.toLowerCase() === course?.toLowerCase()
+    (info) => info.course.toLowerCase() === course?.toLowerCase(),
   );
 
   if (information === undefined) {
-    await interaction.editReply(errors.courseNotFound);
+    await interaction.editReply(commandErrors.courseNotFound);
     return;
   }
 
   const embed = await getCourseInfoEmbed(information);
-  await interaction.editReply({ embeds: [embed] });
+  await interaction.editReply({
+    embeds: [embed],
+  });
 };
 
 const handleCourseSummary = async (
   interaction: ChatInputCommandInteraction,
-  course: string | null
+  course: string | null,
 ) => {
   const embeds = await getCourseSummaryEmbed(course);
-  await interaction.editReply({ embeds });
+  await interaction.editReply({
+    embeds,
+  });
 };
 
 const handleCourseToggle = async (
   interaction: ChatInputCommandInteraction,
-  course: string | null
+  course: string | null,
 ) => {
   if (interaction.guild === null) {
-    await interaction.editReply(errors.serverOnlyCommand);
+    await interaction.editReply(commandErrors.serverOnlyCommand);
     return;
   }
 
@@ -237,23 +253,27 @@ const handleCourseToggle = async (
   const role = getCourseRoleByCourseName(interaction.guild, course);
 
   if (role === undefined) {
-    await interaction.editReply(errors.courseNotFound);
+    await interaction.editReply(commandErrors.courseNotFound);
     return;
   }
 
   if (member.roles.cache.has(role.id)) {
     await member.roles.remove(role);
     await interaction.editReply({
-      allowedMentions: { parse: [] },
-      content: `Го отстранивте предметот ${roleMention(role.id)}.`,
+      allowedMentions: {
+        parse: [],
+      },
+      content: commandResponseFunctions.courseRemoved(role.id),
     });
     return;
   }
 
   await member.roles.add(role);
   await interaction.editReply({
-    allowedMentions: { parse: [] },
-    content: `Го земавте предметот ${roleMention(role.id)}.`,
+    allowedMentions: {
+      parse: [],
+    },
+    content: commandResponseFunctions.courseAdded(role.id),
   });
 };
 
@@ -276,7 +296,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   if (Object.keys(courseHandlers).includes(subcommand)) {
     await courseHandlers[subcommand as keyof typeof courseHandlers](
       interaction,
-      course ?? courseRole
+      course ?? courseRole,
     );
   }
 };

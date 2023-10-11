@@ -1,6 +1,7 @@
 import { getConfigProperty } from "../utils/config.js";
 import { addExperience } from "../utils/experience.js";
 import { logger } from "../utils/logger.js";
+import { logErrorFunctions } from "../utils/strings.js";
 import { type ClientEvents, Events, type Message } from "discord.js";
 
 export const name = Events.MessageCreate;
@@ -18,9 +19,7 @@ const crosspost = async (message: Message) => {
   try {
     await message.crosspost();
   } catch (error) {
-    logger.error(
-      `Failed to crosspost message by ${message.author.tag}\n${error}`
-    );
+    logger.error(logErrorFunctions.crosspostError(message.channel.id, error));
   }
 };
 

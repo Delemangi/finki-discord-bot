@@ -5,4 +5,6 @@ export type CoursePrerequisites = {
   course: string;
   prerequisite: string;
   semester: number;
-} & { [K in ProgramShorthand]: CourseType };
+} & {
+  [K in ProgramShorthand]: CourseType;
+};

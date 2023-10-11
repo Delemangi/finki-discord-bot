@@ -1,5 +1,9 @@
 import { createReminder } from "../data/Reminder.js";
-import { commandDescriptions } from "../utils/strings.js";
+import {
+  commandDescriptions,
+  commandErrors,
+  commandResponseFunctions,
+} from "../utils/strings.js";
 import { parseDate } from "chrono-node";
 import {
   type ChatInputCommandInteraction,
@@ -13,10 +17,13 @@ export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription(commandDescriptions[name])
   .addStringOption((option) =>
-    option.setName("description").setDescription("Опис").setRequired(true)
+    option.setName("description").setDescription("Опис").setRequired(true),
   )
   .addStringOption((option) =>
-    option.setName("when").setDescription("Датум и/или време").setRequired(true)
+    option
+      .setName("when")
+      .setDescription("Датум и/или време")
+      .setRequired(true),
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
@@ -26,7 +33,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const date = parseDate(when);
 
   if (date === null || date === undefined) {
-    await interaction.editReply("Невалидна дата или време.");
+    await interaction.editReply(commandErrors.invalidDateTime);
   }
 
   await createReminder({
@@ -38,5 +45,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     userId: interaction.user.id,
   });
 
-  await interaction.editReply(`Креиран е потсетник за ${time(date, "F")}.`);
+  await interaction.editReply(
+    commandResponseFunctions.reminderCreated(time(date, "F"), description),
+  );
 };

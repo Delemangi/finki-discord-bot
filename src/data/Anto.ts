@@ -1,4 +1,5 @@
 import { logger } from "../utils/logger.js";
+import { databaseErrorFunctions } from "../utils/strings.js";
 import { database } from "./database.js";
 import { type Prisma } from "@prisma/client";
 
@@ -12,7 +13,7 @@ export const createAnto = async (anto?: Prisma.AntoCreateInput) => {
       data: anto,
     });
   } catch (error) {
-    logger.error(`Failed creating anto\n${error}`);
+    logger.error(databaseErrorFunctions.createAntoError(error));
     return null;
   }
 };
@@ -29,7 +30,7 @@ export const deleteAnto = async (anto?: string) => {
       },
     });
   } catch (error) {
-    logger.error(`Failed deleting anto\n${error}`);
+    logger.error(databaseErrorFunctions.deleteAntoError(error));
     return null;
   }
 };
@@ -43,7 +44,7 @@ export const getRandomAnto = async () => {
       skip,
     });
   } catch (error) {
-    logger.error(`Failed getting random anto\n${error}`);
+    logger.error(databaseErrorFunctions.getRandomAntoError(error));
     return null;
   }
 };
@@ -58,7 +59,7 @@ export const createAntos = async (antos?: Prisma.AntoCreateManyInput[]) => {
       data: antos,
     });
   } catch (error) {
-    logger.error(`Failed creating antos\n${error}`);
+    logger.error(databaseErrorFunctions.createAntosError(error));
     return null;
   }
 };

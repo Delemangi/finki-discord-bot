@@ -1,4 +1,5 @@
 import { type BotConfig } from "../types/BotConfig.js";
+import { logger } from "../utils/logger.js";
 import { database } from "./database.js";
 
 export const getConfig = async () => {
@@ -10,9 +11,21 @@ export const setConfig = async (config?: BotConfig) => {
     return null;
   }
 
-  return await database.config.upsert({
-    create: { name: "config", value: config },
-    update: { value: config },
-    where: { name: "config" },
-  });
+  try {
+    return await database.config.upsert({
+      create: {
+        name: "config",
+        value: config,
+      },
+      update: {
+        value: config,
+      },
+      where: {
+        name: "config",
+      },
+    });
+  } catch (error) {
+    logger.error(`Failed setting config\n${error}`);
+    return null;
+  }
 };

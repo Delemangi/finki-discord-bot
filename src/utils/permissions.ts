@@ -55,7 +55,7 @@ const commandPermissions: {
   },
   "vip bans": {
     permissions: [],
-    roles: ["vip"],
+    roles: ["admin", "vip"],
   },
   "vip delete": {
     permissions: [PermissionsBitField.Flags.Administrator],
@@ -67,11 +67,11 @@ const commandPermissions: {
   },
   "vip invited": {
     permissions: [],
-    roles: ["vip"],
+    roles: ["admin", "vip"],
   },
   "vip list": {
     permissions: [],
-    roles: ["vipVoting"],
+    roles: ["admin", "vip"],
   },
   "vip override": {
     permissions: [PermissionsBitField.Flags.Administrator],
@@ -96,7 +96,7 @@ const commandPermissions: {
 };
 
 const getCommandPermission = async (
-  command: string
+  command: string,
 ): Promise<[bigint[], string[]]> => {
   const topCommand = command.split(" ")[0];
 
@@ -105,8 +105,8 @@ const getCommandPermission = async (
       commandPermissions[command]?.permissions ?? [],
       await Promise.all(
         commandPermissions[command]?.roles.map(
-          async (role) => await getRoleProperty(role)
-        ) ?? []
+          async (role) => await getRoleProperty(role),
+        ) ?? [],
       ),
     ];
   } else if (
@@ -117,8 +117,8 @@ const getCommandPermission = async (
       commandPermissions[topCommand]?.permissions ?? [],
       await Promise.all(
         commandPermissions[topCommand]?.roles.map(
-          async (role) => await getRoleProperty(role)
-        ) ?? []
+          async (role) => await getRoleProperty(role),
+        ) ?? [],
       ),
     ];
   } else {
@@ -129,7 +129,7 @@ const getCommandPermission = async (
 // Check whether the member has all the command permissions, or any of the roles
 export const hasCommandPermission = async (
   member: GuildMember | null,
-  command: string
+  command: string,
 ) => {
   if (member?.permissions.has(PermissionsBitField.Flags.Administrator)) {
     return true;
@@ -141,16 +141,14 @@ export const hasCommandPermission = async (
     return true;
   }
 
-  const tidiedRoles = roles.filter(Boolean) as string[];
-
   return (
     (permissions.length !== 0 && member?.permissions.has(permissions)) ||
-    (tidiedRoles.length !== 0 && member?.roles.cache.hasAny(...tidiedRoles))
+    (roles.length !== 0 && member?.roles.cache.hasAny(...roles))
   );
 };
 
 export const getCommandsWithPermission = (member: GuildMember | null) => {
   return Object.keys(commandDescriptions).filter(
-    async (command) => await hasCommandPermission(member, command)
+    async (command) => await hasCommandPermission(member, command),
   );
 };

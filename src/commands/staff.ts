@@ -1,6 +1,6 @@
 import { getStaffEmbed } from "../utils/components.js";
 import { getStaff } from "../utils/config.js";
-import { commandDescriptions } from "../utils/strings.js";
+import { commandDescriptions, commandErrors } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -16,20 +16,22 @@ export const data = new SlashCommandBuilder()
       .setName("professor")
       .setDescription("Професор")
       .setRequired(true)
-      .setAutocomplete(true)
+      .setAutocomplete(true),
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const professor = interaction.options.getString("professor", true);
   const information = getStaff().find(
-    (staff) => staff.name.toLowerCase() === professor.toLowerCase()
+    (staff) => staff.name.toLowerCase() === professor.toLowerCase(),
   );
 
   if (information === undefined) {
-    await interaction.editReply("Не постои таков професор.");
+    await interaction.editReply(commandErrors.staffNotFound);
     return;
   }
 
   const embed = await getStaffEmbed(information);
-  await interaction.editReply({ embeds: [embed] });
+  await interaction.editReply({
+    embeds: [embed],
+  });
 };
