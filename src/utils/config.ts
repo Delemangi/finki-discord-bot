@@ -117,9 +117,9 @@ const professors: CourseStaff[] = JSON.parse(
 const roles: RoleConfig = JSON.parse(
   readFileSync("./config/roles.json", "utf8"),
 );
-const sessions: {
-  [index: string]: string;
-} = JSON.parse(readFileSync("./config/sessions.json", "utf8"));
+const sessions: Record<string, string> = JSON.parse(
+  readFileSync("./config/sessions.json", "utf8"),
+);
 const staff: Staff[] = JSON.parse(readFileSync("./config/staff.json", "utf8"));
 
 export const getClassrooms = () => {

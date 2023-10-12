@@ -93,7 +93,7 @@ export const decidePoll = async (pollId: string, interaction: Interaction) => {
     return;
   }
 
-  const votes: { [index: string]: number } = {};
+  const votes: Record<string, number> = {};
   const totalVoters = await getMembersWithRoles(
     interaction.guild,
     ...poll.roles,

@@ -86,7 +86,7 @@ const transform = (word: string) => {
 };
 
 export const transformOptions = (options: string[]) => {
-  const results: { [index: string]: string } = {};
+  const results: Record<string, string> = {};
 
   for (const option of options) {
     for (const transformedOption of transform(option)) {
