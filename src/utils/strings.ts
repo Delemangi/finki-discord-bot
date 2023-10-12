@@ -365,6 +365,7 @@ export const commandErrors = {
   antoNotFound: "Анто фактот не постои.",
   antosCreationFailed: "Креирањето на Анто фактите беше неуспешно.",
   buttonNoPermission: "Командата не е ваша.",
+  classroomNotFound: "Просторијата не постои.",
   commandError:
     "Настана грешка при извршување на командата. Обидете се повторно, или пријавете ја грешката.",
   commandNoPermission: "Немате дозвола да ја извршите командата.",

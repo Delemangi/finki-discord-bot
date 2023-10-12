@@ -2,6 +2,7 @@ import { getClassroomEmbed } from "../utils/components.js";
 import { getClassrooms } from "../utils/config.js";
 import {
   commandDescriptions,
+  commandErrors,
   commandResponseFunctions,
 } from "../utils/strings.js";
 import {
@@ -24,36 +25,28 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const classroom = interaction.options.getString("classroom", true);
-  const [classroomName, classroomLocation] = classroom.split(" ");
-  const information = getClassrooms().find(
+  const [classroomName] = classroom.split(" ");
+  const classrooms = getClassrooms().filter(
     (cl) =>
-      cl.classroom.toString().toLowerCase() === classroomName?.toLowerCase() &&
-      cl.location.toString().toLowerCase() ===
-        classroomLocation?.slice(1, -1).toLowerCase(),
+      cl.classroom.toString().toLowerCase() === classroomName?.toLowerCase(),
   );
 
-  if (information === undefined) {
-    const classrooms = getClassrooms().filter(
-      (cl) =>
-        cl.classroom.toString().toLowerCase() === classroomName?.toLowerCase(),
-    );
-
-    const embeds = await Promise.all(
-      classrooms.map(async (cl) => await getClassroomEmbed(cl)),
-    );
+  if (classrooms.length === 0 || classroomName === undefined) {
     await interaction.editReply({
-      embeds,
-      ...(embeds.length > 1
-        ? {
-            content: commandResponseFunctions.multipleClassrooms(classroom),
-          }
-        : {}),
+      content: commandErrors.classroomNotFound,
     });
     return;
   }
 
-  const embed = await getClassroomEmbed(information);
+  const embeds = await Promise.all(
+    classrooms.map(async (cl) => await getClassroomEmbed(cl)),
+  );
   await interaction.editReply({
-    embeds: [embed],
+    embeds,
+    ...(embeds.length > 1
+      ? {
+          content: commandResponseFunctions.multipleClassrooms(classroomName),
+        }
+      : {}),
   });
 };
