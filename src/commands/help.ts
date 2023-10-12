@@ -27,6 +27,11 @@ export const data = new SlashCommandBuilder()
   .setDescription(commandDescriptions[name]);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
+  if (interaction.guild === null || interaction.member === null) {
+    await interaction.editReply(commandErrors.serverOnlyCommand);
+    return;
+  }
+
   await client.application?.commands.fetch();
 
   const commandsPerPage = 8;
