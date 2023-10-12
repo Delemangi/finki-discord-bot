@@ -45,6 +45,7 @@ const defaultConfig: BotConfig = {
     parent: "1060626238760300685",
     position: 0,
   },
+  vipPause: false,
 };
 
 const databaseConfig = await getConfig();

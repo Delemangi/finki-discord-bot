@@ -23,4 +23,5 @@ export type BotConfig = {
     parent: string;
     position: number;
   };
+  vipPause: boolean;
 };

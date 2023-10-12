@@ -36,6 +36,7 @@ import {
 } from "./components.js";
 import {
   getClassrooms,
+  getConfigProperty,
   getCourses,
   getFromRoleConfig,
   getRoleProperty,
@@ -847,6 +848,15 @@ const handleVipButton = async (
   if (existingPoll !== null) {
     const message = await interaction.reply({
       content: vipStrings.vipRequestActive,
+      ephemeral: true,
+    });
+    void deleteResponse(message);
+    return;
+  }
+
+  if (await getConfigProperty("vipPause")) {
+    const message = await interaction.reply({
+      content: vipStrings.vipRequestPaused,
       ephemeral: true,
     });
     void deleteResponse(message);
