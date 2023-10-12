@@ -726,13 +726,7 @@ export const getCourseInfoEmbed = async (information: CourseInformation) => {
     .setTimestamp();
 };
 
-export const getCourseSummaryEmbed = async (course: string | null) => {
-  if (course === null) {
-    return [
-      new EmbedBuilder().setDescription(embedMessages.noCourseInformation),
-    ];
-  }
-
+export const getCourseSummaryEmbed = async (course: string) => {
   const info = getInformation().find(
     (item) => item.course.toLowerCase() === course?.toLowerCase(),
   );
@@ -974,16 +968,7 @@ export const getStaffEmbed = async (information: Staff) => {
     .setTimestamp();
 };
 
-export const getStudentInfoEmbed = async (
-  member: GuildMember | null | undefined,
-) => {
-  if (member === null || member === undefined) {
-    return new EmbedBuilder()
-      .setColor(await getConfigProperty("color"))
-      .setTitle(embedMessages.studentInformation)
-      .setDescription(embedMessages.studentNotFound);
-  }
-
+export const getStudentInfoEmbed = async (member: GuildMember) => {
   const yearRole = member.roles.cache.find((role) =>
     getFromRoleConfig("year").includes(role.name),
   );
@@ -1200,7 +1185,7 @@ export const getExperienceEmbed = async (experience: Experience) => {
 
 export const getExperienceLeaderboardFirstPageEmbed = async (
   experience: Experience[],
-  all: number | null,
+  all: number,
   perPage: number = 8,
 ) => {
   const total = experience.length;
@@ -1214,15 +1199,18 @@ export const getExperienceLeaderboardFirstPageEmbed = async (
           name: "\u200B",
           value: `${index + 1}. ${await getUsername(exp.userId)} (${userMention(
             exp.userId,
-          )}): Ниво: ${exp.level} | Поени: ${exp.experience}`,
+          )}): ${shortStrings.level}: ${exp.level} | ${shortStrings.points}: ${
+            exp.experience
+          }`,
         })),
       ),
     )
     .setFooter({
-      text: `Страна: 1 / ${Math.max(
+      text: paginationStringFunctions.membersPage(
         1,
-        Math.ceil(total / perPage),
-      )}  •  Членови: ${total} / ${all ?? "-"}`,
+        Math.max(1, Math.ceil(total / perPage)),
+        all,
+      ),
     })
     .setTimestamp();
 };
@@ -1230,7 +1218,7 @@ export const getExperienceLeaderboardFirstPageEmbed = async (
 export const getExperienceLeaderboardNextPageEmbed = async (
   experience: Experience[],
   page: number,
-  all: number | null,
+  all: number,
   perPage: number = 8,
 ) => {
   const total = experience.length;
@@ -1246,17 +1234,18 @@ export const getExperienceLeaderboardNextPageEmbed = async (
             name: "\u200B",
             value: `${perPage * page + index + 1}. ${await getUsername(
               exp.userId,
-            )} (${userMention(exp.userId)}): Ниво: ${exp.level} | Поени: ${
-              exp.experience
-            }`,
+            )} (${userMention(exp.userId)}): ${shortStrings.level}: ${
+              exp.level
+            } | ${shortStrings.points}: ${exp.experience}`,
           })),
       ),
     )
     .setFooter({
-      text: `Страна: ${page + 1} / ${Math.max(
-        1,
-        Math.ceil(total / perPage),
-      )}  •  Членови: ${total} / ${all ?? "-"}`,
+      text: paginationStringFunctions.membersPage(
+        page + 1,
+        Math.max(1, Math.ceil(total / perPage)),
+        all,
+      ),
     })
     .setTimestamp();
 };
@@ -1371,7 +1360,7 @@ export const getListLinksEmbed = async (links: Link[]) => {
 // Help
 
 export const getHelpFirstPageEmbed = async (
-  member: GuildMember | null,
+  member: GuildMember,
   commandsPerPage: number = 8,
 ) => {
   const commands = getCommandsWithPermission(member);
@@ -1397,7 +1386,7 @@ export const getHelpFirstPageEmbed = async (
 };
 
 export const getHelpNextPageEmbed = async (
-  member: GuildMember | null,
+  member: GuildMember,
   page: number,
   commandsPerPage: number = 8,
 ) => {

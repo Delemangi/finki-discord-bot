@@ -416,6 +416,7 @@ export const commandErrors = {
   userAdmin: "Корисникот е администратор.",
   userBot: "Корисникот е бот.",
   userFullVipMember: "Корисникот е полноправен член на ВИП.",
+  userNotFound: "Корисникот не постои.",
   userNotMember: "Корисникот не е член на серверот.",
   userNotVipBanned: "Корисникот не е баниран од ВИП.",
   userNotVipInvited: "Корисникот не е поканет во ВИП.",
@@ -875,6 +876,7 @@ export const shortStrings = {
   open: "Отворено",
   options: "Опции",
   other: "Друго",
+  points: "Поени",
   poll: "Анкета",
   pollResults: "Резултати од анкетата",
   polls: "Анкети",
@@ -901,6 +903,9 @@ export const shortStrings = {
 export const paginationStringFunctions = {
   commandPage: (page: number, pages: number, total: number) =>
     `Страна: ${page} / ${pages}  •  Команди: ${total}`,
+
+  membersPage: (page: number, pages: number, total: number) =>
+    `Страна: ${page} / ${pages}  •  Членови: ${total}`,
 
   pollPage: (page: number, pages: number, total: number) =>
     `Страна: ${page} / ${pages}  •  Анкети: ${total}`,

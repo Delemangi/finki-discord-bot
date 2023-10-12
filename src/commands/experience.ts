@@ -111,6 +111,12 @@ const handleExperienceLeaderboard = async (
   const perPage = 8;
   const pages = Math.ceil(experience.length / perPage);
   const total = await getExperienceCount();
+
+  if (total === null) {
+    await interaction.editReply(commandErrors.dataFetchFailed);
+    return;
+  }
+
   const embed = await getExperienceLeaderboardFirstPageEmbed(experience, total);
   const components = [
     pages === 0 || pages === 1

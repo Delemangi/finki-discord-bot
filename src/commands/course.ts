@@ -234,6 +234,11 @@ const handleCourseSummary = async (
   interaction: ChatInputCommandInteraction,
   course: string | null,
 ) => {
+  if (course === null) {
+    await interaction.editReply(commandErrors.courseNotFound);
+    return;
+  }
+
   const embeds = await getCourseSummaryEmbed(course);
   await interaction.editReply({
     embeds,

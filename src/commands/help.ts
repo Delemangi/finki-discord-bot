@@ -31,11 +31,11 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   const commandsPerPage = 8;
   const pages = Math.ceil(
-    getCommandsWithPermission(interaction.member as GuildMember | null).length /
+    getCommandsWithPermission(interaction.member as GuildMember).length /
       commandsPerPage,
   );
   const embed = await getHelpFirstPageEmbed(
-    interaction.member as GuildMember | null,
+    interaction.member as GuildMember,
     commandsPerPage,
   );
   const components = [
@@ -98,7 +98,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     }
 
     const nextEmbed = await getHelpNextPageEmbed(
-      interaction.member as GuildMember | null,
+      interaction.member as GuildMember,
       page,
       commandsPerPage,
     );
