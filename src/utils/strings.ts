@@ -337,7 +337,7 @@ export const commandResponseFunctions = {
     `Го ${added ? "земавте" : "отстранивте"} смерот ${roleMention(roleId)}.`,
 
   reminderCreated: (timestamp: string, message: string) =>
-    `Креиравте потсетник во ${timestamp} за ${inlineCode(message)}`,
+    `Креиравте потсетник во ${timestamp} за ${inlineCode(message)}.`,
 
   seePollChanges: (command: string) =>
     `Користете ${command} за да ги видите промените.`,
