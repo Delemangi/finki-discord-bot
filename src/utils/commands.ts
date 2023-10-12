@@ -9,11 +9,13 @@ import { readdirSync } from "node:fs";
 const commands = new Collection<string, Command>();
 
 const refreshCommands = async () => {
+  const commandFiles = readdirSync("./dist/commands").filter((file) =>
+    file.endsWith(".js"),
+  );
+
   commands.clear();
 
-  for (const file of readdirSync("./dist/commands").filter((fi) =>
-    fi.endsWith(".js"),
-  )) {
+  for (const file of commandFiles) {
     const command: Command = await import(`../commands/${file}`);
     commands.set(command.data.name, command);
   }

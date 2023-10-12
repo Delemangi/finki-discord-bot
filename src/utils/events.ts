@@ -4,9 +4,11 @@ import { type ClientEvents } from "discord.js";
 import { readdirSync } from "node:fs";
 
 export const attachEventListeners = async () => {
-  for (const file of readdirSync("./dist/events").filter((fi) =>
-    fi.endsWith(".js"),
-  )) {
+  const eventFiles = readdirSync("./dist/events").filter((file) =>
+    file.endsWith(".js"),
+  );
+
+  for (const file of eventFiles) {
     const event: ClientEvent<keyof ClientEvents> = await import(
       `../events/${file}`
     );
