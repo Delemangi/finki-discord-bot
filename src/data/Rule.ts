@@ -8,7 +8,7 @@ export const getRules = async () => {
     return await database.rule.findMany();
   } catch (error) {
     logger.error(databaseErrorFunctions.getRulesError(error));
-    return [];
+    return null;
   }
 };
 

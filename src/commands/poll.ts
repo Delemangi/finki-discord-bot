@@ -506,7 +506,13 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
 
   const polls = all
     ? await getPolls()
-    : (await getPolls()).filter((poll) => !poll.done);
+    : (await getPolls())?.filter((poll) => !poll.done);
+
+  if (polls === null || polls === undefined) {
+    await interaction.editReply(commandErrors.pollsFetchFailed);
+    return;
+  }
+
   const pollsPerPage = 8;
   const pages = Math.ceil(polls.length / pollsPerPage);
   const embed = await getPollListFirstPageEmbed(polls, all);

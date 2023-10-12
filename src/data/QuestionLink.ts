@@ -24,7 +24,7 @@ export const createQuestionLinks = async (
   links?: Prisma.QuestionLinkCreateManyInput[],
 ) => {
   if (links === undefined) {
-    return [];
+    return null;
   }
 
   try {
@@ -33,7 +33,7 @@ export const createQuestionLinks = async (
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.createQuestionLinksError(error));
-    return [];
+    return null;
   }
 };
 

@@ -16,7 +16,7 @@ export const getQuestions = async () => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getQuestionsError(error));
-    return [];
+    return null;
   }
 };
 
@@ -29,7 +29,7 @@ export const getQuestionNames = async () => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getQuestionNamesError(error));
-    return [];
+    return null;
   }
 };
 

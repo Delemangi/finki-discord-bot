@@ -46,7 +46,7 @@ export const getInfoMessages = async () => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getInfoMessagesError(error));
-    return [];
+    return null;
   }
 };
 

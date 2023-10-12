@@ -58,7 +58,7 @@ export const getPolls = async () => {
     return await database.poll.findMany();
   } catch (error) {
     logger.error(databaseErrorFunctions.getPollsError(error));
-    return [];
+    return null;
   }
 };
 

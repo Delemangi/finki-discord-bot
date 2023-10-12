@@ -12,7 +12,7 @@ export const getLinks = async () => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getLinksError(error));
-    return [];
+    return null;
   }
 };
 
@@ -25,7 +25,7 @@ export const getLinkNames = async () => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getLinkNamesError(error));
-    return [];
+    return null;
   }
 };
 

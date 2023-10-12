@@ -8,7 +8,7 @@ export const getCompanies = async () => {
     return await database.company.findMany();
   } catch (error) {
     logger.error(databaseErrorFunctions.getCompaniesError(error));
-    return [];
+    return null;
   }
 };
 

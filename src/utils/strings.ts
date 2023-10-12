@@ -394,6 +394,7 @@ export const commandErrors = {
   linkCreationFailed: "Креирањето на линкот беше неуспешно.",
   linkNotFound: "Линкот не постои.",
   linkSendFailed: "Испраќањето на линкот беше неуспешно.",
+  linksFetchFailed: "Превземањето на линковите беше неуспешно.",
   noAnto: "Анто фактите не се креирани.",
   oathNoPermission: "Заклетвата не е ваша.",
   optionNotFound: "Опцијата не постои.",
@@ -403,7 +404,11 @@ export const commandErrors = {
   pollNoPermission: "Анкетата не е ваша.",
   pollNotFound: "Анкетата не постои.",
   pollOrOptionNotFound: "Анкетата или опцијата не постои.",
+  pollsFetchFailed: "Превземањето на анкетите беше неуспешно.",
   pollTooManyOptions: "Анкетата има премногу опции.",
+  pollVotesFetchFailed: "Превземањето на гласовите беше неуспешно.",
+  questionsFetchFailed: "Превземањето на прашањата беше неуспешно.",
+  rulesFetchFailed: "Превземањето на правилата беше неуспешно.",
   scriptNotExecuted: "Скриптата не е извршена.",
   serverOnlyCommand: "Командата се повикува само во серверот.",
   sessionNotFound: "Сесијата не постои.",
@@ -419,6 +424,8 @@ export const commandErrors = {
   userVipInvited: "Корисникот е поканет во ВИП.",
   userVipMember: "Корисникот е член на ВИП.",
   userVipPending: "Постои предлог за овој корисник.",
+  vipBansFetchFailed: "Превземањето на забраните беше неуспешно.",
+  vipPollsFetchFailed: "Превземањето на ВИП анкетите беше неуспешно.",
 };
 
 export const commandErrorFunctions = {
@@ -880,6 +887,7 @@ export const shortStrings = {
   result: "Резултат",
   rightToVote: "Право на глас",
   roles: "Улоги",
+  rules: "Правила",
   type: "Тип",
   unknown: "?",
   votersFor: "Гласачи за",

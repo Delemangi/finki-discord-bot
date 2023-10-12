@@ -1,11 +1,8 @@
-import { getLinks } from "../data/Link.js";
 import { getMostPopularOptionByPollId } from "../data/PollOption.js";
 import {
   getPollVotesByOptionId,
   getPollVotesByPollId,
 } from "../data/PollVote.js";
-import { getQuestions } from "../data/Question.js";
-import { getRules } from "../data/Rule.js";
 import { type Classroom } from "../types/Classroom.js";
 import { type CourseInformation } from "../types/CourseInformation.js";
 import { type CourseParticipants } from "../types/CourseParticipants.js";
@@ -57,6 +54,7 @@ import {
   type Poll,
   type PollVote,
   type Question,
+  type Rule,
   type VipPoll,
 } from "@prisma/client";
 import {
@@ -540,13 +538,13 @@ export const getYearsComponents = () => {
   return components;
 };
 
-export const getRulesEmbed = async () => {
+export const getRulesEmbed = async (rules: Rule[]) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle("Правила")
+    .setTitle(shortStrings.rules)
     .setThumbnail(await getConfigProperty("logo"))
     .setDescription(
-      `${(await getRules())
+      `${rules
         .map(
           (value, index) =>
             `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
@@ -1343,14 +1341,14 @@ export const getLinkComponents = (link: Link) => {
   ];
 };
 
-export const getListQuestionsEmbed = async () => {
+export const getListQuestionsEmbed = async (questions: Question[]) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
     .setTitle(shortStrings.questions)
     .setDescription(
-      `${embedMessageFunctions.allQuestions(commandMention("faq"))}\n\n${(
-        await getQuestions()
-      )
+      `${embedMessageFunctions.allQuestions(
+        commandMention("faq"),
+      )}\n\n${questions
         .map(
           (question, index) =>
             `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
@@ -1362,14 +1360,12 @@ export const getListQuestionsEmbed = async () => {
     .setTimestamp();
 };
 
-export const getListLinksEmbed = async () => {
+export const getListLinksEmbed = async (links: Link[]) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
     .setTitle(shortStrings.links)
     .setDescription(
-      `${embedMessageFunctions.allLinks(commandMention("link"))}\n\n${(
-        await getLinks()
-      )
+      `${embedMessageFunctions.allLinks(commandMention("link"))}\n\n${links
         .map(
           (link, index) =>
             `${inlineCode((index + 1).toString().padStart(2, "0"))} [${

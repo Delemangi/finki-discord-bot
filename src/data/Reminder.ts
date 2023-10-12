@@ -8,7 +8,7 @@ export const getReminders = async () => {
     return await database.reminder.findMany();
   } catch (error) {
     logger.error(databaseErrorFunctions.getRemindersError(error));
-    return [];
+    return null;
   }
 };
 

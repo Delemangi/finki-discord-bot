@@ -1,8 +1,10 @@
+import { getLinks } from "../data/Link.js";
+import { getQuestions } from "../data/Question.js";
 import {
   getListLinksEmbed,
   getListQuestionsEmbed,
 } from "../utils/components.js";
-import { commandDescriptions } from "../utils/strings.js";
+import { commandDescriptions, commandErrors } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -25,14 +27,32 @@ export const data = new SlashCommandBuilder()
 const handleListQuestions = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const embed = await getListQuestionsEmbed();
+  const questions = await getQuestions();
+
+  if (questions === null) {
+    await interaction.editReply({
+      content: commandErrors.questionsFetchFailed,
+    });
+    return;
+  }
+
+  const embed = await getListQuestionsEmbed(questions);
   await interaction.editReply({
     embeds: [embed],
   });
 };
 
 const handleListLinks = async (interaction: ChatInputCommandInteraction) => {
-  const embed = await getListLinksEmbed();
+  const links = await getLinks();
+
+  if (links === null) {
+    await interaction.editReply({
+      content: commandErrors.linksFetchFailed,
+    });
+    return;
+  }
+
+  const embed = await getListLinksEmbed(links);
   await interaction.editReply({
     embeds: [embed],
   });

@@ -556,6 +556,10 @@ const handleVote = async (
   );
   let replyMessage;
 
+  if (votes === null) {
+    return;
+  }
+
   if (poll.multiple) {
     if (
       votes.length === 0 ||
@@ -960,12 +964,16 @@ const handleCourseRoleAutocomplete = async (
 const handleQuestionAutocomplete = async (
   interaction: AutocompleteInteraction,
 ) => {
+  const questionNames = await getQuestionNames();
+
+  if (questionNames === null) {
+    return;
+  }
+
   try {
     await interaction.respond(
       createOptions(
-        Object.entries(
-          transformOptions((await getQuestionNames()).map(({ name }) => name)),
-        ),
+        Object.entries(transformOptions(questionNames.map(({ name }) => name))),
         interaction.options.getFocused(),
       ),
     );
@@ -977,12 +985,16 @@ const handleQuestionAutocomplete = async (
 };
 
 const handleLinkAutocomplete = async (interaction: AutocompleteInteraction) => {
+  const linkNames = await getLinkNames();
+
+  if (linkNames === null) {
+    return;
+  }
+
   try {
     await interaction.respond(
       createOptions(
-        Object.entries(
-          transformOptions((await getLinkNames()).map(({ name }) => name)),
-        ),
+        Object.entries(transformOptions(linkNames.map(({ name }) => name))),
         interaction.options.getFocused(),
       ),
     );
@@ -1040,12 +1052,16 @@ export const handleClassroomAutocomplete = async (
 export const handleRuleAutocomplete = async (
   interaction: AutocompleteInteraction,
 ) => {
+  const rules = await getRules();
+
+  if (rules === null) {
+    return;
+  }
+
   try {
     await interaction.respond(
       createOptions(
-        Object.entries(
-          transformOptions((await getRules()).map(({ rule }) => rule)),
-        ),
+        Object.entries(transformOptions(rules.map(({ rule }) => rule))),
         interaction.options.getFocused(),
       ),
     );
@@ -1059,12 +1075,16 @@ export const handleRuleAutocomplete = async (
 export const handleCompanyAutocomplete = async (
   interaction: AutocompleteInteraction,
 ) => {
+  const companies = await getCompanies();
+
+  if (companies === null) {
+    return;
+  }
+
   try {
     await interaction.respond(
       createOptions(
-        Object.entries(
-          transformOptions((await getCompanies()).map(({ name }) => name)),
-        ),
+        Object.entries(transformOptions(companies.map(({ name }) => name))),
         interaction.options.getFocused(),
       ),
     );

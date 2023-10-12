@@ -39,6 +39,11 @@ export const remind = async () => {
     try {
       const reminders = await getReminders();
 
+      if (reminders === null) {
+        await setTimeout(15_000);
+        continue;
+      }
+
       for (const reminder of reminders) {
         if (reminder.timestamp.getTime() <= Date.now()) {
           await remindUser(reminder);

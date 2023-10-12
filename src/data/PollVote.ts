@@ -5,7 +5,7 @@ import { type Prisma } from "@prisma/client";
 
 export const getPollVotesByPollId = async (pollId?: string) => {
   if (pollId === undefined) {
-    return [];
+    return null;
   }
 
   try {
@@ -23,7 +23,7 @@ export const getPollVotesByPollId = async (pollId?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getPollVotesByPollIdError(error));
-    return [];
+    return null;
   }
 };
 
@@ -32,7 +32,7 @@ export const getPollVotesByPollIdAndUserId = async (
   userId?: string,
 ) => {
   if (pollId === undefined || userId === undefined) {
-    return [];
+    return null;
   }
 
   try {
@@ -53,13 +53,13 @@ export const getPollVotesByPollIdAndUserId = async (
     logger.error(
       databaseErrorFunctions.getPollVotesByPollIdAndUserIdError(error),
     );
-    return [];
+    return null;
   }
 };
 
 export const getPollVotesByOptionId = async (optionId?: string) => {
   if (optionId === undefined) {
-    return [];
+    return null;
   }
 
   try {
@@ -75,7 +75,7 @@ export const getPollVotesByOptionId = async (optionId?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getPollVotesByOptionIdError(error));
-    return [];
+    return null;
   }
 };
 

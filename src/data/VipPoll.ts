@@ -112,6 +112,6 @@ export const getVipPolls = async () => {
     return await database.vipPoll.findMany();
   } catch (error) {
     logger.error(databaseErrorFunctions.getVipPollsError(error));
-    return [];
+    return null;
   }
 };

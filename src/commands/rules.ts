@@ -1,5 +1,6 @@
+import { getRules } from "../data/Rule.js";
 import { getRulesEmbed } from "../utils/components.js";
-import { commandDescriptions } from "../utils/strings.js";
+import { commandDescriptions, commandErrors } from "../utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -12,7 +13,16 @@ export const data = new SlashCommandBuilder()
   .setDescription(commandDescriptions[name]);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const embed = await getRulesEmbed();
+  const rules = await getRules();
+
+  if (!rules) {
+    await interaction.editReply({
+      content: commandErrors.rulesFetchFailed,
+    });
+    return;
+  }
+
+  const embed = await getRulesEmbed(rules);
   await interaction.editReply({
     embeds: [embed],
   });

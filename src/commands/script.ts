@@ -1,5 +1,6 @@
 import { getCompanies } from "../data/Company.js";
 import { getInfoMessages } from "../data/InfoMessage.js";
+import { getRules } from "../data/Rule.js";
 import { sendEmbed } from "../utils/channels.js";
 import { getCommands } from "../utils/commands.js";
 import {
@@ -383,7 +384,14 @@ const handleScriptRules = async (interaction: ChatInputCommandInteraction) => {
     await interaction.editReply(commandErrors.invalidChannel);
   }
 
-  const embed = await getRulesEmbed();
+  const rules = await getRules();
+
+  if (rules === null) {
+    await interaction.editReply(commandErrors.scriptNotExecuted);
+    return;
+  }
+
+  const embed = await getRulesEmbed(rules);
   try {
     await (channel as GuildTextBasedChannel).send({
       embeds: [embed],
@@ -430,6 +438,11 @@ const handleScriptInfo = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const infoMessages = await getInfoMessages();
+
+  if (infoMessages === null) {
+    await interaction.editReply(commandErrors.scriptNotExecuted);
+    return;
+  }
 
   for (const message of infoMessages) {
     if (message.type === InfoMessageType.IMAGE) {
@@ -493,7 +506,14 @@ const handleCompaniesForum = async (
     await interaction.editReply(commandErrors.invalidChannel);
   }
 
-  for (const company of await getCompanies()) {
+  const companies = await getCompanies();
+
+  if (companies === null) {
+    await interaction.editReply(commandErrors.scriptNotExecuted);
+    return;
+  }
+
+  for (const company of companies) {
     await (channel as ForumChannel).threads.create({
       message: {
         content: threadMessageFunctions.companyThreadMessage(company.name),

@@ -404,6 +404,12 @@ const handleVipRemaining = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const votes = await getPollVotesByPollId(pollId);
+
+  if (votes === null) {
+    await interaction.editReply(commandErrors.pollVotesFetchFailed);
+    return;
+  }
+
   const voters = votes.map((vote) => vote.userId);
   const allVoters = await getMembersWithRoles(interaction.guild, ...poll.roles);
 
@@ -459,6 +465,12 @@ const handleVipInvite = async (interaction: ChatInputCommandInteraction) => {
 
 const handleVipList = async (interaction: ChatInputCommandInteraction) => {
   const vipPolls = await getVipPolls();
+
+  if (vipPolls === null) {
+    await interaction.editReply(commandErrors.vipPollsFetchFailed);
+    return;
+  }
+
   const pollsPerPage = 8;
   const pages = Math.ceil(vipPolls.length / pollsPerPage);
   const embed = await getVipPollListFirstPageEmbed(vipPolls, pollsPerPage);
@@ -604,6 +616,11 @@ const handleVipBan = async (interaction: ChatInputCommandInteraction) => {
 
 const handleVipBans = async (interaction: ChatInputCommandInteraction) => {
   const vipBans = await getVipBans();
+
+  if (vipBans === null) {
+    await interaction.editReply(commandErrors.vipBansFetchFailed);
+    return;
+  }
 
   if (vipBans.length === 0) {
     await interaction.editReply(commandResponses.noVipBanned);

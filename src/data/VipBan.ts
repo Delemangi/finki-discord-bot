@@ -12,7 +12,7 @@ export const getVipBans = async () => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getVipBansError(error));
-    return [];
+    return null;
   }
 };
 
