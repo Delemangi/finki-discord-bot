@@ -4,6 +4,7 @@ import { type PartialUser } from "../types/PartialUser.js";
 import { type ProgramName } from "../types/ProgramName.js";
 import { type ProgramShorthand } from "../types/ProgramShorthand.js";
 import {
+  bold,
   type ButtonInteraction,
   type ChatInputCommandInteraction,
   codeBlock,
@@ -289,13 +290,27 @@ export const commandResponseFunctions = {
     `Ја ${added ? "земавте" : "отстранивте"} бојата ${roleMention(roleId)}.`,
 
   courseAdded: (roleId: string) =>
-    `Го земавте предметот ${roleMention(roleId)}.`,
+    `Го земавте предметот ${roleMention(roleId)}. ${bold(
+      "НАПОМЕНА",
+    )}: препорачано е да ги земате предметите од делот ${inlineCode(
+      "Channels & Roles",
+    )} најгоре во листата на каналите.`,
 
   courseAddedOrRemoved: (roleId: string, added: boolean) =>
-    `Го ${added ? "земавте" : "отстранивте"} предметот ${roleMention(roleId)}.`,
+    `Го ${added ? "земавте" : "отстранивте"} предметот ${roleMention(
+      roleId,
+    )}. ${bold(
+      "НАПОМЕНА",
+    )}: препорачано е да ги земате предметите од делот ${inlineCode(
+      "Channels & Roles",
+    )} најгоре во листата на каналите.`,
 
   courseRemoved: (roleId: string) =>
-    `Го отстранивте предметот ${roleMention(roleId)}.`,
+    `Го отстранивте предметот ${roleMention(roleId)}. ${bold(
+      "НАПОМЕНА",
+    )}: препорачано е да ги земате предметите од делот ${inlineCode(
+      "Channels & Roles",
+    )} најгоре во листата на каналите.`,
 
   deletingMessages: (count: number | string) => `Се бришат ${count} пораки...`,
 
@@ -305,7 +320,9 @@ export const commandResponseFunctions = {
     )}.`,
 
   multipleClassrooms: (classroom: string) =>
-    `Просторијата ${classroom} постои на повеќе факултети.`,
+    `${bold(
+      "НАПОМЕНА",
+    )}: Просторијата ${classroom} постои на повеќе факултети.`,
 
   notificationAddedOrRemoved: (roleId: string, added: boolean) =>
     `${added ? "земавте" : "отстранивте"} нотификации за ${roleMention(
