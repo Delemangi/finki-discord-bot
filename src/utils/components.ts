@@ -1539,8 +1539,11 @@ export const getPollComponents = (poll: PollWithOptions) => {
 export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
   const votes = (await getPollVotesByPollId(poll.id))?.length ?? 0;
   const voters = await getMembersWithRoles(guild, ...poll.roles);
+  const rawThreshold = voters.length * poll.threshold;
+  const threshold = Number.isInteger(rawThreshold)
+    ? rawThreshold + 1
+    : Math.ceil(rawThreshold);
   const turnout = `(${((votes / voters.length) * 100).toFixed(2)}%)`;
-  const threshold = Math.ceil(poll.threshold * voters.length);
 
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
@@ -1584,9 +1587,7 @@ export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
       {
         inline: true,
         name: shortStrings.requiredMajority,
-        value: `${poll.threshold * 100}% (${
-          voters.length % 2 === 0 ? threshold + 1 : threshold
-        })`,
+        value: `${poll.threshold * 100}% (${threshold})`,
       },
       {
         inline: true,
