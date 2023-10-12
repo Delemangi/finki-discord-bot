@@ -1198,6 +1198,8 @@ const buttonInteractionHandlers = {
   year: handleYearButton,
 };
 
+const ephemeralResponseButtons = ["addCourses", "removeCourses"];
+
 export const handleButton = async (interaction: ButtonInteraction) => {
   const [command, ...args] = interaction.customId.split(":");
 
@@ -1221,7 +1223,7 @@ export const handleButton = async (interaction: ButtonInteraction) => {
     return;
   }
 
-  if (command === "removeCourses" || command === "addCourses") {
+  if (ephemeralResponseButtons.includes(command)) {
     try {
       const mess = await interaction.deferReply({
         ephemeral: true,
