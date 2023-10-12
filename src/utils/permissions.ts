@@ -3,12 +3,13 @@ import { getRoleProperty } from "./config.js";
 import { commandDescriptions } from "./strings.js";
 import { type GuildMember, PermissionsBitField } from "discord.js";
 
-const commandPermissions: {
-  [key: string]: {
+const commandPermissions: Record<
+  string,
+  {
     permissions: bigint[];
     roles: Roles[];
-  };
-} = {
+  }
+> = {
   config: {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
