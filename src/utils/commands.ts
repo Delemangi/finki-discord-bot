@@ -21,8 +21,12 @@ const refreshCommands = async () => {
   }
 };
 
+const isCommandsEmpty = () => {
+  return commands.entries().next().done;
+};
+
 export const getCommand = async (command: string) => {
-  if (commands.entries().next().done) {
+  if (isCommandsEmpty()) {
     await refreshCommands();
   }
 
@@ -30,7 +34,7 @@ export const getCommand = async (command: string) => {
 };
 
 export const getCommands = async () => {
-  if (commands.entries().next().done) {
+  if (isCommandsEmpty()) {
     await refreshCommands();
   }
 
