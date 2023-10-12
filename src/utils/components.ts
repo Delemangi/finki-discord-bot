@@ -187,7 +187,7 @@ const fetchMessageUrl = async (
     !interaction.channel.isTextBased() ||
     interaction.channel.isDMBased()
   ) {
-    return {};
+    return null;
   }
 
   try {
@@ -196,7 +196,7 @@ const fetchMessageUrl = async (
     };
   } catch (error) {
     logger.warn(logErrorFunctions.messageUrlFetchError(interaction.id, error));
-    return {};
+    return null;
   }
 };
 
