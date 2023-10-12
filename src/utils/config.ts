@@ -28,7 +28,6 @@ const defaultConfig: BotConfig = {
   ephemeralReplyTime: 5_000,
   guild: "810997107376914444",
   leveling: true,
-  logo: "https://cdn.discordapp.com/attachments/946729216152576020/1016773768938541106/finki-logo.png",
   roles: {
     admin: "",
     booster: "",

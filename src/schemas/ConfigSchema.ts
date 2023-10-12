@@ -15,7 +15,6 @@ export const ConfigSchema = z.object({
   ephemeralReplyTime: z.number(),
   guild: z.string(),
   leveling: z.boolean(),
-  logo: z.string(),
   roles: z.object({
     admin: z.string().nullable(),
     booster: z.string().nullable(),

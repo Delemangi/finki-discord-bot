@@ -13,7 +13,6 @@ export type BotConfig = {
   ephemeralReplyTime: number;
   guild: string;
   leveling: boolean;
-  logo: string;
   roles: {
     [K in Roles]: string;
   };

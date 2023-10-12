@@ -245,7 +245,6 @@ export const getColorsEmbed = async (image: string) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
     .setTitle(embedMessages.nameColor)
-    .setThumbnail(await getConfigProperty("logo"))
     .setDescription(embedMessages.chooseNameColor)
     .setFooter({
       text: embedMessages.onlyOneOption,
@@ -285,7 +284,6 @@ export const getCoursesEmbed = async (roleSet: string, roles: string[]) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
     .setTitle(`${roleSet.length > 1 ? "" : embedMessages.semester} ${roleSet}`)
-    .setThumbnail(await getConfigProperty("logo"))
     .setDescription(
       roles
         .map(
@@ -332,7 +330,6 @@ export const getCoursesAddEmbed = async () => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
     .setTitle(embedMessages.massCourseAdd)
-    .setThumbnail(await getConfigProperty("logo"))
     .setDescription(embedMessages.chooseSemesterMassCourseAdd)
     .setFooter({
       text: embedMessages.multipleOptions,
@@ -383,7 +380,6 @@ export const getCoursesRemoveEmbed = async () => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
     .setTitle(embedMessages.massCourseRemove)
-    .setThumbnail(await getConfigProperty("logo"))
     .setDescription(embedMessages.chooseSemesterMassCourseRemove)
     .setFooter({
       text: embedMessages.multipleOptions,
@@ -434,7 +430,6 @@ export const getNotificationsEmbed = async () => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
     .setTitle(embedMessages.notifications)
-    .setThumbnail(await getConfigProperty("logo"))
     .setDescription(embedMessages.chooseNotifications)
     .setFooter({
       text: embedMessages.multipleOptions,
@@ -473,7 +468,6 @@ export const getProgramsEmbed = async () => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
     .setTitle("Смер")
-    .setThumbnail(await getConfigProperty("logo"))
     .setDescription(embedMessages.chooseProgram)
     .setFooter({
       text: embedMessages.onlyOneOption,
@@ -512,7 +506,6 @@ export const getYearsEmbed = async () => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
     .setTitle("Година на студирање")
-    .setThumbnail(await getConfigProperty("logo"))
     .setDescription(embedMessages.chooseYear)
     .setFooter({
       text: embedMessages.onlyOneOption,
@@ -542,7 +535,6 @@ export const getRulesEmbed = async (rules: Rule[]) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
     .setTitle(shortStrings.rules)
-    .setThumbnail(await getConfigProperty("logo"))
     .setDescription(
       `${rules
         .map(
@@ -620,7 +612,6 @@ export const getAboutEmbed = async () => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
     .setTitle(botName)
-    .setThumbnail(await getConfigProperty("logo"))
     .setDescription(
       aboutString(commandMention("help"), commandMention("list questions")),
     )
