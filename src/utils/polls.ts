@@ -1,12 +1,15 @@
-import { createPoll } from "../data/Poll.js";
+import { createPoll, getPollById, updatePoll } from "../data/Poll.js";
+import { countPollVotesByOptionId } from "../data/PollVote.js";
 import { createVipPoll } from "../data/VipPoll.js";
 import { client } from "./client.js";
 import { getRoleProperty } from "./config.js";
+import { getMembersWithRoles } from "./roles.js";
 import { vipStringFunctions } from "./strings.js";
 import { type Prisma } from "@prisma/client";
 import {
   type ButtonInteraction,
   type ChatInputCommandInteraction,
+  type Interaction,
   type User,
 } from "discord.js";
 
@@ -128,4 +131,53 @@ export const startVipPoll = async (
   await createVipPoll(vipPoll);
 
   return createdPoll.id ?? null;
+};
+
+export const decidePoll = async (pollId: string, interaction: Interaction) => {
+  const poll = await getPollById(pollId);
+
+  if (poll === null) {
+    return;
+  }
+
+  if (poll.roles.length === 0) {
+    return;
+  }
+
+  const votes: Record<string, number> = {};
+  const totalVoters = await getMembersWithRoles(
+    interaction.guild,
+    ...poll.roles,
+  );
+  const rawThreshold = totalVoters.length * poll.threshold;
+  const threshold = Number.isInteger(rawThreshold)
+    ? rawThreshold + 1
+    : Math.ceil(rawThreshold);
+
+  for (const option of poll.options) {
+    votes[option.name] = await countPollVotesByOptionId(option.id);
+  }
+
+  const decision = Object.entries(votes)
+    .sort((a, b) => b[1] - a[1])
+    .find(([, numberVotes]) => numberVotes >= threshold);
+
+  if (decision !== undefined) {
+    poll.done = true;
+    poll.decision = decision[0];
+
+    await updatePoll(poll);
+    return;
+  }
+
+  const totalVotes = Object.values(votes).reduce(
+    (total, optionVotes) => total + optionVotes,
+    0,
+  );
+
+  if (totalVotes === totalVoters.length) {
+    poll.done = true;
+
+    await updatePoll(poll);
+  }
 };

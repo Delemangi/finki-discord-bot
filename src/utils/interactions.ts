@@ -1,6 +1,6 @@
 import { getCompanies } from "../data/Company.js";
 import { getLinkNames } from "../data/Link.js";
-import { decidePoll, getPollById } from "../data/Poll.js";
+import { getPollById } from "../data/Poll.js";
 import { getPollOptionById } from "../data/PollOption.js";
 import {
   createPollVote,
@@ -48,7 +48,7 @@ import { logger } from "./logger.js";
 import { isMemberInVip } from "./members.js";
 import { transformOptions } from "./options.js";
 import { hasCommandPermission } from "./permissions.js";
-import { startVipPoll } from "./polls.js";
+import { decidePoll, startVipPoll } from "./polls.js";
 import { userIdRegex } from "./regex.js";
 import {
   getCourseRolesBySemester,
