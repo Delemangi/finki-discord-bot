@@ -32,4 +32,5 @@ export const ConfigSchema = z.object({
     parent: z.string(),
     position: z.number(),
   }),
+  vipPause: z.boolean(),
 });
