@@ -459,15 +459,15 @@ export const logMessages = {
 
 export const logMessageFunctions = {
   loggedIn: (username: string | undefined) =>
-    `Logged in as ${username ?? "an unknown user"}.`,
+    `Logged in as ${username ?? "an unknown user"}`,
 
   noRefreshNeeded: (property: string) => `No refresh needed for ${property}`,
 
   tempVipScheduled: (nextRun: string) =>
-    `Temporary VIP channel scheduled for ${nextRun}.`,
+    `Temporary VIP channel scheduled for ${nextRun}`,
 
   userNotQualifiedForVip: (userTag: string) =>
-    `User ${userTag} does not qualify for VIP, skipping giving him roles...`,
+    `User ${userTag} does not qualify for VIP, skipping giving him roles`,
 };
 
 // Log errors
