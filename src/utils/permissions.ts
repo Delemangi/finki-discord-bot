@@ -79,8 +79,8 @@ const commandPermissions: Record<
     roles: [],
   },
   "vip remaining": {
-    permissions: [],
-    roles: ["vipVoting"],
+    permissions: [PermissionsBitField.Flags.Administrator],
+    roles: [],
   },
   "vip remove": {
     permissions: [],
