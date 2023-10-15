@@ -19,7 +19,7 @@
   "devDependencies": {
     "@types/async-lock": "^1.4.0",
     "eslint": "^8.51.0",
-    "eslint-config-canonical": "^41.4.2",
+    "eslint-config-canonical": "^42.0.1",
     "prisma": "^5.4.2",
     "typescript": "^5.2.2"
   },
