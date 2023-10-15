@@ -23,6 +23,7 @@ export const getPollVotesByPollId = async (pollId?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getPollVotesByPollIdError(error));
+
     return null;
   }
 };
@@ -53,6 +54,7 @@ export const getPollVotesByPollIdAndUserId = async (
     logger.error(
       databaseErrorFunctions.getPollVotesByPollIdAndUserIdError(error),
     );
+
     return null;
   }
 };
@@ -75,13 +77,14 @@ export const getPollVotesByOptionId = async (optionId?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getPollVotesByOptionIdError(error));
+
     return null;
   }
 };
 
 export const countPollVotesByOptionId = async (optionId?: string) => {
   if (optionId === undefined) {
-    return 0;
+    return null;
   }
 
   try {
@@ -94,7 +97,8 @@ export const countPollVotesByOptionId = async (optionId?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.countPollVotesByOptionIdError(error));
-    return 0;
+
+    return null;
   }
 };
 
@@ -109,6 +113,7 @@ export const createPollVote = async (pollVote?: Prisma.PollVoteCreateInput) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.createPollVoteError(error));
+
     return null;
   }
 };
@@ -126,6 +131,7 @@ export const deletePollVote = async (voteId?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.deletePollVoteError(error));
+
     return null;
   }
 };

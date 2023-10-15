@@ -126,6 +126,7 @@ const handleCourseParticipants = async (
 
   if (information === undefined) {
     await interaction.editReply(commandErrors.courseNotFound);
+
     return;
   }
 
@@ -145,6 +146,7 @@ const handleCourseProfessors = async (
 
   if (information === undefined) {
     await interaction.editReply(commandErrors.courseNotFound);
+
     return;
   }
 
@@ -160,6 +162,7 @@ const handleCourseRole = async (
 ) => {
   if (interaction.guild === null) {
     await interaction.editReply(commandErrors.serverOnlyCommand);
+
     return;
   }
 
@@ -171,6 +174,7 @@ const handleCourseRole = async (
 
   if (roleEntry === undefined) {
     await interaction.editReply(commandErrors.courseNotFound);
+
     return;
   }
 
@@ -180,6 +184,7 @@ const handleCourseRole = async (
 
   if (role === undefined) {
     await interaction.editReply(commandErrors.courseNotFound);
+
     return;
   }
 
@@ -202,6 +207,7 @@ const handleCoursePrerequisite = async (
 
   if (information === undefined) {
     await interaction.editReply(commandErrors.courseNotFound);
+
     return;
   }
 
@@ -221,6 +227,7 @@ const handleCourseInfo = async (
 
   if (information === undefined) {
     await interaction.editReply(commandErrors.courseNotFound);
+
     return;
   }
 
@@ -236,6 +243,7 @@ const handleCourseSummary = async (
 ) => {
   if (course === null) {
     await interaction.editReply(commandErrors.courseNotFound);
+
     return;
   }
 
@@ -251,6 +259,7 @@ const handleCourseToggle = async (
 ) => {
   if (interaction.guild === null) {
     await interaction.editReply(commandErrors.serverOnlyCommand);
+
     return;
   }
 
@@ -259,6 +268,7 @@ const handleCourseToggle = async (
 
   if (role === undefined) {
     await interaction.editReply(commandErrors.courseNotFound);
+
     return;
   }
 
@@ -270,6 +280,7 @@ const handleCourseToggle = async (
       },
       content: commandResponseFunctions.courseRemoved(role.id),
     });
+
     return;
   }
 

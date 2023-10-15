@@ -88,6 +88,7 @@ const handleCourseButton = async (
         interaction.customId,
       ),
     );
+
     return;
   }
 
@@ -97,6 +98,7 @@ const handleCourseButton = async (
     logger.warn(
       logErrorFunctions.buttonInteractionRoleError(interaction.customId),
     );
+
     return;
   }
 
@@ -135,6 +137,7 @@ const handleYearButton = async (
         interaction.customId,
       ),
     );
+
     return;
   }
 
@@ -144,6 +147,7 @@ const handleYearButton = async (
     logger.warn(
       logErrorFunctions.buttonInteractionRoleError(interaction.customId),
     );
+
     return;
   }
 
@@ -182,6 +186,7 @@ const handleProgramButton = async (
         interaction.customId,
       ),
     );
+
     return;
   }
 
@@ -191,6 +196,7 @@ const handleProgramButton = async (
     logger.warn(
       logErrorFunctions.buttonInteractionRoleError(interaction.customId),
     );
+
     return;
   }
 
@@ -229,6 +235,7 @@ const handleNotificationButton = async (
         interaction.customId,
       ),
     );
+
     return;
   }
 
@@ -238,6 +245,7 @@ const handleNotificationButton = async (
     logger.warn(
       logErrorFunctions.buttonInteractionRoleError(interaction.customId),
     );
+
     return;
   }
 
@@ -278,6 +286,7 @@ const handleColorButton = async (
         interaction.customId,
       ),
     );
+
     return;
   }
 
@@ -287,6 +296,7 @@ const handleColorButton = async (
     logger.warn(
       logErrorFunctions.buttonInteractionRoleError(interaction.customId),
     );
+
     return;
   }
 
@@ -325,6 +335,7 @@ const handleAddCoursesButton = async (
         interaction.customId,
       ),
     );
+
     return;
   }
 
@@ -332,6 +343,7 @@ const handleAddCoursesButton = async (
     logger.warn(
       logErrorFunctions.invalidButtonInteractionError(interaction.customId),
     );
+
     return;
   }
 
@@ -366,6 +378,7 @@ const handleRemoveCoursesButton = async (
         interaction.customId,
       ),
     );
+
     return;
   }
 
@@ -373,6 +386,7 @@ const handleRemoveCoursesButton = async (
     logger.warn(
       logErrorFunctions.invalidButtonInteractionError(interaction.customId),
     );
+
     return;
   }
 
@@ -643,6 +657,7 @@ const handlePollButton = async (
         interaction.customId,
       ),
     );
+
     return;
   }
 
@@ -657,6 +672,7 @@ const handlePollButton = async (
       embeds: [infoEmbed],
       ephemeral: true,
     });
+
     return;
   }
 
@@ -671,6 +687,7 @@ const handlePollButton = async (
       ephemeral: true,
     });
     void deleteResponse(mess);
+
     return;
   }
 
@@ -681,6 +698,7 @@ const handlePollButton = async (
       components: pollComponents,
       embeds: [pollEmbed],
     });
+
     return;
   }
 
@@ -696,6 +714,7 @@ const handlePollButton = async (
         ephemeral: true,
       });
       void deleteResponse(mess);
+
       return;
     }
   }
@@ -729,6 +748,7 @@ const handlePollStatsButton = async (
         interaction.customId,
       ),
     );
+
     return;
   }
 
@@ -743,6 +763,7 @@ const handlePollStatsButton = async (
       ),
     );
     await interaction.deferUpdate();
+
     return;
   }
 
@@ -754,6 +775,7 @@ const handlePollStatsButton = async (
       ephemeral: true,
     });
     void deleteResponse(mess);
+
     return;
   }
 
@@ -784,6 +806,7 @@ const handleVipButton = async (
       ephemeral: true,
     });
     void deleteResponse(message);
+
     return;
   }
 
@@ -798,11 +821,13 @@ const handleVipButton = async (
         ephemeral: true,
       });
       void deleteResponse(resp);
+
       return;
     }
 
     await interaction.deferUpdate();
     await interaction.message.delete();
+
     return;
   }
 
@@ -815,6 +840,7 @@ const handleVipButton = async (
         ephemeral: true,
       });
       void deleteResponse(resp);
+
       return;
     }
 
@@ -855,6 +881,7 @@ const handleVipButton = async (
       ephemeral: true,
     });
     void deleteResponse(message);
+
     return;
   }
 
@@ -864,6 +891,7 @@ const handleVipButton = async (
       ephemeral: true,
     });
     void deleteResponse(message);
+
     return;
   }
 
@@ -1109,6 +1137,7 @@ export const handleChatInputCommand = async (
       logErrorFunctions.chatInputInteractionDeferError(interaction, error),
     );
     await interaction.reply(commandErrors.commandError);
+
     return;
   }
 
@@ -1130,6 +1159,7 @@ export const handleChatInputCommand = async (
   if (command === undefined) {
     logger.warn(logErrorFunctions.commandNotFound(interaction.id));
     await interaction.editReply(commandErrors.commandNotFound);
+
     return;
   }
 
@@ -1146,6 +1176,7 @@ export const handleChatInputCommand = async (
     ))
   ) {
     await interaction.editReply(commandErrors.commandNoPermission);
+
     return;
   }
 
@@ -1171,6 +1202,7 @@ export const handleUserContextMenuCommand = async (
       ),
     );
     await interaction.reply(commandErrors.commandError);
+
     return;
   }
 
@@ -1193,6 +1225,7 @@ export const handleUserContextMenuCommand = async (
 
   if (command === undefined) {
     logger.warn(logErrorFunctions.commandNotFound(interaction.id));
+
     return;
   }
 
@@ -1240,6 +1273,7 @@ export const handleButton = async (interaction: ButtonInteraction) => {
 
   if (command === undefined) {
     logger.warn(logErrorFunctions.commandNotFound(interaction.id));
+
     return;
   }
 

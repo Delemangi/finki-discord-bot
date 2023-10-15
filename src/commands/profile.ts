@@ -22,6 +22,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   if (member === undefined) {
     await interaction.editReply(commandErrors.userNotFound);
+
     return;
   }
 

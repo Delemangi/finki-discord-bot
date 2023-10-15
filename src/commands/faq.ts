@@ -30,6 +30,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   if (question === null) {
     await interaction.editReply(commandErrors.faqNotFound);
+
     return;
   }
 

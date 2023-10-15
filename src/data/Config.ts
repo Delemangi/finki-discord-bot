@@ -26,6 +26,7 @@ export const setConfig = async (config?: BotConfig) => {
     });
   } catch (error) {
     logger.error(`Failed setting config\n${error}`);
+
     return null;
   }
 };

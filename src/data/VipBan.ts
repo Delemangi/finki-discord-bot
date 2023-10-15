@@ -12,6 +12,7 @@ export const getVipBans = async () => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getVipBansError(error));
+
     return null;
   }
 };
@@ -29,6 +30,7 @@ export const getVipBanByUserId = async (userId?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getVipBanByUserIdError(error));
+
     return null;
   }
 };
@@ -44,6 +46,7 @@ export const createVipBan = async (vipBan?: Prisma.VipBanCreateInput) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.createVipBanError(error));
+
     return null;
   }
 };
@@ -61,6 +64,7 @@ export const deleteVipBan = async (userId?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.deleteVipBanError(error));
+
     return null;
   }
 };

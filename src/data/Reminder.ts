@@ -8,6 +8,7 @@ export const getReminders = async () => {
     return await database.reminder.findMany();
   } catch (error) {
     logger.error(databaseErrorFunctions.getRemindersError(error));
+
     return null;
   }
 };
@@ -23,6 +24,7 @@ export const createReminder = async (reminder?: Prisma.ReminderCreateInput) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.createReminderError(error));
+
     return null;
   }
 };
@@ -42,6 +44,7 @@ export const deleteReminders = async (reminderIds?: string[]) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.deleteRemindersError(error));
+
     return null;
   }
 };

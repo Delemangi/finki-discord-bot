@@ -35,6 +35,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     await interaction.editReply({
       content: commandErrors.classroomNotFound,
     });
+
     return;
   }
 

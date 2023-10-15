@@ -96,6 +96,7 @@ const handleConfigSet = async (interaction: ChatInputCommandInteraction) => {
       // @ts-expect-error error is not null
       commandErrorFunctions.invalidConfiguration(error.message),
     );
+
     return;
   }
 

@@ -16,6 +16,7 @@ export const getVipPollById = async (id?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getVipPollByIdError(error));
+
     return null;
   }
 };
@@ -33,6 +34,7 @@ export const getVipPollByPollId = async (pollId?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getVipPollByPollIdError(error));
+
     return null;
   }
 };
@@ -54,6 +56,7 @@ export const getVipPollByUserAndType = async (
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getVipPollByUserAndTypeError(error));
+
     return null;
   }
 };
@@ -69,6 +72,7 @@ export const createVipPoll = async (vipPoll?: Prisma.VipPollCreateInput) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.createVipPollError(error));
+
     return null;
   }
 };
@@ -86,6 +90,7 @@ export const deleteVipPoll = async (id?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.deleteVipPollError(error));
+
     return null;
   }
 };
@@ -103,6 +108,7 @@ export const deleteVipPollByPollId = async (pollId?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.deleteVipPollByPollIdError(error));
+
     return null;
   }
 };
@@ -112,6 +118,7 @@ export const getVipPolls = async () => {
     return await database.vipPoll.findMany();
   } catch (error) {
     logger.error(databaseErrorFunctions.getVipPollsError(error));
+
     return null;
   }
 };

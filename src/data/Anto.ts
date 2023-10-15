@@ -14,6 +14,7 @@ export const createAnto = async (anto?: Prisma.AntoCreateInput) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.createAntoError(error));
+
     return null;
   }
 };
@@ -31,6 +32,7 @@ export const deleteAnto = async (anto?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.deleteAntoError(error));
+
     return null;
   }
 };
@@ -45,6 +47,7 @@ export const getRandomAnto = async () => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getRandomAntoError(error));
+
     return null;
   }
 };
@@ -60,6 +63,7 @@ export const createAntos = async (antos?: Prisma.AntoCreateManyInput[]) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.createAntosError(error));
+
     return null;
   }
 };

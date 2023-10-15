@@ -27,6 +27,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   if (link === null) {
     await interaction.editReply(commandErrors.linkNotFound);
+
     return;
   }
 

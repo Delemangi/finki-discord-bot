@@ -26,6 +26,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   if (information === undefined) {
     await interaction.editReply(commandErrors.sessionNotFound);
+
     return;
   }
 

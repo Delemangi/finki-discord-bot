@@ -41,6 +41,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   if (!channel.isTextBased() || channel.isDMBased()) {
     await interaction.editReply(commandErrors.invalidChannel);
+
     return;
   }
 
@@ -57,6 +58,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     }
   } catch {
     await interaction.editReply(commandErrors.invalidColor);
+
     return;
   }
 

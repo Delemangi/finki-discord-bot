@@ -15,6 +15,7 @@ export const createPoll = async (poll?: Prisma.PollCreateInput) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.createPollError(error));
+
     return null;
   }
 };
@@ -46,6 +47,7 @@ export const updatePoll = async (poll?: PollWithOptions) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.updatePollError(error));
+
     return null;
   }
 };
@@ -55,6 +57,7 @@ export const getPolls = async () => {
     return await database.poll.findMany();
   } catch (error) {
     logger.error(databaseErrorFunctions.getPollsError(error));
+
     return null;
   }
 };
@@ -75,6 +78,7 @@ export const getPollById = async (pollId?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getPollByIdError(error));
+
     return null;
   }
 };
@@ -92,6 +96,7 @@ export const deletePoll = async (pollId?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.deletePollError(error));
+
     return null;
   }
 };

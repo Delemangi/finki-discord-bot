@@ -16,6 +16,7 @@ export const createQuestionLink = async (
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.createQuestionLinkError(error));
+
     return null;
   }
 };
@@ -33,6 +34,7 @@ export const createQuestionLinks = async (
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.createQuestionLinksError(error));
+
     return null;
   }
 };
@@ -52,6 +54,7 @@ export const deleteQuestionLinksByQuestionId = async (questionId?: string) => {
     logger.error(
       databaseErrorFunctions.deleteQuestionLinksByQuestionIdError(error),
     );
+
     return null;
   }
 };

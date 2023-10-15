@@ -219,11 +219,13 @@ const handlePollCreate = async (interaction: ChatInputCommandInteraction) => {
 
   if (options.length === 0) {
     await interaction.editReply(commandErrors.pollNoOptions);
+
     return;
   }
 
   if (options.length > 24) {
     await interaction.editReply(commandErrors.pollTooManyOptions);
+
     return;
   }
 
@@ -241,6 +243,7 @@ const handlePollCreate = async (interaction: ChatInputCommandInteraction) => {
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.pollCreationFailed);
+
     return;
   }
 
@@ -248,6 +251,7 @@ const handlePollCreate = async (interaction: ChatInputCommandInteraction) => {
 
   if (poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
+
     return;
   }
 
@@ -275,6 +279,7 @@ const handlePollEdit = async (interaction: ChatInputCommandInteraction) => {
 
   if (poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
+
     return;
   }
 
@@ -308,11 +313,13 @@ const handlePollStats = async (interaction: ChatInputCommandInteraction) => {
 
   if (poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
+
     return;
   }
 
   if (poll.anonymous) {
     await interaction.editReply(commandErrors.pollAnonymous);
+
     return;
   }
 
@@ -330,6 +337,7 @@ const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
 
   if (poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
+
     return;
   }
 
@@ -353,21 +361,25 @@ const handlePollAdd = async (interaction: ChatInputCommandInteraction) => {
 
   if (poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
+
     return;
   }
 
   if (!poll.open && poll.userId !== interaction.user.id) {
     await interaction.editReply(commandErrors.pollNoPermission);
+
     return;
   }
 
   if (options.length === 0) {
     await interaction.editReply(commandErrors.pollNoOptions);
+
     return;
   }
 
   if (poll.options.length + options.length > 24) {
     await interaction.editReply(commandErrors.pollTooManyOptions);
+
     return;
   }
 
@@ -405,11 +417,13 @@ const handlePollRemove = async (interaction: ChatInputCommandInteraction) => {
 
   if (poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
+
     return;
   }
 
   if (poll.userId !== interaction.user.id) {
     await interaction.editReply(commandErrors.pollNoPermission);
+
     return;
   }
 
@@ -421,6 +435,7 @@ const handlePollRemove = async (interaction: ChatInputCommandInteraction) => {
   if (poll.options.length === 0) {
     await deletePoll(id);
     await interaction.editReply(commandResponses.pollDeleted);
+
     return;
   }
 
@@ -437,6 +452,7 @@ const handlePollDelete = async (interaction: ChatInputCommandInteraction) => {
 
   if (poll === null) {
     await interaction.reply(commandErrors.pollNotFound);
+
     return;
   }
 
@@ -451,16 +467,19 @@ const handlePollOpen = async (interaction: ChatInputCommandInteraction) => {
 
   if (poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
+
     return;
   }
 
   if (poll.userId !== interaction.user.id) {
     await interaction.editReply(commandErrors.pollNoPermission);
+
     return;
   }
 
   if (!poll.done) {
     await interaction.editReply(commandResponses.pollOpen);
+
     return;
   }
 
@@ -476,16 +495,19 @@ const handlePollClose = async (interaction: ChatInputCommandInteraction) => {
 
   if (poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
+
     return;
   }
 
   if (poll.userId !== interaction.user.id) {
     await interaction.editReply(commandErrors.pollNoPermission);
+
     return;
   }
 
   if (poll.done) {
     await interaction.editReply(commandResponses.pollClosed);
+
     return;
   }
 
@@ -510,6 +532,7 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
 
   if (polls === null || polls === undefined) {
     await interaction.editReply(commandErrors.pollsFetchFailed);
+
     return;
   }
 
@@ -540,6 +563,7 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
         ephemeral: true,
       });
       void deleteResponse(mess);
+
       return;
     }
 
@@ -610,11 +634,13 @@ const handlePollInfo = async (interaction: ChatInputCommandInteraction) => {
 
   if (poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
+
     return;
   }
 
   if (interaction.guild === null) {
     await interaction.editReply(commandErrors.serverOnlyCommand);
+
     return;
   }
 

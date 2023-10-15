@@ -54,6 +54,7 @@ const getNextVipCronRun = async (locale: string = "en-GB", offset = 1) => {
   })
     .nextRuns(offset)
     .at(-1);
+
   return nextRun === null
     ? "?"
     : new Intl.DateTimeFormat(locale, {

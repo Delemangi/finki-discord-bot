@@ -16,6 +16,7 @@ export const createInfoMessage = async (
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.createInfoMessageError(error));
+
     return null;
   }
 };
@@ -33,6 +34,7 @@ export const getInfoMessage = async (index?: number) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getInfoMessageError(error));
+
     return null;
   }
 };
@@ -46,6 +48,7 @@ export const getInfoMessages = async () => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getInfoMessagesError(error));
+
     return null;
   }
 };
@@ -64,6 +67,7 @@ export const updateInfoMessage = async (message?: InfoMessage) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.updateInfoMessageError(error));
+
     return null;
   }
 };
@@ -81,6 +85,7 @@ export const deleteInfoMessage = async (index?: number) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.deleteInfoMessageError(error));
+
     return null;
   }
 };

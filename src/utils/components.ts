@@ -196,6 +196,7 @@ const fetchMessageUrl = async (
     };
   } catch (error) {
     logger.warn(logErrorFunctions.messageUrlFetchError(interaction.id, error));
+
     return null;
   }
 };
@@ -236,6 +237,7 @@ export const generatePollPercentageBar = (percentage: number) => {
   const progressBar =
     "█".repeat(Math.floor(percentage / 5)) +
     (percentage - Math.floor(percentage) >= 0.5 ? "▌" : "");
+
   return progressBar + ".".repeat(Math.max(0, 20 - progressBar.length));
 };
 

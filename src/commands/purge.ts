@@ -34,6 +34,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     interaction.channel.isDMBased()
   ) {
     await interaction.editReply(commandErrors.serverOnlyCommand);
+
     return;
   }
 

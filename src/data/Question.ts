@@ -16,6 +16,7 @@ export const getQuestions = async () => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getQuestionsError(error));
+
     return null;
   }
 };
@@ -29,6 +30,7 @@ export const getQuestionNames = async () => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getQuestionNamesError(error));
+
     return null;
   }
 };
@@ -49,6 +51,7 @@ export const getQuestion = async (name?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getQuestionError(error));
+
     return null;
   }
 };
@@ -67,6 +70,7 @@ export const createQuestion = async (question?: Prisma.QuestionCreateInput) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.createQuestionError(error));
+
     return null;
   }
 };
@@ -102,6 +106,7 @@ export const updateQuestion = async (question?: QuestionWithLinks) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.updateQuestionError(error));
+
     return null;
   }
 };
@@ -122,6 +127,7 @@ export const deleteQuestion = async (name?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.deleteQuestionError(error));
+
     return null;
   }
 };
@@ -143,6 +149,7 @@ export const getNthQuestion = async (index?: number) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getNthQuestionError(error));
+
     return null;
   }
 };

@@ -278,6 +278,7 @@ const handleManageQuestionSet = async (
       parsedLinks = LinksSchema.parse(JSON.parse(links));
     } catch {
       await interaction.editReply(commandErrors.invalidLinks);
+
       return;
     }
   }
@@ -305,6 +306,7 @@ const handleManageQuestionSet = async (
 
     if (createdQuestion === null) {
       await interaction.editReply(commandErrors.faqCreationFailed);
+
       return;
     }
 
@@ -332,6 +334,7 @@ const handleManageQuestionSet = async (
     } catch (error) {
       logger.error(logErrorFunctions.linksParseError(error));
       await interaction.editReply(commandErrors.invalidLinks);
+
       return;
     }
 
@@ -351,6 +354,7 @@ const handleManageQuestionSet = async (
 
   if (updatedQuestion === null) {
     await interaction.editReply(commandErrors.faqCreationFailed);
+
     return;
   }
 
@@ -375,6 +379,7 @@ const handleManageQuestionDelete = async (
 
   if (question === null) {
     await interaction.editReply(commandErrors.faqNotFound);
+
     return;
   }
 
@@ -390,6 +395,7 @@ const handleManageQuestionContent = async (
 
   if (question === null) {
     await interaction.editReply(commandErrors.faqNotFound);
+
     return;
   }
 
@@ -432,6 +438,7 @@ const handleManageLinkSet = async (
 
   if (!linkRegex.test(url)) {
     await interaction.editReply(commandErrors.invalidLink);
+
     return;
   }
 
@@ -446,6 +453,7 @@ const handleManageLinkSet = async (
 
     if (createdLink === null) {
       await interaction.editReply(commandErrors.linkCreationFailed);
+
       return;
     }
 
@@ -475,6 +483,7 @@ const handleManageLinkSet = async (
 
   if (updatedLink === null) {
     await interaction.editReply(commandErrors.linkCreationFailed);
+
     return;
   }
 
@@ -499,6 +508,7 @@ const handleManageLinkDelete = async (
 
   if (link === null) {
     await interaction.editReply(commandErrors.linkNotFound);
+
     return;
   }
 
@@ -514,6 +524,7 @@ const handleManageLinkContent = async (
 
   if (link === null) {
     await interaction.editReply(commandErrors.linkNotFound);
+
     return;
   }
 
@@ -538,6 +549,7 @@ const handleManageAntoAdd = async (
 
   if (createdAnto === null) {
     await interaction.editReply(commandErrors.antoCreationFailed);
+
     return;
   }
 
@@ -552,6 +564,7 @@ const handleManageAntoDelete = async (
 
   if (deletedAnto === null) {
     await interaction.editReply(commandErrors.antoNotFound);
+
     return;
   }
 
@@ -569,6 +582,7 @@ const handleManageAntoMassAdd = async (
   } catch (error) {
     logger.error(logErrorFunctions.antosParseError(error));
     await interaction.editReply(commandErrors.invalidAntos);
+
     return;
   }
 
@@ -581,6 +595,7 @@ const handleManageAntoMassAdd = async (
 
   if (createdAntos === null) {
     await interaction.editReply(commandErrors.antosCreationFailed);
+
     return;
   }
 
@@ -641,6 +656,7 @@ const handleManageInfoMessageDelete = async (
 
   if (infoMessage === null) {
     await interaction.editReply(commandErrors.infoNotFound);
+
     return;
   }
 
@@ -657,6 +673,7 @@ const handleCompanySet = async (interaction: ChatInputCommandInteraction) => {
 
   if (createdCompany === null) {
     await interaction.editReply(commandErrors.companyCreationFailed);
+
     return;
   }
 
@@ -672,6 +689,7 @@ const handleCompanyDelete = async (
 
   if (deletedCompany === null) {
     await interaction.editReply(commandErrors.companyNotFound);
+
     return;
   }
 
@@ -689,6 +707,7 @@ const handleCompanyMassAdd = async (
   } catch (error) {
     logger.error(logErrorFunctions.companiesParseError(error));
     await interaction.editReply(commandErrors.invalidCompanies);
+
     return;
   }
 
@@ -701,6 +720,7 @@ const handleCompanyMassAdd = async (
 
   if (createdCompanies === null) {
     await interaction.editReply(commandErrors.companiesCreationFailed);
+
     return;
   }
 

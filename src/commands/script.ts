@@ -199,6 +199,7 @@ const handleScriptCourses = async (
 
     if (roles === undefined) {
       await interaction.editReply(commandErrors.invalidRoles);
+
       return;
     }
 
@@ -215,6 +216,7 @@ const handleScriptCourses = async (
     } catch (error) {
       await interaction.editReply(commandErrors.scriptNotExecuted);
       logger.error(logErrorFunctions.scriptExecutionError(error));
+
       return;
     }
   }
@@ -234,6 +236,7 @@ const handleScriptCourses = async (
   } catch (error) {
     await interaction.editReply(commandErrors.scriptNotExecuted);
     logger.error(logErrorFunctions.scriptExecutionError(error));
+
     return;
   }
 
@@ -388,6 +391,7 @@ const handleScriptRules = async (interaction: ChatInputCommandInteraction) => {
 
   if (rules === null) {
     await interaction.editReply(commandErrors.scriptNotExecuted);
+
     return;
   }
 
@@ -441,6 +445,7 @@ const handleScriptInfo = async (interaction: ChatInputCommandInteraction) => {
 
   if (infoMessages === null) {
     await interaction.editReply(commandErrors.scriptNotExecuted);
+
     return;
   }
 
@@ -453,6 +458,7 @@ const handleScriptInfo = async (interaction: ChatInputCommandInteraction) => {
       } catch (error) {
         await interaction.editReply(commandErrors.scriptNotExecuted);
         logger.error(logErrorFunctions.scriptExecutionError(error));
+
         return;
       }
     } else if (message.type === InfoMessageType.TEXT) {
@@ -466,6 +472,7 @@ const handleScriptInfo = async (interaction: ChatInputCommandInteraction) => {
       } catch (error) {
         await interaction.editReply(commandErrors.scriptNotExecuted);
         logger.error(logErrorFunctions.scriptExecutionError(error));
+
         return;
       }
     }
@@ -510,6 +517,7 @@ const handleCompaniesForum = async (
 
   if (companies === null) {
     await interaction.editReply(commandErrors.scriptNotExecuted);
+
     return;
   }
 

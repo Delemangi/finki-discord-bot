@@ -16,6 +16,7 @@ export const getPollOptionById = async (optionId?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getPollOptionByIdError(error));
+
     return null;
   }
 };
@@ -39,6 +40,7 @@ export const getPollOptionByPollIdAndName = async (
     logger.error(
       databaseErrorFunctions.getPollOptionByPollIdAndNameError(error),
     );
+
     return null;
   }
 };
@@ -87,6 +89,7 @@ export const getMostPopularOptionByPollId = async (pollId?: string) => {
     logger.error(
       databaseErrorFunctions.getMostPopularOptionByPollIdError(error),
     );
+
     return null;
   }
 };
@@ -104,6 +107,7 @@ export const deletePollOption = async (optionId?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.deletePollOptionError(error));
+
     return null;
   }
 };
@@ -121,6 +125,7 @@ export const createPollOption = async (
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.createPollOptionError(error));
+
     return null;
   }
 };
@@ -144,6 +149,7 @@ export const deletePollOptionsByPollIdAndName = async (
     logger.error(
       databaseErrorFunctions.deletePollOptionsByPollIdAndNameError(error),
     );
+
     return null;
   }
 };

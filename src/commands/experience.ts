@@ -105,6 +105,7 @@ const handleExperienceLeaderboard = async (
 
   if (experience === null) {
     await interaction.editReply(commandErrors.dataFetchFailed);
+
     return;
   }
 
@@ -114,6 +115,7 @@ const handleExperienceLeaderboard = async (
 
   if (total === null) {
     await interaction.editReply(commandErrors.dataFetchFailed);
+
     return;
   }
 
@@ -142,6 +144,7 @@ const handleExperienceLeaderboard = async (
         ephemeral: true,
       });
       void deleteResponse(mess);
+
       return;
     }
 

@@ -8,6 +8,7 @@ export const getRules = async () => {
     return await database.rule.findMany();
   } catch (error) {
     logger.error(databaseErrorFunctions.getRulesError(error));
+
     return null;
   }
 };
@@ -23,6 +24,7 @@ export const createRule = async (rule?: Prisma.RuleCreateInput) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.createRuleError(error));
+
     return null;
   }
 };
@@ -40,6 +42,7 @@ export const deleteRule = async (rule?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.deleteRuleError(error));
+
     return null;
   }
 };

@@ -29,6 +29,7 @@ export const data = new SlashCommandBuilder()
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   if (interaction.guild === null || interaction.member === null) {
     await interaction.editReply(commandErrors.serverOnlyCommand);
+
     return;
   }
 
@@ -67,6 +68,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
         ephemeral: true,
       });
       void deleteResponse(mess);
+
       return;
     }
 

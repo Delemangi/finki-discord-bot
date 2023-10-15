@@ -40,6 +40,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   if (!channel.isTextBased()) {
     await interaction.editReply(commandErrors.invalidChannel);
+
     return;
   }
 

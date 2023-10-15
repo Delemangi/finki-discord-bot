@@ -33,6 +33,7 @@ const handleListQuestions = async (
     await interaction.editReply({
       content: commandErrors.questionsFetchFailed,
     });
+
     return;
   }
 
@@ -49,6 +50,7 @@ const handleListLinks = async (interaction: ChatInputCommandInteraction) => {
     await interaction.editReply({
       content: commandErrors.linksFetchFailed,
     });
+
     return;
   }
 

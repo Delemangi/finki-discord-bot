@@ -178,6 +178,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
 
   if (user.bot) {
     await interaction.editReply(commandErrors.userBot);
+
     return;
   }
 
@@ -185,6 +186,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
 
   if (vipBan !== null) {
     await interaction.editReply(commandErrors.userVipBanned);
+
     return;
   }
 
@@ -194,16 +196,19 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
 
   if (member === undefined) {
     await interaction.editReply(commandErrors.userNotMember);
+
     return;
   }
 
   if (await isMemberInVip(member)) {
     await interaction.editReply(commandErrors.userVipMember);
+
     return;
   }
 
   if (!(await isMemberInvitedToVip(member))) {
     await interaction.editReply(commandErrors.userNotVipInvited);
+
     return;
   }
 
@@ -211,6 +216,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
 
   if (existingPoll !== null) {
     await interaction.editReply(commandErrors.userVipPending);
+
     return;
   }
 
@@ -218,6 +224,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.pollCreationFailed);
+
     return;
   }
 
@@ -225,6 +232,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
 
   if (poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
+
     return;
   }
 
@@ -241,6 +249,7 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
 
   if (user.bot) {
     await interaction.editReply(commandErrors.userBot);
+
     return;
   }
 
@@ -250,16 +259,19 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
 
   if (member === undefined) {
     await interaction.editReply(commandErrors.userNotMember);
+
     return;
   }
 
   if (await isMemberAdmin(member)) {
     await interaction.editReply(commandErrors.userAdmin);
+
     return;
   }
 
   if (!(await isMemberInVip(member))) {
     await interaction.editReply(commandErrors.userNotVipMember);
+
     return;
   }
 
@@ -267,6 +279,7 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.userVipPending);
+
     return;
   }
 
@@ -274,6 +287,7 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
 
   if (poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
+
     return;
   }
 
@@ -290,6 +304,7 @@ const handleVipUpgrade = async (interaction: ChatInputCommandInteraction) => {
 
   if (user.bot) {
     await interaction.editReply(commandErrors.userBot);
+
     return;
   }
 
@@ -299,21 +314,25 @@ const handleVipUpgrade = async (interaction: ChatInputCommandInteraction) => {
 
   if (member === undefined) {
     await interaction.editReply(commandErrors.userNotMember);
+
     return;
   }
 
   if (await isMemberAdmin(member)) {
     await interaction.editReply(commandErrors.userAdmin);
+
     return;
   }
 
   if (!(await isMemberInVip(member))) {
     await interaction.editReply(commandErrors.userNotVipMember);
+
     return;
   }
 
   if (await isVipVotingMember(member)) {
     await interaction.editReply(commandErrors.userFullVipMember);
+
     return;
   }
 
@@ -321,6 +340,7 @@ const handleVipUpgrade = async (interaction: ChatInputCommandInteraction) => {
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.userVipPending);
+
     return;
   }
 
@@ -328,6 +348,7 @@ const handleVipUpgrade = async (interaction: ChatInputCommandInteraction) => {
 
   if (poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
+
     return;
   }
 
@@ -349,6 +370,7 @@ const handleVipOverride = async (interaction: ChatInputCommandInteraction) => {
 
   if (vipPoll === null || poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
+
     return;
   }
 
@@ -361,6 +383,7 @@ const handleVipOverride = async (interaction: ChatInputCommandInteraction) => {
 
   if (member === undefined) {
     await interaction.editReply(commandErrors.userNotMember);
+
     return;
   }
 
@@ -378,6 +401,7 @@ const handleVipDelete = async (interaction: ChatInputCommandInteraction) => {
 
   if (vipPoll === null && poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
+
     return;
   }
 
@@ -393,6 +417,7 @@ const handleVipRemaining = async (interaction: ChatInputCommandInteraction) => {
 
   if (poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
+
     return;
   }
 
@@ -400,6 +425,7 @@ const handleVipRemaining = async (interaction: ChatInputCommandInteraction) => {
 
   if (vipPoll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
+
     return;
   }
 
@@ -407,6 +433,7 @@ const handleVipRemaining = async (interaction: ChatInputCommandInteraction) => {
 
   if (votes === null) {
     await interaction.editReply(commandErrors.pollVotesFetchFailed);
+
     return;
   }
 
@@ -437,6 +464,7 @@ const handleVipInvite = async (interaction: ChatInputCommandInteraction) => {
 
   if (member === undefined) {
     await interaction.editReply(commandErrors.userNotMember);
+
     return;
   }
 
@@ -444,16 +472,19 @@ const handleVipInvite = async (interaction: ChatInputCommandInteraction) => {
 
   if (vipBan !== null) {
     await interaction.editReply(commandErrors.userVipBanned);
+
     return;
   }
 
   if (await isMemberInVip(member)) {
     await interaction.editReply(commandErrors.userVipMember);
+
     return;
   }
 
   if (await isMemberInvitedToVip(member)) {
     await interaction.editReply(commandErrors.userVipInvited);
+
     return;
   }
 
@@ -468,6 +499,7 @@ const handleVipList = async (interaction: ChatInputCommandInteraction) => {
 
   if (vipPolls === null) {
     await interaction.editReply(commandErrors.vipPollsFetchFailed);
+
     return;
   }
 
@@ -498,6 +530,7 @@ const handleVipList = async (interaction: ChatInputCommandInteraction) => {
         ephemeral: true,
       });
       void deleteResponse(mess);
+
       return;
     }
 
@@ -570,6 +603,7 @@ const handleVipBan = async (interaction: ChatInputCommandInteraction) => {
 
   if (user.bot) {
     await interaction.editReply(commandErrors.userBot);
+
     return;
   }
 
@@ -579,16 +613,19 @@ const handleVipBan = async (interaction: ChatInputCommandInteraction) => {
 
   if (member === undefined) {
     await interaction.editReply(commandErrors.userNotMember);
+
     return;
   }
 
   if (await isMemberAdmin(member)) {
     await interaction.editReply(commandErrors.userAdmin);
+
     return;
   }
 
   if (await isMemberInVip(member)) {
     await interaction.editReply(commandErrors.userVipMember);
+
     return;
   }
 
@@ -596,6 +633,7 @@ const handleVipBan = async (interaction: ChatInputCommandInteraction) => {
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.userVipPending);
+
     return;
   }
 
@@ -603,6 +641,7 @@ const handleVipBan = async (interaction: ChatInputCommandInteraction) => {
 
   if (poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
+
     return;
   }
 
@@ -619,11 +658,13 @@ const handleVipBans = async (interaction: ChatInputCommandInteraction) => {
 
   if (vipBans === null) {
     await interaction.editReply(commandErrors.vipBansFetchFailed);
+
     return;
   }
 
   if (vipBans.length === 0) {
     await interaction.editReply(commandResponses.noVipBanned);
+
     return;
   }
 
@@ -641,6 +682,7 @@ const handleVipUnban = async (interaction: ChatInputCommandInteraction) => {
 
   if (vipBan === null) {
     await interaction.editReply(commandErrors.userNotVipBanned);
+
     return;
   }
 
@@ -648,6 +690,7 @@ const handleVipUnban = async (interaction: ChatInputCommandInteraction) => {
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.userVipPending);
+
     return;
   }
 
@@ -655,6 +698,7 @@ const handleVipUnban = async (interaction: ChatInputCommandInteraction) => {
 
   if (poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
+
     return;
   }
 
@@ -691,6 +735,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     await interaction.editReply({
       content: commandErrors.serverOnlyCommand,
     });
+
     return;
   }
 

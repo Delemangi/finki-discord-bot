@@ -23,6 +23,7 @@ export const createCompany = async (company?: Prisma.CompanyCreateInput) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.createCompanyError(error));
+
     return null;
   }
 };
@@ -40,6 +41,7 @@ export const deleteCompany = async (company?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.deleteCompanyError(error));
+
     return null;
   }
 };
@@ -57,6 +59,7 @@ export const createCompanies = async (
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.createCompaniesError(error));
+
     return null;
   }
 };

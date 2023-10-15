@@ -16,9 +16,8 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const rules = await getRules();
 
   if (!rules) {
-    await interaction.editReply({
-      content: commandErrors.rulesFetchFailed,
-    });
+    await interaction.editReply(commandErrors.rulesFetchFailed);
+
     return;
   }
 

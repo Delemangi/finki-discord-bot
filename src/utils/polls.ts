@@ -155,7 +155,7 @@ export const decidePoll = async (pollId: string, interaction: Interaction) => {
     : Math.ceil(rawThreshold);
 
   for (const option of poll.options) {
-    votes[option.name] = await countPollVotesByOptionId(option.id);
+    votes[option.name] = (await countPollVotesByOptionId(option.id)) ?? 0;
   }
 
   const decision = Object.entries(votes)
@@ -167,6 +167,7 @@ export const decidePoll = async (pollId: string, interaction: Interaction) => {
     poll.decision = decision[0];
 
     await updatePoll(poll);
+
     return;
   }
 

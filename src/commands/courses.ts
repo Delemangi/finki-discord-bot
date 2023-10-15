@@ -111,6 +111,7 @@ const handleCoursesPrerequisite = async (
 const handleCoursesAdd = async (interaction: ChatInputCommandInteraction) => {
   if (interaction.guild === null) {
     await interaction.editReply(commandErrors.serverOnlyCommand);
+
     return;
   }
 
@@ -129,6 +130,7 @@ const handleCoursesRemove = async (
 ) => {
   if (interaction.guild === null) {
     await interaction.editReply(commandErrors.serverOnlyCommand);
+
     return;
   }
 

@@ -12,6 +12,7 @@ export const getLinks = async () => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getLinksError(error));
+
     return null;
   }
 };
@@ -25,6 +26,7 @@ export const getLinkNames = async () => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getLinkNamesError(error));
+
     return null;
   }
 };
@@ -42,6 +44,7 @@ export const getLink = async (name?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getLinkError(error));
+
     return null;
   }
 };
@@ -57,6 +60,7 @@ export const createLink = async (link?: Prisma.LinkCreateInput) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.createLinkError(error));
+
     return null;
   }
 };
@@ -75,6 +79,7 @@ export const updateLink = async (link?: Link) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.updateLinkError(error));
+
     return null;
   }
 };
@@ -92,6 +97,7 @@ export const deleteLink = async (name?: string) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.deleteLinkError(error));
+
     return null;
   }
 };
@@ -110,6 +116,7 @@ export const getNthLink = async (index?: number) => {
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getNthLinkError(error));
+
     return null;
   }
 };

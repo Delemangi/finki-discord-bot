@@ -1,6 +1,7 @@
 export const splitMessage = function* (message: string) {
   if (message === "") {
     yield "";
+
     return;
   }
 
