@@ -17,7 +17,7 @@
   },
   "description": "FINKI Discord Bot",
   "devDependencies": {
-    "@types/async-lock": "^1.4.0",
+    "@types/async-lock": "^1.4.1",
     "eslint": "^8.51.0",
     "eslint-config-canonical": "^41.4.2",
     "prisma": "^5.4.2",
