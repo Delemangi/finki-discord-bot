@@ -10,7 +10,11 @@ import {
 } from "../data/PollVote.js";
 import { getQuestionNames } from "../data/Question.js";
 import { getRules } from "../data/Rule.js";
-import { createVipBan, deleteVipBan } from "../data/VipBan.js";
+import {
+  createVipBan,
+  deleteVipBan,
+  getVipBanByUserId,
+} from "../data/VipBan.js";
 import {
   deleteVipPoll,
   getVipPollByPollId,
@@ -803,6 +807,18 @@ const handleVipButton = async (
   if (await isMemberInVip(member)) {
     const message = await interaction.reply({
       content: commandErrors.alreadyVipMember,
+      ephemeral: true,
+    });
+    void deleteResponse(message);
+
+    return;
+  }
+
+  const vipBan = await getVipBanByUserId(interaction.user.id);
+
+  if (vipBan !== null) {
+    const message = await interaction.reply({
+      content: vipStrings.vipBanned,
       ephemeral: true,
     });
     void deleteResponse(message);

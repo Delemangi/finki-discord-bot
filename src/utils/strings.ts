@@ -123,6 +123,7 @@ export const tagAndMentionUser = ({ tag, id }: PartialUser) =>
 export const vipStrings = {
   vipAcceptButton: "Прифаќам",
   vipAcceptedTitle: "Заклетва",
+  vipBanned: "Вашата молба беше одбиена.",
   vipConfirm:
     "Изјавувам дека функцијата „член на ВИП во официјалниот Discord сервер на студентите на ФИНКИ“ ќе ја вршам совесно и одговорно и ќе го почитувам Уставот, законите на Република Северна Македонија и правилата на официјалниот Discord сервер на студентите на ФИНКИ.",
   vipRequestActive: "Вашата молба е активна.",
