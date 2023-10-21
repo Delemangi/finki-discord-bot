@@ -51,38 +51,14 @@ export const getMostPopularOptionByPollId = async (pollId?: string) => {
   }
 
   try {
-    const pollVotes = await database.pollVote.findMany({
-      include: {
-        option: true,
-      },
-      where: {
-        option: {
-          poll: {
-            id: pollId,
-          },
+    return await database.pollOption.findFirst({
+      orderBy: {
+        votes: {
+          _count: "desc",
         },
       },
-    });
-
-    if (pollVotes.length === 0) {
-      return null;
-    }
-
-    const optionIds = pollVotes.map((pollVote) => pollVote.option.id);
-    optionIds.sort(
-      (a, b) =>
-        optionIds.filter((option) => option === a).length -
-        optionIds.filter((option) => option === b).length,
-    );
-    const optionId = optionIds.shift();
-
-    if (optionId === undefined) {
-      return null;
-    }
-
-    return await database.pollOption.findUnique({
       where: {
-        id: optionId,
+        pollId,
       },
     });
   } catch (error) {
