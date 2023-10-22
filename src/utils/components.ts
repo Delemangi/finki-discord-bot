@@ -1673,7 +1673,9 @@ export const getPollStatsButtonEmbed = async (
   option: string,
   votes: PollVote[],
 ) => {
-  const users = votes.map(async (vote) => await getUsername(vote.userId));
+  const users = await Promise.all(
+    votes.map(async (vote) => await getUsername(vote.userId)),
+  );
 
   return votes.length > 0
     ? new EmbedBuilder()
