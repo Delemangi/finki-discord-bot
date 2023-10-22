@@ -1,4 +1,4 @@
-import { deleteReminders, getReminders } from "../data/Reminder.js";
+import { deleteReminder, getReminders } from "../data/Reminder.js";
 import { client } from "./client.js";
 import { logger } from "./logger.js";
 import { logErrorFunctions, shortStrings } from "./strings.js";
@@ -47,7 +47,7 @@ export const remind = async () => {
       for (const reminder of reminders) {
         if (reminder.timestamp.getTime() <= Date.now()) {
           await remindUser(reminder);
-          await deleteReminders([reminder.id]);
+          await deleteReminder(reminder.id);
         }
       }
     } catch (error) {
