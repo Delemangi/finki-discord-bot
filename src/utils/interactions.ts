@@ -486,7 +486,11 @@ const handlePollButtonForVipUpgradeVote = async (
   await vipChannel?.send(vipStringFunctions.vipUpgradeAccepted(vipPoll.userId));
 };
 
-const handlePollButtonForVipBanVote = async (poll: Poll, vipPoll: VipPoll) => {
+const handlePollButtonForVipBanVote = async (
+  poll: Poll,
+  vipPoll: VipPoll,
+  member: GuildMember,
+) => {
   const vipChannel = getChannel("vip");
 
   if (poll.decision !== "Да") {
@@ -498,6 +502,9 @@ const handlePollButtonForVipBanVote = async (poll: Poll, vipPoll: VipPoll) => {
   await createVipBan({
     userId: vipPoll.userId,
   });
+
+  const vipInvitedRole = await getRoleProperty("vipInvited");
+  await member.roles.remove(vipInvitedRole);
 
   await vipChannel?.send(vipStringFunctions.vipBanAccepted(vipPoll.userId));
 };
@@ -548,7 +555,7 @@ export const handlePollButtonForVipVote = async (
       break;
 
     case "ban":
-      await handlePollButtonForVipBanVote(poll, vipPoll);
+      await handlePollButtonForVipBanVote(poll, vipPoll, member);
       break;
 
     case "unban":
