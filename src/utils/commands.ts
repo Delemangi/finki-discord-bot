@@ -3,7 +3,12 @@ import { client } from "./client.js";
 import { getApplicationId, getToken } from "./config.js";
 import { logger } from "./logger.js";
 import { logErrorFunctions, logMessages } from "./strings.js";
-import { Collection, REST, Routes } from "discord.js";
+import {
+  type ChatInputCommandInteraction,
+  Collection,
+  REST,
+  Routes,
+} from "discord.js";
 import { readdirSync } from "node:fs";
 
 const commands = new Collection<string, Command>();
@@ -55,6 +60,18 @@ export const commandMention = (name: string | undefined) => {
   }
 
   return `</${name}:${command.id}>`;
+};
+
+export const getFullCommandName = (
+  interaction: ChatInputCommandInteraction,
+) => {
+  const subcommand = interaction.options.getSubcommand();
+
+  if (subcommand === null) {
+    return interaction.commandName;
+  }
+
+  return `${interaction.commandName} ${subcommand}`;
 };
 
 export const registerCommands = async () => {
