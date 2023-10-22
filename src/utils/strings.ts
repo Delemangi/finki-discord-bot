@@ -401,6 +401,7 @@ export const commandErrors = {
   optionNotFound: "Опцијата не постои.",
   pollAnonymous: "Анкетата е анонимна.",
   pollCreationFailed: "Креирањето на анкетата беше неуспешно.",
+  pollDeletionFailed: "Бришењето на анкетата беше неуспешно.",
   pollNoOptions: "Анкетата нема опции.",
   pollNoPermission: "Анкетата не е ваша.",
   pollNotFound: "Анкетата не постои.",

@@ -2,7 +2,7 @@ import { deletePoll, getPollById, updatePoll } from "../data/Poll.js";
 import { getPollVotesByPollId } from "../data/PollVote.js";
 import { getVipBanByUserId, getVipBans } from "../data/VipBan.js";
 import {
-  deleteVipPollByPollId,
+  deleteVipPoll,
   getVipPollById,
   getVipPollByPollId,
   getVipPollByUserAndType,
@@ -401,18 +401,23 @@ const handleVipDelete = async (interaction: ChatInputCommandInteraction) => {
 
   const vipPoll =
     (await getVipPollByPollId(pollId)) ?? (await getVipPollById(pollId));
-  const poll = await getPollById(pollId);
 
-  if (vipPoll === null && poll === null) {
+  if (vipPoll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
 
     return;
   }
 
-  await deleteVipPollByPollId(pollId);
-  await deletePoll(pollId);
+  const deletedVipPoll = await deleteVipPoll(vipPoll.id);
+  const deletedPoll = await deletePoll(vipPoll.pollId);
 
-  await interaction.editReply("Успешно е избришана анкетата.");
+  if (deletedVipPoll === null || deletedPoll === null) {
+    await interaction.editReply(commandErrors.pollDeletionFailed);
+
+    return;
+  }
+
+  await interaction.editReply(commandResponses.pollDeleted);
 };
 
 const handleVipRemaining = async (interaction: ChatInputCommandInteraction) => {
