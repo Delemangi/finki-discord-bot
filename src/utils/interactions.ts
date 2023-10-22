@@ -703,20 +703,12 @@ const handlePollButton = async (
     return;
   }
 
-  const vipPoll = await getVipPollByPollId(poll.id);
-
   if (poll.done) {
     const pollEmbed = await getPollEmbed(poll);
     const pollComponents = getPollComponents(poll);
     await interaction.update({
       components: pollComponents,
       embeds: [pollEmbed],
-      ...(vipPoll !== null && {
-        allowedMentions: {
-          parse: [],
-        },
-        content: roleMention(await getRoleProperty("vipVoting")),
-      }),
     });
 
     return;
@@ -744,16 +736,13 @@ const handlePollButton = async (
 
   const decidedPoll = await getPollById(poll.id);
 
+  const vipPoll = await getVipPollByPollId(poll.id);
   const embed = await getPollEmbed(decidedPoll as PollWithOptions);
   const components = getPollComponents(decidedPoll as PollWithOptions);
 
   if (vipPoll !== null) {
     await interaction.message.edit({
-      allowedMentions: {
-        parse: [],
-      },
       components,
-      content: roleMention(await getRoleProperty("vipVoting")),
       embeds: [embed],
     });
 
@@ -944,21 +933,34 @@ const handleVipButton = async (
     "add",
     0.67,
   );
+
+  if (vipPollId === null) {
+    await interaction.reply({
+      content: vipStrings.vipRequestFailed,
+      ephemeral: true,
+    });
+
+    return;
+  }
+
+  const pollWithOptions = await getPollById(vipPollId);
+
+  if (pollWithOptions === null) {
+    await interaction.reply({
+      content: vipStrings.vipRequestFailed,
+      ephemeral: true,
+    });
+
+    return;
+  }
+
   const channel = getChannel("polls");
 
-  if (channel?.isTextBased() && vipPollId !== null) {
-    const pollWithOptions = await getPollById(vipPollId);
-
-    if (pollWithOptions === null) {
-      return;
-    }
-
-    await channel.send({
-      components: getPollComponents(pollWithOptions),
-      content: roleMention(await getRoleProperty("vipVoting")),
-      embeds: [await getPollEmbed(pollWithOptions)],
-    });
-  }
+  await channel?.send({
+    components: getPollComponents(pollWithOptions),
+    embeds: [await getPollEmbed(pollWithOptions)],
+  });
+  await channel?.send(roleMention(await getRoleProperty("vipVoting")));
 
   const mess = await interaction.reply({
     content: vipStrings.vipRequestSent,

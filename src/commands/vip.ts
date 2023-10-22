@@ -239,9 +239,11 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
 
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
+  await interaction.channel?.send(
+    roleMention(await getRoleProperty("vipVoting")),
+  );
   await interaction.editReply({
     components,
-    content: roleMention(await getRoleProperty("vipVoting")),
     embeds: [embed],
   });
 };
@@ -295,9 +297,11 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
 
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
+  await interaction.channel?.send(
+    roleMention(await getRoleProperty("vipVoting")),
+  );
   await interaction.editReply({
     components,
-    content: roleMention(await getRoleProperty("vipVoting")),
     embeds: [embed],
   });
 };
@@ -357,9 +361,11 @@ const handleVipUpgrade = async (interaction: ChatInputCommandInteraction) => {
 
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
+  await interaction.channel?.send(
+    roleMention(await getRoleProperty("vipVoting")),
+  );
   await interaction.editReply({
     components,
-    content: roleMention(await getRoleProperty("vipVoting")),
     embeds: [embed],
   });
 };
@@ -656,9 +662,11 @@ const handleVipBan = async (interaction: ChatInputCommandInteraction) => {
 
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
+  await interaction.channel?.send(
+    roleMention(await getRoleProperty("vipVoting")),
+  );
   await interaction.editReply({
     components,
-    content: roleMention(await getRoleProperty("vipVoting")),
     embeds: [embed],
   });
 };
@@ -714,9 +722,11 @@ const handleVipUnban = async (interaction: ChatInputCommandInteraction) => {
 
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
+  await interaction.channel?.send(
+    roleMention(await getRoleProperty("vipVoting")),
+  );
   await interaction.editReply({
     components,
-    content: roleMention(await getRoleProperty("vipVoting")),
     embeds: [embed],
   });
 };
