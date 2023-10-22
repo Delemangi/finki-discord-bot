@@ -65,7 +65,7 @@ export const commandMention = (name: string | undefined) => {
 export const getFullCommandName = (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const subcommand = interaction.options.getSubcommand();
+  const subcommand = interaction.options.getSubcommand(false);
 
   if (subcommand === null) {
     return interaction.commandName;
