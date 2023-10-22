@@ -42,21 +42,16 @@ export const initializeRoles = async () => {
 
 export const refreshRoles = (guild: Guild | null, type: RoleSets) => {
   if (roleSets[type].length === 0 && guild !== null) {
-    let list;
+    const roleNames =
+      type === "courses"
+        ? Object.keys(getFromRoleConfig("courses"))
+        : getFromRoleConfig(type);
 
-    if (type === "courses") {
-      list = Object.keys(getFromRoleConfig("courses"));
-    } else {
-      list = getFromRoleConfig(type);
-    }
-
-    list = list.map(
-      (role) => guild?.roles.cache.find((ro) => ro.name === role),
+    const roleSet = roleNames.map(
+      (roleName) => guild?.roles.cache.find((ro) => ro.name === roleName),
     );
 
-    if (!list.includes(undefined)) {
-      roleSets[type] = list as Role[];
-    }
+    roleSets[type] = roleSet.filter((role) => role !== undefined) as Role[];
   }
 };
 
