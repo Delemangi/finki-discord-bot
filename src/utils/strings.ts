@@ -673,6 +673,8 @@ export const databaseErrorFunctions = {
   deleteQuestionLinksByQuestionIdError: (error: unknown) =>
     `Failed deleting question links by question ID\n${error}`,
 
+  deleteReminderError: (error: unknown) => `Failed deleting reminder\n${error}`,
+
   deleteRemindersError: (error: unknown) =>
     `Failed deleting reminders\n${error}`,
 

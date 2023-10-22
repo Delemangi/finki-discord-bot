@@ -48,3 +48,21 @@ export const deleteReminders = async (reminderIds?: string[]) => {
     return null;
   }
 };
+
+export const deleteReminder = async (reminderId?: string) => {
+  if (reminderId === undefined) {
+    return null;
+  }
+
+  try {
+    return await database.reminder.delete({
+      where: {
+        id: reminderId,
+      },
+    });
+  } catch (error) {
+    logger.error(databaseErrorFunctions.deleteReminderError(error));
+
+    return null;
+  }
+};

@@ -47,10 +47,9 @@ export const remind = async () => {
       for (const reminder of reminders) {
         if (reminder.timestamp.getTime() <= Date.now()) {
           await remindUser(reminder);
+          await deleteReminders([reminder.id]);
         }
       }
-
-      await deleteReminders(reminders.map((reminder) => reminder.id));
     } catch (error) {
       logger.error(logErrorFunctions.reminderLoadError(error));
     }
