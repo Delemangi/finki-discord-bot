@@ -38,6 +38,7 @@ import {
 import {
   type ChatInputCommandInteraction,
   ComponentType,
+  roleMention,
   SlashCommandBuilder,
   userMention,
 } from "discord.js";
@@ -240,6 +241,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
   const components = getPollComponents(poll);
   await interaction.editReply({
     components,
+    content: roleMention(await getRoleProperty("vipVoting")),
     embeds: [embed],
   });
 };
@@ -295,6 +297,7 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
   const components = getPollComponents(poll);
   await interaction.editReply({
     components,
+    content: roleMention(await getRoleProperty("vipVoting")),
     embeds: [embed],
   });
 };
@@ -356,6 +359,7 @@ const handleVipUpgrade = async (interaction: ChatInputCommandInteraction) => {
   const components = getPollComponents(poll);
   await interaction.editReply({
     components,
+    content: roleMention(await getRoleProperty("vipVoting")),
     embeds: [embed],
   });
 };
@@ -649,6 +653,7 @@ const handleVipBan = async (interaction: ChatInputCommandInteraction) => {
   const components = getPollComponents(poll);
   await interaction.editReply({
     components,
+    content: roleMention(await getRoleProperty("vipVoting")),
     embeds: [embed],
   });
 };
@@ -706,6 +711,7 @@ const handleVipUnban = async (interaction: ChatInputCommandInteraction) => {
   const components = getPollComponents(poll);
   await interaction.editReply({
     components,
+    content: roleMention(await getRoleProperty("vipVoting")),
     embeds: [embed],
   });
 };

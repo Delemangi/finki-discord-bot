@@ -4,6 +4,7 @@ import {
   deletePollOptionsByPollIdAndName,
   getMostPopularOptionByPollId,
 } from "../data/PollOption.js";
+import { getVipPollByPollId } from "../data/VipPoll.js";
 import { deleteResponse } from "../utils/channels.js";
 import { commandMention } from "../utils/commands.js";
 import {
@@ -16,7 +17,7 @@ import {
   getPollStatsComponents,
   getPollStatsEmbed,
 } from "../utils/components.js";
-import { getConfigProperty } from "../utils/config.js";
+import { getConfigProperty, getRoleProperty } from "../utils/config.js";
 import { logger } from "../utils/logger.js";
 import { startPoll } from "../utils/polls.js";
 import {
@@ -29,6 +30,7 @@ import {
 import {
   type ChatInputCommandInteraction,
   ComponentType,
+  roleMention,
   SlashCommandBuilder,
 } from "discord.js";
 
@@ -341,12 +343,19 @@ const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
+  const vipPoll = await getVipPollByPollId(poll.id);
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
 
   await interaction.editReply({
     components,
     embeds: [embed],
+    ...(vipPoll !== null && {
+      allowedMentions: {
+        parse: [],
+      },
+      content: roleMention(await getRoleProperty("vipVoting")),
+    }),
   });
 };
 

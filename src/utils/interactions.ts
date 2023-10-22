@@ -77,6 +77,7 @@ import {
   type ChatInputCommandInteraction,
   type GuildMember,
   type GuildMemberRoleManager,
+  roleMention,
   type UserContextMenuCommandInteraction,
 } from "discord.js";
 
@@ -702,12 +703,20 @@ const handlePollButton = async (
     return;
   }
 
+  const vipPoll = await getVipPollByPollId(poll.id);
+
   if (poll.done) {
     const pollEmbed = await getPollEmbed(poll);
     const pollComponents = getPollComponents(poll);
     await interaction.update({
       components: pollComponents,
       embeds: [pollEmbed],
+      ...(vipPoll !== null && {
+        allowedMentions: {
+          parse: [],
+        },
+        content: roleMention(await getRoleProperty("vipVoting")),
+      }),
     });
 
     return;
@@ -737,16 +746,27 @@ const handlePollButton = async (
 
   const embed = await getPollEmbed(decidedPoll as PollWithOptions);
   const components = getPollComponents(decidedPoll as PollWithOptions);
+
+  if (vipPoll !== null) {
+    await interaction.message.edit({
+      allowedMentions: {
+        parse: [],
+      },
+      components,
+      content: roleMention(await getRoleProperty("vipVoting")),
+      embeds: [embed],
+    });
+
+    const member = await interaction.guild.members.fetch(vipPoll.userId);
+    await handlePollButtonForVipVote(decidedPoll as PollWithOptions, member);
+
+    return;
+  }
+
   await interaction.message.edit({
     components,
     embeds: [embed],
   });
-
-  const vipPoll = await getVipPollByPollId(poll.id);
-  if (vipPoll !== null) {
-    const member = await interaction.guild.members.fetch(vipPoll.userId);
-    await handlePollButtonForVipVote(decidedPoll as PollWithOptions, member);
-  }
 };
 
 const handlePollStatsButton = async (
@@ -935,6 +955,7 @@ const handleVipButton = async (
 
     await channel.send({
       components: getPollComponents(pollWithOptions),
+      content: roleMention(await getRoleProperty("vipVoting")),
       embeds: [await getPollEmbed(pollWithOptions)],
     });
   }
