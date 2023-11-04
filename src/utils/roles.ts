@@ -28,14 +28,13 @@ export const initializeRoles = async () => {
     return;
   }
 
-  roles.vip = guild.roles.cache.get(roleIds.vip);
-  roles.admin = guild.roles.cache.get(roleIds.admin);
-  roles.fss = guild.roles.cache.get(roleIds.fss);
-  roles.ombudsman = guild.roles.cache.get(roleIds.ombudsman);
-  roles.vipInvited = guild.roles.cache.get(roleIds.vipInvited);
-  roles.vipVoting = guild.roles.cache.get(roleIds.vipVoting);
-  roles.contributor = guild.roles.cache.get(roleIds.contributor);
-  roles.booster = guild.roles.cache.get(roleIds.booster);
+  for (const [roleName, roleId] of Object.entries(roleIds)) {
+    if (roleId === undefined) {
+      continue;
+    }
+
+    roles[roleName as Roles] = guild.roles.cache.get(roleId);
+  }
 
   logger.info(logMessages.rolesInitialized);
 };
