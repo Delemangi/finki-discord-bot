@@ -30,9 +30,7 @@ import {
   getPollComponents,
   getPollEmbed,
   getPollInfoEmbed,
-  getPollStatsButtonEmbed,
   getPollStatsComponents,
-  getPollStatsEmbed,
   getUserContextMenuCommandEmbed,
   getVipAcknowledgeComponents,
   getVipConfirmComponents,
@@ -79,6 +77,7 @@ import {
   type GuildMemberRoleManager,
   roleMention,
   type UserContextMenuCommandInteraction,
+  userMention,
 } from "discord.js";
 
 // Buttons
@@ -801,17 +800,16 @@ const handlePollStatsButton = async (
 
   const votes = (await getPollVotesByOptionId(pollOption.id)) ?? [];
 
-  await interaction.message.edit({
-    components: getPollStatsComponents(poll),
-    embeds: [await getPollStatsEmbed(poll)],
-  });
-
-  const embed = await getPollStatsButtonEmbed(poll.id, pollOption.name, votes);
-  const message = await interaction.reply({
-    embeds: [embed],
+  await interaction.reply({
+    allowedMentions: {
+      parse: [],
+    },
+    content:
+      votes.length === 0
+        ? commandResponses.noVoters
+        : votes.map((vote) => userMention(vote.userId)).join(", "),
     ephemeral: true,
   });
-  void deleteResponse(message);
 };
 
 const handleVipButton = async (
@@ -821,11 +819,10 @@ const handleVipButton = async (
   const member = interaction.member as GuildMember;
 
   if (await isMemberInVip(member)) {
-    const message = await interaction.reply({
+    await interaction.reply({
       content: commandErrors.alreadyVipMember,
       ephemeral: true,
     });
-    void deleteResponse(message);
 
     return;
   }
@@ -833,11 +830,10 @@ const handleVipButton = async (
   const vipBan = await getVipBanByUserId(interaction.user.id);
 
   if (vipBan !== null) {
-    const message = await interaction.reply({
+    await interaction.reply({
       content: vipStrings.vipBanned,
       ephemeral: true,
     });
-    void deleteResponse(message);
 
     return;
   }
@@ -961,12 +957,16 @@ const handleVipButton = async (
     embeds: [await getPollEmbed(pollWithOptions)],
   });
   await channel?.send(roleMention(await getRoleProperty("vipVoting")));
+  const components = getPollStatsComponents(pollWithOptions);
+  await channel?.send({
+    components,
+    content: commandResponseFunctions.pollStats(pollWithOptions.title),
+  });
 
-  const mess = await interaction.reply({
+  await interaction.reply({
     content: vipStrings.vipRequestSent,
     ephemeral: true,
   });
-  void deleteResponse(mess);
 };
 
 // Autocomplete interactions

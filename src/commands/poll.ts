@@ -15,7 +15,6 @@ import {
   getPollListFirstPageEmbed,
   getPollListNextPageEmbed,
   getPollStatsComponents,
-  getPollStatsEmbed,
 } from "../utils/components.js";
 import { getConfigProperty, getRoleProperty } from "../utils/config.js";
 import { logger } from "../utils/logger.js";
@@ -325,11 +324,10 @@ const handlePollStats = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embed = await getPollStatsEmbed(poll);
   const components = getPollStatsComponents(poll);
   await interaction.editReply({
     components,
-    embeds: [embed],
+    content: commandResponseFunctions.pollStats(poll.title),
   });
 };
 
@@ -357,6 +355,14 @@ const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
       content: roleMention(await getRoleProperty("vipVoting")),
     }),
   });
+
+  if (!poll.anonymous) {
+    const statsComponents = getPollStatsComponents(poll);
+    await interaction.channel?.send({
+      components: statsComponents,
+      content: commandResponseFunctions.pollStats(poll.title),
+    });
+  }
 };
 
 const handlePollAdd = async (interaction: ChatInputCommandInteraction) => {

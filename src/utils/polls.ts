@@ -1,6 +1,6 @@
 import { createPoll, getPollById, updatePoll } from "../data/Poll.js";
 import { countPollVotesByOptionId } from "../data/PollVote.js";
-import { createVipPoll } from "../data/VipPoll.js";
+import { createVipPoll, getVipPollByPollId } from "../data/VipPoll.js";
 import { client } from "./client.js";
 import { getRoleProperty } from "./config.js";
 import { getMembersWithRoles } from "./roles.js";
@@ -52,12 +52,13 @@ export const startVipPoll = async (
   type: string,
   threshold?: number,
 ) => {
-  let title;
-  let description;
   const partialUser = {
     id: vipUser.id,
     tag: vipUser.tag,
   };
+
+  let title: string;
+  let description: string;
 
   switch (type) {
     case "add":
@@ -90,7 +91,7 @@ export const startVipPoll = async (
   }
 
   const poll: Prisma.PollCreateInput = {
-    anonymous: true,
+    anonymous: false,
     channelId: interaction.channelId,
     description,
     done: false,
@@ -103,6 +104,9 @@ export const startVipPoll = async (
         },
         {
           name: "Не",
+        },
+        {
+          name: "Воздржан",
         },
       ],
     },
@@ -128,9 +132,13 @@ export const startVipPoll = async (
     userId: vipUser.id,
   };
 
-  await createVipPoll(vipPoll);
+  const createdVipPoll = await createVipPoll(vipPoll);
 
-  return createdPoll.id ?? null;
+  if (createdVipPoll === null) {
+    return null;
+  }
+
+  return createdPoll.id;
 };
 
 export const decidePoll = async (pollId: string, interaction: Interaction) => {
@@ -181,4 +189,13 @@ export const decidePoll = async (pollId: string, interaction: Interaction) => {
 
     await updatePoll(poll);
   }
+
+  const vipPoll = await getVipPollByPollId(pollId);
+
+  if (vipPoll === null) {
+    return;
+  }
+
+  poll.decision = "Не";
+  await updatePoll(poll);
 };

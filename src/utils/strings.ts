@@ -275,6 +275,7 @@ export const commandResponses = {
   linkDeleted: "Го избришавте линкот.",
   messageCreated: "Испративте порака.",
   noVipBanned: "Нема членови со забрана во ВИП.",
+  noVoters: "Нема гласачи.",
   pollClosed: "Анкетата е затворена.",
   pollDeleted: "Анкетата е избришана.",
   pollOpen: "Анкетата е отворена за гласање.",
@@ -335,6 +336,9 @@ export const commandResponseFunctions = {
   ping: (ping: number | string) => `${ping} ms`,
 
   pollEdited: (edits: string) => `Ја изменивте анкетата (${edits}).`,
+
+  pollStats: (pollTitle: string) =>
+    `Преглед на гласовите за анкетата ${inlineCode(pollTitle)}`,
 
   programAddedOrRemoved: (roleId: string, added: boolean) =>
     `Го ${added ? "земавте" : "отстранивте"} смерот ${roleMention(roleId)}.`,
@@ -877,13 +881,11 @@ export const shortStrings = {
   no: "Не",
   none: "Нема",
   notifications: "Нотификации",
-  noVotersFor: "Нема гласачи за",
   open: "Отворено",
   options: "Опции",
   other: "Друго",
   points: "Поени",
   poll: "Анкета",
-  pollResults: "Резултати од анкетата",
   polls: "Анкети",
   prerequisites: "Предуслови",
   professors: "Професори",

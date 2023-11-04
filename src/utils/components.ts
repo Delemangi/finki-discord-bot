@@ -52,7 +52,6 @@ import {
   type Experience,
   type Link,
   type Poll,
-  type PollVote,
   type Question,
   type Rule,
   type VipPoll,
@@ -1600,47 +1599,6 @@ export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
     .setTimestamp();
 };
 
-export const getPollStatsEmbed = async (poll: PollWithOptions) => {
-  return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
-    .setTitle(poll.title)
-    .setDescription(`Гласови: ${(await getPollVotesByPollId(poll.id))?.length}`)
-    .addFields(
-      {
-        inline: true,
-        name: shortStrings.options,
-        value: (
-          await Promise.all(
-            poll.options.map(
-              async (option, index) =>
-                `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
-                  option.name
-                }`,
-            ),
-          )
-        ).join("\n"),
-      },
-      {
-        inline: true,
-        name: shortStrings.votes,
-        value: (
-          await Promise.all(
-            poll.options.map(
-              async (option, index) =>
-                `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
-                  (await getPollVotesByOptionId(option.id))?.length ?? 0
-                }`,
-            ),
-          )
-        ).join("\n"),
-      },
-    )
-    .setFooter({
-      text: `${shortStrings.poll}: ${poll.id}`,
-    })
-    .setTimestamp();
-};
-
 export const getPollStatsComponents = (poll: PollWithOptions) => {
   const components = [];
 
@@ -1666,38 +1624,6 @@ export const getPollStatsComponents = (poll: PollWithOptions) => {
   }
 
   return components;
-};
-
-export const getPollStatsButtonEmbed = async (
-  id: string,
-  option: string,
-  votes: PollVote[],
-) => {
-  const users = await Promise.all(
-    votes.map(async (vote) => await getUsername(vote.userId)),
-  );
-
-  return votes.length > 0
-    ? new EmbedBuilder()
-        .setColor(await getConfigProperty("color"))
-        .setTitle(shortStrings.pollResults)
-        .setDescription(
-          `${shortStrings.votersFor} ${inlineCode(option)}:\n${codeBlock(
-            users.join("\n"),
-          )}`,
-        )
-        .setTimestamp()
-        .setFooter({
-          text: `${shortStrings.poll}: ${id}`,
-        })
-    : new EmbedBuilder()
-        .setColor(await getConfigProperty("color"))
-        .setTitle(shortStrings.pollResults)
-        .setDescription(`${shortStrings.noVotersFor} ${inlineCode(option)}`)
-        .setTimestamp()
-        .setFooter({
-          text: `${shortStrings.poll}: ${id}`,
-        });
 };
 
 export const getPollListFirstPageEmbed = async (

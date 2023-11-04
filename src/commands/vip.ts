@@ -13,6 +13,7 @@ import {
   getPaginationComponents,
   getPollComponents,
   getPollEmbed,
+  getPollStatsComponents,
   getVipEmbed,
   getVipInvitedEmbed,
   getVipPollListFirstPageEmbed,
@@ -32,6 +33,7 @@ import { getMembersWithRoles } from "../utils/roles.js";
 import {
   commandDescriptions,
   commandErrors,
+  commandResponseFunctions,
   commandResponses,
   logErrorFunctions,
 } from "../utils/strings.js";
@@ -246,6 +248,12 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     components,
     embeds: [embed],
   });
+
+  const statsComponents = getPollStatsComponents(poll);
+  await interaction.channel?.send({
+    components: statsComponents,
+    content: commandResponseFunctions.pollStats(poll.title),
+  });
 };
 
 const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
@@ -303,6 +311,12 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply({
     components,
     embeds: [embed],
+  });
+
+  const statsComponents = getPollStatsComponents(poll);
+  await interaction.channel?.send({
+    components: statsComponents,
+    content: commandResponseFunctions.pollStats(poll.title),
   });
 };
 
@@ -367,6 +381,12 @@ const handleVipUpgrade = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply({
     components,
     embeds: [embed],
+  });
+
+  const statsComponents = getPollStatsComponents(poll);
+  await interaction.channel?.send({
+    components: statsComponents,
+    content: commandResponseFunctions.pollStats(poll.title),
   });
 };
 
@@ -669,6 +689,12 @@ const handleVipBan = async (interaction: ChatInputCommandInteraction) => {
     components,
     embeds: [embed],
   });
+
+  const statsComponents = getPollStatsComponents(poll);
+  await interaction.channel?.send({
+    components: statsComponents,
+    content: commandResponseFunctions.pollStats(poll.title),
+  });
 };
 
 const handleVipBans = async (interaction: ChatInputCommandInteraction) => {
@@ -728,6 +754,12 @@ const handleVipUnban = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply({
     components,
     embeds: [embed],
+  });
+
+  const statsComponents = getPollStatsComponents(poll);
+  await interaction.channel?.send({
+    components: statsComponents,
+    content: commandResponseFunctions.pollStats(poll.title),
   });
 };
 
