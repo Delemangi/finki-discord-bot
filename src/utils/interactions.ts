@@ -731,7 +731,7 @@ const handlePollButton = async (
   }
 
   await handleVote(interaction, poll, optionId, option);
-  await decidePoll(poll.id, interaction);
+  await decidePoll(poll.id);
 
   const decidedPoll = await getPollById(poll.id);
 
