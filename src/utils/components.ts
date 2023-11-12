@@ -29,6 +29,7 @@ import {
 import { logger } from "./logger.js";
 import { getUsername } from "./members.js";
 import { getCommandsWithPermission } from "./permissions.js";
+import { getPollThreshold } from "./polls.js";
 import {
   getMembersWithAndWithoutRoles,
   getMembersWithRoles,
@@ -1529,10 +1530,7 @@ export const getPollComponents = (poll: PollWithOptions) => {
 export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
   const votes = (await getPollVotesByPollId(poll.id))?.length ?? 0;
   const voters = await getMembersWithRoles(guild, ...poll.roles);
-  const rawThreshold = voters.length * poll.threshold;
-  const threshold = Number.isInteger(rawThreshold)
-    ? rawThreshold + 1
-    : Math.ceil(rawThreshold);
+  const threshold = await getPollThreshold(poll.id);
   const turnout = `(${((votes / voters.length) * 100).toFixed(2)}%)`;
 
   return new EmbedBuilder()

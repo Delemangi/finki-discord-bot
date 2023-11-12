@@ -2,14 +2,13 @@ import { createPoll, getPollById, updatePoll } from "../data/Poll.js";
 import { countPollVotesByOptionId } from "../data/PollVote.js";
 import { createVipPoll, getVipPollByPollId } from "../data/VipPoll.js";
 import { client } from "./client.js";
-import { getRoleProperty } from "./config.js";
+import { getConfigProperty, getRoleProperty } from "./config.js";
 import { getMembersWithRoles } from "./roles.js";
 import { vipStringFunctions } from "./strings.js";
 import { type Prisma } from "@prisma/client";
 import {
   type ButtonInteraction,
   type ChatInputCommandInteraction,
-  type Interaction,
   type User,
 } from "discord.js";
 
@@ -141,7 +140,43 @@ export const startVipPoll = async (
   return createdPoll.id;
 };
 
-export const decidePoll = async (pollId: string, interaction: Interaction) => {
+export const getPollThreshold = async (pollId: string) => {
+  const poll = await getPollById(pollId);
+
+  if (poll === null) {
+    return null;
+  }
+
+  if (poll.roles.length === 0) {
+    return null;
+  }
+
+  const guild = client.guilds.cache.get(await getConfigProperty("guild"));
+
+  if (guild === undefined) {
+    return null;
+  }
+
+  const totalVoters = await getMembersWithRoles(guild, ...poll.roles);
+  const rawThreshold = totalVoters.length * poll.threshold;
+  const threshold = Number.isInteger(rawThreshold)
+    ? rawThreshold + 1
+    : Math.ceil(rawThreshold);
+
+  const vipPoll = await getVipPollByPollId(pollId);
+
+  if (vipPoll === null) {
+    return threshold;
+  }
+
+  const abstenstions = await countPollVotesByOptionId(
+    poll.options.find((option) => option.name === "Воздржан")?.id ?? "",
+  );
+
+  return threshold - (abstenstions ?? 0);
+};
+
+export const decidePoll = async (pollId: string) => {
   const poll = await getPollById(pollId);
 
   if (poll === null) {
@@ -152,15 +187,19 @@ export const decidePoll = async (pollId: string, interaction: Interaction) => {
     return;
   }
 
+  const guild = client.guilds.cache.get(await getConfigProperty("guild"));
+
+  if (guild === undefined) {
+    return;
+  }
+
   const votes: Record<string, number> = {};
-  const totalVoters = await getMembersWithRoles(
-    interaction.guild,
-    ...poll.roles,
-  );
-  const rawThreshold = totalVoters.length * poll.threshold;
-  const threshold = Number.isInteger(rawThreshold)
-    ? rawThreshold + 1
-    : Math.ceil(rawThreshold);
+  const totalVoters = await getMembersWithRoles(guild, ...poll.roles);
+  const threshold = await getPollThreshold(pollId);
+
+  if (threshold === null) {
+    return;
+  }
 
   for (const option of poll.options) {
     votes[option.name] = (await countPollVotesByOptionId(option.id)) ?? 0;
