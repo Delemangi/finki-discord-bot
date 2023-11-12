@@ -54,7 +54,15 @@ export const updatePoll = async (poll?: PollWithOptions) => {
 
 export const getPolls = async () => {
   try {
-    return await database.poll.findMany();
+    return await database.poll.findMany({
+      include: {
+        options: {
+          orderBy: {
+            name: "asc",
+          },
+        },
+      },
+    });
   } catch (error) {
     logger.error(databaseErrorFunctions.getPollsError(error));
 
@@ -70,7 +78,11 @@ export const getPollById = async (pollId?: string) => {
   try {
     return await database.poll.findUnique({
       include: {
-        options: true,
+        options: {
+          orderBy: {
+            name: "asc",
+          },
+        },
       },
       where: {
         id: pollId,
