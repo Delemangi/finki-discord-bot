@@ -158,7 +158,11 @@ export const getPollThreshold = async (pollId: string) => {
   }
 
   const totalVoters = await getMembersWithRoles(guild, ...poll.roles);
-  const rawThreshold = totalVoters.length * poll.threshold;
+  const abstenstions = await countPollVotesByOptionId(
+    poll.options.find((option) => option.name === "Воздржан")?.id ?? "",
+  );
+  const rawThreshold =
+    (totalVoters.length - (abstenstions ?? 0)) * poll.threshold;
   const threshold = Number.isInteger(rawThreshold)
     ? rawThreshold + 1
     : Math.ceil(rawThreshold);
@@ -169,11 +173,7 @@ export const getPollThreshold = async (pollId: string) => {
     return threshold;
   }
 
-  const abstenstions = await countPollVotesByOptionId(
-    poll.options.find((option) => option.name === "Воздржан")?.id ?? "",
-  );
-
-  return threshold - (abstenstions ?? 0);
+  return threshold;
 };
 
 export const decidePoll = async (pollId: string) => {
