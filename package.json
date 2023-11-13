@@ -9,7 +9,7 @@
     "chrono-node": "^2.7.0",
     "croner": "^7.0.5",
     "discord-api-types": "^0.37.63",
-    "discord.js": "^14.14.0",
+    "discord.js": "^14.14.1",
     "dotenv": "^16.3.1",
     "rimraf": "^5.0.5",
     "winston": "^3.11.0",
