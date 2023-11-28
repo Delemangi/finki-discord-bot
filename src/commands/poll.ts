@@ -4,7 +4,7 @@ import {
   deletePollOptionsByPollIdAndName,
   getMostPopularOptionByPollId,
 } from "../data/PollOption.js";
-import { getVipPollByPollId } from "../data/VipPoll.js";
+import { getSpecialPollByPollId } from "../data/SpecialPoll.js";
 import { deleteResponse } from "../utils/channels.js";
 import { commandMention } from "../utils/commands.js";
 import {
@@ -341,14 +341,14 @@ const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const vipPoll = await getVipPollByPollId(poll.id);
+  const specialPoll = await getSpecialPollByPollId(poll.id);
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
 
   await interaction.editReply({
     components,
     embeds: [embed],
-    ...(vipPoll !== null && {
+    ...(specialPoll !== null && {
       allowedMentions: {
         parse: [],
       },

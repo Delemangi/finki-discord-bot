@@ -285,7 +285,7 @@ export const commandResponses = {
   ruleCreated: "Креиравте правило.",
   ruleDeleted: "Го избришавте правилото.",
   scriptExecuted: "Ја извршивте скриптата.",
-  userVipInvited: "Го поканивте корисникот во ВИП.",
+  userGivenRegular: "Го додадовте корисникот во групата на регуларни.",
   voteRemoved: "Го тргнавте гласот.",
 };
 
@@ -419,6 +419,8 @@ export const commandErrors = {
   scriptNotExecuted: "Скриптата не е извршена.",
   serverOnlyCommand: "Командата се повикува само во серверот.",
   sessionNotFound: "Сесијата не постои.",
+  specialPollsFetchFailed:
+    "Превземањето на специјалните анкети беше неуспешно.",
   staffNotFound: "Професорот не постои.",
   userAdmin: "Корисникот е администратор.",
   userBot: "Корисникот е бот.",
@@ -433,7 +435,6 @@ export const commandErrors = {
   userVipMember: "Корисникот е член на ВИП.",
   userVipPending: "Постои предлог за овој корисник.",
   vipBansFetchFailed: "Превземањето на забраните беше неуспешно.",
-  vipPollsFetchFailed: "Превземањето на ВИП анкетите беше неуспешно.",
 };
 
 export const commandErrorFunctions = {
@@ -648,9 +649,10 @@ export const databaseErrorFunctions = {
 
   createRuleError: (error: unknown) => `Failed creating rule\n${error}`,
 
-  createVipBanError: (error: unknown) => `Failed creating VIP ban\n${error}`,
+  createSpecialPollError: (error: unknown) =>
+    `Failed creating special poll\n${error}`,
 
-  createVipPollError: (error: unknown) => `Failed creating VIP poll\n${error}`,
+  createVipBanError: (error: unknown) => `Failed creating VIP ban\n${error}`,
 
   deleteAntoError: (error: unknown) => `Failed deleting Anto fact\n${error}`,
 
@@ -684,12 +686,13 @@ export const databaseErrorFunctions = {
 
   deleteRuleError: (error: unknown) => `Failed deleting rule\n${error}`,
 
+  deleteSpecialPollByPollIdError: (error: unknown) =>
+    `Failed deleting special poll\n${error}`,
+
+  deleteSpecialPollError: (error: unknown) =>
+    `Failed deleting special poll\n${error}`,
+
   deleteVipBanError: (error: unknown) => `Failed deleting VIP ban\n${error}`,
-
-  deleteVipPollByPollIdError: (error: unknown) =>
-    `Failed deleting VIP poll\n${error}`,
-
-  deleteVipPollError: (error: unknown) => `Failed deleting VIP poll\n${error}`,
 
   getCompaniesError: (error: unknown) => `Failed getting companies\n${error}`,
 
@@ -755,21 +758,22 @@ export const databaseErrorFunctions = {
 
   getRulesError: (error: unknown) => `Failed getting rules\n${error}`,
 
+  getSpecialPollByIdError: (error: unknown) =>
+    `Failed getting special poll by ID\n${error}`,
+
+  getSpecialPollByPollIdError: (error: unknown) =>
+    `Failed getting special poll\n${error}`,
+
+  getSpecialPollByUserAndTypeError: (error: unknown) =>
+    `Failed getting special poll\n${error}`,
+
+  getSpecialPollsError: (error: unknown) =>
+    `Failed getting special polls\n${error}`,
+
   getVipBanByUserIdError: (error: unknown) =>
     `Failed getting VIP ban by user ID\n${error}`,
 
   getVipBansError: (error: unknown) => `Failed getting VIP bans\n${error}`,
-
-  getVipPollByIdError: (error: unknown) =>
-    `Failed getting VIP poll by ID\n${error}`,
-
-  getVipPollByPollIdError: (error: unknown) =>
-    `Failed getting VIP poll\n${error}`,
-
-  getVipPollByUserAndTypeError: (error: unknown) =>
-    `Failed getting VIP poll\n${error}`,
-
-  getVipPollsError: (error: unknown) => `Failed getting VIP polls\n${error}`,
 
   updateExperienceError: (error: unknown) =>
     `Failed updating experience\n${error}`,
@@ -798,7 +802,7 @@ export const embedMessages = {
   all: "Сите",
   allCommands:
     "Ова се сите достапни команди за вас. Командите може да ги повикате во овој сервер, или во приватна порака.",
-  allVipPolls: "Ова се сите достапни анкети за ВИП.",
+  allSpecialPolls: "Ова се сите достапни специјални анкети.",
   breakRules: "Евентуално кршење на правилата може да доведе до санкции",
   chooseNameColor: "Изберете боја за вашето име.",
   chooseNotifications:

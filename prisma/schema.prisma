@@ -141,9 +141,9 @@ model Poll {
   threshold   Float    @default(0.5)
   roles       String[] @default([])
 
-  options PollOption[]
-  votes   PollVote[]
-  vipPoll VipPoll?
+  options     PollOption[]
+  votes       PollVote[]
+  specialPoll SpecialPoll?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -177,7 +177,7 @@ model PollVote {
   updatedAt DateTime @updatedAt
 }
 
-model VipPoll {
+model SpecialPoll {
   id String @id @default(uuid())
 
   userId String

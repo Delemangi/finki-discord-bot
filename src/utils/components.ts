@@ -55,7 +55,7 @@ import {
   type Poll,
   type Question,
   type Rule,
-  type VipPoll,
+  type SpecialPoll,
 } from "@prisma/client";
 import {
   ActionRowBuilder,
@@ -1683,14 +1683,14 @@ export const getPollListNextPageEmbed = async (
     .setTimestamp();
 };
 
-export const getVipPollListFirstPageEmbed = async (
-  polls: VipPoll[],
+export const getSpecialPollListFirstPageEmbed = async (
+  polls: SpecialPoll[],
   pollsPerPage: number = 8,
 ) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
     .setTitle(shortStrings.polls)
-    .setDescription(embedMessages.allVipPolls)
+    .setDescription(embedMessages.allSpecialPolls)
     .addFields(
       ...(await Promise.all(
         polls.slice(0, pollsPerPage).map(async (poll) => ({
@@ -1709,15 +1709,15 @@ export const getVipPollListFirstPageEmbed = async (
     .setTimestamp();
 };
 
-export const getVipPollListNextPageEmbed = async (
-  polls: VipPoll[],
+export const getSpecialPollListNextPageEmbed = async (
+  polls: SpecialPoll[],
   page: number,
   pollsPerPage: number = 8,
 ) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
     .setTitle(shortStrings.polls)
-    .setDescription(embedMessages.allVipPolls)
+    .setDescription(embedMessages.allSpecialPolls)
     .addFields(
       ...(await Promise.all(
         polls

@@ -1,23 +1,23 @@
 import { deletePoll, getPollById, updatePoll } from "../data/Poll.js";
 import { getPollVotesByPollId } from "../data/PollVote.js";
-import { getVipBanByUserId, getVipBans } from "../data/VipBan.js";
 import {
-  deleteVipPoll,
-  getVipPollById,
-  getVipPollByPollId,
-  getVipPollByUserAndType,
-  getVipPolls,
-} from "../data/VipPoll.js";
+  deleteSpecialPoll,
+  getSpecialPollById,
+  getSpecialPollByPollId,
+  getSpecialPollByUserAndType,
+  getSpecialPolls,
+} from "../data/SpecialPoll.js";
+import { getVipBanByUserId, getVipBans } from "../data/VipBan.js";
 import { deleteResponse } from "../utils/channels.js";
 import {
   getPaginationComponents,
   getPollComponents,
   getPollEmbed,
   getPollStatsComponents,
+  getSpecialPollListFirstPageEmbed,
+  getSpecialPollListNextPageEmbed,
   getVipEmbed,
   getVipInvitedEmbed,
-  getVipPollListFirstPageEmbed,
-  getVipPollListNextPageEmbed,
 } from "../utils/components.js";
 import { getConfigProperty, getRoleProperty } from "../utils/config.js";
 import { handlePollButtonForVipVote } from "../utils/interactions.js";
@@ -30,9 +30,9 @@ import {
 } from "../utils/members.js";
 import {
   createPollChoices,
-  managedPollOptions,
-  managedPollTypes,
-  startVipPoll,
+  specialPollOptions,
+  specialPollTypes,
+  startSpecialPoll,
 } from "../utils/polls.js";
 import { getMembersWithRoles } from "../utils/roles.js";
 import {
@@ -99,14 +99,14 @@ export const data = new SlashCommandBuilder()
           .setName("type")
           .setDescription("Тип на анкета")
           .setRequired(true)
-          .addChoices(...createPollChoices(managedPollTypes)),
+          .addChoices(...createPollChoices(specialPollTypes)),
       )
       .addStringOption((option) =>
         option
           .setName("decision")
           .setDescription("Одлука")
           .setRequired(true)
-          .addChoices(...createPollChoices(managedPollOptions)),
+          .addChoices(...createPollChoices(specialPollOptions)),
       ),
   )
   .addSubcommand((command) =>
@@ -210,7 +210,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const existingPoll = await getVipPollByUserAndType(user.id, "add");
+  const existingPoll = await getSpecialPollByUserAndType(user.id, "vipAdd");
 
   if (existingPoll !== null) {
     await interaction.editReply(commandErrors.userVipPending);
@@ -218,7 +218,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startVipPoll(interaction, user, "add", 0.67);
+  const pollId = await startSpecialPoll(interaction, user, "vipAdd", 0.67);
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.pollCreationFailed);
@@ -282,7 +282,7 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startVipPoll(interaction, user, "remove", 0.67);
+  const pollId = await startSpecialPoll(interaction, user, "vipRemove", 0.67);
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.userVipPending);
@@ -352,7 +352,7 @@ const handleVipUpgrade = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startVipPoll(interaction, user, "upgrade", 0.5);
+  const pollId = await startSpecialPoll(interaction, user, "vipUpgrade", 0.5);
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.userVipPending);
@@ -390,10 +390,10 @@ const handleVipOverride = async (interaction: ChatInputCommandInteraction) => {
   const type = interaction.options.getString("type", true);
   const decision = interaction.options.getString("decision", true);
 
-  const vipPoll = await getVipPollByUserAndType(user.id, type);
-  const poll = await getPollById(vipPoll?.pollId);
+  const specialPoll = await getSpecialPollByUserAndType(user.id, type);
+  const poll = await getPollById(specialPoll?.pollId);
 
-  if (vipPoll === null || poll === null) {
+  if (specialPoll === null || poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
 
     return;
@@ -404,7 +404,7 @@ const handleVipOverride = async (interaction: ChatInputCommandInteraction) => {
 
   await updatePoll(poll);
 
-  const member = interaction.guild?.members.cache.get(vipPoll.userId);
+  const member = interaction.guild?.members.cache.get(specialPoll.userId);
 
   if (member === undefined) {
     await interaction.editReply(commandErrors.userNotMember);
@@ -420,19 +420,20 @@ const handleVipOverride = async (interaction: ChatInputCommandInteraction) => {
 const handleVipDelete = async (interaction: ChatInputCommandInteraction) => {
   const pollId = interaction.options.getString("poll", true);
 
-  const vipPoll =
-    (await getVipPollByPollId(pollId)) ?? (await getVipPollById(pollId));
+  const specialPoll =
+    (await getSpecialPollByPollId(pollId)) ??
+    (await getSpecialPollById(pollId));
 
-  if (vipPoll === null) {
+  if (specialPoll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
 
     return;
   }
 
-  const deletedVipPoll = await deleteVipPoll(vipPoll.id);
-  const deletedPoll = await deletePoll(vipPoll.pollId);
+  const deletedSpecialPoll = await deleteSpecialPoll(specialPoll.id);
+  const deletedPoll = await deletePoll(specialPoll.pollId);
 
-  if (deletedVipPoll === null || deletedPoll === null) {
+  if (deletedSpecialPoll === null || deletedPoll === null) {
     await interaction.editReply(commandErrors.pollDeletionFailed);
 
     return;
@@ -451,9 +452,9 @@ const handleVipRemaining = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const vipPoll = await getVipPollByPollId(pollId);
+  const specialPoll = await getSpecialPollByPollId(pollId);
 
-  if (vipPoll === null) {
+  if (specialPoll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
 
     return;
@@ -521,21 +522,24 @@ const handleVipInvite = async (interaction: ChatInputCommandInteraction) => {
   const regularRole = await getRoleProperty("regular");
   await member.roles.add(regularRole);
 
-  await interaction.editReply(commandResponses.userVipInvited);
+  await interaction.editReply(commandResponses.userGivenRegular);
 };
 
 const handleVipList = async (interaction: ChatInputCommandInteraction) => {
-  const vipPolls = await getVipPolls();
+  const specialPolls = await getSpecialPolls();
 
-  if (vipPolls === null) {
-    await interaction.editReply(commandErrors.vipPollsFetchFailed);
+  if (specialPolls === null) {
+    await interaction.editReply(commandErrors.specialPollsFetchFailed);
 
     return;
   }
 
   const pollsPerPage = 8;
-  const pages = Math.ceil(vipPolls.length / pollsPerPage);
-  const embed = await getVipPollListFirstPageEmbed(vipPolls, pollsPerPage);
+  const pages = Math.ceil(specialPolls.length / pollsPerPage);
+  const embed = await getSpecialPollListFirstPageEmbed(
+    specialPolls,
+    pollsPerPage,
+  );
   const components = [
     pages === 0 || pages === 1
       ? getPaginationComponents("polls")
@@ -596,8 +600,8 @@ const handleVipList = async (interaction: ChatInputCommandInteraction) => {
       buttons = getPaginationComponents("polls", "middle");
     }
 
-    const nextEmbed = await getVipPollListNextPageEmbed(
-      vipPolls,
+    const nextEmbed = await getSpecialPollListNextPageEmbed(
+      specialPolls,
       page,
       pollsPerPage,
     );
@@ -659,7 +663,7 @@ const handleVipBan = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startVipPoll(interaction, user, "ban", 0.67);
+  const pollId = await startSpecialPoll(interaction, user, "vipBan", 0.67);
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.userVipPending);
@@ -725,7 +729,7 @@ const handleVipUnban = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startVipPoll(interaction, user, "unban", 0.67);
+  const pollId = await startSpecialPoll(interaction, user, "vipUnban", 0.67);
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.userVipPending);

@@ -1,6 +1,9 @@
 import { createPoll, getPollById, updatePoll } from "../data/Poll.js";
 import { countPollVotesByOptionId } from "../data/PollVote.js";
-import { createVipPoll, getVipPollByPollId } from "../data/VipPoll.js";
+import {
+  createSpecialPoll,
+  getSpecialPollByPollId,
+} from "../data/SpecialPoll.js";
 import { client } from "./client.js";
 import { getConfigProperty, getRoleProperty } from "./config.js";
 import { getMembersWithRoles } from "./roles.js";
@@ -12,13 +15,13 @@ import {
   type User,
 } from "discord.js";
 
-export const managedPollOptions = [
+export const specialPollOptions = [
   shortStrings.yes,
   shortStrings.no,
   shortStrings.abstain,
 ] as const;
 
-export const managedPollTypes = [
+export const specialPollTypes = [
   "vipAdd",
   "vipRemove",
   "councilAdd",
@@ -69,7 +72,7 @@ export const startPoll = async (
   return createdPoll?.id ?? null;
 };
 
-export const startVipPoll = async (
+export const startSpecialPoll = async (
   interaction: ButtonInteraction | ChatInputCommandInteraction,
   vipUser: User,
   type: string,
@@ -84,27 +87,27 @@ export const startVipPoll = async (
   let description: string;
 
   switch (type) {
-    case "add":
+    case "vipAdd":
       title = vipStringFunctions.vipAddTitle(vipUser.tag);
       description = vipStringFunctions.vipAddDescription(partialUser);
       break;
 
-    case "remove":
+    case "vipRemove":
       title = vipStringFunctions.vipRemoveTitle(vipUser.tag);
       description = vipStringFunctions.vipRemoveDescription(partialUser);
       break;
 
-    case "upgrade":
+    case "councilAdd":
       title = vipStringFunctions.vipUpgradeTitle(vipUser.tag);
       description = vipStringFunctions.vipUpgradeDescription(partialUser);
       break;
 
-    case "ban":
+    case "vipBan":
       title = vipStringFunctions.vipBanTitle(vipUser.tag);
       description = vipStringFunctions.vipBanDescription(partialUser);
       break;
 
-    case "unban":
+    case "vipUnban":
       title = vipStringFunctions.vipUnbanTitle(vipUser.tag);
       description = vipStringFunctions.vipUnbanDescription(partialUser);
       break;
@@ -123,13 +126,13 @@ export const startVipPoll = async (
     options: {
       create: [
         {
-          name: "Да",
+          name: shortStrings.yes,
         },
         {
-          name: "Не",
+          name: shortStrings.no,
         },
         {
-          name: "Воздржан",
+          name: shortStrings.abstain,
         },
       ],
     },
@@ -145,7 +148,7 @@ export const startVipPoll = async (
     return null;
   }
 
-  const vipPoll: Prisma.VipPollCreateInput = {
+  const specialPoll: Prisma.SpecialPollCreateInput = {
     poll: {
       connect: {
         id: createdPoll.id,
@@ -155,9 +158,9 @@ export const startVipPoll = async (
     userId: vipUser.id,
   };
 
-  const createdVipPoll = await createVipPoll(vipPoll);
+  const createdSpecialPoll = await createSpecialPoll(specialPoll);
 
-  if (createdVipPoll === null) {
+  if (createdSpecialPoll === null) {
     return null;
   }
 
@@ -183,7 +186,8 @@ export const getPollThreshold = async (pollId: string) => {
 
   const totalVoters = await getMembersWithRoles(guild, ...poll.roles);
   const abstenstions = await countPollVotesByOptionId(
-    poll.options.find((option) => option.name === "Воздржан")?.id ?? "",
+    poll.options.find((option) => option.name === shortStrings.abstain)?.id ??
+      "",
   );
   const rawThreshold =
     (totalVoters.length - (abstenstions ?? 0)) * poll.threshold;
@@ -191,9 +195,9 @@ export const getPollThreshold = async (pollId: string) => {
     ? rawThreshold + 1
     : Math.ceil(rawThreshold);
 
-  const vipPoll = await getVipPollByPollId(pollId);
+  const specialPoll = await getSpecialPollByPollId(pollId);
 
-  if (vipPoll === null) {
+  if (specialPoll === null) {
     return threshold;
   }
 
@@ -253,12 +257,12 @@ export const decidePoll = async (pollId: string) => {
     await updatePoll(poll);
   }
 
-  const vipPoll = await getVipPollByPollId(pollId);
+  const specialPoll = await getSpecialPollByPollId(pollId);
 
-  if (vipPoll === null) {
+  if (specialPoll === null) {
     return;
   }
 
-  poll.decision = "Не";
+  poll.decision = shortStrings.no;
   await updatePoll(poll);
 };
