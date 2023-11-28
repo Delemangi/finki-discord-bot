@@ -1,10 +1,10 @@
-import { deleteResponse } from "@app/utils/channels.js";
-import { client } from "@app/utils/client.js";
 import {
   getHelpFirstPageEmbed,
   getHelpNextPageEmbed,
-  getPaginationComponents,
-} from "@app/utils/components.js";
+} from "@app/components/commands.js";
+import { getPaginationComponents } from "@app/components/pagination.js";
+import { deleteResponse } from "@app/utils/channels.js";
+import { client } from "@app/utils/client.js";
 import { getConfigProperty } from "@app/utils/config.js";
 import { logger } from "@app/utils/logger.js";
 import { getCommandsWithPermission } from "@app/utils/permissions.js";

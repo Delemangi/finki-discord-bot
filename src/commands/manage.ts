@@ -1,3 +1,9 @@
+import {
+  getLinkComponents,
+  getLinkEmbed,
+  getQuestionComponents,
+  getQuestionEmbed,
+} from "@app/components/commands.js";
 import { createAnto, createAntos, deleteAnto } from "@app/data/Anto.js";
 import {
   createCompanies,
@@ -20,12 +26,6 @@ import { createRule, deleteRule } from "@app/data/Rule.js";
 import { AntosSchema } from "@app/schemas/AntosSchema.js";
 import { CompaniesSchema } from "@app/schemas/CompaniesSchema.js";
 import { LinksSchema } from "@app/schemas/LinksSchema.js";
-import {
-  getLinkComponents,
-  getLinkEmbed,
-  getQuestionComponents,
-  getQuestionEmbed,
-} from "@app/utils/components.js";
 import { logger } from "@app/utils/logger.js";
 import { linkRegex } from "@app/utils/regex.js";
 import {

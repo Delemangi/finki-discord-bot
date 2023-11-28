@@ -1,8 +1,3 @@
-import { getCompanies } from "@app/data/Company.js";
-import { getInfoMessages } from "@app/data/InfoMessage.js";
-import { getRules } from "@app/data/Rule.js";
-import { sendEmbed } from "@app/utils/channels.js";
-import { getCommands } from "@app/utils/commands.js";
 import {
   getColorsComponents,
   getColorsEmbed,
@@ -21,7 +16,12 @@ import {
   getVipRequestEmbed,
   getYearsComponents,
   getYearsEmbed,
-} from "@app/utils/components.js";
+} from "@app/components/scripts.js";
+import { getCompanies } from "@app/data/Company.js";
+import { getInfoMessages } from "@app/data/InfoMessage.js";
+import { getRules } from "@app/data/Rule.js";
+import { sendEmbed } from "@app/utils/channels.js";
+import { getCommands } from "@app/utils/commands.js";
 import {
   getApplicationId,
   getCourses,

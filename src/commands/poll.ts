@@ -1,3 +1,12 @@
+import { getPaginationComponents } from "@app/components/pagination.js";
+import {
+  getPollComponents,
+  getPollEmbed,
+  getPollInfoEmbed,
+  getPollListFirstPageEmbed,
+  getPollListNextPageEmbed,
+  getPollStatsComponents,
+} from "@app/components/polls.js";
 import {
   deletePoll,
   getPollById,
@@ -12,15 +21,6 @@ import {
 import { getSpecialPollByPollId } from "@app/data/SpecialPoll.js";
 import { deleteResponse } from "@app/utils/channels.js";
 import { commandMention } from "@app/utils/commands.js";
-import {
-  getPaginationComponents,
-  getPollComponents,
-  getPollEmbed,
-  getPollInfoEmbed,
-  getPollListFirstPageEmbed,
-  getPollListNextPageEmbed,
-  getPollStatsComponents,
-} from "@app/utils/components.js";
 import { getConfigProperty, getRoleProperty } from "@app/utils/config.js";
 import { logger } from "@app/utils/logger.js";
 import { startPoll } from "@app/utils/polls.js";

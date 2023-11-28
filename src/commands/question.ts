@@ -1,8 +1,8 @@
-import { getNthQuestion, getQuestion } from "@app/data/Question.js";
 import {
   getQuestionComponents,
   getQuestionEmbed,
-} from "@app/utils/components.js";
+} from "@app/components/commands.js";
+import { getNthQuestion, getQuestion } from "@app/data/Question.js";
 import { commandDescriptions, commandErrors } from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,

@@ -1,4 +1,10 @@
 import {
+  getExperienceEmbed,
+  getExperienceLeaderboardFirstPageEmbed,
+  getExperienceLeaderboardNextPageEmbed,
+} from "@app/components/commands.js";
+import { getPaginationComponents } from "@app/components/pagination.js";
+import {
   addExperienceByUserId,
   createExperience,
   getExperienceByUserId,
@@ -6,12 +12,6 @@ import {
   getExperienceSorted,
 } from "@app/data/Experience.js";
 import { deleteResponse } from "@app/utils/channels.js";
-import {
-  getExperienceEmbed,
-  getExperienceLeaderboardFirstPageEmbed,
-  getExperienceLeaderboardNextPageEmbed,
-  getPaginationComponents,
-} from "@app/utils/components.js";
 import { getConfigProperty } from "@app/utils/config.js";
 import { logger } from "@app/utils/logger.js";
 import {

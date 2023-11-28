@@ -1,4 +1,4 @@
-import { getClassroomEmbed } from "@app/utils/components.js";
+import { getClassroomEmbed } from "@app/components/commands.js";
 import { getClassrooms } from "@app/utils/config.js";
 import {
   commandDescriptions,

@@ -1,4 +1,4 @@
-import { getStudentInfoEmbed } from "@app/utils/components.js";
+import { getStudentInfoEmbed } from "@app/components/commands.js";
 import { commandDescriptions, commandErrors } from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,

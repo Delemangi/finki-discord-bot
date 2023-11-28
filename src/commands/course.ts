@@ -4,7 +4,7 @@ import {
   getCoursePrerequisiteEmbed,
   getCourseProfessorsEmbed,
   getCourseSummaryEmbed,
-} from "@app/utils/components.js";
+} from "@app/components/commands.js";
 import {
   getFromRoleConfig,
   getInformation,

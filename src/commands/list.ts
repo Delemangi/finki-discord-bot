@@ -1,9 +1,9 @@
-import { getLinks } from "@app/data/Link.js";
-import { getQuestions } from "@app/data/Question.js";
 import {
   getListLinksEmbed,
   getListQuestionsEmbed,
-} from "@app/utils/components.js";
+} from "@app/components/commands.js";
+import { getLinks } from "@app/data/Link.js";
+import { getQuestions } from "@app/data/Question.js";
 import { commandDescriptions, commandErrors } from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,

@@ -1,19 +1,6 @@
 import { deleteResponse, getChannel, log } from "./channels.js";
 import { getCommand } from "./commands.js";
 import {
-  getAutocompleteEmbed,
-  getButtonEmbed,
-  getChatInputCommandEmbed,
-  getPollComponents,
-  getPollEmbed,
-  getPollInfoEmbed,
-  getPollStatsComponents,
-  getUserContextMenuCommandEmbed,
-  getVipAcknowledgeComponents,
-  getVipConfirmComponents,
-  getVipConfirmEmbed,
-} from "./components.js";
-import {
   getClassrooms,
   getConfigProperty,
   getCourses,
@@ -46,6 +33,23 @@ import {
   vipStringFunctions,
   vipStrings,
 } from "./strings.js";
+import {
+  getAutocompleteEmbed,
+  getButtonEmbed,
+  getChatInputCommandEmbed,
+  getUserContextMenuCommandEmbed,
+} from "@app/components/logs.js";
+import {
+  getPollComponents,
+  getPollEmbed,
+  getPollInfoEmbed,
+  getPollStatsComponents,
+} from "@app/components/polls.js";
+import {
+  getVipAcknowledgeComponents,
+  getVipConfirmComponents,
+  getVipConfirmEmbed,
+} from "@app/components/scripts.js";
 import { getCompanies } from "@app/data/Company.js";
 import { getLinkNames } from "@app/data/Link.js";
 import { getPollById } from "@app/data/Poll.js";

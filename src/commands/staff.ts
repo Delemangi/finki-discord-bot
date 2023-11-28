@@ -1,4 +1,4 @@
-import { getStaffEmbed } from "@app/utils/components.js";
+import { getStaffEmbed } from "@app/components/commands.js";
 import { getStaff } from "@app/utils/config.js";
 import { commandDescriptions, commandErrors } from "@app/utils/strings.js";
 import {
