@@ -109,7 +109,7 @@ export const startVipPoll = async (
         },
       ],
     },
-    roles: [await getRoleProperty("vipVoting")],
+    roles: [await getRoleProperty("council")],
     threshold: threshold ?? 0.5,
     title,
     userId: client.user?.id ?? "",

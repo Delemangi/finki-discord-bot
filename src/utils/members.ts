@@ -8,8 +8,12 @@ export const getUsername = async (userId: string) => {
   return user.tag;
 };
 
+export const isMemberAdministrator = async (member: GuildMember) => {
+  return member.permissions.has(PermissionsBitField.Flags.Administrator);
+};
+
 export const isMemberInVip = async (member: GuildMember) => {
-  if (member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+  if (await isMemberAdministrator(member)) {
     return true;
   }
 
@@ -21,30 +25,34 @@ export const isMemberInVip = async (member: GuildMember) => {
   );
 };
 
-export const isVipVotingMember = async (member: GuildMember) => {
-  const vipVotingRoleId = await getRoleProperty("vipVoting");
+export const isMemberInCouncil = async (member: GuildMember) => {
+  const councilRoleId = await getRoleProperty("council");
 
-  return member.roles.cache.has(vipVotingRoleId);
+  return member.roles.cache.has(councilRoleId);
 };
 
 export const isMemberInvitedToVip = async (member: GuildMember) => {
   const boosterRoleId = await getRoleProperty("booster");
   const contributorRoleId = await getRoleProperty("contributor");
-  const vipInvitedRoleId = await getRoleProperty("vipInvited");
+  const regularRoleId = await getRoleProperty("regular");
 
   return (
     member.roles.cache.has(boosterRoleId) ||
     member.roles.cache.has(contributorRoleId) ||
-    member.roles.cache.has(vipInvitedRoleId)
+    member.roles.cache.has(regularRoleId)
   );
 };
 
 export const isMemberAdmin = async (member: GuildMember) => {
-  if (member.permissions.has(PermissionsBitField.Flags.Administrator)) {
+  if (await isMemberAdministrator(member)) {
     return true;
   }
 
   const adminRoleId = await getRoleProperty("admin");
+  const moderatorRoleId = await getRoleProperty("moderator");
 
-  return member.roles.cache.has(adminRoleId);
+  return (
+    member.roles.cache.has(adminRoleId) ||
+    member.roles.cache.has(moderatorRoleId)
+  );
 };

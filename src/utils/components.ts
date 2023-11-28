@@ -1114,14 +1114,14 @@ export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
 };
 
 export const getVipInvitedEmbed = async () => {
-  const vipInvitedRoleId = await getRoleProperty("vipInvited");
+  const councilRoleId = await getRoleProperty("council");
   const boosterRoleId = await getRoleProperty("booster");
   const contributorRoleId = await getRoleProperty("contributor");
   const adminRoleId = await getRoleProperty("admin");
   const vipRoleId = await getRoleProperty("vip");
 
   const memberIds = await getMembersWithAndWithoutRoles(
-    [vipInvitedRoleId, boosterRoleId, contributorRoleId],
+    [councilRoleId, boosterRoleId, contributorRoleId],
     [adminRoleId, vipRoleId],
   );
   const guild = client.guilds.cache.get(await getConfigProperty("guild"));

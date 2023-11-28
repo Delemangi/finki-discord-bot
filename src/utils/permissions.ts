@@ -24,7 +24,7 @@ const commandPermissions: Record<
   },
   manage: {
     permissions: [],
-    roles: ["admin", "fss"],
+    roles: ["admin", "moderator", "fss"],
   },
   message: {
     permissions: [PermissionsBitField.Flags.Administrator],
@@ -48,15 +48,15 @@ const commandPermissions: Record<
   },
   "vip add": {
     permissions: [],
-    roles: ["vipVoting"],
+    roles: ["council"],
   },
   "vip ban": {
     permissions: [],
-    roles: ["vipVoting"],
+    roles: ["council"],
   },
   "vip bans": {
     permissions: [],
-    roles: ["admin", "vip"],
+    roles: ["admin", "moderator", "vip"],
   },
   "vip delete": {
     permissions: [PermissionsBitField.Flags.Administrator],
@@ -64,15 +64,15 @@ const commandPermissions: Record<
   },
   "vip invite": {
     permissions: [],
-    roles: ["admin"],
+    roles: ["admin", "moderator"],
   },
   "vip invited": {
     permissions: [],
-    roles: ["admin", "vip"],
+    roles: ["admin", "moderator", "vip"],
   },
   "vip list": {
     permissions: [],
-    roles: ["admin", "vip"],
+    roles: ["admin", "moderator", "vip"],
   },
   "vip override": {
     permissions: [PermissionsBitField.Flags.Administrator],
@@ -80,19 +80,19 @@ const commandPermissions: Record<
   },
   "vip remaining": {
     permissions: [],
-    roles: ["vipVoting"],
+    roles: ["council"],
   },
   "vip remove": {
     permissions: [],
-    roles: ["vipVoting"],
+    roles: ["council"],
   },
   "vip unban": {
     permissions: [],
-    roles: ["vipVoting"],
+    roles: ["council"],
   },
   "vip upgrade": {
     permissions: [],
-    roles: ["vipVoting"],
+    roles: ["council"],
   },
 };
 

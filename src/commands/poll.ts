@@ -352,7 +352,7 @@ const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
       allowedMentions: {
         parse: [],
       },
-      content: roleMention(await getRoleProperty("vipVoting")),
+      content: roleMention(await getRoleProperty("council")),
     }),
   });
 

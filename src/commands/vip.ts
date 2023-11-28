@@ -26,7 +26,7 @@ import {
   isMemberAdmin,
   isMemberInVip,
   isMemberInvitedToVip,
-  isVipVotingMember,
+  isMemberInCouncil,
 } from "../utils/members.js";
 import { startVipPoll } from "../utils/polls.js";
 import { getMembersWithRoles } from "../utils/roles.js";
@@ -242,7 +242,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
   await interaction.channel?.send(
-    roleMention(await getRoleProperty("vipVoting")),
+    roleMention(await getRoleProperty("council")),
   );
   await interaction.editReply({
     components,
@@ -306,7 +306,7 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
   await interaction.channel?.send(
-    roleMention(await getRoleProperty("vipVoting")),
+    roleMention(await getRoleProperty("council")),
   );
   await interaction.editReply({
     components,
@@ -351,7 +351,7 @@ const handleVipUpgrade = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (await isVipVotingMember(member)) {
+  if (await isMemberInCouncil(member)) {
     await interaction.editReply(commandErrors.userFullVipMember);
 
     return;
@@ -376,7 +376,7 @@ const handleVipUpgrade = async (interaction: ChatInputCommandInteraction) => {
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
   await interaction.channel?.send(
-    roleMention(await getRoleProperty("vipVoting")),
+    roleMention(await getRoleProperty("council")),
   );
   await interaction.editReply({
     components,
@@ -523,8 +523,8 @@ const handleVipInvite = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const vipInvitedRole = await getRoleProperty("vipInvited");
-  await member.roles.add(vipInvitedRole);
+  const regularRole = await getRoleProperty("regular");
+  await member.roles.add(regularRole);
 
   await interaction.editReply(commandResponses.userVipInvited);
 };
@@ -683,7 +683,7 @@ const handleVipBan = async (interaction: ChatInputCommandInteraction) => {
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
   await interaction.channel?.send(
-    roleMention(await getRoleProperty("vipVoting")),
+    roleMention(await getRoleProperty("council")),
   );
   await interaction.editReply({
     components,
@@ -749,7 +749,7 @@ const handleVipUnban = async (interaction: ChatInputCommandInteraction) => {
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
   await interaction.channel?.send(
-    roleMention(await getRoleProperty("vipVoting")),
+    roleMention(await getRoleProperty("council")),
   );
   await interaction.editReply({
     components,

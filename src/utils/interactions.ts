@@ -458,9 +458,9 @@ const handlePollButtonForVipRemoveVote = async (
   }
 
   const vipRoleId = await getRoleProperty("vip");
-  const vipVotingRoleId = await getRoleProperty("vipVoting");
+  const councilRoleId = await getRoleProperty("council");
   await member.roles.remove(vipRoleId);
-  await member.roles.remove(vipVotingRoleId);
+  await member.roles.remove(councilRoleId);
 
   await vipChannel?.send(vipStringFunctions.vipRemoveAccepted(vipPoll.userId));
 };
@@ -480,8 +480,8 @@ const handlePollButtonForVipUpgradeVote = async (
     return;
   }
 
-  const vipVotingRole = await getRoleProperty("vipVoting");
-  await member.roles.add(vipVotingRole);
+  const councilRole = await getRoleProperty("council");
+  await member.roles.add(councilRole);
 
   await vipChannel?.send(vipStringFunctions.vipUpgradeAccepted(vipPoll.userId));
 };
@@ -503,7 +503,7 @@ const handlePollButtonForVipBanVote = async (
     userId: vipPoll.userId,
   });
 
-  const vipInvitedRole = await getRoleProperty("vipInvited");
+  const vipInvitedRole = await getRoleProperty("council");
   await member.roles.remove(vipInvitedRole);
 
   await vipChannel?.send(vipStringFunctions.vipBanAccepted(vipPoll.userId));
@@ -890,10 +890,10 @@ const handleVipButton = async (
 
     await interaction.message.delete();
 
-    const vipInvitedRole = getRole("vipInvited");
+    const regularRole = getRole("regular");
 
-    if (vipInvitedRole !== undefined) {
-      await member.roles.remove(vipInvitedRole);
+    if (regularRole !== undefined) {
+      await member.roles.remove(regularRole);
     }
 
     return;
@@ -956,7 +956,7 @@ const handleVipButton = async (
     components: getPollComponents(pollWithOptions),
     embeds: [await getPollEmbed(pollWithOptions)],
   });
-  await channel?.send(roleMention(await getRoleProperty("vipVoting")));
+  await channel?.send(roleMention(await getRoleProperty("council")));
   const components = getPollStatsComponents(pollWithOptions);
   await channel?.send({
     components,

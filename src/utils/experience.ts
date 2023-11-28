@@ -65,10 +65,8 @@ const awardMember = async (member: GuildMember | null, level: number) => {
 
   const vipBan = await getVipBanByUserId(member.id);
   if ((await isMemberInVip(member)) || vipBan !== null) {
-    const vipInvitedRoleId = await getRoleProperty("vipInvited");
-    await member.roles.add(
-      roles.add.filter((role) => role !== vipInvitedRoleId),
-    );
+    const councilRoleId = await getRoleProperty("council");
+    await member.roles.add(roles.add.filter((role) => role !== councilRoleId));
 
     logger.info(logMessageFunctions.userNotQualifiedForVip(member.user.tag));
   } else {
