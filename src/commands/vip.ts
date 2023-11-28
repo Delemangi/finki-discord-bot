@@ -24,9 +24,9 @@ import { handlePollButtonForVipVote } from "../utils/interactions.js";
 import { logger } from "../utils/logger.js";
 import {
   isMemberAdmin,
+  isMemberInCouncil,
   isMemberInVip,
   isMemberInvitedToVip,
-  isMemberInCouncil,
 } from "../utils/members.js";
 import { startVipPoll } from "../utils/polls.js";
 import { getMembersWithRoles } from "../utils/roles.js";
