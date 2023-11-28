@@ -9,7 +9,6 @@ import {
   type ChatInputCommandInteraction,
   roleMention,
   SlashCommandBuilder,
-  userMention,
 } from "discord.js";
 
 const name = "statistics";
@@ -110,14 +109,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     const output = [];
     const boostLevel = interaction.guild.premiumTier;
 
-    output.push(`Име: ${interaction.guild.name}`);
-    output.push(
-      `Сопственик: ${
-        interaction.guild === null
-          ? "-"
-          : userMention(interaction.guild.ownerId)
-      }`,
-    );
     output.push(`Членови: ${interaction.guild.memberCount}`);
     await interaction.guild.channels.fetch();
     output.push(`Канали: ${interaction.guild.channels.cache.size}`);
