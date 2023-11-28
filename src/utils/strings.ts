@@ -859,6 +859,7 @@ export const logEmbedStrings = {
 // Short strings
 
 export const shortStrings = {
+  abstain: "Воздржан",
   accreditation: "Акредитација",
   activity: "Активност",
   all: "Сите",

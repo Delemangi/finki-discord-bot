@@ -3,6 +3,7 @@ import {
   getCoursesPrerequisiteEmbed,
   getCoursesProgramEmbed,
 } from "../utils/components.js";
+import { createPollChoices } from "../utils/polls.js";
 import { getCourseRolesBySemester } from "../utils/roles.js";
 import {
   commandDescriptions,
@@ -30,12 +31,7 @@ export const data = new SlashCommandBuilder()
           .setName("program")
           .setDescription("Смер")
           .setRequired(true)
-          .addChoices(
-            ...Object.keys(programMapping).map((program) => ({
-              name: program,
-              value: program,
-            })),
-          ),
+          .addChoices(...createPollChoices(Object.keys(programMapping))),
       )
       .addNumberOption((option) =>
         option

@@ -5,6 +5,7 @@ import {
   getConfigProperty,
   setConfigProperty,
 } from "../utils/config.js";
+import { createPollChoices } from "../utils/polls.js";
 import { refreshOnConfigChange } from "../utils/refresh.js";
 import {
   commandDescriptions,
@@ -32,12 +33,7 @@ export const data = new SlashCommandBuilder()
           .setName("key")
           .setDescription("Клуч на конфигурација")
           .setRequired(true)
-          .addChoices(
-            ...getConfigKeys().map((key) => ({
-              name: key,
-              value: key,
-            })),
-          ),
+          .addChoices(...createPollChoices(getConfigKeys())),
       ),
   )
   .addSubcommand((subcommand) =>
@@ -49,12 +45,7 @@ export const data = new SlashCommandBuilder()
           .setName("key")
           .setDescription("Клуч на конфигурација")
           .setRequired(true)
-          .addChoices(
-            ...getConfigKeys().map((key) => ({
-              name: key,
-              value: key,
-            })),
-          ),
+          .addChoices(...createPollChoices(getConfigKeys())),
       )
       .addStringOption((option) =>
         option

@@ -4,13 +4,35 @@ import { createVipPoll, getVipPollByPollId } from "../data/VipPoll.js";
 import { client } from "./client.js";
 import { getConfigProperty, getRoleProperty } from "./config.js";
 import { getMembersWithRoles } from "./roles.js";
-import { vipStringFunctions } from "./strings.js";
+import { shortStrings, vipStringFunctions } from "./strings.js";
 import { type Prisma } from "@prisma/client";
 import {
   type ButtonInteraction,
   type ChatInputCommandInteraction,
   type User,
 } from "discord.js";
+
+export const managedPollOptions = [
+  shortStrings.yes,
+  shortStrings.no,
+  shortStrings.abstain,
+];
+
+export const managedPollTypes = [
+  "vipAdd",
+  "vipRemove",
+  "councilAdd",
+  "vipBan",
+  "vipUnban",
+  "councilRemove",
+];
+
+export const createPollChoices = (choices: string[]) => {
+  return choices.map((choice) => ({
+    name: choice,
+    value: choice,
+  }));
+};
 
 export const startPoll = async (
   interaction: ChatInputCommandInteraction,

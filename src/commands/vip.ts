@@ -28,7 +28,12 @@ import {
   isMemberInVip,
   isMemberInvitedToVip,
 } from "../utils/members.js";
-import { startVipPoll } from "../utils/polls.js";
+import {
+  createPollChoices,
+  managedPollOptions,
+  managedPollTypes,
+  startVipPoll,
+} from "../utils/polls.js";
 import { getMembersWithRoles } from "../utils/roles.js";
 import {
   commandDescriptions,
@@ -94,24 +99,14 @@ export const data = new SlashCommandBuilder()
           .setName("type")
           .setDescription("Тип на анкета")
           .setRequired(true)
-          .addChoices(
-            ...["add", "remove", "upgrade", "ban", "unban"].map((choice) => ({
-              name: choice,
-              value: choice,
-            })),
-          ),
+          .addChoices(...createPollChoices(managedPollTypes)),
       )
       .addStringOption((option) =>
         option
           .setName("decision")
           .setDescription("Одлука")
           .setRequired(true)
-          .addChoices(
-            ...["Да", "Не"].map((choice) => ({
-              name: choice,
-              value: choice,
-            })),
-          ),
+          .addChoices(...createPollChoices(managedPollOptions)),
       ),
   )
   .addSubcommand((command) =>
