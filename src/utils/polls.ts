@@ -16,18 +16,20 @@ export const managedPollOptions = [
   shortStrings.yes,
   shortStrings.no,
   shortStrings.abstain,
-];
+] as const;
 
 export const managedPollTypes = [
   "vipAdd",
   "vipRemove",
   "councilAdd",
+  "councilRemove",
+  "adminAdd",
+  "adminRemove",
   "vipBan",
   "vipUnban",
-  "councilRemove",
-];
+] as const;
 
-export const createPollChoices = (choices: string[]) => {
+export const createPollChoices = (choices: readonly string[]) => {
   return choices.map((choice) => ({
     name: choice,
     value: choice,
