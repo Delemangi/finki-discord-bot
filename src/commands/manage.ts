@@ -1,39 +1,39 @@
-import { createAnto, createAntos, deleteAnto } from "../data/Anto.js";
+import { createAnto, createAntos, deleteAnto } from "@app/data/Anto.js";
 import {
   createCompanies,
   createCompany,
   deleteCompany,
-} from "../data/Company.js";
-import { createInfoMessage, getInfoMessage } from "../data/InfoMessage.js";
-import { createLink, deleteLink, getLink, updateLink } from "../data/Link.js";
+} from "@app/data/Company.js";
+import { createInfoMessage, getInfoMessage } from "@app/data/InfoMessage.js";
+import { createLink, deleteLink, getLink, updateLink } from "@app/data/Link.js";
 import {
   createQuestion,
   deleteQuestion,
   getQuestion,
   updateQuestion,
-} from "../data/Question.js";
+} from "@app/data/Question.js";
 import {
   createQuestionLinks,
   deleteQuestionLinksByQuestionId,
-} from "../data/QuestionLink.js";
-import { createRule, deleteRule } from "../data/Rule.js";
-import { AntosSchema } from "../schemas/AntosSchema.js";
-import { CompaniesSchema } from "../schemas/CompaniesSchema.js";
-import { LinksSchema } from "../schemas/LinksSchema.js";
+} from "@app/data/QuestionLink.js";
+import { createRule, deleteRule } from "@app/data/Rule.js";
+import { AntosSchema } from "@app/schemas/AntosSchema.js";
+import { CompaniesSchema } from "@app/schemas/CompaniesSchema.js";
+import { LinksSchema } from "@app/schemas/LinksSchema.js";
 import {
   getLinkComponents,
   getLinkEmbed,
   getQuestionComponents,
   getQuestionEmbed,
-} from "../utils/components.js";
-import { logger } from "../utils/logger.js";
-import { linkRegex } from "../utils/regex.js";
+} from "@app/utils/components.js";
+import { logger } from "@app/utils/logger.js";
+import { linkRegex } from "@app/utils/regex.js";
 import {
   commandDescriptions,
   commandErrors,
   commandResponses,
   logErrorFunctions,
-} from "../utils/strings.js";
+} from "@app/utils/strings.js";
 import { InfoMessageType } from "@prisma/client";
 import {
   type ChatInputCommandInteraction,

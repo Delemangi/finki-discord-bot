@@ -1,19 +1,3 @@
-import { getMostPopularOptionByPollId } from "../data/PollOption.js";
-import {
-  getPollVotesByOptionId,
-  getPollVotesByPollId,
-} from "../data/PollVote.js";
-import { type Classroom } from "../types/Classroom.js";
-import { type CourseInformation } from "../types/CourseInformation.js";
-import { type CourseParticipants } from "../types/CourseParticipants.js";
-import { type CoursePrerequisites } from "../types/CoursePrerequisites.js";
-import { type CourseStaff } from "../types/CourseStaff.js";
-import { type PaginationPosition } from "../types/PaginationPosition.js";
-import { type PollWithOptions } from "../types/PollWithOptions.js";
-import { type ProgramName } from "../types/ProgramName.js";
-import { type ProgramShorthand } from "../types/ProgramShorthand.js";
-import { type QuestionWithLinks } from "../types/QuestionWithLinks.js";
-import { type Staff } from "../types/Staff.js";
 import { client } from "./client.js";
 import { commandMention } from "./commands.js";
 import {
@@ -49,6 +33,22 @@ import {
   shortStrings,
   vipStrings,
 } from "./strings.js";
+import { getMostPopularOptionByPollId } from "@app/data/PollOption.js";
+import {
+  getPollVotesByOptionId,
+  getPollVotesByPollId,
+} from "@app/data/PollVote.js";
+import { type Classroom } from "@app/types/Classroom.js";
+import { type CourseInformation } from "@app/types/CourseInformation.js";
+import { type CourseParticipants } from "@app/types/CourseParticipants.js";
+import { type CoursePrerequisites } from "@app/types/CoursePrerequisites.js";
+import { type CourseStaff } from "@app/types/CourseStaff.js";
+import { type PaginationPosition } from "@app/types/PaginationPosition.js";
+import { type PollWithOptions } from "@app/types/PollWithOptions.js";
+import { type ProgramName } from "@app/types/ProgramName.js";
+import { type ProgramShorthand } from "@app/types/ProgramShorthand.js";
+import { type QuestionWithLinks } from "@app/types/QuestionWithLinks.js";
+import { type Staff } from "@app/types/Staff.js";
 import {
   type Experience,
   type Link,

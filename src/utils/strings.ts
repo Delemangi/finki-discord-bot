@@ -1,8 +1,8 @@
 /* eslint-disable id-length */
 
-import { type PartialUser } from "../types/PartialUser.js";
-import { type ProgramName } from "../types/ProgramName.js";
-import { type ProgramShorthand } from "../types/ProgramShorthand.js";
+import { type PartialUser } from "@app/types/PartialUser.js";
+import { type ProgramName } from "@app/types/ProgramName.js";
+import { type ProgramShorthand } from "@app/types/ProgramShorthand.js";
 import {
   bold,
   type ButtonInteraction,

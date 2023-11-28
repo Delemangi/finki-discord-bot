@@ -4,22 +4,22 @@ import {
   getExperienceByUserId,
   getExperienceCount,
   getExperienceSorted,
-} from "../data/Experience.js";
-import { deleteResponse } from "../utils/channels.js";
+} from "@app/data/Experience.js";
+import { deleteResponse } from "@app/utils/channels.js";
 import {
   getExperienceEmbed,
   getExperienceLeaderboardFirstPageEmbed,
   getExperienceLeaderboardNextPageEmbed,
   getPaginationComponents,
-} from "../utils/components.js";
-import { getConfigProperty } from "../utils/config.js";
-import { logger } from "../utils/logger.js";
+} from "@app/utils/components.js";
+import { getConfigProperty } from "@app/utils/config.js";
+import { logger } from "@app/utils/logger.js";
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
   logErrorFunctions,
-} from "../utils/strings.js";
+} from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,

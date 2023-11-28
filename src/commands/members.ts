@@ -1,7 +1,7 @@
 import {
   commandDescriptions,
   commandResponseFunctions,
-} from "../utils/strings.js";
+} from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,

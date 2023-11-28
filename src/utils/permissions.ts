@@ -1,6 +1,6 @@
-import { type Roles } from "../types/Roles.js";
 import { getRoleProperty } from "./config.js";
 import { commandDescriptions } from "./strings.js";
+import { type Roles } from "@app/types/Roles.js";
 import { type GuildMember, PermissionsBitField } from "discord.js";
 
 const commandPermissions: Record<

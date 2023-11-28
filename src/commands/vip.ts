@@ -1,14 +1,14 @@
-import { deletePoll, getPollById, updatePoll } from "../data/Poll.js";
-import { getPollVotesByPollId } from "../data/PollVote.js";
+import { deletePoll, getPollById, updatePoll } from "@app/data/Poll.js";
+import { getPollVotesByPollId } from "@app/data/PollVote.js";
 import {
   deleteSpecialPoll,
   getSpecialPollById,
   getSpecialPollByPollId,
   getSpecialPollByUserAndType,
   getSpecialPolls,
-} from "../data/SpecialPoll.js";
-import { getVipBanByUserId, getVipBans } from "../data/VipBan.js";
-import { deleteResponse } from "../utils/channels.js";
+} from "@app/data/SpecialPoll.js";
+import { getVipBanByUserId, getVipBans } from "@app/data/VipBan.js";
+import { deleteResponse } from "@app/utils/channels.js";
 import {
   getPaginationComponents,
   getPollComponents,
@@ -18,30 +18,30 @@ import {
   getSpecialPollListNextPageEmbed,
   getVipEmbed,
   getVipInvitedEmbed,
-} from "../utils/components.js";
-import { getConfigProperty, getRoleProperty } from "../utils/config.js";
-import { handlePollButtonForVipVote } from "../utils/interactions.js";
-import { logger } from "../utils/logger.js";
+} from "@app/utils/components.js";
+import { getConfigProperty, getRoleProperty } from "@app/utils/config.js";
+import { handlePollButtonForVipVote } from "@app/utils/interactions.js";
+import { logger } from "@app/utils/logger.js";
 import {
   isMemberAdmin,
   isMemberInCouncil,
   isMemberInVip,
   isMemberInvitedToVip,
-} from "../utils/members.js";
+} from "@app/utils/members.js";
 import {
   createPollChoices,
   specialPollOptions,
   specialPollTypes,
   startSpecialPoll,
-} from "../utils/polls.js";
-import { getMembersWithRoles } from "../utils/roles.js";
+} from "@app/utils/polls.js";
+import { getMembersWithRoles } from "@app/utils/roles.js";
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
   commandResponses,
   logErrorFunctions,
-} from "../utils/strings.js";
+} from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,

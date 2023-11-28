@@ -1,4 +1,4 @@
-import { commandDescriptions } from "../utils/strings.js";
+import { commandDescriptions } from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,

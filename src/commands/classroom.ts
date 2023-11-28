@@ -1,10 +1,10 @@
-import { getClassroomEmbed } from "../utils/components.js";
-import { getClassrooms } from "../utils/config.js";
+import { getClassroomEmbed } from "@app/utils/components.js";
+import { getClassrooms } from "@app/utils/config.js";
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-} from "../utils/strings.js";
+} from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,

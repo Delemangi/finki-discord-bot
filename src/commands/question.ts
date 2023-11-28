@@ -1,9 +1,9 @@
-import { getNthQuestion, getQuestion } from "../data/Question.js";
+import { getNthQuestion, getQuestion } from "@app/data/Question.js";
 import {
   getQuestionComponents,
   getQuestionEmbed,
-} from "../utils/components.js";
-import { commandDescriptions, commandErrors } from "../utils/strings.js";
+} from "@app/utils/components.js";
+import { commandDescriptions, commandErrors } from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,

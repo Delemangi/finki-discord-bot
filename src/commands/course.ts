@@ -4,20 +4,20 @@ import {
   getCoursePrerequisiteEmbed,
   getCourseProfessorsEmbed,
   getCourseSummaryEmbed,
-} from "../utils/components.js";
+} from "@app/utils/components.js";
 import {
   getFromRoleConfig,
   getInformation,
   getParticipants,
   getPrerequisites,
   getProfessors,
-} from "../utils/config.js";
-import { getCourseRoleByCourseName } from "../utils/roles.js";
+} from "@app/utils/config.js";
+import { getCourseRoleByCourseName } from "@app/utils/roles.js";
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-} from "../utils/strings.js";
+} from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   type GuildMember,

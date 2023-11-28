@@ -1,13 +1,13 @@
-import { createPoll, getPollById, updatePoll } from "../data/Poll.js";
-import { countPollVotesByOptionId } from "../data/PollVote.js";
-import {
-  createSpecialPoll,
-  getSpecialPollByPollId,
-} from "../data/SpecialPoll.js";
 import { client } from "./client.js";
 import { getConfigProperty, getRoleProperty } from "./config.js";
 import { getMembersWithRoles } from "./roles.js";
 import { shortStrings, vipStringFunctions } from "./strings.js";
+import { createPoll, getPollById, updatePoll } from "@app/data/Poll.js";
+import { countPollVotesByOptionId } from "@app/data/PollVote.js";
+import {
+  createSpecialPoll,
+  getSpecialPollByPollId,
+} from "@app/data/SpecialPoll.js";
 import { type Prisma } from "@prisma/client";
 import {
   type ButtonInteraction,

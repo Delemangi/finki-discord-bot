@@ -1,16 +1,16 @@
-import { ConfigSchema } from "../schemas/ConfigSchema.js";
-import { type BotConfig } from "../types/BotConfig.js";
+import { ConfigSchema } from "@app/schemas/ConfigSchema.js";
+import { type BotConfig } from "@app/types/BotConfig.js";
 import {
   getConfigKeys,
   getConfigProperty,
   setConfigProperty,
-} from "../utils/config.js";
-import { createPollChoices } from "../utils/polls.js";
-import { refreshOnConfigChange } from "../utils/refresh.js";
+} from "@app/utils/config.js";
+import { createPollChoices } from "@app/utils/polls.js";
+import { refreshOnConfigChange } from "@app/utils/refresh.js";
 import {
   commandDescriptions,
   commandErrorFunctions,
-} from "../utils/strings.js";
+} from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   codeBlock,

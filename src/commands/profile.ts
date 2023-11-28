@@ -1,5 +1,5 @@
-import { getStudentInfoEmbed } from "../utils/components.js";
-import { commandDescriptions, commandErrors } from "../utils/strings.js";
+import { getStudentInfoEmbed } from "@app/utils/components.js";
+import { commandDescriptions, commandErrors } from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,

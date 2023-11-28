@@ -1,11 +1,11 @@
 // eslint-disable-next-line import/no-unassigned-import
 import "dotenv/config";
-import { client } from "./utils/client.js";
-import { registerCommands } from "./utils/commands.js";
-import { checkEnvironmentVariables, getToken } from "./utils/config.js";
-import { attachEventListeners } from "./utils/events.js";
-import { remind } from "./utils/reminders.js";
-import { logErrorFunctions } from "./utils/strings.js";
+import { client } from "@app/utils/client.js";
+import { registerCommands } from "@app/utils/commands.js";
+import { checkEnvironmentVariables, getToken } from "@app/utils/config.js";
+import { attachEventListeners } from "@app/utils/events.js";
+import { remind } from "@app/utils/reminders.js";
+import { logErrorFunctions } from "@app/utils/strings.js";
 
 // Initialization
 

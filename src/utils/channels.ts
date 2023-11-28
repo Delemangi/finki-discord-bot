@@ -1,4 +1,3 @@
-import { type ChannelName } from "../types/ChannelName.js";
 import { client } from "./client.js";
 import { getConfigProperty } from "./config.js";
 import { logger } from "./logger.js";
@@ -8,6 +7,7 @@ import {
   logMessages,
   vipStringFunctions,
 } from "./strings.js";
+import { type ChannelName } from "@app/types/ChannelName.js";
 import { Cron } from "croner";
 import {
   type ActionRowBuilder,

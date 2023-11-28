@@ -1,11 +1,11 @@
 import {
   initializeChannels,
   scheduleVipTemporaryChannel,
-} from "../utils/channels.js";
-import { client as bot } from "../utils/client.js";
-import { logger } from "../utils/logger.js";
-import { initializeRoles } from "../utils/roles.js";
-import { logMessageFunctions } from "../utils/strings.js";
+} from "@app/utils/channels.js";
+import { client as bot } from "@app/utils/client.js";
+import { logger } from "@app/utils/logger.js";
+import { initializeRoles } from "@app/utils/roles.js";
+import { logMessageFunctions } from "@app/utils/strings.js";
 import { type ClientEvents, Events } from "discord.js";
 
 export const name = Events.ClientReady;

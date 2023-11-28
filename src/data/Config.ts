@@ -1,6 +1,6 @@
-import { type BotConfig } from "../types/BotConfig.js";
-import { logger } from "../utils/logger.js";
 import { database } from "./database.js";
+import { type BotConfig } from "@app/types/BotConfig.js";
+import { logger } from "@app/utils/logger.js";
 
 export const getConfig = async () => {
   return await database.config.findFirst();

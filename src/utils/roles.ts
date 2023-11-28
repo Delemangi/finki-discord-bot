@@ -1,9 +1,9 @@
-import { type Roles } from "../types/Roles.js";
-import { type RoleSets } from "../types/RoleSets.js";
 import { client } from "./client.js";
 import { getConfigProperty, getFromRoleConfig } from "./config.js";
 import { logger } from "./logger.js";
 import { logMessages } from "./strings.js";
+import { type Roles } from "@app/types/Roles.js";
+import { type RoleSets } from "@app/types/RoleSets.js";
 import { type Guild, type Role } from "discord.js";
 
 const roles: {

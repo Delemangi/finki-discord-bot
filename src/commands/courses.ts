@@ -1,16 +1,16 @@
-import { type ProgramName } from "../types/ProgramName.js";
+import { type ProgramName } from "@app/types/ProgramName.js";
 import {
   getCoursesPrerequisiteEmbed,
   getCoursesProgramEmbed,
-} from "../utils/components.js";
-import { createPollChoices } from "../utils/polls.js";
-import { getCourseRolesBySemester } from "../utils/roles.js";
+} from "@app/utils/components.js";
+import { createPollChoices } from "@app/utils/polls.js";
+import { getCourseRolesBySemester } from "@app/utils/roles.js";
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
   programMapping,
-} from "../utils/strings.js";
+} from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   type GuildMember,

@@ -23,6 +23,12 @@
     "outDir": "dist",
     "resolveJsonModule": true,
     "strict": true,
-    "target": "ESNext"
+    "target": "ESNext",
+    "baseUrl": "./src",
+    "paths": {
+      "@app/*": [
+        "*"
+      ]
+    },
   }
 }

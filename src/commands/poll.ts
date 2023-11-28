@@ -1,12 +1,17 @@
-import { deletePoll, getPollById, getPolls, updatePoll } from "../data/Poll.js";
+import {
+  deletePoll,
+  getPollById,
+  getPolls,
+  updatePoll,
+} from "@app/data/Poll.js";
 import {
   createPollOption,
   deletePollOptionsByPollIdAndName,
   getMostPopularOptionByPollId,
-} from "../data/PollOption.js";
-import { getSpecialPollByPollId } from "../data/SpecialPoll.js";
-import { deleteResponse } from "../utils/channels.js";
-import { commandMention } from "../utils/commands.js";
+} from "@app/data/PollOption.js";
+import { getSpecialPollByPollId } from "@app/data/SpecialPoll.js";
+import { deleteResponse } from "@app/utils/channels.js";
+import { commandMention } from "@app/utils/commands.js";
 import {
   getPaginationComponents,
   getPollComponents,
@@ -15,17 +20,17 @@ import {
   getPollListFirstPageEmbed,
   getPollListNextPageEmbed,
   getPollStatsComponents,
-} from "../utils/components.js";
-import { getConfigProperty, getRoleProperty } from "../utils/config.js";
-import { logger } from "../utils/logger.js";
-import { startPoll } from "../utils/polls.js";
+} from "@app/utils/components.js";
+import { getConfigProperty, getRoleProperty } from "@app/utils/config.js";
+import { logger } from "@app/utils/logger.js";
+import { startPoll } from "@app/utils/polls.js";
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
   commandResponses,
   logErrorFunctions,
-} from "../utils/strings.js";
+} from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,

@@ -1,7 +1,7 @@
-import { type PollWithOptions } from "../types/PollWithOptions.js";
-import { logger } from "../utils/logger.js";
-import { databaseErrorFunctions } from "../utils/strings.js";
 import { database } from "./database.js";
+import { type PollWithOptions } from "@app/types/PollWithOptions.js";
+import { logger } from "@app/utils/logger.js";
+import { databaseErrorFunctions } from "@app/utils/strings.js";
 import { type Prisma } from "@prisma/client";
 
 export const createPoll = async (poll?: Prisma.PollCreateInput) => {

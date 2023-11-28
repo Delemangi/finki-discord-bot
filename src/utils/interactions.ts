@@ -1,26 +1,3 @@
-import { getCompanies } from "../data/Company.js";
-import { getLinkNames } from "../data/Link.js";
-import { getPollById } from "../data/Poll.js";
-import { getPollOptionById } from "../data/PollOption.js";
-import {
-  createPollVote,
-  deletePollVote,
-  getPollVotesByOptionId,
-  getPollVotesByPollIdAndUserId,
-} from "../data/PollVote.js";
-import { getQuestionNames } from "../data/Question.js";
-import { getRules } from "../data/Rule.js";
-import {
-  deleteSpecialPoll,
-  getSpecialPollByPollId,
-  getSpecialPollByUserAndType,
-} from "../data/SpecialPoll.js";
-import {
-  createVipBan,
-  deleteVipBan,
-  getVipBanByUserId,
-} from "../data/VipBan.js";
-import { type PollWithOptions } from "../types/PollWithOptions.js";
 import { deleteResponse, getChannel, log } from "./channels.js";
 import { getCommand } from "./commands.js";
 import {
@@ -69,6 +46,29 @@ import {
   vipStringFunctions,
   vipStrings,
 } from "./strings.js";
+import { getCompanies } from "@app/data/Company.js";
+import { getLinkNames } from "@app/data/Link.js";
+import { getPollById } from "@app/data/Poll.js";
+import { getPollOptionById } from "@app/data/PollOption.js";
+import {
+  createPollVote,
+  deletePollVote,
+  getPollVotesByOptionId,
+  getPollVotesByPollIdAndUserId,
+} from "@app/data/PollVote.js";
+import { getQuestionNames } from "@app/data/Question.js";
+import { getRules } from "@app/data/Rule.js";
+import {
+  deleteSpecialPoll,
+  getSpecialPollByPollId,
+  getSpecialPollByUserAndType,
+} from "@app/data/SpecialPoll.js";
+import {
+  createVipBan,
+  deleteVipBan,
+  getVipBanByUserId,
+} from "@app/data/VipBan.js";
+import { type PollWithOptions } from "@app/types/PollWithOptions.js";
 import { type Poll, type PollOption, type SpecialPoll } from "@prisma/client";
 import {
   type AutocompleteInteraction,

@@ -1,18 +1,18 @@
-import { deleteResponse } from "../utils/channels.js";
-import { client } from "../utils/client.js";
+import { deleteResponse } from "@app/utils/channels.js";
+import { client } from "@app/utils/client.js";
 import {
   getHelpFirstPageEmbed,
   getHelpNextPageEmbed,
   getPaginationComponents,
-} from "../utils/components.js";
-import { getConfigProperty } from "../utils/config.js";
-import { logger } from "../utils/logger.js";
-import { getCommandsWithPermission } from "../utils/permissions.js";
+} from "@app/utils/components.js";
+import { getConfigProperty } from "@app/utils/config.js";
+import { logger } from "@app/utils/logger.js";
+import { getCommandsWithPermission } from "@app/utils/permissions.js";
 import {
   commandDescriptions,
   commandErrors,
   logErrorFunctions,
-} from "../utils/strings.js";
+} from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,
