@@ -1,33 +1,3 @@
-import { deleteResponse, getChannel, log } from "./channels.js";
-import { getCommand } from "./commands.js";
-import {
-  getClassrooms,
-  getConfigProperty,
-  getCourses,
-  getFromRoleConfig,
-  getRoleProperty,
-  getSessions,
-  getStaff,
-} from "./config.js";
-import { createOptions } from "./functions.js";
-import { logger } from "./logger.js";
-import { isMemberInVip } from "./members.js";
-import { transformOptions } from "./options.js";
-import { hasCommandPermission } from "./permissions.js";
-import { decidePoll, startSpecialPoll } from "./polls.js";
-import { userIdRegex } from "./regex.js";
-import {
-  getCourseRolesBySemester,
-  getRole,
-  getRoleFromSet,
-  getRoles,
-} from "./roles.js";
-import {
-  getAutocompleteEmbed,
-  getButtonEmbed,
-  getChatInputCommandEmbed,
-  getUserContextMenuCommandEmbed,
-} from "@app/components/logs.js";
 import {
   getPollComponents,
   getPollEmbed,
@@ -39,8 +9,6 @@ import {
   getVipConfirmComponents,
   getVipConfirmEmbed,
 } from "@app/components/scripts.js";
-import { getCompanies } from "@app/data/Company.js";
-import { getLinkNames } from "@app/data/Link.js";
 import { getPollById } from "@app/data/Poll.js";
 import { getPollOptionById } from "@app/data/PollOption.js";
 import {
@@ -49,8 +17,6 @@ import {
   getPollVotesByOptionId,
   getPollVotesByPollIdAndUserId,
 } from "@app/data/PollVote.js";
-import { getQuestionNames } from "@app/data/Question.js";
-import { getRules } from "@app/data/Rule.js";
 import {
   deleteSpecialPoll,
   getSpecialPollByPollId,
@@ -68,24 +34,31 @@ import {
   commandResponses,
 } from "@app/translations/commands.js";
 import { labels } from "@app/translations/labels.js";
-import { logErrorFunctions, logShortStrings } from "@app/translations/logs.js";
+import { logErrorFunctions } from "@app/translations/logs.js";
 import { vipStringFunctions, vipStrings } from "@app/translations/vip.js";
 import { type PollWithOptions } from "@app/types/PollWithOptions.js";
+import { deleteResponse, getChannel } from "@app/utils/channels.js";
+import { getConfigProperty, getRoleProperty } from "@app/utils/config.js";
+import { logger } from "@app/utils/logger.js";
+import { isMemberInVip } from "@app/utils/members.js";
+import { decidePoll, startSpecialPoll } from "@app/utils/polls.js";
+import { userIdRegex } from "@app/utils/regex.js";
+import {
+  getCourseRolesBySemester,
+  getRole,
+  getRoleFromSet,
+  getRoles,
+} from "@app/utils/roles.js";
 import { type Poll, type PollOption, type SpecialPoll } from "@prisma/client";
 import {
-  type AutocompleteInteraction,
   type ButtonInteraction,
-  type ChatInputCommandInteraction,
   type GuildMember,
   type GuildMemberRoleManager,
   roleMention,
-  type UserContextMenuCommandInteraction,
   userMention,
 } from "discord.js";
 
-// Buttons
-
-const handleCourseButton = async (
+export const handleCourseButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
@@ -134,7 +107,7 @@ const handleCourseButton = async (
   }
 };
 
-const handleYearButton = async (
+export const handleYearButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
@@ -183,7 +156,7 @@ const handleYearButton = async (
   }
 };
 
-const handleProgramButton = async (
+export const handleProgramButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
@@ -232,7 +205,7 @@ const handleProgramButton = async (
   }
 };
 
-const handleNotificationButton = async (
+export const handleNotificationButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
@@ -283,7 +256,7 @@ const handleNotificationButton = async (
   }
 };
 
-const handleColorButton = async (
+export const handleColorButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
@@ -332,7 +305,7 @@ const handleColorButton = async (
   }
 };
 
-const handleAddCoursesButton = async (
+export const handleAddCoursesButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
@@ -375,7 +348,7 @@ const handleAddCoursesButton = async (
   }
 };
 
-const handleRemoveCoursesButton = async (
+export const handleRemoveCoursesButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
@@ -676,7 +649,7 @@ const handleVote = async (
   void deleteResponse(message);
 };
 
-const handlePollButton = async (
+export const handlePollButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
@@ -775,7 +748,7 @@ const handlePollButton = async (
   });
 };
 
-const handlePollStatsButton = async (
+export const handlePollStatsButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
@@ -830,7 +803,7 @@ const handlePollStatsButton = async (
   });
 };
 
-const handleVipButton = async (
+export const handleVipButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
@@ -985,417 +958,4 @@ const handleVipButton = async (
     content: vipStrings.vipRequestSent,
     ephemeral: true,
   });
-};
-
-// Autocomplete interactions
-
-let transformedCourses: Array<[string, string]> | null = null;
-let transformedProfessors: Array<[string, string]> | null = null;
-let transformedCourseRoles: Array<[string, string]> | null = null;
-let transformedSessions: Array<[string, string]> | null = null;
-let transformedClassrooms: Array<[string, string]> | null = null;
-
-const handleCourseAutocomplete = async (
-  interaction: AutocompleteInteraction,
-) => {
-  if (transformedCourses === null) {
-    transformedCourses = Object.entries(transformOptions(getCourses()));
-  }
-
-  try {
-    await interaction.respond(
-      createOptions(transformedCourses, interaction.options.getFocused()),
-    );
-  } catch (error) {
-    logger.error(
-      logErrorFunctions.autocompleteResponseError(interaction.user.tag, error),
-    );
-  }
-};
-
-const handleProfessorAutocomplete = async (
-  interaction: AutocompleteInteraction,
-) => {
-  if (transformedProfessors === null) {
-    transformedProfessors = Object.entries(
-      transformOptions(getStaff().map((professor) => professor.name)),
-    );
-  }
-
-  try {
-    await interaction.respond(
-      createOptions(transformedProfessors, interaction.options.getFocused()),
-    );
-  } catch (error) {
-    logger.error(
-      logErrorFunctions.autocompleteResponseError(interaction.user.tag, error),
-    );
-  }
-};
-
-const handleCourseRoleAutocomplete = async (
-  interaction: AutocompleteInteraction,
-) => {
-  if (transformedCourseRoles === null) {
-    transformedCourseRoles = Object.entries(
-      transformOptions(Object.values(getFromRoleConfig("courses"))),
-    );
-  }
-
-  try {
-    await interaction.respond(
-      createOptions(transformedCourseRoles, interaction.options.getFocused()),
-    );
-  } catch (error) {
-    logger.error(
-      logErrorFunctions.autocompleteResponseError(interaction.user.tag, error),
-    );
-  }
-};
-
-const handleQuestionAutocomplete = async (
-  interaction: AutocompleteInteraction,
-) => {
-  const questionNames = await getQuestionNames();
-
-  if (questionNames === null) {
-    return;
-  }
-
-  try {
-    await interaction.respond(
-      createOptions(
-        Object.entries(transformOptions(questionNames.map(({ name }) => name))),
-        interaction.options.getFocused(),
-      ),
-    );
-  } catch (error) {
-    logger.error(
-      logErrorFunctions.autocompleteResponseError(interaction.user.tag, error),
-    );
-  }
-};
-
-const handleLinkAutocomplete = async (interaction: AutocompleteInteraction) => {
-  const linkNames = await getLinkNames();
-
-  if (linkNames === null) {
-    return;
-  }
-
-  try {
-    await interaction.respond(
-      createOptions(
-        Object.entries(transformOptions(linkNames.map(({ name }) => name))),
-        interaction.options.getFocused(),
-      ),
-    );
-  } catch (error) {
-    logger.error(
-      logErrorFunctions.autocompleteResponseError(interaction.user.tag, error),
-    );
-  }
-};
-
-export const handleSessionAutocomplete = async (
-  interaction: AutocompleteInteraction,
-) => {
-  if (transformedSessions === null) {
-    transformedSessions = Object.entries(
-      transformOptions(Object.keys(getSessions())),
-    );
-  }
-
-  try {
-    await interaction.respond(
-      createOptions(transformedSessions, interaction.options.getFocused()),
-    );
-  } catch (error) {
-    logger.error(
-      logErrorFunctions.autocompleteResponseError(interaction.user.tag, error),
-    );
-  }
-};
-
-export const handleClassroomAutocomplete = async (
-  interaction: AutocompleteInteraction,
-) => {
-  if (transformedClassrooms === null) {
-    transformedClassrooms = Object.entries(
-      transformOptions(
-        getClassrooms().map(
-          (classroom) => `${classroom.classroom} (${classroom.location})`,
-        ),
-      ),
-    );
-  }
-
-  try {
-    await interaction.respond(
-      createOptions(transformedClassrooms, interaction.options.getFocused()),
-    );
-  } catch (error) {
-    logger.error(
-      logErrorFunctions.autocompleteResponseError(interaction.user.tag, error),
-    );
-  }
-};
-
-export const handleRuleAutocomplete = async (
-  interaction: AutocompleteInteraction,
-) => {
-  const rules = await getRules();
-
-  if (rules === null) {
-    return;
-  }
-
-  try {
-    await interaction.respond(
-      createOptions(
-        Object.entries(transformOptions(rules.map(({ rule }) => rule))),
-        interaction.options.getFocused(),
-      ),
-    );
-  } catch (error) {
-    logger.error(
-      logErrorFunctions.autocompleteResponseError(interaction.user.tag, error),
-    );
-  }
-};
-
-export const handleCompanyAutocomplete = async (
-  interaction: AutocompleteInteraction,
-) => {
-  const companies = await getCompanies();
-
-  if (companies === null) {
-    return;
-  }
-
-  try {
-    await interaction.respond(
-      createOptions(
-        Object.entries(transformOptions(companies.map(({ name }) => name))),
-        interaction.options.getFocused(),
-      ),
-    );
-  } catch (error) {
-    logger.error(
-      logErrorFunctions.autocompleteResponseError(interaction.user.tag, error),
-    );
-  }
-};
-
-// Interactions
-
-const ignoredButtons = ["help", "polls", "exp"];
-
-export const handleChatInputCommand = async (
-  interaction: ChatInputCommandInteraction,
-) => {
-  try {
-    await interaction.deferReply();
-  } catch (error) {
-    logger.error(
-      logErrorFunctions.chatInputInteractionDeferError(interaction, error),
-    );
-    await interaction.reply(commandErrors.commandError);
-
-    return;
-  }
-
-  const command = await getCommand(interaction.commandName);
-
-  logger.info(
-    `${logShortStrings.chat} ${interaction.user.tag}: ${interaction} [${
-      interaction.channel === null || interaction.channel.isDMBased()
-        ? logShortStrings.dm
-        : logShortStrings.guild
-    }]`,
-  );
-  await log(
-    await getChatInputCommandEmbed(interaction),
-    interaction,
-    "commands",
-  );
-
-  if (command === undefined) {
-    logger.warn(logErrorFunctions.commandNotFound(interaction.id));
-    await interaction.editReply(commandErrors.commandNotFound);
-
-    return;
-  }
-
-  const fullCommand = (
-    interaction.commandName +
-    " " +
-    (interaction.options.getSubcommand(false) ?? "")
-  ).trim();
-
-  if (
-    !(await hasCommandPermission(
-      interaction.member as GuildMember | null,
-      fullCommand,
-    ))
-  ) {
-    await interaction.editReply(commandErrors.commandNoPermission);
-
-    return;
-  }
-
-  try {
-    await command.execute(interaction);
-  } catch (error) {
-    logger.error(
-      logErrorFunctions.chatInputInteractionError(interaction, error),
-    );
-  }
-};
-
-export const handleUserContextMenuCommand = async (
-  interaction: UserContextMenuCommandInteraction,
-) => {
-  try {
-    await interaction.deferReply();
-  } catch (error) {
-    logger.error(
-      logErrorFunctions.userContextMenuInteractionDeferError(
-        interaction,
-        error,
-      ),
-    );
-    await interaction.reply(commandErrors.commandError);
-
-    return;
-  }
-
-  const command = await getCommand(interaction.commandName);
-
-  logger.info(
-    `${logShortStrings.user} ${interaction.user.tag}: ${
-      interaction.commandName
-    } [${
-      interaction.channel === null || interaction.channel.isDMBased()
-        ? logShortStrings.dm
-        : logShortStrings.guild
-    }]`,
-  );
-  await log(
-    await getUserContextMenuCommandEmbed(interaction),
-    interaction,
-    "commands",
-  );
-
-  if (command === undefined) {
-    logger.warn(logErrorFunctions.commandNotFound(interaction.id));
-
-    return;
-  }
-
-  try {
-    await command.execute(interaction);
-  } catch (error) {
-    logger.error(
-      logErrorFunctions.userContextMenuInteractionError(interaction, error),
-    );
-  }
-};
-
-const buttonInteractionHandlers = {
-  addCourses: handleAddCoursesButton,
-  color: handleColorButton,
-  course: handleCourseButton,
-  notification: handleNotificationButton,
-  poll: handlePollButton,
-  pollStats: handlePollStatsButton,
-  program: handleProgramButton,
-  removeCourses: handleRemoveCoursesButton,
-  vip: handleVipButton,
-  year: handleYearButton,
-};
-
-const ephemeralResponseButtons = ["addCourses", "removeCourses"];
-
-export const handleButton = async (interaction: ButtonInteraction) => {
-  const [command, ...args] = interaction.customId.split(":");
-
-  logger.info(
-    `${logShortStrings.button} ${interaction.user.tag}: ${
-      interaction.customId
-    } [${
-      interaction.channel === null || interaction.channel.isDMBased()
-        ? logShortStrings.dm
-        : logShortStrings.guild
-    }]`,
-  );
-  await log(
-    getButtonEmbed(interaction, command, args),
-    interaction,
-    "commands",
-  );
-
-  if (command === undefined) {
-    logger.warn(logErrorFunctions.commandNotFound(interaction.id));
-
-    return;
-  }
-
-  if (ephemeralResponseButtons.includes(command)) {
-    try {
-      const mess = await interaction.deferReply({
-        ephemeral: true,
-      });
-      void deleteResponse(mess, 10_000);
-    } catch (error) {
-      logger.error(
-        logErrorFunctions.buttonInteractionDeferError(interaction, error),
-      );
-    }
-  }
-
-  if (Object.keys(buttonInteractionHandlers).includes(command)) {
-    await buttonInteractionHandlers[
-      command as keyof typeof buttonInteractionHandlers
-    ](interaction, args);
-  } else if (ignoredButtons.includes(command)) {
-    // Do nothing
-  } else {
-    logger.warn(logErrorFunctions.commandNotFound(interaction.id));
-  }
-};
-
-const autocompleteInteractionHandlers = {
-  classroom: handleClassroomAutocomplete,
-  company: handleCompanyAutocomplete,
-  course: handleCourseAutocomplete,
-  courserole: handleCourseRoleAutocomplete,
-  link: handleLinkAutocomplete,
-  professor: handleProfessorAutocomplete,
-  question: handleQuestionAutocomplete,
-  rule: handleRuleAutocomplete,
-  session: handleSessionAutocomplete,
-};
-
-export const handleAutocomplete = async (
-  interaction: AutocompleteInteraction,
-) => {
-  const option = interaction.options.getFocused(true);
-
-  logger.info(
-    `${logShortStrings.auto} ${interaction.user.tag}: ${option.name} [${
-      interaction.channel === null || interaction.channel.isDMBased()
-        ? logShortStrings.dm
-        : logShortStrings.guild
-    }]`,
-  );
-  await log(getAutocompleteEmbed(interaction), interaction, "commands");
-
-  if (Object.keys(autocompleteInteractionHandlers).includes(option.name)) {
-    await autocompleteInteractionHandlers[
-      option.name as keyof typeof autocompleteInteractionHandlers
-    ](interaction);
-  } else {
-    logger.warn(logErrorFunctions.commandNotFound(interaction.id));
-  }
 };

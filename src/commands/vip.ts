@@ -17,6 +17,7 @@ import {
   getSpecialPolls,
 } from "@app/data/SpecialPoll.js";
 import { getVipBanByUserId, getVipBans } from "@app/data/VipBan.js";
+import { handlePollButtonForVipVote } from "@app/interactions/button.js";
 import {
   commandDescriptions,
   commandErrors,
@@ -26,7 +27,6 @@ import {
 import { logErrorFunctions } from "@app/translations/logs.js";
 import { deleteResponse } from "@app/utils/channels.js";
 import { getConfigProperty, getRoleProperty } from "@app/utils/config.js";
-import { handlePollButtonForVipVote } from "@app/utils/interactions.js";
 import { logger } from "@app/utils/logger.js";
 import {
   isMemberAdmin,

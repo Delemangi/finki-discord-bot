@@ -101,7 +101,7 @@ export const scheduleVipTemporaryChannel = async () => {
   logger.info(logMessageFunctions.tempVipScheduled(await getNextVipCronRun()));
 };
 
-export const log = async (
+export const logEmbed = async (
   embed: EmbedBuilder,
   interaction: Interaction,
   type: ChannelName,

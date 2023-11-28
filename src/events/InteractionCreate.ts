@@ -1,10 +1,10 @@
-import { logErrorFunctions } from "@app/translations/logs.js";
 import {
   handleAutocomplete,
   handleButton,
   handleChatInputCommand,
   handleUserContextMenuCommand,
-} from "@app/utils/interactions.js";
+} from "@app/interactions/handlers.js";
+import { logErrorFunctions } from "@app/translations/logs.js";
 import { logger } from "@app/utils/logger.js";
 import { type ClientEvents, Events } from "discord.js";
 
