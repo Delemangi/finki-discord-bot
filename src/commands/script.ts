@@ -20,6 +20,13 @@ import {
 import { getCompanies } from "@app/data/Company.js";
 import { getInfoMessages } from "@app/data/InfoMessage.js";
 import { getRules } from "@app/data/Rule.js";
+import {
+  commandDescriptions,
+  commandErrors,
+  commandResponses,
+} from "@app/strings/commands.js";
+import { logErrorFunctions } from "@app/strings/logs.js";
+import { threadMessageFunctions } from "@app/strings/threads.js";
 import { sendEmbed } from "@app/utils/channels.js";
 import { getCommands } from "@app/utils/commands.js";
 import {
@@ -29,13 +36,6 @@ import {
   getToken,
 } from "@app/utils/config.js";
 import { logger } from "@app/utils/logger.js";
-import {
-  commandDescriptions,
-  commandErrors,
-  commandResponses,
-  logErrorFunctions,
-  threadMessageFunctions,
-} from "@app/utils/strings.js";
 import { InfoMessageType } from "@prisma/client";
 import {
   type Channel,

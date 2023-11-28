@@ -2,7 +2,7 @@ import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-} from "@app/utils/strings.js";
+} from "@app/strings/commands.js";
 import {
   type ChatInputCommandInteraction,
   PermissionFlagsBits,

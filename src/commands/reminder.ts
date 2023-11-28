@@ -3,7 +3,7 @@ import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-} from "@app/utils/strings.js";
+} from "@app/strings/commands.js";
 import { parseDate } from "chrono-node";
 import {
   type ChatInputCommandInteraction,

@@ -1,12 +1,12 @@
-import { getCommands } from "@app/utils/commands.js";
-import { getApplicationId, getToken } from "@app/utils/config.js";
-import { logger } from "@app/utils/logger.js";
 import {
   commandDescriptions,
   commandErrors,
   commandResponses,
-  logErrorFunctions,
-} from "@app/utils/strings.js";
+} from "@app/strings/commands.js";
+import { logErrorFunctions } from "@app/strings/logs.js";
+import { getCommands } from "@app/utils/commands.js";
+import { getApplicationId, getToken } from "@app/utils/config.js";
+import { logger } from "@app/utils/logger.js";
 import {
   type ChatInputCommandInteraction,
   PermissionFlagsBits,

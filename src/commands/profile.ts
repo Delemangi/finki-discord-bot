@@ -1,5 +1,5 @@
 import { getStudentInfoEmbed } from "@app/components/commands.js";
-import { commandDescriptions, commandErrors } from "@app/utils/strings.js";
+import { commandDescriptions, commandErrors } from "@app/strings/commands.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -16,9 +16,8 @@ export const data = new SlashCommandBuilder()
   .setDMPermission(false);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const member = interaction.guild?.members.cache.get(
-    (interaction.options.getUser("user") ?? interaction.user).id,
-  );
+  const user = interaction.options.getUser("user") ?? interaction.user;
+  const member = interaction.guild?.members.cache.get(user.id);
 
   if (member === undefined) {
     await interaction.editReply(commandErrors.userNotFound);

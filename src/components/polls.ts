@@ -7,17 +7,14 @@ import {
   getPollVotesByOptionId,
   getPollVotesByPollId,
 } from "@app/data/PollVote.js";
+import { embedMessageFunctions, embedMessages } from "@app/strings/embeds.js";
+import { labels } from "@app/strings/labels.js";
+import { paginationStringFunctions } from "@app/strings/pagination.js";
 import { type PollWithOptions } from "@app/types/PollWithOptions.js";
 import { getConfigProperty } from "@app/utils/config.js";
 import { getUsername } from "@app/utils/members.js";
 import { getPollThreshold } from "@app/utils/polls.js";
 import { getMembersWithRoles } from "@app/utils/roles.js";
-import {
-  embedMessageFunctions,
-  embedMessages,
-  paginationStringFunctions,
-  shortStrings,
-} from "@app/utils/strings.js";
 import { type Poll, type SpecialPoll } from "@prisma/client";
 import {
   ActionRowBuilder,
@@ -70,7 +67,7 @@ export const getPollEmbed = async (poll: PollWithOptions) => {
         ).join("\n"),
       )}${
         poll.done
-          ? `\n${shortStrings.result}: ${inlineCode(
+          ? `\n${labels.result}: ${inlineCode(
               poll.decision ??
                 (await getMostPopularOptionByPollId(poll.id))?.name ??
                 "-",
@@ -79,7 +76,7 @@ export const getPollEmbed = async (poll: PollWithOptions) => {
       }`,
     )
     .setFooter({
-      text: `${shortStrings.poll}: ${poll.id}`,
+      text: `${labels.poll}: ${poll.id}`,
     })
     .setTimestamp();
 };
@@ -152,51 +149,51 @@ export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
     .addFields(
       {
         inline: true,
-        name: shortStrings.multipleChoice,
-        value: poll.multiple ? shortStrings.yes : shortStrings.no,
+        name: labels.multipleChoice,
+        value: poll.multiple ? labels.yes : labels.no,
       },
       {
         inline: true,
-        name: shortStrings.anonymous,
-        value: poll.anonymous ? shortStrings.yes : shortStrings.no,
+        name: labels.anonymous,
+        value: poll.anonymous ? labels.yes : labels.no,
       },
       {
         inline: true,
-        name: shortStrings.open,
-        value: poll.open ? shortStrings.yes : shortStrings.no,
+        name: labels.open,
+        value: poll.open ? labels.yes : labels.no,
       },
       {
         inline: true,
-        name: shortStrings.author,
+        name: labels.author,
         value: userMention(poll.userId),
       },
       {
         inline: true,
-        name: shortStrings.votes,
+        name: labels.votes,
         value: `${votes} ${poll.roles.length > 0 ? turnout : ""}`,
       },
       {
         inline: true,
-        name: shortStrings.rightToVote,
+        name: labels.rightToVote,
         value:
           poll.roles.length === 0
-            ? shortStrings.all
+            ? labels.all
             : (
                 await getMembersWithRoles(guild, ...poll.roles)
               ).length.toString(),
       },
       {
         inline: true,
-        name: shortStrings.requiredMajority,
+        name: labels.requiredMajority,
         value: `${poll.threshold * 100}% (${threshold})`,
       },
       {
         inline: true,
-        name: shortStrings.roles,
+        name: labels.roles,
         value:
           poll.roles.length > 0
             ? poll.roles.map((role) => roleMention(role)).join(", ")
-            : shortStrings.none,
+            : labels.none,
       },
       {
         inline: true,
@@ -205,7 +202,7 @@ export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
       },
     )
     .setFooter({
-      text: `${shortStrings.poll}: ${poll.id}`,
+      text: `${labels.poll}: ${poll.id}`,
     })
     .setTimestamp();
 };
@@ -244,14 +241,12 @@ export const getPollListFirstPageEmbed = async (
 ) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle(shortStrings.polls)
+    .setTitle(labels.polls)
     .setDescription(embedMessageFunctions.allPolls(all))
     .addFields(
       ...polls.slice(0, pollsPerPage).map((poll) => ({
         name:
-          all && poll.done
-            ? `${poll.title} (${shortStrings.closed})`
-            : poll.title,
+          all && poll.done ? `${poll.title} (${labels.closed})` : poll.title,
         value: poll.id,
       })),
     )
@@ -273,16 +268,14 @@ export const getPollListNextPageEmbed = async (
 ) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle(shortStrings.polls)
+    .setTitle(labels.polls)
     .setDescription(embedMessageFunctions.allPolls(all))
     .addFields(
       ...polls
         .slice(pollsPerPage * page, pollsPerPage * (page + 1))
         .map((poll) => ({
           name:
-            all && poll.done
-              ? `${poll.title} (${shortStrings.closed})`
-              : poll.title,
+            all && poll.done ? `${poll.title} (${labels.closed})` : poll.title,
           value: poll.id,
         })),
     )
@@ -302,7 +295,7 @@ export const getSpecialPollListFirstPageEmbed = async (
 ) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle(shortStrings.polls)
+    .setTitle(labels.polls)
     .setDescription(embedMessages.allSpecialPolls)
     .addFields(
       ...(await Promise.all(
@@ -329,7 +322,7 @@ export const getSpecialPollListNextPageEmbed = async (
 ) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle(shortStrings.polls)
+    .setTitle(labels.polls)
     .setDescription(embedMessages.allSpecialPolls)
     .addFields(
       ...(await Promise.all(

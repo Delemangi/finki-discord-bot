@@ -23,17 +23,6 @@ import {
   getRoles,
 } from "./roles.js";
 import {
-  commandErrorFunctions,
-  commandErrors,
-  commandResponseFunctions,
-  commandResponses,
-  logErrorFunctions,
-  logShortStrings,
-  shortStrings,
-  vipStringFunctions,
-  vipStrings,
-} from "./strings.js";
-import {
   getAutocompleteEmbed,
   getButtonEmbed,
   getChatInputCommandEmbed,
@@ -72,6 +61,15 @@ import {
   deleteVipBan,
   getVipBanByUserId,
 } from "@app/data/VipBan.js";
+import {
+  commandErrorFunctions,
+  commandErrors,
+  commandResponseFunctions,
+  commandResponses,
+} from "@app/strings/commands.js";
+import { labels } from "@app/strings/labels.js";
+import { logErrorFunctions, logShortStrings } from "@app/strings/logs.js";
+import { vipStringFunctions, vipStrings } from "@app/strings/vip.js";
 import { type PollWithOptions } from "@app/types/PollWithOptions.js";
 import { type Poll, type PollOption, type SpecialPoll } from "@prisma/client";
 import {
@@ -427,7 +425,7 @@ const handlePollButtonForVipAddVote = async (
   const vipChannel = getChannel("vip");
   const oathChannel = getChannel("oath");
 
-  if (poll.decision !== shortStrings.yes) {
+  if (poll.decision !== labels.yes) {
     const rejectComponents = getVipAcknowledgeComponents();
     await oathChannel?.send({
       components: rejectComponents,
@@ -459,7 +457,7 @@ const handlePollButtonForVipRemoveVote = async (
 ) => {
   const vipChannel = getChannel("vip");
 
-  if (poll.decision !== shortStrings.yes) {
+  if (poll.decision !== labels.yes) {
     await vipChannel?.send(
       vipStringFunctions.vipRemoveRejected(specialPoll.userId),
     );
@@ -484,7 +482,7 @@ const handlePollButtonForVipUpgradeVote = async (
 ) => {
   const vipChannel = getChannel("vip");
 
-  if (poll.decision !== shortStrings.yes) {
+  if (poll.decision !== labels.yes) {
     await vipChannel?.send(
       vipStringFunctions.vipUpgradeRejected(specialPoll.userId),
     );
@@ -507,7 +505,7 @@ const handlePollButtonForVipBanVote = async (
 ) => {
   const vipChannel = getChannel("vip");
 
-  if (poll.decision !== shortStrings.yes) {
+  if (poll.decision !== labels.yes) {
     await vipChannel?.send(
       vipStringFunctions.vipBanRejected(specialPoll.userId),
     );
@@ -531,7 +529,7 @@ const handlePollButtonForVipUnbanVote = async (
 ) => {
   const vipChannel = getChannel("vip");
 
-  if (poll.decision !== shortStrings.yes) {
+  if (poll.decision !== labels.yes) {
     await vipChannel?.send(
       vipStringFunctions.vipUnbanRejected(specialPoll.userId),
     );

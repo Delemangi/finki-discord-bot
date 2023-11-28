@@ -1,6 +1,6 @@
 import { database } from "./database.js";
+import { databaseErrorFunctions } from "@app/strings/database.js";
 import { logger } from "@app/utils/logger.js";
-import { databaseErrorFunctions } from "@app/utils/strings.js";
 import { type Experience, type Prisma } from "@prisma/client";
 
 export const createExperience = async (

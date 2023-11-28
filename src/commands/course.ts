@@ -6,6 +6,11 @@ import {
   getCourseSummaryEmbed,
 } from "@app/components/commands.js";
 import {
+  commandDescriptions,
+  commandErrors,
+  commandResponseFunctions,
+} from "@app/strings/commands.js";
+import {
   getFromRoleConfig,
   getInformation,
   getParticipants,
@@ -13,11 +18,6 @@ import {
   getProfessors,
 } from "@app/utils/config.js";
 import { getCourseRoleByCourseName } from "@app/utils/roles.js";
-import {
-  commandDescriptions,
-  commandErrors,
-  commandResponseFunctions,
-} from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   type GuildMember,

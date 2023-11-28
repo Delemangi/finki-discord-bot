@@ -2,7 +2,7 @@ import {
   commandDescriptions,
   commandErrors,
   commandResponses,
-} from "@app/utils/strings.js";
+} from "@app/strings/commands.js";
 import {
   type ChatInputCommandInteraction,
   type GuildBasedChannel,

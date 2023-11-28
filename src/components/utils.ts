@@ -1,12 +1,10 @@
+import { embedLabels } from "@app/strings/embeds.js";
+import { labels } from "@app/strings/labels.js";
+import { logErrorFunctions } from "@app/strings/logs.js";
 import { type ProgramShorthand } from "@app/types/ProgramShorthand.js";
 import { getPrerequisites, getStaff } from "@app/utils/config.js";
 import { logger } from "@app/utils/logger.js";
 import { getRoleFromSet } from "@app/utils/roles.js";
-import {
-  logEmbedStrings,
-  logErrorFunctions,
-  shortStrings,
-} from "@app/utils/strings.js";
 import {
   type ButtonInteraction,
   channelMention,
@@ -32,7 +30,7 @@ export const truncateString = (
 
 export const getChannelMention = (interaction: Interaction) => {
   if (interaction.channel === null || interaction.channel.isDMBased()) {
-    return shortStrings.dm;
+    return labels.dm;
   }
 
   return channelMention(interaction.channel.id);
@@ -41,10 +39,10 @@ export const getChannelMention = (interaction: Interaction) => {
 export const getButtonCommand = (command?: string) => {
   switch (command) {
     case undefined:
-      return logEmbedStrings.unknown;
+      return embedLabels.unknown;
 
     case "pollStats":
-      return logEmbedStrings.pollStats;
+      return embedLabels.pollStats;
 
     default:
       return command[0]?.toUpperCase() + command.slice(1);
@@ -62,7 +60,7 @@ export const getButtonInfo = (
         name: getButtonCommand(command),
         value: roleMention(
           getRoleFromSet(interaction.guild, "courses", args[0])?.id ??
-            logEmbedStrings.unknown,
+            embedLabels.unknown,
         ),
       };
 
@@ -74,7 +72,7 @@ export const getButtonInfo = (
         name: getButtonCommand(command),
         value: roleMention(
           getRoleFromSet(interaction.guild, command, args[0])?.id ??
-            logEmbedStrings.unknown,
+            embedLabels.unknown,
         ),
       };
 
@@ -89,13 +87,13 @@ export const getButtonInfo = (
       return {
         name: getButtonCommand(command),
         value:
-          args[0] === undefined ? logEmbedStrings.unknown : inlineCode(args[0]),
+          args[0] === undefined ? embedLabels.unknown : inlineCode(args[0]),
       };
 
     default:
       return {
-        name: logEmbedStrings.unknown,
-        value: logEmbedStrings.unknown,
+        name: embedLabels.unknown,
+        value: embedLabels.unknown,
       };
   }
 };
@@ -156,7 +154,7 @@ export const transformCoursePrerequisites = (
       prerequisite[program] === "нема"
         ? {
             course: prerequisite.course,
-            prerequisite: shortStrings.none,
+            prerequisite: labels.none,
             type: "изборен",
           }
         : {

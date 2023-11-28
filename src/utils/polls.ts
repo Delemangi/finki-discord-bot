@@ -1,13 +1,14 @@
 import { client } from "./client.js";
 import { getConfigProperty, getRoleProperty } from "./config.js";
 import { getMembersWithRoles } from "./roles.js";
-import { shortStrings, vipStringFunctions } from "./strings.js";
 import { createPoll, getPollById, updatePoll } from "@app/data/Poll.js";
 import { countPollVotesByOptionId } from "@app/data/PollVote.js";
 import {
   createSpecialPoll,
   getSpecialPollByPollId,
 } from "@app/data/SpecialPoll.js";
+import { labels } from "@app/strings/labels.js";
+import { vipStringFunctions } from "@app/strings/vip.js";
 import { type Prisma } from "@prisma/client";
 import {
   type ButtonInteraction,
@@ -16,9 +17,9 @@ import {
 } from "discord.js";
 
 export const specialPollOptions = [
-  shortStrings.yes,
-  shortStrings.no,
-  shortStrings.abstain,
+  labels.yes,
+  labels.no,
+  labels.abstain,
 ] as const;
 
 export const specialPollTypes = [
@@ -126,13 +127,13 @@ export const startSpecialPoll = async (
     options: {
       create: [
         {
-          name: shortStrings.yes,
+          name: labels.yes,
         },
         {
-          name: shortStrings.no,
+          name: labels.no,
         },
         {
-          name: shortStrings.abstain,
+          name: labels.abstain,
         },
       ],
     },
@@ -186,8 +187,7 @@ export const getPollThreshold = async (pollId: string) => {
 
   const totalVoters = await getMembersWithRoles(guild, ...poll.roles);
   const abstenstions = await countPollVotesByOptionId(
-    poll.options.find((option) => option.name === shortStrings.abstain)?.id ??
-      "",
+    poll.options.find((option) => option.name === labels.abstain)?.id ?? "",
   );
   const rawThreshold =
     (totalVoters.length - (abstenstions ?? 0)) * poll.threshold;
@@ -263,6 +263,6 @@ export const decidePoll = async (pollId: string) => {
     return;
   }
 
-  poll.decision = shortStrings.no;
+  poll.decision = labels.no;
   await updatePoll(poll);
 };

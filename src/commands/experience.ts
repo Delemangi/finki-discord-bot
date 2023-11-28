@@ -11,15 +11,15 @@ import {
   getExperienceCount,
   getExperienceSorted,
 } from "@app/data/Experience.js";
-import { deleteResponse } from "@app/utils/channels.js";
-import { getConfigProperty } from "@app/utils/config.js";
-import { logger } from "@app/utils/logger.js";
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-  logErrorFunctions,
-} from "@app/utils/strings.js";
+} from "@app/strings/commands.js";
+import { logErrorFunctions } from "@app/strings/logs.js";
+import { deleteResponse } from "@app/utils/channels.js";
+import { getConfigProperty } from "@app/utils/config.js";
+import { logger } from "@app/utils/logger.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,

@@ -1,10 +1,10 @@
-import { logger } from "@app/utils/logger.js";
 import {
   commandDescriptions,
   commandErrors,
   commandResponses,
-  logErrorFunctions,
-} from "@app/utils/strings.js";
+} from "@app/strings/commands.js";
+import { logErrorFunctions } from "@app/strings/logs.js";
+import { logger } from "@app/utils/logger.js";
 import {
   type Channel,
   type ChatInputCommandInteraction,

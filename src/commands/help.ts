@@ -3,16 +3,13 @@ import {
   getHelpNextPageEmbed,
 } from "@app/components/commands.js";
 import { getPaginationComponents } from "@app/components/pagination.js";
+import { commandDescriptions, commandErrors } from "@app/strings/commands.js";
+import { logErrorFunctions } from "@app/strings/logs.js";
 import { deleteResponse } from "@app/utils/channels.js";
 import { client } from "@app/utils/client.js";
 import { getConfigProperty } from "@app/utils/config.js";
 import { logger } from "@app/utils/logger.js";
 import { getCommandsWithPermission } from "@app/utils/permissions.js";
-import {
-  commandDescriptions,
-  commandErrors,
-  logErrorFunctions,
-} from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,

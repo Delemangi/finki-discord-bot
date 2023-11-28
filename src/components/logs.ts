@@ -4,8 +4,8 @@ import {
   getButtonInfo,
   getChannelMention,
 } from "@app/components/utils.js";
+import { embedLabels } from "@app/strings/embeds.js";
 import { getConfigProperty } from "@app/utils/config.js";
-import { logEmbedStrings } from "@app/utils/strings.js";
 import {
   type AutocompleteInteraction,
   type ButtonInteraction,
@@ -23,7 +23,7 @@ export const getChatInputCommandEmbed = async (
 ) => {
   return new EmbedBuilder()
     .setColor(color)
-    .setTitle(logEmbedStrings.chatInputInteraction)
+    .setTitle(embedLabels.chatInputInteraction)
     .setAuthor({
       iconURL: interaction.user.displayAvatarURL(),
       name: interaction.user.tag,
@@ -32,17 +32,17 @@ export const getChatInputCommandEmbed = async (
     .addFields(
       {
         inline: true,
-        name: logEmbedStrings.author,
+        name: embedLabels.author,
         value: userMention(interaction.user.id),
       },
       {
         inline: true,
-        name: logEmbedStrings.channel,
+        name: embedLabels.channel,
         value: getChannelMention(interaction),
       },
       {
         inline: true,
-        name: logEmbedStrings.command,
+        name: embedLabels.command,
         value: inlineCode(
           interaction.toString().length > 300
             ? interaction.toString().slice(0, 300)
@@ -61,7 +61,7 @@ export const getUserContextMenuCommandEmbed = async (
 ) => {
   return new EmbedBuilder()
     .setColor(color)
-    .setTitle(logEmbedStrings.userContextMenuInteraction)
+    .setTitle(embedLabels.userContextMenuInteraction)
     .setAuthor({
       iconURL: interaction.user.displayAvatarURL(),
       name: interaction.user.tag,
@@ -69,19 +69,19 @@ export const getUserContextMenuCommandEmbed = async (
     })
     .addFields(
       {
-        name: logEmbedStrings.author,
+        name: embedLabels.author,
         value: userMention(interaction.user.id),
       },
       {
-        name: logEmbedStrings.channel,
+        name: embedLabels.channel,
         value: getChannelMention(interaction),
       },
       {
-        name: logEmbedStrings.command,
+        name: embedLabels.command,
         value: inlineCode(interaction.commandName),
       },
       {
-        name: logEmbedStrings.target,
+        name: embedLabels.target,
         value: userMention(interaction.targetUser.id),
       },
     )
@@ -98,7 +98,7 @@ export const getButtonEmbed = (
 ) => {
   return new EmbedBuilder()
     .setColor(color)
-    .setTitle(logEmbedStrings.buttonInteraction)
+    .setTitle(embedLabels.buttonInteraction)
     .setAuthor({
       iconURL: interaction.user.displayAvatarURL(),
       name: interaction.user.tag,
@@ -106,17 +106,17 @@ export const getButtonEmbed = (
     .addFields(
       {
         inline: true,
-        name: logEmbedStrings.author,
+        name: embedLabels.author,
         value: userMention(interaction.user.id),
       },
       {
         inline: true,
-        name: logEmbedStrings.channel,
+        name: embedLabels.channel,
         value: getChannelMention(interaction),
       },
       {
         inline: true,
-        name: logEmbedStrings.command,
+        name: embedLabels.command,
         value: getButtonCommand(command),
       },
       {
@@ -135,7 +135,7 @@ export const getAutocompleteEmbed = (interaction: AutocompleteInteraction) => {
 
   return new EmbedBuilder()
     .setColor(color)
-    .setTitle(logEmbedStrings.autocompleteInteraction)
+    .setTitle(embedLabels.autocompleteInteraction)
     .setAuthor({
       iconURL: interaction.user.displayAvatarURL(),
       name: interaction.user.tag,
@@ -143,26 +143,24 @@ export const getAutocompleteEmbed = (interaction: AutocompleteInteraction) => {
     .addFields(
       {
         inline: true,
-        name: logEmbedStrings.author,
+        name: embedLabels.author,
         value: userMention(interaction.user.id),
       },
       {
         inline: true,
-        name: logEmbedStrings.channel,
+        name: embedLabels.channel,
         value: getChannelMention(interaction),
       },
       {
         inline: true,
-        name: logEmbedStrings.command,
+        name: embedLabels.command,
         value: inlineCode(focused.name),
       },
       {
         inline: true,
-        name: logEmbedStrings.value,
+        name: embedLabels.value,
         value:
-          focused.value === ""
-            ? logEmbedStrings.empty
-            : inlineCode(focused.value),
+          focused.value === "" ? embedLabels.empty : inlineCode(focused.value),
       },
     )
     .setFooter({

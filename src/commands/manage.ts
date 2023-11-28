@@ -26,14 +26,14 @@ import { createRule, deleteRule } from "@app/data/Rule.js";
 import { AntosSchema } from "@app/schemas/AntosSchema.js";
 import { CompaniesSchema } from "@app/schemas/CompaniesSchema.js";
 import { LinksSchema } from "@app/schemas/LinksSchema.js";
-import { logger } from "@app/utils/logger.js";
-import { linkRegex } from "@app/utils/regex.js";
 import {
   commandDescriptions,
   commandErrors,
   commandResponses,
-  logErrorFunctions,
-} from "@app/utils/strings.js";
+} from "@app/strings/commands.js";
+import { logErrorFunctions } from "@app/strings/logs.js";
+import { logger } from "@app/utils/logger.js";
+import { linkRegex } from "@app/utils/regex.js";
 import { InfoMessageType } from "@prisma/client";
 import {
   type ChatInputCommandInteraction,

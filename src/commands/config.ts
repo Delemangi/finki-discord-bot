@@ -1,4 +1,5 @@
 import { ConfigSchema } from "@app/schemas/ConfigSchema.js";
+import { commandDescriptions } from "@app/strings/commands.js";
 import { type BotConfig } from "@app/types/BotConfig.js";
 import {
   getConfigKeys,
@@ -7,10 +8,6 @@ import {
 } from "@app/utils/config.js";
 import { createPollChoices } from "@app/utils/polls.js";
 import { refreshOnConfigChange } from "@app/utils/refresh.js";
-import {
-  commandDescriptions,
-  commandErrorFunctions,
-} from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   codeBlock,

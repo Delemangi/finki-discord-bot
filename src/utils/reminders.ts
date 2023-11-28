@@ -1,7 +1,8 @@
 import { client } from "./client.js";
 import { logger } from "./logger.js";
-import { logErrorFunctions, shortStrings } from "./strings.js";
 import { deleteReminder, getReminders } from "@app/data/Reminder.js";
+import { labels } from "@app/strings/labels.js";
+import { logErrorFunctions } from "@app/strings/logs.js";
 import { type Reminder } from "@prisma/client";
 import { userMention } from "discord.js";
 import { setTimeout } from "node:timers/promises";
@@ -11,7 +12,7 @@ const remindUser = async (reminder: Reminder) => {
     const user = await client.users.fetch(reminder.userId);
 
     if (user !== null) {
-      await user.send(`${shortStrings.reminder}: ${reminder.description}`);
+      await user.send(`${labels.reminder}: ${reminder.description}`);
     }
   } else {
     if (reminder.channelId === null) {
@@ -26,7 +27,7 @@ const remindUser = async (reminder: Reminder) => {
           roles: [],
           users: [reminder.userId],
         },
-        content: `${userMention(reminder.userId)} ${shortStrings.reminder}: ${
+        content: `${userMention(reminder.userId)} ${labels.reminder}: ${
           reminder.description
         }`,
       });

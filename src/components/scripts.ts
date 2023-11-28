@@ -1,10 +1,7 @@
+import { embedMessageFunctions, embedMessages } from "@app/strings/embeds.js";
+import { labels } from "@app/strings/labels.js";
+import { vipStrings } from "@app/strings/vip.js";
 import { getConfigProperty, getFromRoleConfig } from "@app/utils/config.js";
-import {
-  embedMessageFunctions,
-  embedMessages,
-  shortStrings,
-  vipStrings,
-} from "@app/utils/strings.js";
 import { type Rule } from "@prisma/client";
 import {
   ActionRowBuilder,
@@ -308,7 +305,7 @@ export const getYearsComponents = () => {
 export const getRulesEmbed = async (rules: Rule[]) => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle(shortStrings.rules)
+    .setTitle(labels.rules)
     .setDescription(
       `${rules
         .map(

@@ -19,18 +19,18 @@ import {
   getMostPopularOptionByPollId,
 } from "@app/data/PollOption.js";
 import { getSpecialPollByPollId } from "@app/data/SpecialPoll.js";
-import { deleteResponse } from "@app/utils/channels.js";
-import { commandMention } from "@app/utils/commands.js";
-import { getConfigProperty, getRoleProperty } from "@app/utils/config.js";
-import { logger } from "@app/utils/logger.js";
-import { startPoll } from "@app/utils/polls.js";
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
   commandResponses,
-  logErrorFunctions,
-} from "@app/utils/strings.js";
+} from "@app/strings/commands.js";
+import { logErrorFunctions } from "@app/strings/logs.js";
+import { deleteResponse } from "@app/utils/channels.js";
+import { commandMention } from "@app/utils/commands.js";
+import { getConfigProperty, getRoleProperty } from "@app/utils/config.js";
+import { logger } from "@app/utils/logger.js";
+import { startPoll } from "@app/utils/polls.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,

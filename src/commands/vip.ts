@@ -17,6 +17,13 @@ import {
   getSpecialPolls,
 } from "@app/data/SpecialPoll.js";
 import { getVipBanByUserId, getVipBans } from "@app/data/VipBan.js";
+import {
+  commandDescriptions,
+  commandErrors,
+  commandResponseFunctions,
+  commandResponses,
+} from "@app/strings/commands.js";
+import { logErrorFunctions } from "@app/strings/logs.js";
 import { deleteResponse } from "@app/utils/channels.js";
 import { getConfigProperty, getRoleProperty } from "@app/utils/config.js";
 import { handlePollButtonForVipVote } from "@app/utils/interactions.js";
@@ -34,13 +41,6 @@ import {
   startSpecialPoll,
 } from "@app/utils/polls.js";
 import { getMembersWithRoles } from "@app/utils/roles.js";
-import {
-  commandDescriptions,
-  commandErrors,
-  commandResponseFunctions,
-  commandResponses,
-  logErrorFunctions,
-} from "@app/utils/strings.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,

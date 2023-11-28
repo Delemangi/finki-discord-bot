@@ -1,7 +1,7 @@
+import { logErrorFunctions } from "@app/strings/logs.js";
 import { getConfigProperty } from "@app/utils/config.js";
 import { addExperience } from "@app/utils/experience.js";
 import { logger } from "@app/utils/logger.js";
-import { logErrorFunctions } from "@app/utils/strings.js";
 import { type ClientEvents, Events, type Message } from "discord.js";
 
 export const name = Events.MessageCreate;

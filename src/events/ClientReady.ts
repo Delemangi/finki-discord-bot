@@ -1,3 +1,4 @@
+import { logMessageFunctions } from "@app/strings/logs.js";
 import {
   initializeChannels,
   scheduleVipTemporaryChannel,
@@ -5,7 +6,6 @@ import {
 import { client as bot } from "@app/utils/client.js";
 import { logger } from "@app/utils/logger.js";
 import { initializeRoles } from "@app/utils/roles.js";
-import { logMessageFunctions } from "@app/utils/strings.js";
 import { type ClientEvents, Events } from "discord.js";
 
 export const name = Events.ClientReady;

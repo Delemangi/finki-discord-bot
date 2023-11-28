@@ -1,3 +1,4 @@
+import { logErrorFunctions } from "@app/strings/logs.js";
 import {
   handleAutocomplete,
   handleButton,
@@ -5,7 +6,6 @@ import {
   handleUserContextMenuCommand,
 } from "@app/utils/interactions.js";
 import { logger } from "@app/utils/logger.js";
-import { logErrorFunctions } from "@app/utils/strings.js";
 import { type ClientEvents, Events } from "discord.js";
 
 export const name = Events.InteractionCreate;
