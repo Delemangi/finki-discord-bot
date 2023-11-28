@@ -1,4 +1,4 @@
-import { commandDescriptions } from "@app/strings/commands.js";
+import { commandDescriptions } from "@app/translations/commands.js";
 import {
   getMaxEmojisByBoostLevel,
   getMaxStickersByBoostLevel,

@@ -66,10 +66,10 @@ import {
   commandErrors,
   commandResponseFunctions,
   commandResponses,
-} from "@app/strings/commands.js";
-import { labels } from "@app/strings/labels.js";
-import { logErrorFunctions, logShortStrings } from "@app/strings/logs.js";
-import { vipStringFunctions, vipStrings } from "@app/strings/vip.js";
+} from "@app/translations/commands.js";
+import { labels } from "@app/translations/labels.js";
+import { logErrorFunctions, logShortStrings } from "@app/translations/logs.js";
+import { vipStringFunctions, vipStrings } from "@app/translations/vip.js";
 import { type PollWithOptions } from "@app/types/PollWithOptions.js";
 import { type Poll, type PollOption, type SpecialPoll } from "@prisma/client";
 import {

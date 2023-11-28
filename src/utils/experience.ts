@@ -4,8 +4,8 @@ import {
   updateExperience,
 } from "@app/data/Experience.js";
 import { getVipBanByUserId } from "@app/data/VipBan.js";
-import { experienceMessages } from "@app/strings/experience.js";
-import { logMessageFunctions } from "@app/strings/logs.js";
+import { experienceMessages } from "@app/translations/experience.js";
+import { logMessageFunctions } from "@app/translations/logs.js";
 import { getChannel } from "@app/utils/channels.js";
 import {
   getConfigProperty,

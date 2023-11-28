@@ -1,7 +1,7 @@
 import { initializeChannels } from "./channels.js";
 import { logger } from "./logger.js";
 import { initializeRoles } from "./roles.js";
-import { logMessageFunctions } from "@app/strings/logs.js";
+import { logMessageFunctions } from "@app/translations/logs.js";
 import { type BotConfig } from "@app/types/BotConfig.js";
 
 export const refreshOnConfigChange = async (property: keyof BotConfig) => {

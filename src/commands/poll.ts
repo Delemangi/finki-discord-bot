@@ -24,8 +24,8 @@ import {
   commandErrors,
   commandResponseFunctions,
   commandResponses,
-} from "@app/strings/commands.js";
-import { logErrorFunctions } from "@app/strings/logs.js";
+} from "@app/translations/commands.js";
+import { logErrorFunctions } from "@app/translations/logs.js";
 import { deleteResponse } from "@app/utils/channels.js";
 import { commandMention } from "@app/utils/commands.js";
 import { getConfigProperty, getRoleProperty } from "@app/utils/config.js";

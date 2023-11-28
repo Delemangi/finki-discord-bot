@@ -4,7 +4,7 @@ import {
   getButtonInfo,
   getChannelMention,
 } from "@app/components/utils.js";
-import { embedLabels } from "@app/strings/embeds.js";
+import { embedLabels } from "@app/translations/embeds.js";
 import { getConfigProperty } from "@app/utils/config.js";
 import {
   type AutocompleteInteraction,

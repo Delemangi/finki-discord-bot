@@ -1,5 +1,5 @@
 import { ConfigSchema } from "@app/schemas/ConfigSchema.js";
-import { commandDescriptions } from "@app/strings/commands.js";
+import { commandDescriptions } from "@app/translations/commands.js";
 import { type BotConfig } from "@app/types/BotConfig.js";
 import {
   getConfigKeys,

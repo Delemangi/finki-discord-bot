@@ -2,12 +2,15 @@ import {
   linkProfessors,
   transformCoursePrerequisites,
 } from "@app/components/utils.js";
-import { aboutMessage, botName } from "@app/strings/about.js";
-import { commandDescriptions } from "@app/strings/commands.js";
-import { embedMessageFunctions, embedMessages } from "@app/strings/embeds.js";
-import { labels } from "@app/strings/labels.js";
-import { paginationStringFunctions } from "@app/strings/pagination.js";
-import { programMapping } from "@app/strings/programs.js";
+import { aboutMessage, botName } from "@app/translations/about.js";
+import { commandDescriptions } from "@app/translations/commands.js";
+import {
+  embedMessageFunctions,
+  embedMessages,
+} from "@app/translations/embeds.js";
+import { labels } from "@app/translations/labels.js";
+import { paginationStringFunctions } from "@app/translations/pagination.js";
+import { programMapping } from "@app/translations/programs.js";
 import { type Classroom } from "@app/types/Classroom.js";
 import { type CourseInformation } from "@app/types/CourseInformation.js";
 import { type CourseParticipants } from "@app/types/CourseParticipants.js";

@@ -1,7 +1,7 @@
 import { client } from "./client.js";
 import { getApplicationId, getToken } from "./config.js";
 import { logger } from "./logger.js";
-import { logErrorFunctions, logMessages } from "@app/strings/logs.js";
+import { logErrorFunctions, logMessages } from "@app/translations/logs.js";
 import { type Command } from "@app/types/Command.js";
 import {
   type ChatInputCommandInteraction,

@@ -7,8 +7,8 @@ import {
   createSpecialPoll,
   getSpecialPollByPollId,
 } from "@app/data/SpecialPoll.js";
-import { labels } from "@app/strings/labels.js";
-import { vipStringFunctions } from "@app/strings/vip.js";
+import { labels } from "@app/translations/labels.js";
+import { vipStringFunctions } from "@app/translations/vip.js";
 import { type Prisma } from "@prisma/client";
 import {
   type ButtonInteraction,

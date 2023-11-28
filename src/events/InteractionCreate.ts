@@ -1,4 +1,4 @@
-import { logErrorFunctions } from "@app/strings/logs.js";
+import { logErrorFunctions } from "@app/translations/logs.js";
 import {
   handleAutocomplete,
   handleButton,

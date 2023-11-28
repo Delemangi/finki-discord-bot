@@ -2,8 +2,8 @@ import {
   commandDescriptions,
   commandErrors,
   commandResponses,
-} from "@app/strings/commands.js";
-import { logErrorFunctions } from "@app/strings/logs.js";
+} from "@app/translations/commands.js";
+import { logErrorFunctions } from "@app/translations/logs.js";
 import { logger } from "@app/utils/logger.js";
 import {
   type Channel,

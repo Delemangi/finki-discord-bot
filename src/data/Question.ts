@@ -1,5 +1,5 @@
 import { database } from "./database.js";
-import { databaseErrorFunctions } from "@app/strings/database.js";
+import { databaseErrorFunctions } from "@app/translations/database.js";
 import { type QuestionWithLinks } from "@app/types/QuestionWithLinks.js";
 import { logger } from "@app/utils/logger.js";
 import { type Prisma } from "@prisma/client";

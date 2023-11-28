@@ -1,4 +1,4 @@
-import { logErrorFunctions } from "@app/strings/logs.js";
+import { logErrorFunctions } from "@app/translations/logs.js";
 import { getConfigProperty } from "@app/utils/config.js";
 import { addExperience } from "@app/utils/experience.js";
 import { logger } from "@app/utils/logger.js";

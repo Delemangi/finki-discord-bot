@@ -4,7 +4,10 @@ import {
 } from "@app/components/commands.js";
 import { getLinks } from "@app/data/Link.js";
 import { getQuestions } from "@app/data/Question.js";
-import { commandDescriptions, commandErrors } from "@app/strings/commands.js";
+import {
+  commandDescriptions,
+  commandErrors,
+} from "@app/translations/commands.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,

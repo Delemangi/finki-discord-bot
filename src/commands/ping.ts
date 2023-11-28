@@ -1,7 +1,7 @@
 import {
   commandDescriptions,
   commandResponseFunctions,
-} from "@app/strings/commands.js";
+} from "@app/translations/commands.js";
 import { client } from "@app/utils/client.js";
 import {
   type ChatInputCommandInteraction,

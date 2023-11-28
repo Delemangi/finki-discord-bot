@@ -7,9 +7,12 @@ import {
   getPollVotesByOptionId,
   getPollVotesByPollId,
 } from "@app/data/PollVote.js";
-import { embedMessageFunctions, embedMessages } from "@app/strings/embeds.js";
-import { labels } from "@app/strings/labels.js";
-import { paginationStringFunctions } from "@app/strings/pagination.js";
+import {
+  embedMessageFunctions,
+  embedMessages,
+} from "@app/translations/embeds.js";
+import { labels } from "@app/translations/labels.js";
+import { paginationStringFunctions } from "@app/translations/pagination.js";
 import { type PollWithOptions } from "@app/types/PollWithOptions.js";
 import { getConfigProperty } from "@app/utils/config.js";
 import { getUsername } from "@app/utils/members.js";

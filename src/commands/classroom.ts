@@ -3,7 +3,7 @@ import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-} from "@app/strings/commands.js";
+} from "@app/translations/commands.js";
 import { getClassrooms } from "@app/utils/config.js";
 import {
   type ChatInputCommandInteraction,

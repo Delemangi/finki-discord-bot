@@ -5,8 +5,8 @@ import {
   logErrorFunctions,
   logMessageFunctions,
   logMessages,
-} from "@app/strings/logs.js";
-import { vipStringFunctions } from "@app/strings/vip.js";
+} from "@app/translations/logs.js";
+import { vipStringFunctions } from "@app/translations/vip.js";
 import { type ChannelName } from "@app/types/ChannelName.js";
 import { Cron } from "croner";
 import {

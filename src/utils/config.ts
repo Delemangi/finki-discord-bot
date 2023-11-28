@@ -1,5 +1,5 @@
 import { getConfig, setConfig } from "@app/data/Config.js";
-import { configErrors } from "@app/strings/errors.js";
+import { configErrors } from "@app/translations/errors.js";
 import { type BotConfig } from "@app/types/BotConfig.js";
 import { type Classroom } from "@app/types/Classroom.js";
 import { type CourseInformation } from "@app/types/CourseInformation.js";

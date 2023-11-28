@@ -1,4 +1,4 @@
-import { tagAndMentionUser } from "@app/strings/users.js";
+import { tagAndMentionUser } from "@app/translations/users.js";
 import { type PartialUser } from "@app/types/PartialUser.js";
 import { userMention } from "discord.js";
 

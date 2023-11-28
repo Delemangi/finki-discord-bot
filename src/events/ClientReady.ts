@@ -1,4 +1,4 @@
-import { logMessageFunctions } from "@app/strings/logs.js";
+import { logMessageFunctions } from "@app/translations/logs.js";
 import {
   initializeChannels,
   scheduleVipTemporaryChannel,

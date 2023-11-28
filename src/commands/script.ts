@@ -24,9 +24,9 @@ import {
   commandDescriptions,
   commandErrors,
   commandResponses,
-} from "@app/strings/commands.js";
-import { logErrorFunctions } from "@app/strings/logs.js";
-import { threadMessageFunctions } from "@app/strings/threads.js";
+} from "@app/translations/commands.js";
+import { logErrorFunctions } from "@app/translations/logs.js";
+import { threadMessageFunctions } from "@app/translations/threads.js";
 import { sendEmbed } from "@app/utils/channels.js";
 import { getCommands } from "@app/utils/commands.js";
 import {

@@ -3,7 +3,10 @@ import {
   getQuestionEmbed,
 } from "@app/components/commands.js";
 import { getNthQuestion, getQuestion } from "@app/data/Question.js";
-import { commandDescriptions, commandErrors } from "@app/strings/commands.js";
+import {
+  commandDescriptions,
+  commandErrors,
+} from "@app/translations/commands.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,

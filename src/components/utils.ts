@@ -1,6 +1,6 @@
-import { embedLabels } from "@app/strings/embeds.js";
-import { labels } from "@app/strings/labels.js";
-import { logErrorFunctions } from "@app/strings/logs.js";
+import { embedLabels } from "@app/translations/embeds.js";
+import { labels } from "@app/translations/labels.js";
+import { logErrorFunctions } from "@app/translations/logs.js";
 import { type ProgramShorthand } from "@app/types/ProgramShorthand.js";
 import { getPrerequisites, getStaff } from "@app/utils/config.js";
 import { logger } from "@app/utils/logger.js";
