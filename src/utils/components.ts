@@ -1151,34 +1151,22 @@ export const getExperienceEmbed = async (experience: Experience) => {
   const guild = client.guilds.cache.get(await getConfigProperty("guild"));
   const user = guild?.members.cache.get(experience.userId)?.user as User;
 
-  if (guild === undefined) {
-    return new EmbedBuilder()
-      .setColor(await getConfigProperty("color"))
-      .setAuthor({
-        iconURL: user.displayAvatarURL(),
-        name: user.tag,
-      })
-      .setTitle("Активност")
-      .setDescription("Настана грешка.")
-      .setTimestamp();
-  }
-
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
     .setAuthor({
       iconURL: user.displayAvatarURL(),
       name: user.tag,
     })
-    .setTitle("Активност")
+    .setTitle(shortStrings.activity)
     .addFields(
       {
         inline: true,
-        name: "Ниво",
+        name: shortStrings.level,
         value: experience.level.toString(),
       },
       {
         inline: true,
-        name: "Поени",
+        name: shortStrings.points,
         value: experience.experience.toString(),
       },
     )
