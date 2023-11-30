@@ -1,14 +1,14 @@
-import { client } from "./client.js";
-import { getConfigProperty, getRoleProperty } from "./config.js";
-import { getMembersWithRoles } from "./roles.js";
-import { createPoll, getPollById, updatePoll } from "@app/data/Poll.js";
-import { countPollVotesByOptionId } from "@app/data/PollVote.js";
+import { createPoll, getPollById, updatePoll } from "../data/Poll.js";
+import { countPollVotesByOptionId } from "../data/PollVote.js";
 import {
   createSpecialPoll,
   getSpecialPollByPollId,
-} from "@app/data/SpecialPoll.js";
-import { labels } from "@app/translations/labels.js";
-import { vipStringFunctions } from "@app/translations/vip.js";
+} from "../data/SpecialPoll.js";
+import { labels } from "../translations/labels.js";
+import { vipStringFunctions } from "../translations/vip.js";
+import { client } from "./client.js";
+import { getConfigProperty, getRoleProperty } from "./config.js";
+import { getMembersWithRoles } from "./roles.js";
 import { type Prisma } from "@prisma/client";
 import {
   type ButtonInteraction,

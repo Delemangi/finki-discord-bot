@@ -2,19 +2,15 @@ import {
   createExperience,
   getExperienceByUserId,
   updateExperience,
-} from "@app/data/Experience.js";
-import { getVipBanByUserId } from "@app/data/VipBan.js";
-import { experienceMessages } from "@app/translations/experience.js";
-import { logMessageFunctions } from "@app/translations/logs.js";
-import { getChannel } from "@app/utils/channels.js";
-import {
-  getConfigProperty,
-  getLevels,
-  getRoleProperty,
-} from "@app/utils/config.js";
-import { logger } from "@app/utils/logger.js";
-import { isMemberInVip } from "@app/utils/members.js";
-import { emojiRegex, urlRegex } from "@app/utils/regex.js";
+} from "../data/Experience.js";
+import { getVipBanByUserId } from "../data/VipBan.js";
+import { experienceMessages } from "../translations/experience.js";
+import { logMessageFunctions } from "../translations/logs.js";
+import { getChannel } from "./channels.js";
+import { getConfigProperty, getLevels, getRoleProperty } from "./config.js";
+import { logger } from "./logger.js";
+import { isMemberInVip } from "./members.js";
+import { emojiRegex, urlRegex } from "./regex.js";
 import AsyncLock from "async-lock";
 import { type GuildMember, type Message } from "discord.js";
 

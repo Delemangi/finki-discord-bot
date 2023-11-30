@@ -1,11 +1,11 @@
+import { embedLabels } from "../translations/embeds.js";
+import { getConfigProperty } from "../utils/config.js";
 import {
   fetchMessageUrl,
   getButtonCommand,
   getButtonInfo,
   getChannelMention,
-} from "@app/components/utils.js";
-import { embedLabels } from "@app/translations/embeds.js";
-import { getConfigProperty } from "@app/utils/config.js";
+} from "./utils.js";
 import {
   type AutocompleteInteraction,
   type ButtonInteraction,

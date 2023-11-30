@@ -2,24 +2,24 @@ import {
   getExperienceEmbed,
   getExperienceLeaderboardFirstPageEmbed,
   getExperienceLeaderboardNextPageEmbed,
-} from "@app/components/commands.js";
-import { getPaginationComponents } from "@app/components/pagination.js";
+} from "../components/commands.js";
+import { getPaginationComponents } from "../components/pagination.js";
 import {
   addExperienceByUserId,
   createExperience,
   getExperienceByUserId,
   getExperienceCount,
   getExperienceSorted,
-} from "@app/data/Experience.js";
+} from "../data/Experience.js";
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-} from "@app/translations/commands.js";
-import { logErrorFunctions } from "@app/translations/logs.js";
-import { deleteResponse } from "@app/utils/channels.js";
-import { getConfigProperty } from "@app/utils/config.js";
-import { logger } from "@app/utils/logger.js";
+} from "../translations/commands.js";
+import { logErrorFunctions } from "../translations/logs.js";
+import { deleteResponse } from "../utils/channels.js";
+import { getConfigProperty } from "../utils/config.js";
+import { logger } from "../utils/logger.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,

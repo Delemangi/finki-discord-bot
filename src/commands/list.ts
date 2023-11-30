@@ -1,13 +1,13 @@
 import {
   getListLinksEmbed,
   getListQuestionsEmbed,
-} from "@app/components/commands.js";
-import { getLinks } from "@app/data/Link.js";
-import { getQuestions } from "@app/data/Question.js";
+} from "../components/commands.js";
+import { getLinks } from "../data/Link.js";
+import { getQuestions } from "../data/Question.js";
 import {
   commandDescriptions,
   commandErrors,
-} from "@app/translations/commands.js";
+} from "../translations/commands.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,

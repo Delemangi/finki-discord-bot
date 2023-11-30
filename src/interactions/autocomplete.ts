@@ -1,18 +1,18 @@
-import { getCompanies } from "@app/data/Company.js";
-import { getLinkNames } from "@app/data/Link.js";
-import { getQuestionNames } from "@app/data/Question.js";
-import { getRules } from "@app/data/Rule.js";
-import { logErrorFunctions } from "@app/translations/logs.js";
+import { getCompanies } from "../data/Company.js";
+import { getLinkNames } from "../data/Link.js";
+import { getQuestionNames } from "../data/Question.js";
+import { getRules } from "../data/Rule.js";
+import { logErrorFunctions } from "../translations/logs.js";
 import {
   getClassrooms,
   getCourses,
   getFromRoleConfig,
   getSessions,
   getStaff,
-} from "@app/utils/config.js";
-import { createOptions } from "@app/utils/functions.js";
-import { logger } from "@app/utils/logger.js";
-import { transformOptions } from "@app/utils/options.js";
+} from "../utils/config.js";
+import { createOptions } from "../utils/functions.js";
+import { logger } from "../utils/logger.js";
+import { transformOptions } from "../utils/options.js";
 import { type AutocompleteInteraction } from "discord.js";
 
 let transformedCourses: Array<[string, string]> | null = null;

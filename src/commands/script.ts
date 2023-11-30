@@ -16,26 +16,26 @@ import {
   getVipRequestEmbed,
   getYearsComponents,
   getYearsEmbed,
-} from "@app/components/scripts.js";
-import { getCompanies } from "@app/data/Company.js";
-import { getInfoMessages } from "@app/data/InfoMessage.js";
-import { getRules } from "@app/data/Rule.js";
+} from "../components/scripts.js";
+import { getCompanies } from "../data/Company.js";
+import { getInfoMessages } from "../data/InfoMessage.js";
+import { getRules } from "../data/Rule.js";
 import {
   commandDescriptions,
   commandErrors,
   commandResponses,
-} from "@app/translations/commands.js";
-import { logErrorFunctions } from "@app/translations/logs.js";
-import { threadMessageFunctions } from "@app/translations/threads.js";
-import { sendEmbed } from "@app/utils/channels.js";
-import { getCommands } from "@app/utils/commands.js";
+} from "../translations/commands.js";
+import { logErrorFunctions } from "../translations/logs.js";
+import { threadMessageFunctions } from "../translations/threads.js";
+import { sendEmbed } from "../utils/channels.js";
+import { getCommands } from "../utils/commands.js";
 import {
   getApplicationId,
   getCourses,
   getFromRoleConfig,
   getToken,
-} from "@app/utils/config.js";
-import { logger } from "@app/utils/logger.js";
+} from "../utils/config.js";
+import { logger } from "../utils/logger.js";
 import { InfoMessageType } from "@prisma/client";
 import {
   type Channel,

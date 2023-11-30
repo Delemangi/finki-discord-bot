@@ -1,9 +1,9 @@
-import { getLinkComponents, getLinkEmbed } from "@app/components/commands.js";
-import { getLink, getNthLink } from "@app/data/Link.js";
+import { getLinkComponents, getLinkEmbed } from "../components/commands.js";
+import { getLink, getNthLink } from "../data/Link.js";
 import {
   commandDescriptions,
   commandErrors,
-} from "@app/translations/commands.js";
+} from "../translations/commands.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,

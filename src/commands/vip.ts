@@ -1,46 +1,46 @@
-import { getVipEmbed, getVipInvitedEmbed } from "@app/components/commands.js";
-import { getPaginationComponents } from "@app/components/pagination.js";
+import { getVipEmbed, getVipInvitedEmbed } from "../components/commands.js";
+import { getPaginationComponents } from "../components/pagination.js";
 import {
   getPollComponents,
   getPollEmbed,
   getPollStatsComponents,
   getSpecialPollListFirstPageEmbed,
   getSpecialPollListNextPageEmbed,
-} from "@app/components/polls.js";
-import { deletePoll, getPollById, updatePoll } from "@app/data/Poll.js";
-import { getPollVotesByPollId } from "@app/data/PollVote.js";
+} from "../components/polls.js";
+import { deletePoll, getPollById, updatePoll } from "../data/Poll.js";
+import { getPollVotesByPollId } from "../data/PollVote.js";
 import {
   deleteSpecialPoll,
   getSpecialPollById,
   getSpecialPollByPollId,
   getSpecialPollByUserAndType,
   getSpecialPolls,
-} from "@app/data/SpecialPoll.js";
-import { getVipBanByUserId, getVipBans } from "@app/data/VipBan.js";
-import { handlePollButtonForVipVote } from "@app/interactions/button.js";
+} from "../data/SpecialPoll.js";
+import { getVipBanByUserId, getVipBans } from "../data/VipBan.js";
+import { handlePollButtonForVipVote } from "../interactions/button.js";
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
   commandResponses,
-} from "@app/translations/commands.js";
-import { logErrorFunctions } from "@app/translations/logs.js";
-import { deleteResponse } from "@app/utils/channels.js";
-import { getConfigProperty, getRoleProperty } from "@app/utils/config.js";
-import { logger } from "@app/utils/logger.js";
+} from "../translations/commands.js";
+import { logErrorFunctions } from "../translations/logs.js";
+import { deleteResponse } from "../utils/channels.js";
+import { getConfigProperty, getRoleProperty } from "../utils/config.js";
+import { logger } from "../utils/logger.js";
 import {
   isMemberAdmin,
   isMemberInCouncil,
   isMemberInVip,
   isMemberInvitedToVip,
-} from "@app/utils/members.js";
+} from "../utils/members.js";
 import {
   createPollChoices,
   specialPollOptions,
   specialPollTypes,
   startSpecialPoll,
-} from "@app/utils/polls.js";
-import { getMembersWithRoles } from "@app/utils/roles.js";
+} from "../utils/polls.js";
+import { getMembersWithRoles } from "../utils/roles.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,

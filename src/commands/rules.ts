@@ -1,9 +1,9 @@
-import { getRulesEmbed } from "@app/components/scripts.js";
-import { getRules } from "@app/data/Rule.js";
+import { getRulesEmbed } from "../components/scripts.js";
+import { getRules } from "../data/Rule.js";
 import {
   commandDescriptions,
   commandErrors,
-} from "@app/translations/commands.js";
+} from "../translations/commands.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,

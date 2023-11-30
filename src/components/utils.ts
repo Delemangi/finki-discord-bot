@@ -1,10 +1,10 @@
-import { embedLabels } from "@app/translations/embeds.js";
-import { labels } from "@app/translations/labels.js";
-import { logErrorFunctions } from "@app/translations/logs.js";
-import { type ProgramShorthand } from "@app/types/ProgramShorthand.js";
-import { getPrerequisites, getStaff } from "@app/utils/config.js";
-import { logger } from "@app/utils/logger.js";
-import { getRoleFromSet } from "@app/utils/roles.js";
+import { embedLabels } from "../translations/embeds.js";
+import { labels } from "../translations/labels.js";
+import { logErrorFunctions } from "../translations/logs.js";
+import { type ProgramShorthand } from "../types/ProgramShorthand.js";
+import { getPrerequisites, getStaff } from "../utils/config.js";
+import { logger } from "../utils/logger.js";
+import { getRoleFromSet } from "../utils/roles.js";
 import {
   type ButtonInteraction,
   channelMention,

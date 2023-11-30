@@ -1,5 +1,5 @@
-import { tagAndMentionUser } from "@app/translations/users.js";
-import { type PartialUser } from "@app/types/PartialUser.js";
+import { type PartialUser } from "../types/PartialUser.js";
+import { tagAndMentionUser } from "./users.js";
 import { userMention } from "discord.js";
 
 export const vipStrings = {

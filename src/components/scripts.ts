@@ -1,10 +1,10 @@
 import {
   embedMessageFunctions,
   embedMessages,
-} from "@app/translations/embeds.js";
-import { labels } from "@app/translations/labels.js";
-import { vipStrings } from "@app/translations/vip.js";
-import { getConfigProperty, getFromRoleConfig } from "@app/utils/config.js";
+} from "../translations/embeds.js";
+import { labels } from "../translations/labels.js";
+import { vipStrings } from "../translations/vip.js";
+import { getConfigProperty, getFromRoleConfig } from "../utils/config.js";
 import { type Rule } from "@prisma/client";
 import {
   ActionRowBuilder,

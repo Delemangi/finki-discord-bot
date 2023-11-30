@@ -1,16 +1,16 @@
 import {
   getCoursesPrerequisiteEmbed,
   getCoursesProgramEmbed,
-} from "@app/components/commands.js";
+} from "../components/commands.js";
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-} from "@app/translations/commands.js";
-import { programMapping } from "@app/translations/programs.js";
-import { type ProgramName } from "@app/types/ProgramName.js";
-import { createPollChoices } from "@app/utils/polls.js";
-import { getCourseRolesBySemester } from "@app/utils/roles.js";
+} from "../translations/commands.js";
+import { programMapping } from "../translations/programs.js";
+import { type ProgramName } from "../types/ProgramName.js";
+import { createPollChoices } from "../utils/polls.js";
+import { getCourseRolesBySemester } from "../utils/roles.js";
 import {
   type ChatInputCommandInteraction,
   type GuildMember,

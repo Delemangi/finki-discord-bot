@@ -1,5 +1,5 @@
+import { type ClientEvent } from "../types/ClientEvent.js";
 import { client } from "./client.js";
-import { type ClientEvent } from "@app/types/ClientEvent.js";
 import { type ClientEvents } from "discord.js";
 import { readdirSync } from "node:fs";
 
@@ -10,7 +10,7 @@ export const attachEventListeners = async () => {
 
   for (const file of eventFiles) {
     const event: ClientEvent<keyof ClientEvents> = await import(
-      `@app/events/${file}`
+      `../events/${file}`
     );
 
     if (event?.once) {

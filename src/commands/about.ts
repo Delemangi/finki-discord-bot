@@ -1,5 +1,5 @@
-import { getAboutEmbed } from "@app/components/commands.js";
-import { commandDescriptions } from "@app/translations/commands.js";
+import { getAboutEmbed } from "../components/commands.js";
+import { commandDescriptions } from "../translations/commands.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,

@@ -2,11 +2,11 @@ import {
   commandDescriptions,
   commandErrors,
   commandResponses,
-} from "@app/translations/commands.js";
-import { logErrorFunctions } from "@app/translations/logs.js";
-import { getCommands } from "@app/utils/commands.js";
-import { getApplicationId, getToken } from "@app/utils/config.js";
-import { logger } from "@app/utils/logger.js";
+} from "../translations/commands.js";
+import { logErrorFunctions } from "../translations/logs.js";
+import { getCommands } from "../utils/commands.js";
+import { getApplicationId, getToken } from "../utils/config.js";
+import { logger } from "../utils/logger.js";
 import {
   type ChatInputCommandInteraction,
   PermissionFlagsBits,

@@ -1,10 +1,10 @@
-import { commandDescriptions } from "@app/translations/commands.js";
+import { commandDescriptions } from "../translations/commands.js";
 import {
   getMaxEmojisByBoostLevel,
   getMaxStickersByBoostLevel,
-} from "@app/utils/boost.js";
-import { splitMessage } from "@app/utils/functions.js";
-import { getRoles } from "@app/utils/roles.js";
+} from "../utils/boost.js";
+import { splitMessage } from "../utils/functions.js";
+import { getRoles } from "../utils/roles.js";
 import {
   type ChatInputCommandInteraction,
   roleMention,

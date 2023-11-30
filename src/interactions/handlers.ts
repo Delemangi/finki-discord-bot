@@ -3,7 +3,13 @@ import {
   getButtonEmbed,
   getChatInputCommandEmbed,
   getUserContextMenuCommandEmbed,
-} from "@app/components/logs.js";
+} from "../components/logs.js";
+import { commandErrors } from "../translations/commands.js";
+import { logErrorFunctions, logShortStrings } from "../translations/logs.js";
+import { deleteResponse, logEmbed } from "../utils/channels.js";
+import { getCommand } from "../utils/commands.js";
+import { logger } from "../utils/logger.js";
+import { hasCommandPermission } from "../utils/permissions.js";
 import {
   handleClassroomAutocomplete,
   handleCompanyAutocomplete,
@@ -14,7 +20,7 @@ import {
   handleQuestionAutocomplete,
   handleRuleAutocomplete,
   handleSessionAutocomplete,
-} from "@app/interactions/autocomplete.js";
+} from "./autocomplete.js";
 import {
   handleAddCoursesButton,
   handleColorButton,
@@ -26,13 +32,7 @@ import {
   handleRemoveCoursesButton,
   handleVipButton,
   handleYearButton,
-} from "@app/interactions/button.js";
-import { commandErrors } from "@app/translations/commands.js";
-import { logErrorFunctions, logShortStrings } from "@app/translations/logs.js";
-import { deleteResponse, logEmbed } from "@app/utils/channels.js";
-import { getCommand } from "@app/utils/commands.js";
-import { logger } from "@app/utils/logger.js";
-import { hasCommandPermission } from "@app/utils/permissions.js";
+} from "./button.js";
 import {
   type AutocompleteInteraction,
   type ButtonInteraction,

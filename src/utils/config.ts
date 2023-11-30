@@ -1,15 +1,15 @@
-import { getConfig, setConfig } from "@app/data/Config.js";
-import { configErrors } from "@app/translations/errors.js";
-import { type BotConfig } from "@app/types/BotConfig.js";
-import { type Classroom } from "@app/types/Classroom.js";
-import { type CourseInformation } from "@app/types/CourseInformation.js";
-import { type CourseParticipants } from "@app/types/CourseParticipants.js";
-import { type CoursePrerequisites } from "@app/types/CoursePrerequisites.js";
-import { type CourseStaff } from "@app/types/CourseStaff.js";
-import { type LevelConfig } from "@app/types/LevelConfig.js";
-import { type RoleConfig } from "@app/types/RoleConfig.js";
-import { type Roles } from "@app/types/Roles.js";
-import { type Staff } from "@app/types/Staff.js";
+import { getConfig, setConfig } from "../data/Config.js";
+import { configErrors } from "../translations/errors.js";
+import { type BotConfig } from "../types/BotConfig.js";
+import { type Classroom } from "../types/Classroom.js";
+import { type CourseInformation } from "../types/CourseInformation.js";
+import { type CourseParticipants } from "../types/CourseParticipants.js";
+import { type CoursePrerequisites } from "../types/CoursePrerequisites.js";
+import { type CourseStaff } from "../types/CourseStaff.js";
+import { type LevelConfig } from "../types/LevelConfig.js";
+import { type RoleConfig } from "../types/RoleConfig.js";
+import { type Roles } from "../types/Roles.js";
+import { type Staff } from "../types/Staff.js";
 import { readFileSync } from "node:fs";
 // eslint-disable-next-line n/prefer-global/process
 import { env } from "node:process";

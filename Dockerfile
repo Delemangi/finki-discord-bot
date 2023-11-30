@@ -4,7 +4,7 @@ FROM --platform=${PLATFORM} node:20-alpine
 
 WORKDIR /app
 
-RUN apk update && apk add postgresql-client
+RUN apk update && apk add postgresql-client && apk cache clean
 
 COPY package*.json ./
 RUN npm install

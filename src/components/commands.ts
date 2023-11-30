@@ -1,26 +1,22 @@
-import {
-  linkProfessors,
-  transformCoursePrerequisites,
-} from "@app/components/utils.js";
-import { aboutMessage, botName } from "@app/translations/about.js";
-import { commandDescriptions } from "@app/translations/commands.js";
+import { aboutMessage, botName } from "../translations/about.js";
+import { commandDescriptions } from "../translations/commands.js";
 import {
   embedMessageFunctions,
   embedMessages,
-} from "@app/translations/embeds.js";
-import { labels } from "@app/translations/labels.js";
-import { paginationStringFunctions } from "@app/translations/pagination.js";
-import { programMapping } from "@app/translations/programs.js";
-import { type Classroom } from "@app/types/Classroom.js";
-import { type CourseInformation } from "@app/types/CourseInformation.js";
-import { type CourseParticipants } from "@app/types/CourseParticipants.js";
-import { type CoursePrerequisites } from "@app/types/CoursePrerequisites.js";
-import { type CourseStaff } from "@app/types/CourseStaff.js";
-import { type ProgramName } from "@app/types/ProgramName.js";
-import { type QuestionWithLinks } from "@app/types/QuestionWithLinks.js";
-import { type Staff } from "@app/types/Staff.js";
-import { client } from "@app/utils/client.js";
-import { commandMention } from "@app/utils/commands.js";
+} from "../translations/embeds.js";
+import { labels } from "../translations/labels.js";
+import { paginationStringFunctions } from "../translations/pagination.js";
+import { programMapping } from "../translations/programs.js";
+import { type Classroom } from "../types/Classroom.js";
+import { type CourseInformation } from "../types/CourseInformation.js";
+import { type CourseParticipants } from "../types/CourseParticipants.js";
+import { type CoursePrerequisites } from "../types/CoursePrerequisites.js";
+import { type CourseStaff } from "../types/CourseStaff.js";
+import { type ProgramName } from "../types/ProgramName.js";
+import { type QuestionWithLinks } from "../types/QuestionWithLinks.js";
+import { type Staff } from "../types/Staff.js";
+import { client } from "../utils/client.js";
+import { commandMention } from "../utils/commands.js";
 import {
   getConfigProperty,
   getFromRoleConfig,
@@ -29,10 +25,11 @@ import {
   getPrerequisites,
   getProfessors,
   getRoleProperty,
-} from "@app/utils/config.js";
-import { getUsername } from "@app/utils/members.js";
-import { getCommandsWithPermission } from "@app/utils/permissions.js";
-import { getMembersWithAndWithoutRoles, getRole } from "@app/utils/roles.js";
+} from "../utils/config.js";
+import { getUsername } from "../utils/members.js";
+import { getCommandsWithPermission } from "../utils/permissions.js";
+import { getMembersWithAndWithoutRoles, getRole } from "../utils/roles.js";
+import { linkProfessors, transformCoursePrerequisites } from "./utils.js";
 import { type Experience, type Link, type Question } from "@prisma/client";
 import {
   ActionRowBuilder,

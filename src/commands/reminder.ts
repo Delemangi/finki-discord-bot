@@ -1,9 +1,9 @@
-import { createReminder } from "@app/data/Reminder.js";
+import { createReminder } from "../data/Reminder.js";
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-} from "@app/translations/commands.js";
+} from "../translations/commands.js";
 import { parseDate } from "chrono-node";
 import {
   type ChatInputCommandInteraction,

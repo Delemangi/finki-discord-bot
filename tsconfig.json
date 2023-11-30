@@ -24,11 +24,5 @@
     "resolveJsonModule": true,
     "strict": true,
     "target": "ESNext",
-    "baseUrl": "./src",
-    "paths": {
-      "@app/*": [
-        "*"
-      ]
-    },
   }
 }

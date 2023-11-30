@@ -1,23 +1,20 @@
-import {
-  generatePollPercentageBar,
-  truncateString,
-} from "@app/components/utils.js";
-import { getMostPopularOptionByPollId } from "@app/data/PollOption.js";
+import { getMostPopularOptionByPollId } from "../data/PollOption.js";
 import {
   getPollVotesByOptionId,
   getPollVotesByPollId,
-} from "@app/data/PollVote.js";
+} from "../data/PollVote.js";
 import {
   embedMessageFunctions,
   embedMessages,
-} from "@app/translations/embeds.js";
-import { labels } from "@app/translations/labels.js";
-import { paginationStringFunctions } from "@app/translations/pagination.js";
-import { type PollWithOptions } from "@app/types/PollWithOptions.js";
-import { getConfigProperty } from "@app/utils/config.js";
-import { getUsername } from "@app/utils/members.js";
-import { getPollThreshold } from "@app/utils/polls.js";
-import { getMembersWithRoles } from "@app/utils/roles.js";
+} from "../translations/embeds.js";
+import { labels } from "../translations/labels.js";
+import { paginationStringFunctions } from "../translations/pagination.js";
+import { type PollWithOptions } from "../types/PollWithOptions.js";
+import { getConfigProperty } from "../utils/config.js";
+import { getUsername } from "../utils/members.js";
+import { getPollThreshold } from "../utils/polls.js";
+import { getMembersWithRoles } from "../utils/roles.js";
+import { generatePollPercentageBar, truncateString } from "./utils.js";
 import { type Poll, type SpecialPoll } from "@prisma/client";
 import {
   ActionRowBuilder,

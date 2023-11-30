@@ -2,9 +2,9 @@ import {
   commandDescriptions,
   commandErrors,
   commandResponses,
-} from "@app/translations/commands.js";
-import { logErrorFunctions } from "@app/translations/logs.js";
-import { logger } from "@app/utils/logger.js";
+} from "../translations/commands.js";
+import { logErrorFunctions } from "../translations/logs.js";
+import { logger } from "../utils/logger.js";
 import {
   type Channel,
   type ChatInputCommandInteraction,

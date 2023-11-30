@@ -1,13 +1,13 @@
-import { client } from "./client.js";
-import { getConfigProperty } from "./config.js";
-import { logger } from "./logger.js";
 import {
   logErrorFunctions,
   logMessageFunctions,
   logMessages,
-} from "@app/translations/logs.js";
-import { vipStringFunctions } from "@app/translations/vip.js";
-import { type ChannelName } from "@app/types/ChannelName.js";
+} from "../translations/logs.js";
+import { vipStringFunctions } from "../translations/vip.js";
+import { type ChannelName } from "../types/ChannelName.js";
+import { client } from "./client.js";
+import { getConfigProperty } from "./config.js";
+import { logger } from "./logger.js";
 import { Cron } from "croner";
 import {
   type ActionRowBuilder,

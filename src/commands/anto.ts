@@ -1,8 +1,8 @@
-import { getRandomAnto } from "@app/data/Anto.js";
+import { getRandomAnto } from "../data/Anto.js";
 import {
   commandDescriptions,
   commandErrors,
-} from "@app/translations/commands.js";
+} from "../translations/commands.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,

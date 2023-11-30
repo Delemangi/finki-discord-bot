@@ -1,8 +1,8 @@
+import { logErrorFunctions, logMessages } from "../translations/logs.js";
+import { type Command } from "../types/Command.js";
 import { client } from "./client.js";
 import { getApplicationId, getToken } from "./config.js";
 import { logger } from "./logger.js";
-import { logErrorFunctions, logMessages } from "@app/translations/logs.js";
-import { type Command } from "@app/types/Command.js";
 import {
   type ChatInputCommandInteraction,
   Collection,
@@ -21,7 +21,7 @@ const refreshCommands = async () => {
   commands.clear();
 
   for (const file of commandFiles) {
-    const command: Command = await import(`@app/commands/${file}`);
+    const command: Command = await import(`../commands/${file}`);
     commands.set(command.data.name, command);
   }
 };

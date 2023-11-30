@@ -1,5 +1,5 @@
-import { type ProgramName } from "@app/types/ProgramName.js";
-import { type ProgramShorthand } from "@app/types/ProgramShorthand.js";
+import { type ProgramName } from "../types/ProgramName.js";
+import { type ProgramShorthand } from "../types/ProgramShorthand.js";
 
 export const programMapping: Record<ProgramName, ProgramShorthand> = {
   ИМБ: "imb",

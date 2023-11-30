@@ -3,37 +3,37 @@ import {
   getLinkEmbed,
   getQuestionComponents,
   getQuestionEmbed,
-} from "@app/components/commands.js";
-import { createAnto, createAntos, deleteAnto } from "@app/data/Anto.js";
+} from "../components/commands.js";
+import { createAnto, createAntos, deleteAnto } from "../data/Anto.js";
 import {
   createCompanies,
   createCompany,
   deleteCompany,
-} from "@app/data/Company.js";
-import { createInfoMessage, getInfoMessage } from "@app/data/InfoMessage.js";
-import { createLink, deleteLink, getLink, updateLink } from "@app/data/Link.js";
+} from "../data/Company.js";
+import { createInfoMessage, getInfoMessage } from "../data/InfoMessage.js";
+import { createLink, deleteLink, getLink, updateLink } from "../data/Link.js";
 import {
   createQuestion,
   deleteQuestion,
   getQuestion,
   updateQuestion,
-} from "@app/data/Question.js";
+} from "../data/Question.js";
 import {
   createQuestionLinks,
   deleteQuestionLinksByQuestionId,
-} from "@app/data/QuestionLink.js";
-import { createRule, deleteRule } from "@app/data/Rule.js";
-import { AntosSchema } from "@app/schemas/AntosSchema.js";
-import { CompaniesSchema } from "@app/schemas/CompaniesSchema.js";
-import { LinksSchema } from "@app/schemas/LinksSchema.js";
+} from "../data/QuestionLink.js";
+import { createRule, deleteRule } from "../data/Rule.js";
+import { AntosSchema } from "../schemas/AntosSchema.js";
+import { CompaniesSchema } from "../schemas/CompaniesSchema.js";
+import { LinksSchema } from "../schemas/LinksSchema.js";
 import {
   commandDescriptions,
   commandErrors,
   commandResponses,
-} from "@app/translations/commands.js";
-import { logErrorFunctions } from "@app/translations/logs.js";
-import { logger } from "@app/utils/logger.js";
-import { linkRegex } from "@app/utils/regex.js";
+} from "../translations/commands.js";
+import { logErrorFunctions } from "../translations/logs.js";
+import { logger } from "../utils/logger.js";
+import { linkRegex } from "../utils/regex.js";
 import { InfoMessageType } from "@prisma/client";
 import {
   type ChatInputCommandInteraction,

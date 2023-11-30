@@ -3,52 +3,52 @@ import {
   getPollEmbed,
   getPollInfoEmbed,
   getPollStatsComponents,
-} from "@app/components/polls.js";
+} from "../components/polls.js";
 import {
   getVipAcknowledgeComponents,
   getVipConfirmComponents,
   getVipConfirmEmbed,
-} from "@app/components/scripts.js";
-import { getPollById } from "@app/data/Poll.js";
-import { getPollOptionById } from "@app/data/PollOption.js";
+} from "../components/scripts.js";
+import { getPollById } from "../data/Poll.js";
+import { getPollOptionById } from "../data/PollOption.js";
 import {
   createPollVote,
   deletePollVote,
   getPollVotesByOptionId,
   getPollVotesByPollIdAndUserId,
-} from "@app/data/PollVote.js";
+} from "../data/PollVote.js";
 import {
   deleteSpecialPoll,
   getSpecialPollByPollId,
   getSpecialPollByUserAndType,
-} from "@app/data/SpecialPoll.js";
+} from "../data/SpecialPoll.js";
 import {
   createVipBan,
   deleteVipBan,
   getVipBanByUserId,
-} from "@app/data/VipBan.js";
+} from "../data/VipBan.js";
 import {
   commandErrorFunctions,
   commandErrors,
   commandResponseFunctions,
   commandResponses,
-} from "@app/translations/commands.js";
-import { labels } from "@app/translations/labels.js";
-import { logErrorFunctions } from "@app/translations/logs.js";
-import { vipStringFunctions, vipStrings } from "@app/translations/vip.js";
-import { type PollWithOptions } from "@app/types/PollWithOptions.js";
-import { deleteResponse, getChannel } from "@app/utils/channels.js";
-import { getConfigProperty, getRoleProperty } from "@app/utils/config.js";
-import { logger } from "@app/utils/logger.js";
-import { isMemberInVip } from "@app/utils/members.js";
-import { decidePoll, startSpecialPoll } from "@app/utils/polls.js";
-import { userIdRegex } from "@app/utils/regex.js";
+} from "../translations/commands.js";
+import { labels } from "../translations/labels.js";
+import { logErrorFunctions } from "../translations/logs.js";
+import { vipStringFunctions, vipStrings } from "../translations/vip.js";
+import { type PollWithOptions } from "../types/PollWithOptions.js";
+import { deleteResponse, getChannel } from "../utils/channels.js";
+import { getConfigProperty, getRoleProperty } from "../utils/config.js";
+import { logger } from "../utils/logger.js";
+import { isMemberInVip } from "../utils/members.js";
+import { decidePoll, startSpecialPoll } from "../utils/polls.js";
+import { userIdRegex } from "../utils/regex.js";
 import {
   getCourseRolesBySemester,
   getRole,
   getRoleFromSet,
   getRoles,
-} from "@app/utils/roles.js";
+} from "../utils/roles.js";
 import { type Poll, type PollOption, type SpecialPoll } from "@prisma/client";
 import {
   type ButtonInteraction,

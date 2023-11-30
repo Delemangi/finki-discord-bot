@@ -1,4 +1,4 @@
-import { getStudentInfoEmbed } from "@app/components/commands.js";
+import { getStudentInfoEmbed } from "../components/commands.js";
 import {
   ApplicationCommandType,
   ContextMenuCommandBuilder,
