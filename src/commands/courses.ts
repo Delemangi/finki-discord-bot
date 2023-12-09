@@ -155,7 +155,7 @@ const coursesHandlers = {
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const subcommand = interaction.options.getSubcommand(true);
 
-  if (Object.keys(coursesHandlers).includes(subcommand)) {
+  if (subcommand in coursesHandlers) {
     await coursesHandlers[subcommand as keyof typeof coursesHandlers](
       interaction,
     );

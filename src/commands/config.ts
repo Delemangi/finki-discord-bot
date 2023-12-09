@@ -112,7 +112,7 @@ const configHandlers = {
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const subcommand = interaction.options.getSubcommand();
 
-  if (Object.keys(configHandlers).includes(subcommand)) {
+  if (subcommand in configHandlers) {
     await configHandlers[subcommand as keyof typeof configHandlers](
       interaction,
     );

@@ -683,7 +683,7 @@ const pollHandlers = {
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const subcommand = interaction.options.getSubcommand(true);
 
-  if (Object.keys(pollHandlers).includes(subcommand)) {
+  if (subcommand in pollHandlers) {
     await pollHandlers[subcommand as keyof typeof pollHandlers](interaction);
   }
 };

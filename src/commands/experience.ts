@@ -221,7 +221,7 @@ const experienceHandlers = {
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const subcommand = interaction.options.getSubcommand(true);
 
-  if (Object.keys(experienceHandlers).includes(subcommand)) {
+  if (subcommand in experienceHandlers) {
     await experienceHandlers[subcommand as keyof typeof experienceHandlers](
       interaction,
     );

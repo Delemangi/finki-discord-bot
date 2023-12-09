@@ -548,7 +548,7 @@ const listHandlers = {
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const subcommand = interaction.options.getSubcommand(true);
 
-  if (Object.keys(listHandlers).includes(subcommand)) {
+  if (subcommand in listHandlers) {
     await listHandlers[subcommand as keyof typeof listHandlers](interaction);
   }
 };

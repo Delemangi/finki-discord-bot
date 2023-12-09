@@ -320,7 +320,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   const subcommand = interaction.options.getSubcommand(true);
 
-  if (Object.keys(courseHandlers).includes(subcommand)) {
+  if (subcommand in courseHandlers) {
     await courseHandlers[subcommand as keyof typeof courseHandlers](
       interaction,
       course ?? courseRole,
