@@ -549,8 +549,8 @@ const handlePollButtonForVipBanVote = async (
     userId: specialPoll.userId,
   });
 
-  const vipInvitedRole = await getRoleProperty("council");
-  await member.roles.remove(vipInvitedRole);
+  const vipRole = await getRoleProperty("vip");
+  await member.roles.remove(vipRole);
 
   await vipChannel?.send(vipStringFunctions.vipBanAccepted(specialPoll.userId));
 };
@@ -576,7 +576,7 @@ const handlePollButtonForVipUnbanVote = async (
   );
 };
 
-export const handlePollButtonForVipVote = async (
+export const handlePollButtonForSpecialVote = async (
   poll: Poll,
   member: GuildMember,
 ) => {
@@ -798,7 +798,10 @@ export const handlePollButton = async (
     });
 
     const member = await guild.members.fetch(specialPoll.userId);
-    await handlePollButtonForVipVote(decidedPoll as PollWithOptions, member);
+    await handlePollButtonForSpecialVote(
+      decidedPoll as PollWithOptions,
+      member,
+    );
 
     return;
   }

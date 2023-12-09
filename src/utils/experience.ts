@@ -3,7 +3,6 @@ import {
   getExperienceByUserId,
   updateExperience,
 } from "../data/Experience.js";
-import { getVipBanByUserId } from "../data/VipBan.js";
 import { experienceMessages } from "../translations/experience.js";
 import { logMessageFunctions } from "../translations/logs.js";
 import { getChannel } from "./channels.js";
@@ -64,14 +63,15 @@ const awardMember = async (member: GuildMember, level: number) => {
     return;
   }
 
-  const vipBan = await getVipBanByUserId(member.id);
-  if ((await isMemberInVip(member)) || vipBan !== null) {
+  if (await isMemberInVip(member)) {
+    await member.roles.add(roles.add);
+  } else {
     const councilRoleId = await getRoleProperty("council");
-    await member.roles.add(roles.add.filter((role) => role !== councilRoleId));
+    await member.roles.add(
+      roles.add.filter((roleId) => roleId !== councilRoleId),
+    );
 
     logger.info(logMessageFunctions.userNotQualifiedForVip(member.user.tag));
-  } else {
-    await member.roles.add(roles.add);
   }
 
   await member.roles.remove(roles.remove);

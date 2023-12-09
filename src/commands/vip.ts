@@ -16,7 +16,7 @@ import {
   getSpecialPolls,
 } from "../data/SpecialPoll.js";
 import { getVipBanByUserId, getVipBans } from "../data/VipBan.js";
-import { handlePollButtonForVipVote } from "../interactions/button.js";
+import { handlePollButtonForSpecialVote } from "../interactions/button.js";
 import {
   commandDescriptions,
   commandErrors,
@@ -462,7 +462,7 @@ const handleVipOverride = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  await handlePollButtonForVipVote(poll, member);
+  await handlePollButtonForSpecialVote(poll, member);
 
   await interaction.editReply(commandResponses.pollOverriden);
 };
@@ -737,12 +737,6 @@ const handleVipBan = async (interaction: ChatInputCommandInteraction) => {
 
   if (await isMemberAdmin(member)) {
     await interaction.editReply(commandErrors.userAdmin);
-
-    return;
-  }
-
-  if (await isMemberInVip(member)) {
-    await interaction.editReply(commandErrors.userVipMember);
 
     return;
   }
