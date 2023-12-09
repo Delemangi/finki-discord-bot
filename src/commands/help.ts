@@ -11,6 +11,7 @@ import { logErrorFunctions } from "../translations/logs.js";
 import { deleteResponse } from "../utils/channels.js";
 import { client } from "../utils/client.js";
 import { getConfigProperty } from "../utils/config.js";
+import { getGuild } from "../utils/guild.js";
 import { logger } from "../utils/logger.js";
 import { getCommandsWithPermission } from "../utils/permissions.js";
 import {
@@ -27,8 +28,10 @@ export const data = new SlashCommandBuilder()
   .setDescription(commandDescriptions[name]);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  if (interaction.guild === null || interaction.member === null) {
-    await interaction.editReply(commandErrors.serverOnlyCommand);
+  const guild = await getGuild(interaction);
+
+  if (guild) {
+    await interaction.editReply(commandErrors.guildFetchFailed);
 
     return;
   }

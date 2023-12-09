@@ -9,6 +9,7 @@ import {
 } from "../translations/commands.js";
 import { programMapping } from "../translations/programs.js";
 import { type ProgramName } from "../types/ProgramName.js";
+import { getGuild } from "../utils/guild.js";
 import { createPollChoices } from "../utils/polls.js";
 import { getCourseRolesBySemester } from "../utils/roles.js";
 import {
@@ -105,15 +106,17 @@ const handleCoursesPrerequisite = async (
 };
 
 const handleCoursesAdd = async (interaction: ChatInputCommandInteraction) => {
-  if (interaction.guild === null) {
-    await interaction.editReply(commandErrors.serverOnlyCommand);
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
+    await interaction.editReply(commandErrors.guildFetchFailed);
 
     return;
   }
 
   const semester = interaction.options.getNumber("semester", true);
   const member = interaction.member as GuildMember;
-  const roles = getCourseRolesBySemester(interaction.guild, semester);
+  const roles = getCourseRolesBySemester(guild, semester);
 
   await member.roles.add(roles);
   await interaction.editReply(
@@ -124,15 +127,17 @@ const handleCoursesAdd = async (interaction: ChatInputCommandInteraction) => {
 const handleCoursesRemove = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  if (interaction.guild === null) {
-    await interaction.editReply(commandErrors.serverOnlyCommand);
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
+    await interaction.editReply(commandErrors.guildFetchFailed);
 
     return;
   }
 
   const semester = interaction.options.getNumber("semester", true);
   const member = interaction.member as GuildMember;
-  const roles = getCourseRolesBySemester(interaction.guild, semester);
+  const roles = getCourseRolesBySemester(guild, semester);
 
   await member.roles.remove(roles);
   await interaction.editReply(

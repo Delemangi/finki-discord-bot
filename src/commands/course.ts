@@ -161,13 +161,15 @@ const handleCourseRole = async (
   interaction: ChatInputCommandInteraction,
   courseRole: string | null,
 ) => {
-  if (interaction.guild === null) {
-    await interaction.editReply(commandErrors.serverOnlyCommand);
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
+    await interaction.editReply(commandErrors.guildFetchFailed);
 
     return;
   }
 
-  await interaction.guild.members.fetch();
+  await guild.members.fetch();
 
   const roleEntry = Object.entries(getFromRoleConfig("courses")).find(
     ([, course]) => course.toLowerCase() === courseRole?.toLowerCase(),
@@ -179,7 +181,7 @@ const handleCourseRole = async (
     return;
   }
 
-  const role = interaction.guild.roles.cache.find(
+  const role = guild.roles.cache.find(
     (ro) => ro.name.toLowerCase() === roleEntry[0].toLowerCase(),
   );
 

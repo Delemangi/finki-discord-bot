@@ -1,9 +1,13 @@
-import { commandDescriptions } from "../translations/commands.js";
+import {
+  commandDescriptions,
+  commandErrors,
+} from "../translations/commands.js";
 import {
   getMaxEmojisByBoostLevel,
   getMaxStickersByBoostLevel,
 } from "../utils/boost.js";
 import { splitMessage } from "../utils/functions.js";
+import { getGuild } from "../utils/guild.js";
 import { getRoles } from "../utils/roles.js";
 import {
   type ChatInputCommandInteraction,
@@ -49,11 +53,15 @@ export const data = new SlashCommandBuilder()
   .setDMPermission(false);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  if (interaction.guild === null) {
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
+    await interaction.editReply(commandErrors.guildFetchFailed);
+
     return;
   }
 
-  await interaction.guild.members.fetch();
+  await guild.members.fetch();
 
   const subcommand = interaction.options.getSubcommand(true);
 
@@ -65,7 +73,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     subcommand === "notification"
   ) {
     const roles = getRoles(
-      interaction.guild,
+      guild,
       subcommand === "course" ? "courses" : subcommand,
     );
     roles.sort((a, b) => b.members.size - a.members.size);
@@ -107,34 +115,37 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     });
   } else {
     const output = [];
-    const boostLevel = interaction.guild.premiumTier;
+    const boostLevel = guild.premiumTier;
 
-    output.push(`Членови: ${interaction.guild.memberCount}`);
-    await interaction.guild.channels.fetch();
-    output.push(`Канали: ${interaction.guild.channels.cache.size}`);
+    output.push(`Членови: ${guild.memberCount}`);
+
+    await guild.channels.fetch();
+    output.push(`Канали: ${guild.channels.cache.size}`);
     output.push(
       `Канали (без нишки): ${
-        interaction.guild.channels.cache.filter(
-          (channel) => !channel.isThread(),
-        ).size
+        guild.channels.cache.filter((channel) => !channel.isThread()).size
       } / 500`,
     );
-    await interaction.guild.roles.fetch();
-    output.push(`Улоги: ${interaction.guild.roles.cache.size} / 250`);
-    await interaction.guild.emojis.fetch();
+
+    await guild.roles.fetch();
+    output.push(`Улоги: ${guild.roles.cache.size} / 250`);
+
+    await guild.emojis.fetch();
     output.push(
-      `Емоџиња: ${
-        interaction.guild.emojis.cache.size
-      } / ${getMaxEmojisByBoostLevel(boostLevel)}`,
+      `Емоџиња: ${guild.emojis.cache.size} / ${getMaxEmojisByBoostLevel(
+        boostLevel,
+      )}`,
     );
-    await interaction.guild.stickers.fetch();
+
+    await guild.stickers.fetch();
     output.push(
-      `Стикери: ${
-        interaction.guild.stickers.cache.size
-      } / ${getMaxStickersByBoostLevel(boostLevel)}`,
+      `Стикери: ${guild.stickers.cache.size} / ${getMaxStickersByBoostLevel(
+        boostLevel,
+      )}`,
     );
-    await interaction.guild.invites.fetch();
-    output.push(`Покани: ${interaction.guild.invites.cache.size}`);
+
+    await guild.invites.fetch();
+    output.push(`Покани: ${guild.invites.cache.size}`);
 
     await interaction.editReply({
       allowedMentions: {

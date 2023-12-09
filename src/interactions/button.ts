@@ -364,7 +364,9 @@ export const handleAddCoursesButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
-  if (interaction.guild === null || interaction.member === null) {
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
     logger.warn(
       logErrorFunctions.buttonInteractionOutsideGuildError(
         interaction.customId,
@@ -386,8 +388,8 @@ export const handleAddCoursesButton = async (
   const member = interaction.member as GuildMember;
   const roles =
     args[0] === "all"
-      ? getRoles(interaction.guild, "courses")
-      : getCourseRolesBySemester(interaction.guild, semester);
+      ? getRoles(guild, "courses")
+      : getCourseRolesBySemester(guild, semester);
 
   await member.roles.add(roles);
 
@@ -407,7 +409,9 @@ export const handleRemoveCoursesButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
-  if (interaction.guild === null || interaction.member === null) {
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
     logger.warn(
       logErrorFunctions.buttonInteractionOutsideGuildError(
         interaction.customId,
@@ -429,8 +433,8 @@ export const handleRemoveCoursesButton = async (
   const member = interaction.member as GuildMember;
   const roles =
     args[0] === "all"
-      ? getRoles(interaction.guild, "courses")
-      : getCourseRolesBySemester(interaction.guild, semester);
+      ? getRoles(guild, "courses")
+      : getCourseRolesBySemester(guild, semester);
 
   await member.roles.remove(roles);
 
@@ -708,7 +712,9 @@ export const handlePollButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
-  if (interaction.guild === null || interaction.member === null) {
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
     logger.warn(
       logErrorFunctions.buttonInteractionOutsideGuildError(
         interaction.customId,
@@ -724,7 +730,7 @@ export const handlePollButton = async (
   const option = optionId === "info" ? null : await getPollOptionById(optionId);
 
   if (optionId === "info" && poll !== null) {
-    const infoEmbed = await getPollInfoEmbed(interaction.guild, poll);
+    const infoEmbed = await getPollInfoEmbed(guild, poll);
     await interaction.reply({
       embeds: [infoEmbed],
       ephemeral: true,
@@ -760,7 +766,7 @@ export const handlePollButton = async (
   }
 
   if (poll.roles.length !== 0) {
-    const roles = interaction.member.roles as GuildMemberRoleManager;
+    const roles = interaction.member?.roles as GuildMemberRoleManager;
 
     if (!roles.cache.some((role) => poll.roles.includes(role.id))) {
       const mess = await interaction.reply({
@@ -791,7 +797,7 @@ export const handlePollButton = async (
       embeds: [embed],
     });
 
-    const member = await interaction.guild.members.fetch(specialPoll.userId);
+    const member = await guild.members.fetch(specialPoll.userId);
     await handlePollButtonForVipVote(decidedPoll as PollWithOptions, member);
 
     return;
@@ -807,7 +813,9 @@ export const handlePollStatsButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
-  if (interaction.guild === null || interaction.member === null) {
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
     logger.warn(
       logErrorFunctions.buttonInteractionOutsideGuildError(
         interaction.customId,

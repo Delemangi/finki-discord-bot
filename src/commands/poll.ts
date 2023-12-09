@@ -24,6 +24,7 @@ import { logErrorFunctions } from "../translations/logs.js";
 import { deleteResponse } from "../utils/channels.js";
 import { commandMention } from "../utils/commands.js";
 import { getConfigProperty, getRoleProperty } from "../utils/config.js";
+import { getGuild } from "../utils/guild.js";
 import { logger } from "../utils/logger.js";
 import { startPoll } from "../utils/polls.js";
 import {
@@ -643,9 +644,15 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handlePollInfo = async (interaction: ChatInputCommandInteraction) => {
+  const guild = await getGuild(interaction);
   const id = interaction.options.getString("id", true).trim();
-
   const poll = await getPollById(id);
+
+  if (guild === null) {
+    await interaction.editReply(commandErrors.guildFetchFailed);
+
+    return;
+  }
 
   if (poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
@@ -653,13 +660,7 @@ const handlePollInfo = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (interaction.guild === null) {
-    await interaction.editReply(commandErrors.serverOnlyCommand);
-
-    return;
-  }
-
-  const embed = await getPollInfoEmbed(interaction.guild, poll);
+  const embed = await getPollInfoEmbed(guild, poll);
   await interaction.editReply({
     embeds: [embed],
   });
