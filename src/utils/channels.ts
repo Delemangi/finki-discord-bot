@@ -7,6 +7,7 @@ import { vipStringFunctions } from "../translations/vip.js";
 import { type ChannelName } from "../types/ChannelName.js";
 import { client } from "./client.js";
 import { getConfigProperty } from "./config.js";
+import { getGuild } from "./guild.js";
 import { logger } from "./logger.js";
 import { Cron } from "croner";
 import {
@@ -47,7 +48,7 @@ export const initializeChannels = async () => {
 
 export const getChannel = (type: ChannelName) => channels[type];
 
-const getNextVipCronRun = async (locale: string = "en-GB", offset = 1) => {
+const getNextVipCronRun = async (locale = "en-GB", offset = 1) => {
   const { cron } = await getConfigProperty("temporaryVIPChannel");
   const nextRun = Cron(cron).nextRuns(offset).at(-1);
 
@@ -60,8 +61,8 @@ const getNextVipCronRun = async (locale: string = "en-GB", offset = 1) => {
 };
 
 export const scheduleVipTemporaryChannel = async () => {
+  const guild = await getGuild();
   const { cron, name, parent } = await getConfigProperty("temporaryVIPChannel");
-  const guildId = await getConfigProperty("guild");
 
   Cron(cron, async () => {
     const existingChannel = client.channels.cache.find(
@@ -72,13 +73,7 @@ export const scheduleVipTemporaryChannel = async () => {
       await existingChannel.delete();
     }
 
-    const guild = client.guilds.cache.get(guildId);
-
-    if (guild === undefined) {
-      return;
-    }
-
-    const channel = await guild.channels.create({
+    const channel = await guild?.channels.create({
       name,
       parent,
       topic: vipStringFunctions.tempVipTopic(
@@ -86,7 +81,7 @@ export const scheduleVipTemporaryChannel = async () => {
       ),
       type: ChannelType.GuildText,
     });
-    await channel.setPosition(
+    await channel?.setPosition(
       (await getConfigProperty("temporaryVIPChannel")).position,
       {
         relative: true,

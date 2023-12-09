@@ -1,5 +1,8 @@
 import { ConfigSchema } from "../schemas/ConfigSchema.js";
-import { commandDescriptions } from "../translations/commands.js";
+import {
+  commandDescriptions,
+  commandErrorFunctions,
+} from "../translations/commands.js";
 import { type BotConfig } from "../types/BotConfig.js";
 import {
   getConfigKeys,
@@ -81,8 +84,7 @@ const handleConfigSet = async (interaction: ChatInputCommandInteraction) => {
     ConfigSchema.shape[key].parse(value);
   } catch (error) {
     await interaction.editReply(
-      // @ts-expect-error error is not null
-      commandErrorFunctions.invalidConfiguration(error.message),
+      commandErrorFunctions.invalidConfiguration(String(error)),
     );
 
     return;

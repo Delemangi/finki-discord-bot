@@ -230,6 +230,7 @@ export const commandErrors = {
   faqCreationFailed: "Креирањето на прашањето беше неуспешно.",
   faqNotFound: "Прашањето не постои.",
   faqSendFailed: "Испраќањето на прашањето беше неуспешно.",
+  guildFetchFailed: "Превземањето на серверот беше неуспешно.",
   infoNotFound: "Информативната порака не постои.",
   invalidAntos: "Анто фактите се во невалиден формат.",
   invalidChannel: "Каналот е невалиден.",

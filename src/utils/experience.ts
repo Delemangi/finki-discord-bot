@@ -57,10 +57,10 @@ const getLevelFromExperience = (experience: bigint) => {
   return Number(level);
 };
 
-const awardMember = async (member: GuildMember | null, level: number) => {
+const awardMember = async (member: GuildMember, level: number) => {
   const roles = getLevels()[level];
 
-  if (roles === undefined || member === null) {
+  if (roles === undefined) {
     return;
   }
 
@@ -127,6 +127,10 @@ export const addExperience = async (message: Message) => {
           currentLevel.level,
         ),
       });
+
+      if (message.member === null) {
+        return;
+      }
 
       await awardMember(message.member, currentLevel.level);
     }

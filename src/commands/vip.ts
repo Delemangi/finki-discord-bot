@@ -1,4 +1,3 @@
-import { getVipEmbed, getVipInvitedEmbed } from "../components/commands.js";
 import { getPaginationComponents } from "../components/pagination.js";
 import {
   getPollComponents,
@@ -24,9 +23,12 @@ import {
   commandResponseFunctions,
   commandResponses,
 } from "../translations/commands.js";
+import { labels } from "../translations/labels.js";
 import { logErrorFunctions } from "../translations/logs.js";
+import { tagAndMentionUser } from "../translations/users.js";
 import { deleteResponse } from "../utils/channels.js";
 import { getConfigProperty, getRoleProperty } from "../utils/config.js";
+import { getGuild } from "../utils/guild.js";
 import { logger } from "../utils/logger.js";
 import {
   isMemberAdmin,
@@ -40,7 +42,11 @@ import {
   specialPollTypes,
   startSpecialPoll,
 } from "../utils/polls.js";
-import { getMembersWithRoles } from "../utils/roles.js";
+import {
+  getMembersByRoleIds,
+  getMembersByRoleIdsExtended,
+} from "../utils/roles.js";
+import { isNotNullish } from "../utils/utils.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,
@@ -164,9 +170,64 @@ export const data = new SlashCommandBuilder()
   );
 
 const handleVipMembers = async (interaction: ChatInputCommandInteraction) => {
-  const embeds = await getVipEmbed(interaction);
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
+    await interaction.editReply(commandErrors.guildFetchFailed);
+
+    return;
+  }
+
+  await interaction.guild?.members.fetch();
+
+  const vipRoleId = await getRoleProperty("vip");
+  const vipMemberIds = await getMembersByRoleIds(guild, [vipRoleId]);
+  const vipMembers = vipMemberIds.map(
+    (id) => interaction.guild?.members.cache.get(id),
+  );
+  const vipMemberNames = vipMembers
+    .filter(isNotNullish)
+    .filter(Boolean)
+    .map(({ id, user }) => "- " + tagAndMentionUser({ id, tag: user.tag }))
+    .join("\n");
+
+  const adminRoleId = await getRoleProperty("admin");
+  const moderatorRoleId = await getRoleProperty("moderator");
+  const adminTeamMemberIds = await getMembersByRoleIds(guild, [
+    adminRoleId,
+    moderatorRoleId,
+  ]);
+  const adminTeamMembers = adminTeamMemberIds.map(
+    (id) => interaction.guild?.members.cache.get(id),
+  );
+  const adminTeamMemberNames = adminTeamMembers
+    .filter(isNotNullish)
+    .filter(Boolean)
+    .map(({ id, user }) => "- " + tagAndMentionUser({ id, tag: user.tag }))
+    .join("\n");
+
+  const veteranRoleId = await getRoleProperty("veteran");
+  const veteranMemberIds = await getMembersByRoleIds(guild, [veteranRoleId]);
+  const veteranMembers = veteranMemberIds.map(
+    (id) => interaction.guild?.members.cache.get(id),
+  );
+  const veteranMemberNames = veteranMembers
+    .filter(isNotNullish)
+    .filter(Boolean)
+    .map(({ id, user }) => "- " + tagAndMentionUser({ id, tag: user.tag }))
+    .join("\n");
+
   await interaction.editReply({
-    embeds,
+    allowedMentions: {
+      parse: [],
+    },
+    content: `# ${labels.vip}\n${
+      vipMemberNames === "" ? labels.none : vipMemberNames
+    }\n\n# ${labels.administration}\n${
+      adminTeamMemberNames === "" ? labels.none : adminTeamMemberNames
+    }\n\n# ${labels.veterans}\n${
+      veteranMemberNames === "" ? labels.none : veteranMemberNames
+    }`,
   });
 };
 
@@ -442,6 +503,14 @@ const handleVipDelete = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handleVipRemaining = async (interaction: ChatInputCommandInteraction) => {
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
+    await interaction.editReply(commandErrors.guildFetchFailed);
+
+    return;
+  }
+
   const pollId = interaction.options.getString("poll", true);
   const poll = await getPollById(pollId);
 
@@ -468,7 +537,7 @@ const handleVipRemaining = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const voters = votes.map((vote) => vote.userId);
-  const allVoters = await getMembersWithRoles(interaction.guild, ...poll.roles);
+  const allVoters = await getMembersByRoleIds(guild, poll.roles);
 
   await interaction.editReply({
     allowedMentions: {
@@ -482,9 +551,43 @@ const handleVipRemaining = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handleVipInvited = async (interaction: ChatInputCommandInteraction) => {
-  const embed = await getVipInvitedEmbed();
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
+    await interaction.editReply(commandErrors.guildFetchFailed);
+
+    return;
+  }
+
+  await interaction.guild?.members.fetch();
+
+  const regularRoleId = await getRoleProperty("regular");
+  const vipRoleId = await getRoleProperty("vip");
+  const moderatorRoleId = await getRoleProperty("moderator");
+  const adminRoleId = await getRoleProperty("admin");
+  const veteranRoleId = await getRoleProperty("veteran");
+
+  const invitedMemberIds = await getMembersByRoleIdsExtended(
+    guild,
+    [regularRoleId],
+    [vipRoleId, moderatorRoleId, adminRoleId, veteranRoleId],
+  );
+  const invitedMembers = invitedMemberIds.map(
+    (id) => interaction.guild?.members.cache.get(id),
+  );
+  const invitedMemberNames = invitedMembers
+    .filter(isNotNullish)
+    .filter(Boolean)
+    .map(({ id, user }) => "- " + tagAndMentionUser({ id, tag: user.tag }))
+    .join("\n");
+
   await interaction.editReply({
-    embeds: [embed],
+    allowedMentions: {
+      parse: [],
+    },
+    content: `# ${labels.regulars}\n${
+      invitedMemberNames === "" ? labels.none : invitedMemberNames
+    }`,
   });
 };
 

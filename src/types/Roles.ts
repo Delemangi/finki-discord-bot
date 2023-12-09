@@ -1,10 +1,11 @@
 export type Roles =
   | "admin"
-  | "moderator"
   | "booster"
   | "contributor"
+  | "council"
   | "fss"
+  | "moderator"
   | "ombudsman"
-  | "vip"
   | "regular"
-  | "council";
+  | "veteran"
+  | "vip";

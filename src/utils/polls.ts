@@ -8,7 +8,7 @@ import { labels } from "../translations/labels.js";
 import { vipStringFunctions } from "../translations/vip.js";
 import { client } from "./client.js";
 import { getConfigProperty, getRoleProperty } from "./config.js";
-import { getMembersWithRoles } from "./roles.js";
+import { getMembersByRoleIds } from "./roles.js";
 import { type Prisma } from "@prisma/client";
 import {
   type ButtonInteraction,
@@ -185,7 +185,7 @@ export const getPollThreshold = async (pollId: string) => {
     return null;
   }
 
-  const totalVoters = await getMembersWithRoles(guild, ...poll.roles);
+  const totalVoters = await getMembersByRoleIds(guild, poll.roles);
   const abstenstions = await countPollVotesByOptionId(
     poll.options.find((option) => option.name === labels.abstain)?.id ?? "",
   );
@@ -222,7 +222,7 @@ export const decidePoll = async (pollId: string) => {
   }
 
   const votes: Record<string, number> = {};
-  const totalVoters = await getMembersWithRoles(guild, ...poll.roles);
+  const totalVoters = await getMembersByRoleIds(guild, poll.roles);
   const threshold = await getPollThreshold(pollId);
 
   if (threshold === null) {

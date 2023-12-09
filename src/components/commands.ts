@@ -24,18 +24,15 @@ import {
   getParticipants,
   getPrerequisites,
   getProfessors,
-  getRoleProperty,
 } from "../utils/config.js";
 import { getUsername } from "../utils/members.js";
 import { getCommandsWithPermission } from "../utils/permissions.js";
-import { getMembersWithAndWithoutRoles, getRole } from "../utils/roles.js";
 import { linkProfessors, transformCoursePrerequisites } from "./utils.js";
 import { type Experience, type Link, type Question } from "@prisma/client";
 import {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  type ChatInputCommandInteraction,
   EmbedBuilder,
   type GuildMember,
   inlineCode,
@@ -362,42 +359,49 @@ export const getStaffEmbed = async (information: Staff) => {
     .addFields(
       {
         inline: true,
-        name: "Звање",
+        name: labels.title,
         value: information.title,
       },
       {
         inline: true,
-        name: "Позиција",
+        name: labels.position,
         value: information.position,
       },
       {
-        name: "Електронска пошта",
+        name: labels.email,
         value: information.email,
       },
       {
         inline: true,
-        name: "ФИНКИ",
-        value: information.finki === "" ? "-" : `[Линк](${information.finki})`,
-      },
-      {
-        inline: true,
-        name: "Courses",
+        name: labels.finki,
         value:
-          information.courses === "" ? "-" : `[Линк](${information.courses})`,
+          information.finki === ""
+            ? labels.none
+            : `[${labels.link}](${information.finki})`,
       },
       {
         inline: true,
-        name: "Распоред",
+        name: labels.courses,
         value:
-          information.raspored === "" ? "-" : `[Линк](${information.raspored})`,
+          information.courses === ""
+            ? labels.none
+            : `[${labels.link}](${information.courses})`,
       },
       {
         inline: true,
-        name: "Консултации",
+        name: labels.timetable,
+        value:
+          information.raspored === ""
+            ? labels.none
+            : `[${labels.link}](${information.raspored})`,
+      },
+      {
+        inline: true,
+        name: labels.consultations,
         value:
           information.konsultacii === ""
-            ? "-"
-            : `[Линк](${information.konsultacii})`,
+            ? labels.none
+            : `[${labels.link}](${information.konsultacii})`,
       },
     )
     .setTimestamp();
@@ -478,97 +482,6 @@ export const getStudentInfoEmbed = async (member: GuildMember) => {
         name: labels.other,
         value: other === "" ? labels.none : other,
       },
-    )
-    .setTimestamp();
-};
-
-export const getVipEmbed = async (interaction: ChatInputCommandInteraction) => {
-  await interaction.guild?.members.fetch();
-
-  const vipRole = getRole("vip");
-  const vipMembers = [];
-
-  for (const member of vipRole?.members.values() ?? []) {
-    const user = await interaction.guild?.members.fetch(member.user.id);
-    vipMembers.push(user);
-  }
-
-  const adminRole = getRole("admin");
-  const adminMembers = [];
-
-  for (const member of adminRole?.members.values() ?? []) {
-    const user = await interaction.guild?.members.fetch(member.user.id);
-    adminMembers.push(user);
-  }
-
-  return [
-    new EmbedBuilder()
-      .setColor(await getConfigProperty("color"))
-      .setTitle("Состав"),
-    new EmbedBuilder()
-      .setColor(await getConfigProperty("color"))
-      .setTitle(`ВИП: ${vipMembers.length}`)
-      .setDescription(
-        vipMembers.length === 0
-          ? "Нема членови на ВИП."
-          : vipMembers
-              .map(
-                (member) =>
-                  `${member?.user.tag} (${userMention(
-                    member?.user.id as string,
-                  )})`,
-              )
-              .join("\n"),
-      ),
-    new EmbedBuilder()
-      .setColor(await getConfigProperty("color"))
-      .setTitle(`Админ тим: ${adminMembers.length}`)
-      .setDescription(
-        adminMembers.length === 0
-          ? "Нема администратори."
-          : adminMembers
-              .map(
-                (member) =>
-                  `${member?.user.tag} (${userMention(
-                    member?.user.id as string,
-                  )})`,
-              )
-              .join("\n"),
-      )
-      .setTimestamp(),
-  ];
-};
-
-export const getVipInvitedEmbed = async () => {
-  const councilRoleId = await getRoleProperty("council");
-  const boosterRoleId = await getRoleProperty("booster");
-  const contributorRoleId = await getRoleProperty("contributor");
-  const adminRoleId = await getRoleProperty("admin");
-  const vipRoleId = await getRoleProperty("vip");
-
-  const memberIds = await getMembersWithAndWithoutRoles(
-    [councilRoleId, boosterRoleId, contributorRoleId],
-    [adminRoleId, vipRoleId],
-  );
-  const guild = client.guilds.cache.get(await getConfigProperty("guild"));
-  const members = await Promise.all(
-    memberIds.map(async (memberId) => await guild?.members.fetch(memberId)),
-  );
-
-  return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
-    .setTitle(`ВИП поканети: ${memberIds.length}`)
-    .setDescription(
-      members.length === 0
-        ? "Нема членови на ВИП поканети."
-        : members
-            .map(
-              (member) =>
-                `${member?.user.tag} (${userMention(
-                  member?.user.id as string,
-                )})`,
-            )
-            .join("\n"),
     )
     .setTimestamp();
 };

@@ -38,6 +38,7 @@ const defaultConfig: BotConfig = {
     moderator: "",
     ombudsman: "",
     regular: "",
+    veteran: "",
     vip: "",
   },
   temporaryVIPChannel: {

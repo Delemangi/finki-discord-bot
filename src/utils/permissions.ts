@@ -1,6 +1,7 @@
 import { commandDescriptions } from "../translations/commands.js";
 import { type Roles } from "../types/Roles.js";
 import { getRoleProperty } from "./config.js";
+import { isMemberAdministrator } from "./members.js";
 import { type GuildMember, PermissionsBitField } from "discord.js";
 
 const commandPermissions: Record<
@@ -129,10 +130,10 @@ const getCommandPermission = async (
 
 // Check whether the member has all the command permissions, or any of the roles
 export const hasCommandPermission = async (
-  member: GuildMember | null,
+  member: GuildMember,
   command: string,
 ) => {
-  if (member?.permissions.has(PermissionsBitField.Flags.Administrator)) {
+  if (await isMemberAdministrator(member)) {
     return true;
   }
 
@@ -143,12 +144,12 @@ export const hasCommandPermission = async (
   }
 
   return (
-    (permissions.length !== 0 && member?.permissions.has(permissions)) ||
-    (roles.length !== 0 && member?.roles.cache.hasAny(...roles))
+    (permissions.length !== 0 && member.permissions.has(permissions)) ||
+    (roles.length !== 0 && member.roles.cache.hasAny(...roles))
   );
 };
 
-export const getCommandsWithPermission = (member: GuildMember | null) => {
+export const getCommandsWithPermission = (member: GuildMember) => {
   return Object.keys(commandDescriptions).filter(
     async (command) => await hasCommandPermission(member, command),
   );

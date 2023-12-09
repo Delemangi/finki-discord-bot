@@ -13,7 +13,7 @@ import { type PollWithOptions } from "../types/PollWithOptions.js";
 import { getConfigProperty } from "../utils/config.js";
 import { getUsername } from "../utils/members.js";
 import { getPollThreshold } from "../utils/polls.js";
-import { getMembersWithRoles } from "../utils/roles.js";
+import { getMembersByRoleIds } from "../utils/roles.js";
 import { generatePollPercentageBar, truncateString } from "./utils.js";
 import { type Poll, type SpecialPoll } from "@prisma/client";
 import {
@@ -139,7 +139,7 @@ export const getPollComponents = (poll: PollWithOptions) => {
 
 export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
   const votes = (await getPollVotesByPollId(poll.id))?.length ?? 0;
-  const voters = await getMembersWithRoles(guild, ...poll.roles);
+  const voters = await getMembersByRoleIds(guild, poll.roles);
   const threshold = await getPollThreshold(poll.id);
   const turnout = `(${((votes / voters.length) * 100).toFixed(2)}%)`;
 
@@ -178,9 +178,7 @@ export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
         value:
           poll.roles.length === 0
             ? labels.all
-            : (
-                await getMembersWithRoles(guild, ...poll.roles)
-              ).length.toString(),
+            : (await getMembersByRoleIds(guild, poll.roles)).length.toString(),
       },
       {
         inline: true,

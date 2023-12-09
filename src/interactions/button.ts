@@ -39,6 +39,7 @@ import { vipStringFunctions, vipStrings } from "../translations/vip.js";
 import { type PollWithOptions } from "../types/PollWithOptions.js";
 import { deleteResponse, getChannel } from "../utils/channels.js";
 import { getConfigProperty, getRoleProperty } from "../utils/config.js";
+import { getGuild } from "../utils/guild.js";
 import { logger } from "../utils/logger.js";
 import { isMemberInVip } from "../utils/members.js";
 import { decidePoll, startSpecialPoll } from "../utils/polls.js";
@@ -62,7 +63,9 @@ export const handleCourseButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
-  if (interaction.guild === null) {
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
     logger.warn(
       logErrorFunctions.buttonInteractionOutsideGuildError(
         interaction.customId,
@@ -72,7 +75,15 @@ export const handleCourseButton = async (
     return;
   }
 
-  const role = getRoleFromSet(interaction.guild, "courses", args[0]);
+  if (args[0] === undefined) {
+    logger.warn(
+      logErrorFunctions.invalidButtonInteractionError(interaction.customId),
+    );
+
+    return;
+  }
+
+  const role = getRoleFromSet(guild, "courses", args[0]);
 
   if (role === undefined) {
     logger.warn(
@@ -111,7 +122,9 @@ export const handleYearButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
-  if (interaction.guild === null || interaction.member === null) {
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
     logger.warn(
       logErrorFunctions.buttonInteractionOutsideGuildError(
         interaction.customId,
@@ -121,7 +134,15 @@ export const handleYearButton = async (
     return;
   }
 
-  const role = getRoleFromSet(interaction.guild, "year", args[0]);
+  if (args[0] === undefined) {
+    logger.warn(
+      logErrorFunctions.invalidButtonInteractionError(interaction.customId),
+    );
+
+    return;
+  }
+
+  const role = getRoleFromSet(guild, "year", args[0]);
 
   if (role === undefined) {
     logger.warn(
@@ -131,13 +152,14 @@ export const handleYearButton = async (
     return;
   }
 
+  // @ts-expect-error The member cannot be null
   const roles = interaction.member.roles as GuildMemberRoleManager;
   let removed = true;
 
   if (roles.cache.has(role.id)) {
     await roles.remove(role);
   } else {
-    await roles.remove(getRoles(interaction.guild, "year"));
+    await roles.remove(getRoles(guild, "year"));
     await roles.add(role);
     removed = false;
   }
@@ -160,7 +182,9 @@ export const handleProgramButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
-  if (interaction.guild === null || interaction.member === null) {
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
     logger.warn(
       logErrorFunctions.buttonInteractionOutsideGuildError(
         interaction.customId,
@@ -170,7 +194,15 @@ export const handleProgramButton = async (
     return;
   }
 
-  const role = getRoleFromSet(interaction.guild, "program", args[0]);
+  if (args[0] === undefined) {
+    logger.warn(
+      logErrorFunctions.invalidButtonInteractionError(interaction.customId),
+    );
+
+    return;
+  }
+
+  const role = getRoleFromSet(guild, "program", args[0]);
 
   if (role === undefined) {
     logger.warn(
@@ -180,13 +212,14 @@ export const handleProgramButton = async (
     return;
   }
 
+  // @ts-expect-error The member cannot be null
   const roles = interaction.member.roles as GuildMemberRoleManager;
   let removed = true;
 
   if (roles.cache.has(role.id)) {
     await roles.remove(role);
   } else {
-    await roles.remove(getRoles(interaction.guild, "program"));
+    await roles.remove(getRoles(guild, "program"));
     await roles.add(role);
     removed = false;
   }
@@ -209,7 +242,9 @@ export const handleNotificationButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
-  if (interaction.guild === null || interaction.member === null) {
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
     logger.warn(
       logErrorFunctions.buttonInteractionOutsideGuildError(
         interaction.customId,
@@ -219,7 +254,15 @@ export const handleNotificationButton = async (
     return;
   }
 
-  const role = getRoleFromSet(interaction.guild, "notification", args[0]);
+  if (args[0] === undefined) {
+    logger.warn(
+      logErrorFunctions.invalidButtonInteractionError(interaction.customId),
+    );
+
+    return;
+  }
+
+  const role = getRoleFromSet(guild, "notification", args[0]);
 
   if (role === undefined) {
     logger.warn(
@@ -229,6 +272,7 @@ export const handleNotificationButton = async (
     return;
   }
 
+  // @ts-expect-error The member cannot be null
   const roles = interaction.member.roles as GuildMemberRoleManager;
   let removed = true;
 
@@ -260,7 +304,9 @@ export const handleColorButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
-  if (interaction.guild === null || interaction.member === null) {
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
     logger.warn(
       logErrorFunctions.buttonInteractionOutsideGuildError(
         interaction.customId,
@@ -270,7 +316,15 @@ export const handleColorButton = async (
     return;
   }
 
-  const role = getRoleFromSet(interaction.guild, "color", args[0]);
+  if (args[0] === undefined) {
+    logger.warn(
+      logErrorFunctions.invalidButtonInteractionError(interaction.customId),
+    );
+
+    return;
+  }
+
+  const role = getRoleFromSet(guild, "color", args[0]);
 
   if (role === undefined) {
     logger.warn(
@@ -280,13 +334,14 @@ export const handleColorButton = async (
     return;
   }
 
+  // @ts-expect-error The member cannot be null
   const roles = interaction.member.roles as GuildMemberRoleManager;
   let removed = true;
 
   if (roles.cache.has(role.id)) {
     await roles.remove(role);
   } else {
-    await roles.remove(getRoles(interaction.guild, "color"));
+    await roles.remove(getRoles(guild, "color"));
     await roles.add(role);
     removed = false;
   }

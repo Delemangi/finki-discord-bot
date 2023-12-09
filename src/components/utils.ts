@@ -49,6 +49,7 @@ export const getButtonCommand = (command?: string) => {
   }
 };
 
+// eslint-disable-next-line complexity
 export const getButtonInfo = (
   interaction: ButtonInteraction,
   command: string,
@@ -58,10 +59,13 @@ export const getButtonInfo = (
     case "course":
       return {
         name: getButtonCommand(command),
-        value: roleMention(
-          getRoleFromSet(interaction.guild, "courses", args[0])?.id ??
-            embedLabels.unknown,
-        ),
+        value:
+          interaction.guild && args[0]
+            ? roleMention(
+                getRoleFromSet(interaction.guild, "courses", args[0])?.id ??
+                  embedLabels.unknown,
+              )
+            : embedLabels.unknown,
       };
 
     case "year":
@@ -70,10 +74,13 @@ export const getButtonInfo = (
     case "color":
       return {
         name: getButtonCommand(command),
-        value: roleMention(
-          getRoleFromSet(interaction.guild, command, args[0])?.id ??
-            embedLabels.unknown,
-        ),
+        value:
+          interaction.guild && args[0]
+            ? roleMention(
+                getRoleFromSet(interaction.guild, command, args[0])?.id ??
+                  embedLabels.unknown,
+              )
+            : embedLabels.unknown,
       };
 
     case "help":

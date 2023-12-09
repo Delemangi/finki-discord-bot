@@ -17,6 +17,7 @@ import {
   getPrerequisites,
   getProfessors,
 } from "../utils/config.js";
+import { getGuild } from "../utils/guild.js";
 import { getCourseRoleByCourseName } from "../utils/roles.js";
 import {
   type ChatInputCommandInteraction,
@@ -257,16 +258,24 @@ const handleCourseToggle = async (
   interaction: ChatInputCommandInteraction,
   course: string | null,
 ) => {
-  if (interaction.guild === null) {
-    await interaction.editReply(commandErrors.serverOnlyCommand);
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
+    await interaction.editReply(commandErrors.guildFetchFailed);
+
+    return;
+  }
+
+  if (course === null) {
+    await interaction.editReply(commandErrors.courseNotFound);
 
     return;
   }
 
   const member = interaction.member as GuildMember;
-  const role = getCourseRoleByCourseName(interaction.guild, course);
+  const role = getCourseRoleByCourseName(guild, course);
 
-  if (role === undefined) {
+  if (role === null) {
     await interaction.editReply(commandErrors.courseNotFound);
 
     return;

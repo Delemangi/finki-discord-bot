@@ -86,8 +86,9 @@ export const handleChatInputCommand = async (
   ).trim();
 
   if (
+    interaction.member === null ||
     !(await hasCommandPermission(
-      interaction.member as GuildMember | null,
+      interaction.member as GuildMember,
       fullCommand,
     ))
   ) {
