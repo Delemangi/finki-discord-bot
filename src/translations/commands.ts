@@ -200,8 +200,22 @@ export const commandResponseFunctions = {
   semesterCoursesRemoved: (semester: number | string) =>
     `Ги отстранивте предметите од семестар ${semester}.`,
 
+  serverChannelsStat: (channelCount: number) => `Канали: ${channelCount} / 500`,
+
+  serverEmojiStat: (emojiCount: number, maxCount: number) =>
+    `Емоџиња: ${emojiCount} / ${maxCount}`,
+
+  serverInvitesStat: (inviteCount: number) => `Покани: ${inviteCount}`,
+
   serverMembers: (memberCount: number | string | undefined) =>
     `Серверот има ${memberCount ?? "непознат број на"} членови.`,
+
+  serverMembersStat: (memberCount: number) => `Членови: ${memberCount}`,
+
+  serverRolesStat: (roleCount: number) => `Улоги: ${roleCount} / 250`,
+
+  serverStickersStat: (stickerCount: number, maxCount: number) =>
+    `Стикери: ${stickerCount} / ${maxCount}`,
 
   voteAdded: (option: string) => `Гласавте за ${inlineCode(option)}.`,
 

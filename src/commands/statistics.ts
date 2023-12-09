@@ -1,6 +1,7 @@
 import {
   commandDescriptions,
   commandErrors,
+  commandResponseFunctions,
 } from "../translations/commands.js";
 import {
   getMaxEmojisByBoostLevel,
@@ -117,41 +118,41 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     const output = [];
     const boostLevel = guild.premiumTier;
 
-    output.push(`Членови: ${guild.memberCount}`);
+    output.push(commandResponseFunctions.serverMembersStat(guild.memberCount));
 
     await guild.channels.fetch();
-    output.push(`Канали: ${guild.channels.cache.size}`);
     output.push(
-      `Канали (без нишки): ${
-        guild.channels.cache.filter((channel) => !channel.isThread()).size
-      } / 500`,
+      commandResponseFunctions.serverChannelsStat(
+        guild.channels.cache.filter((channel) => !channel.isThread()).size,
+      ),
     );
 
     await guild.roles.fetch();
-    output.push(`Улоги: ${guild.roles.cache.size} / 250`);
+    output.push(
+      commandResponseFunctions.serverRolesStat(guild.roles.cache.size),
+    );
 
     await guild.emojis.fetch();
     output.push(
-      `Емоџиња: ${guild.emojis.cache.size} / ${getMaxEmojisByBoostLevel(
-        boostLevel,
-      )}`,
+      commandResponseFunctions.serverEmojiStat(
+        guild.emojis.cache.size,
+        getMaxEmojisByBoostLevel(boostLevel),
+      ),
     );
 
     await guild.stickers.fetch();
     output.push(
-      `Стикери: ${guild.stickers.cache.size} / ${getMaxStickersByBoostLevel(
-        boostLevel,
-      )}`,
+      commandResponseFunctions.serverStickersStat(
+        guild.stickers.cache.size,
+        getMaxStickersByBoostLevel(boostLevel),
+      ),
     );
 
     await guild.invites.fetch();
-    output.push(`Покани: ${guild.invites.cache.size}`);
+    output.push(
+      commandResponseFunctions.serverInvitesStat(guild.invites.cache.size),
+    );
 
-    await interaction.editReply({
-      allowedMentions: {
-        parse: [],
-      },
-      content: output.join("\n"),
-    });
+    await interaction.editReply(output.join("\n"));
   }
 };
