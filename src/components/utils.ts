@@ -107,7 +107,7 @@ export const getButtonInfo = (
 
 export const linkProfessors = (professors: string) => {
   if (professors === "") {
-    return "-";
+    return labels.none;
   }
 
   return professors

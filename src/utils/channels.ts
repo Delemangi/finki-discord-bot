@@ -1,3 +1,4 @@
+import { labels } from "../translations/labels.js";
 import {
   logErrorFunctions,
   logMessageFunctions,
@@ -53,7 +54,7 @@ const getNextVipCronRun = async (locale = "en-GB", offset = 1) => {
   const nextRun = Cron(cron).nextRuns(offset).at(-1);
 
   return nextRun === null
-    ? "?"
+    ? labels.unknown
     : new Intl.DateTimeFormat(locale, {
         dateStyle: "full",
         timeStyle: "long",
@@ -62,7 +63,9 @@ const getNextVipCronRun = async (locale = "en-GB", offset = 1) => {
 
 export const scheduleVipTemporaryChannel = async () => {
   const guild = await getGuild();
-  const { cron, name, parent } = await getConfigProperty("temporaryVIPChannel");
+  const { cron, name, parent, position } = await getConfigProperty(
+    "temporaryVIPChannel",
+  );
 
   Cron(cron, async () => {
     const existingChannel = client.channels.cache.find(
@@ -81,12 +84,9 @@ export const scheduleVipTemporaryChannel = async () => {
       ),
       type: ChannelType.GuildText,
     });
-    await channel?.setPosition(
-      (await getConfigProperty("temporaryVIPChannel")).position,
-      {
-        relative: true,
-      },
-    );
+    await channel?.setPosition(position, {
+      relative: true,
+    });
 
     logger.info(
       logMessageFunctions.tempVipScheduled(await getNextVipCronRun()),

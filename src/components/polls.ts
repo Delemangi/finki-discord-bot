@@ -70,7 +70,7 @@ export const getPollEmbed = async (poll: PollWithOptions) => {
           ? `\n${labels.result}: ${inlineCode(
               poll.decision ??
                 (await getMostPopularOptionByPollId(poll.id))?.name ??
-                "-",
+                labels.none,
             )}\n`
           : ""
       }`,

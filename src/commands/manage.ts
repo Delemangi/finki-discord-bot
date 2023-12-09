@@ -31,6 +31,7 @@ import {
   commandErrors,
   commandResponses,
 } from "../translations/commands.js";
+import { labels } from "../translations/labels.js";
 import { logErrorFunctions } from "../translations/logs.js";
 import { logger } from "../utils/logger.js";
 import { linkRegex } from "../utils/regex.js";
@@ -532,7 +533,7 @@ const handleManageLinkContent = async (
     "Име:" +
       codeBlock(link.name) +
       "\nОпис:" +
-      codeBlock(link.description?.replaceAll("\n", "\\n") ?? "-") +
+      codeBlock(link.description?.replaceAll("\n", "\\n") ?? labels.none) +
       "\nЛинк:" +
       codeBlock(link.url),
   );
