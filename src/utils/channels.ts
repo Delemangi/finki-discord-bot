@@ -22,9 +22,9 @@ import {
 } from "discord.js";
 import { setTimeout } from "node:timers/promises";
 
-const channels: {
-  [K in ChannelName]?: GuildTextBasedChannel | undefined;
-} = {};
+const channels: Partial<
+  Record<ChannelName, GuildTextBasedChannel | undefined>
+> = {};
 
 export const initializeChannels = async () => {
   const channelIds = await getConfigProperty("channels");

@@ -7,13 +7,8 @@ import { logger } from "./logger.js";
 import { isNotNullish } from "./utils.js";
 import { type Guild, type Role } from "discord.js";
 
-const roles: {
-  [K in Roles]?: Role | undefined;
-} = {};
-
-const roleSets: {
-  [K in RoleSets]: Role[];
-} = {
+const roles: Partial<Record<Roles, Role | undefined>> = {};
+const roleSets: Record<RoleSets, Role[]> = {
   color: [],
   courses: [],
   notification: [],
