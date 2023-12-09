@@ -7,7 +7,8 @@ import {
 import { labels } from "../translations/labels.js";
 import { vipStringFunctions } from "../translations/vip.js";
 import { client } from "./client.js";
-import { getConfigProperty, getRoleProperty } from "./config.js";
+import { getRoleProperty } from "./config.js";
+import { getGuild } from "./guild.js";
 import { getMembersByRoleIds } from "./roles.js";
 import { type Prisma } from "@prisma/client";
 import {
@@ -179,9 +180,9 @@ export const getPollThreshold = async (pollId: string) => {
     return null;
   }
 
-  const guild = client.guilds.cache.get(await getConfigProperty("guild"));
+  const guild = await getGuild();
 
-  if (guild === undefined) {
+  if (guild === null) {
     return null;
   }
 
@@ -215,9 +216,9 @@ export const decidePoll = async (pollId: string) => {
     return;
   }
 
-  const guild = client.guilds.cache.get(await getConfigProperty("guild"));
+  const guild = await getGuild();
 
-  if (guild === undefined) {
+  if (guild === null) {
     return;
   }
 

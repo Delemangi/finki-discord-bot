@@ -3,9 +3,14 @@ import { getConfigProperty } from "./config.js";
 import { type Interaction } from "discord.js";
 
 export const getGuild = async (interaction?: Interaction) => {
-  return (
-    interaction?.guild ??
-    client.guilds.cache.get(await getConfigProperty("guild")) ??
-    null
-  );
+  if (interaction?.guild !== null && interaction?.guild !== undefined) {
+    return interaction.guild;
+  }
+
+  await client.guilds.fetch();
+
+  const guildId = await getConfigProperty("guild");
+  const guild = client.guilds.cache.get(guildId);
+
+  return guild ?? null;
 };
