@@ -82,18 +82,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       (role) => `${roleMention(role.id)}: ${role.members.size}`,
     );
 
-    if (subcommand === "course") {
-      await safeReplyToInteraction(interaction, output.join("\n"));
-
-      return;
-    }
-
-    await interaction.editReply({
-      allowedMentions: {
-        parse: [],
-      },
-      content: output.join("\n"),
-    });
+    await safeReplyToInteraction(interaction, output.join("\n"));
   } else {
     const output = [];
     const boostLevel = guild.premiumTier;
