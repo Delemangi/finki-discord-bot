@@ -7,8 +7,8 @@ import {
   getMaxEmojisByBoostLevel,
   getMaxStickersByBoostLevel,
 } from "../utils/boost.js";
-import { splitMessage } from "../utils/functions.js";
 import { getGuild } from "../utils/guild.js";
+import { safeReplyToInteraction } from "../utils/messages.js";
 import { getRoles } from "../utils/roles.js";
 import {
   type ChatInputCommandInteraction,
@@ -83,27 +83,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     );
 
     if (subcommand === "course") {
-      let followUp = false;
-
-      for (const message of splitMessage(output.join("\n"))) {
-        if (followUp) {
-          await interaction.followUp({
-            allowedMentions: {
-              parse: [],
-            },
-            content: message,
-          });
-        } else {
-          await interaction.editReply({
-            allowedMentions: {
-              parse: [],
-            },
-            content: message,
-          });
-        }
-
-        followUp = true;
-      }
+      await safeReplyToInteraction(interaction, output.join("\n"));
 
       return;
     }

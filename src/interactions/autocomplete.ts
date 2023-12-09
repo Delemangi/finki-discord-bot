@@ -10,9 +10,9 @@ import {
   getSessions,
   getStaff,
 } from "../utils/config.js";
-import { createOptions } from "../utils/functions.js";
 import { logger } from "../utils/logger.js";
 import { transformOptions } from "../utils/options.js";
+import { createOptions } from "./utils.js";
 import { type AutocompleteInteraction } from "discord.js";
 
 let transformedCourses: Array<[string, string]> | null = null;

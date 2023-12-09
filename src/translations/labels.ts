@@ -50,6 +50,7 @@ export const labels = {
   unknown: "?",
   veterans: "Ветерани",
   vip: "ВИП",
+  vipBanned: "Забранети од ВИП",
   votersFor: "Гласачи за",
   votes: "Гласови",
   year: "Година",
