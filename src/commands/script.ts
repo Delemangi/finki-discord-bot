@@ -180,7 +180,6 @@ export const data = new SlashCommandBuilder()
         option.setName("channel").setDescription("Канал").setRequired(true),
       ),
   )
-  .setDMPermission(false)
   .setDefaultMemberPermissions(permission);
 
 const handleScriptCourses = async (

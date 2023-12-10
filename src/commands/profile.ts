@@ -3,6 +3,7 @@ import {
   commandDescriptions,
   commandErrors,
 } from "../translations/commands.js";
+import { getMemberFromGuild } from "../utils/guild.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -20,9 +21,9 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser("user") ?? interaction.user;
-  const member = interaction.guild?.members.cache.get(user.id);
+  const member = await getMemberFromGuild(user.id, interaction);
 
-  if (member === undefined) {
+  if (member === null) {
     await interaction.editReply(commandErrors.userNotFound);
 
     return;

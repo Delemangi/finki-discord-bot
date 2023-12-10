@@ -54,8 +54,7 @@ export const data = new SlashCommandBuilder()
     subcommand
       .setName("leaderboard")
       .setDescription(commandDescriptions["experience leaderboard"]),
-  )
-  .setDMPermission(false);
+  );
 
 const handleExperienceGet = async (
   interaction: ChatInputCommandInteraction,

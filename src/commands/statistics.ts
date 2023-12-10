@@ -50,8 +50,7 @@ export const data = new SlashCommandBuilder()
     command
       .setName("server")
       .setDescription(commandDescriptions["statistics server"]),
-  )
-  .setDMPermission(false);
+  );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const guild = await getGuild(interaction);

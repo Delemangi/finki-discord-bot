@@ -26,7 +26,6 @@ import {
   getProfessors,
 } from "../utils/config.js";
 import { getUsername } from "../utils/members.js";
-import { getCommandsWithPermission } from "../utils/permissions.js";
 import { linkProfessors, transformCoursePrerequisites } from "./utils.js";
 import { type Experience, type Link, type Question } from "@prisma/client";
 import {
@@ -686,39 +685,11 @@ export const getListLinksEmbed = async (links: Link[]) => {
     .setTimestamp();
 };
 
-export const getHelpFirstPageEmbed = async (
-  member: GuildMember,
-  commandsPerPage: number = 8,
-) => {
-  const commands = getCommandsWithPermission(member);
-
-  return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
-    .setTitle(labels.commands)
-    .setDescription(embedMessages.allCommands)
-    .addFields(
-      ...commands.slice(0, commandsPerPage).map((command) => ({
-        name: commandMention(command),
-        value: commandDescriptions[command as keyof typeof commandDescriptions],
-      })),
-    )
-    .setFooter({
-      text: paginationStringFunctions.commandPage(
-        1,
-        Math.max(1, Math.ceil(commands.length / commandsPerPage)),
-        commands.length,
-      ),
-    })
-    .setTimestamp();
-};
-
-export const getHelpNextPageEmbed = async (
-  member: GuildMember,
+export const getHelpEmbed = async (
+  commands: string[],
   page: number,
   commandsPerPage: number = 8,
 ) => {
-  const commands = getCommandsWithPermission(member);
-
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
     .setTitle(labels.commands)

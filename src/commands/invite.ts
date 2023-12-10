@@ -2,6 +2,7 @@ import {
   commandDescriptions,
   commandErrors,
 } from "../translations/commands.js";
+import { getGuild } from "../utils/guild.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -12,15 +13,22 @@ const name = "invite";
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription(commandDescriptions[name])
-  .setDMPermission(false);
+  .setDescription(commandDescriptions[name]);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const vanityCode = interaction.guild?.vanityURLCode;
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
+    await interaction.editReply(commandErrors.guildFetchFailed);
+
+    return;
+  }
+
+  const vanityCode = guild.vanityURLCode;
 
   if (vanityCode === null || vanityCode === undefined) {
-    const invite = await interaction.guild?.invites.create(
-      interaction.guild.rulesChannel as TextChannel,
+    const invite = await guild.invites.create(
+      guild.rulesChannel as TextChannel,
       {
         maxAge: 0,
         maxUses: 0,

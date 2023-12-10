@@ -54,7 +54,6 @@ export const data = new SlashCommandBuilder()
           .setRequired(true),
       ),
   )
-  .setDMPermission(false)
   .setDefaultMemberPermissions(permission);
 
 const handleConfigGet = async (interaction: ChatInputCommandInteraction) => {

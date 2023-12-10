@@ -28,7 +28,6 @@ export const data = new SlashCommandBuilder()
       .setDescription("Порака која ќе се испрати")
       .setRequired(true),
   )
-  .setDMPermission(false)
   .setDefaultMemberPermissions(permission);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {

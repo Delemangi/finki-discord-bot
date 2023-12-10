@@ -8,6 +8,7 @@ import { commandErrors } from "../translations/commands.js";
 import { logErrorFunctions, logShortStrings } from "../translations/logs.js";
 import { deleteResponse, logEmbed } from "../utils/channels.js";
 import { getCommand } from "../utils/commands.js";
+import { getMemberFromGuild } from "../utils/guild.js";
 import { logger } from "../utils/logger.js";
 import { hasCommandPermission } from "../utils/permissions.js";
 import {
@@ -37,7 +38,6 @@ import {
   type AutocompleteInteraction,
   type ButtonInteraction,
   type ChatInputCommandInteraction,
-  type GuildMember,
   type UserContextMenuCommandInteraction,
 } from "discord.js";
 
@@ -79,19 +79,20 @@ export const handleChatInputCommand = async (
     return;
   }
 
+  const member = await getMemberFromGuild(interaction.user.id, interaction);
+
+  if (member === null) {
+    await interaction.editReply(commandErrors.commandNoPermission);
+    return;
+  }
+
   const fullCommand = (
     interaction.commandName +
     " " +
     (interaction.options.getSubcommand(false) ?? "")
   ).trim();
 
-  if (
-    interaction.member === null ||
-    !(await hasCommandPermission(
-      interaction.member as GuildMember,
-      fullCommand,
-    ))
-  ) {
+  if (!(await hasCommandPermission(member, fullCommand))) {
     await interaction.editReply(commandErrors.commandNoPermission);
 
     return;

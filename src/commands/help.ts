@@ -1,7 +1,4 @@
-import {
-  getHelpFirstPageEmbed,
-  getHelpNextPageEmbed,
-} from "../components/commands.js";
+import { getHelpEmbed } from "../components/commands.js";
 import { getPaginationComponents } from "../components/pagination.js";
 import {
   commandDescriptions,
@@ -11,13 +8,12 @@ import { logErrorFunctions } from "../translations/logs.js";
 import { deleteResponse } from "../utils/channels.js";
 import { client } from "../utils/client.js";
 import { getConfigProperty } from "../utils/config.js";
-import { getGuild } from "../utils/guild.js";
+import { getGuild, getMemberFromGuild } from "../utils/guild.js";
 import { logger } from "../utils/logger.js";
 import { getCommandsWithPermission } from "../utils/permissions.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,
-  type GuildMember,
   SlashCommandBuilder,
 } from "discord.js";
 
@@ -36,17 +32,19 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
+  const member = await getMemberFromGuild(interaction.user.id, interaction);
+
+  if (member === null) {
+    await interaction.editReply(commandErrors.commandNoPermission);
+    return;
+  }
+
   await client.application?.commands.fetch();
 
+  const commands = await getCommandsWithPermission(member);
   const commandsPerPage = 8;
-  const pages = Math.ceil(
-    getCommandsWithPermission(interaction.member as GuildMember).length /
-      commandsPerPage,
-  );
-  const embed = await getHelpFirstPageEmbed(
-    interaction.member as GuildMember,
-    commandsPerPage,
-  );
+  const pages = Math.ceil(commands.length / commandsPerPage);
+  const embed = await getHelpEmbed(commands, 0, commandsPerPage);
   const components = [
     pages === 0 || pages === 1
       ? getPaginationComponents("help")
@@ -107,11 +105,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       buttons = getPaginationComponents("help", "middle");
     }
 
-    const nextEmbed = await getHelpNextPageEmbed(
-      interaction.member as GuildMember,
-      page,
-      commandsPerPage,
-    );
+    const nextEmbed = await getHelpEmbed(commands, page, commandsPerPage);
 
     try {
       await buttonInteraction.update({

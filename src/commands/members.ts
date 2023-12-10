@@ -2,6 +2,7 @@ import {
   commandDescriptions,
   commandResponseFunctions,
 } from "../translations/commands.js";
+import { getGuild } from "../utils/guild.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -11,11 +12,12 @@ const name = "members";
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription(commandDescriptions[name])
-  .setDMPermission(false);
+  .setDescription(commandDescriptions[name]);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
+  const guild = await getGuild(interaction);
+
   await interaction.editReply(
-    commandResponseFunctions.serverMembers(interaction.guild?.memberCount),
+    commandResponseFunctions.serverMembers(guild?.memberCount),
   );
 };
