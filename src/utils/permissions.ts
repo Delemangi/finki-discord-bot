@@ -51,6 +51,10 @@ const commandPermissions: Record<
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
+  regulars: {
+    permissions: [],
+    roles: ["admin", "moderator"],
+  },
   script: {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
@@ -66,10 +70,6 @@ const commandPermissions: Record<
   "vip delete": {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
-  },
-  "vip invite": {
-    permissions: [],
-    roles: ["admin", "moderator"],
   },
   "vip list": {
     permissions: [],

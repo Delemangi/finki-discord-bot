@@ -120,17 +120,6 @@ export const data = new SlashCommandBuilder()
       ),
   )
   .addSubcommand((command) =>
-    command
-      .setName("invite")
-      .setDescription(commandDescriptions["vip invite"])
-      .addUserOption((option) =>
-        option
-          .setName("user")
-          .setDescription("Предлог корисник за покана")
-          .setRequired(true),
-      ),
-  )
-  .addSubcommand((command) =>
     command.setName("list").setDescription(commandDescriptions["vip list"]),
   )
   .addSubcommand((command) =>
@@ -184,7 +173,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
   }
 
   if (!(await isMemberInvitedToVip(member))) {
-    await interaction.editReply(commandErrors.userNotVipInvited);
+    await interaction.editReply(commandErrors.userNotRegular);
 
     return;
   }
@@ -469,42 +458,6 @@ const handleVipRemaining = async (interaction: ChatInputCommandInteraction) => {
   });
 };
 
-const handleVipInvite = async (interaction: ChatInputCommandInteraction) => {
-  const user = interaction.options.getUser("user", true);
-  const member = interaction.guild?.members.cache.get(user.id);
-
-  if (member === undefined) {
-    await interaction.editReply(commandErrors.userNotMember);
-
-    return;
-  }
-
-  const vipBan = await getVipBanByUserId(user.id);
-
-  if (vipBan !== null) {
-    await interaction.editReply(commandErrors.userVipBanned);
-
-    return;
-  }
-
-  if (await isMemberInVip(member)) {
-    await interaction.editReply(commandErrors.userVipMember);
-
-    return;
-  }
-
-  if (await isMemberInvitedToVip(member)) {
-    await interaction.editReply(commandErrors.userVipInvited);
-
-    return;
-  }
-
-  const regularRole = await getRoleProperty("regular");
-  await member.roles.add(regularRole);
-
-  await interaction.editReply(commandResponses.userGivenRegular);
-};
-
 const handleVipList = async (interaction: ChatInputCommandInteraction) => {
   const specialPolls = await getSpecialPolls();
 
@@ -717,7 +670,6 @@ const vipHandlers = {
   add: handleVipAdd,
   ban: handleVipBan,
   delete: handleVipDelete,
-  invite: handleVipInvite,
   list: handleVipList,
   override: handleVipOverride,
   remaining: handleVipRemaining,
