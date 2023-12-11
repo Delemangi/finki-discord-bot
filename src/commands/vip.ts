@@ -15,7 +15,7 @@ import {
   getSpecialPollByUserAndType,
   getSpecialPolls,
 } from "../data/SpecialPoll.js";
-import { getVipBanByUserId, getVipBans } from "../data/VipBan.js";
+import { getVipBanByUserId } from "../data/VipBan.js";
 import { handlePollButtonForSpecialVote } from "../interactions/button.js";
 import {
   commandDescriptions,
@@ -23,9 +23,7 @@ import {
   commandResponseFunctions,
   commandResponses,
 } from "../translations/commands.js";
-import { labels } from "../translations/labels.js";
 import { logErrorFunctions } from "../translations/logs.js";
-import { formatUsers } from "../translations/users.js";
 import { deleteResponse } from "../utils/channels.js";
 import { getConfigProperty, getRoleProperty } from "../utils/config.js";
 import { getGuild } from "../utils/guild.js";
@@ -36,18 +34,13 @@ import {
   isMemberInVip,
   isMemberInvitedToVip,
 } from "../utils/members.js";
-import { safeReplyToInteraction } from "../utils/messages.js";
 import {
   createPollChoices,
   specialPollOptions,
   specialPollTypes,
   startSpecialPoll,
 } from "../utils/polls.js";
-import {
-  getMembersByRoleIds,
-  getMembersByRoleIdsExtended,
-} from "../utils/roles.js";
-import { isNotNullish } from "../utils/utils.js";
+import { getMembersByRoleIds } from "../utils/roles.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,
@@ -61,11 +54,6 @@ const name = "vip";
 export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription("VIP")
-  .addSubcommand((command) =>
-    command
-      .setName("members")
-      .setDescription(commandDescriptions["vip members"]),
-  )
   .addSubcommand((command) =>
     command
       .setName("add")
@@ -133,11 +121,6 @@ export const data = new SlashCommandBuilder()
   )
   .addSubcommand((command) =>
     command
-      .setName("invited")
-      .setDescription(commandDescriptions["vip invited"]),
-  )
-  .addSubcommand((command) =>
-    command
       .setName("invite")
       .setDescription(commandDescriptions["vip invite"])
       .addUserOption((option) =>
@@ -159,9 +142,6 @@ export const data = new SlashCommandBuilder()
       ),
   )
   .addSubcommand((command) =>
-    command.setName("bans").setDescription(commandDescriptions["vip bans"]),
-  )
-  .addSubcommand((command) =>
     command
       .setName("unban")
       .setDescription(commandDescriptions["vip unban"])
@@ -169,57 +149,6 @@ export const data = new SlashCommandBuilder()
         option.setName("user").setDescription("Корисник").setRequired(true),
       ),
   );
-
-const handleVipMembers = async (interaction: ChatInputCommandInteraction) => {
-  const guild = await getGuild(interaction);
-
-  if (guild === null) {
-    await interaction.editReply(commandErrors.guildFetchFailed);
-
-    return;
-  }
-
-  await interaction.guild?.members.fetch();
-
-  const vipRoleId = await getRoleProperty("vip");
-  const vipMemberIds = await getMembersByRoleIds(guild, [vipRoleId]);
-  const vipMembers = vipMemberIds
-    .map((id) => interaction.guild?.members.cache.get(id))
-    .filter(isNotNullish);
-  const vipMembersFormatted = formatUsers(
-    labels.vip,
-    vipMembers.map(({ user }) => user),
-  );
-
-  const adminRoleId = await getRoleProperty("admin");
-  const moderatorRoleId = await getRoleProperty("moderator");
-  const adminTeamMemberIds = await getMembersByRoleIds(guild, [
-    adminRoleId,
-    moderatorRoleId,
-  ]);
-  const adminTeamMembers = adminTeamMemberIds
-    .map((id) => interaction.guild?.members.cache.get(id))
-    .filter(isNotNullish);
-  const adminTeamMembersFormatted = formatUsers(
-    labels.administration,
-    adminTeamMembers.map(({ user }) => user),
-  );
-
-  const veteranRoleId = await getRoleProperty("veteran");
-  const veteranMemberIds = await getMembersByRoleIds(guild, [veteranRoleId]);
-  const veteranMembers = veteranMemberIds
-    .map((id) => interaction.guild?.members.cache.get(id))
-    .filter(isNotNullish);
-  const veteranMembersFormatted = formatUsers(
-    labels.veterans,
-    veteranMembers.map(({ user }) => user),
-  );
-
-  await safeReplyToInteraction(
-    interaction,
-    `${vipMembersFormatted}\n${adminTeamMembersFormatted}\n${veteranMembersFormatted}`,
-  );
-};
 
 const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser("user", true);
@@ -540,39 +469,6 @@ const handleVipRemaining = async (interaction: ChatInputCommandInteraction) => {
   });
 };
 
-const handleVipInvited = async (interaction: ChatInputCommandInteraction) => {
-  const guild = await getGuild(interaction);
-
-  if (guild === null) {
-    await interaction.editReply(commandErrors.guildFetchFailed);
-
-    return;
-  }
-
-  await interaction.guild?.members.fetch();
-
-  const regularRoleId = await getRoleProperty("regular");
-  const vipRoleId = await getRoleProperty("vip");
-  const moderatorRoleId = await getRoleProperty("moderator");
-  const adminRoleId = await getRoleProperty("admin");
-  const veteranRoleId = await getRoleProperty("veteran");
-
-  const invitedMemberIds = await getMembersByRoleIdsExtended(
-    guild,
-    [regularRoleId],
-    [vipRoleId, moderatorRoleId, adminRoleId, veteranRoleId],
-  );
-  const invitedMembers = invitedMemberIds
-    .map((id) => interaction.guild?.members.cache.get(id))
-    .filter(isNotNullish);
-  const invitedMemberNames = formatUsers(
-    labels.regulars,
-    invitedMembers.map(({ user }) => user),
-  );
-
-  await safeReplyToInteraction(interaction, invitedMemberNames);
-};
-
 const handleVipInvite = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser("user", true);
   const member = interaction.guild?.members.cache.get(user.id);
@@ -774,41 +670,6 @@ const handleVipBan = async (interaction: ChatInputCommandInteraction) => {
   });
 };
 
-const handleVipBans = async (interaction: ChatInputCommandInteraction) => {
-  const guild = await getGuild(interaction);
-
-  if (guild === null) {
-    await interaction.editReply(commandErrors.guildFetchFailed);
-
-    return;
-  }
-
-  const vipBans = await getVipBans();
-
-  if (vipBans === null) {
-    await interaction.editReply(commandErrors.vipBansFetchFailed);
-
-    return;
-  }
-
-  if (vipBans.length === 0) {
-    await interaction.editReply(commandResponses.noVipBanned);
-
-    return;
-  }
-
-  const bannedMembers = vipBans
-    .map(({ userId }) => userId)
-    .map((id) => interaction.guild?.members.cache.get(id))
-    .filter(isNotNullish);
-  const bannedMembersFormatted = formatUsers(
-    labels.vipBanned,
-    bannedMembers.map(({ user }) => user),
-  );
-
-  await safeReplyToInteraction(interaction, bannedMembersFormatted);
-};
-
 const handleVipUnban = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser("user", true);
   const vipBan = await getVipBanByUserId(user.id);
@@ -855,12 +716,9 @@ const handleVipUnban = async (interaction: ChatInputCommandInteraction) => {
 const vipHandlers = {
   add: handleVipAdd,
   ban: handleVipBan,
-  bans: handleVipBans,
   delete: handleVipDelete,
   invite: handleVipInvite,
-  invited: handleVipInvited,
   list: handleVipList,
-  members: handleVipMembers,
   override: handleVipOverride,
   remaining: handleVipRemaining,
   remove: handleVipRemove,
