@@ -130,7 +130,7 @@ export const commandResponses = {
   ruleCreated: "Креиравте правило.",
   ruleDeleted: "Го избришавте правилото.",
   scriptExecuted: "Ја извршивте скриптата.",
-  userGivenRegular: "Го додадовте корисникот во групата на регуларни.",
+  userGivenRegular: "Го додадовте корисникот во редовните корисници.",
   voteRemoved: "Го тргнавте гласот.",
 };
 
