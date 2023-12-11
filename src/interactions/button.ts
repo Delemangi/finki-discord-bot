@@ -984,7 +984,6 @@ export const handleVipButton = async (
     interaction,
     interaction.user,
     "vipAdd",
-    0.67,
   );
 
   if (specialPollId === null) {

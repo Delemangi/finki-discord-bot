@@ -78,7 +78,7 @@ export const startSpecialPoll = async (
   interaction: ButtonInteraction | ChatInputCommandInteraction,
   vipUser: User,
   type: string,
-  threshold?: number,
+  threshold = 0.5,
 ) => {
   const partialUser = {
     id: vipUser.id,
@@ -139,7 +139,7 @@ export const startSpecialPoll = async (
       ],
     },
     roles: [await getRoleProperty("council")],
-    threshold: threshold ?? 0.5,
+    threshold,
     title,
     userId: client.user?.id ?? "",
   };

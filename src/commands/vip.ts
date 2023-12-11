@@ -197,7 +197,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, "vipAdd", 0.67);
+  const pollId = await startSpecialPoll(interaction, user, "vipAdd");
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.pollCreationFailed);
@@ -261,7 +261,7 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, "vipRemove", 0.67);
+  const pollId = await startSpecialPoll(interaction, user, "vipRemove");
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.userVipPending);
@@ -331,7 +331,7 @@ const handleVipUpgrade = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, "vipUpgrade", 0.5);
+  const pollId = await startSpecialPoll(interaction, user, "vipUpgrade");
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.userVipPending);
@@ -637,7 +637,7 @@ const handleVipBan = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, "vipBan", 0.67);
+  const pollId = await startSpecialPoll(interaction, user, "vipBan");
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.userVipPending);
@@ -680,7 +680,7 @@ const handleVipUnban = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, "vipUnban", 0.67);
+  const pollId = await startSpecialPoll(interaction, user, "vipUnban");
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.userVipPending);
