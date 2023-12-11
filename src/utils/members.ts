@@ -1,3 +1,4 @@
+import { getExperienceByUserId } from "../data/Experience.js";
 import { client } from "./client.js";
 import { getRoleProperty } from "./config.js";
 import { type GuildMember, PermissionsBitField } from "discord.js";
@@ -54,4 +55,17 @@ export const isMemberAdmin = async (member: GuildMember) => {
     member.roles.cache.has(adminRoleId) ||
     member.roles.cache.has(moderatorRoleId)
   );
+};
+
+export const isMemberLevelOrAbove = async (
+  member: GuildMember,
+  level: number,
+) => {
+  const experience = await getExperienceByUserId(member.id);
+
+  if (experience === null) {
+    return false;
+  }
+
+  return experience.level >= level;
 };

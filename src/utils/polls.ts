@@ -1,16 +1,21 @@
 import { createPoll, getPollById, updatePoll } from "../data/Poll.js";
-import { countPollVotesByOptionId } from "../data/PollVote.js";
+import {
+  countPollVotesByOptionId,
+  getPollVotesByPollId,
+} from "../data/PollVote.js";
 import {
   createSpecialPoll,
   getSpecialPollByPollId,
 } from "../data/SpecialPoll.js";
 import { labels } from "../translations/labels.js";
 import { vipStringFunctions } from "../translations/vip.js";
+import { type PollWithOptions } from "../types/PollWithOptions.js";
 import { client } from "./client.js";
 import { getRoleProperty } from "./config.js";
-import { getGuild } from "./guild.js";
+import { getGuild, getMemberFromGuild } from "./guild.js";
+import { isMemberLevelOrAbove } from "./members.js";
 import { getMembersByRoleIds } from "./roles.js";
-import { type Prisma } from "@prisma/client";
+import { type Prisma, type SpecialPoll } from "@prisma/client";
 import {
   type ButtonInteraction,
   type ChatInputCommandInteraction,
@@ -205,14 +210,70 @@ export const getPollThreshold = async (pollId: string) => {
   return threshold;
 };
 
-export const decidePoll = async (pollId: string) => {
+export const getAdminVote = async (pollId: string) => {
   const poll = await getPollById(pollId);
 
   if (poll === null) {
-    return;
+    return null;
   }
 
-  if (poll.roles.length === 0) {
+  const guild = await getGuild();
+
+  if (guild === null) {
+    return null;
+  }
+
+  const adminRoleId = await getRoleProperty("admin");
+  const votes = await getPollVotesByPollId(pollId);
+
+  if (votes === null) {
+    return null;
+  }
+
+  await guild.members.fetch();
+
+  const adminVote = votes.find(
+    (vote) =>
+      guild.members.cache.get(vote.userId)?.roles.cache.has(adminRoleId),
+  );
+
+  return adminVote ?? null;
+};
+
+const decideSpecialPollByAdministratorVote = async (
+  poll: PollWithOptions,
+  specialPoll: SpecialPoll,
+) => {
+  const member = await getMemberFromGuild(specialPoll.userId);
+
+  switch (specialPoll.type) {
+    case "vipAdd":
+      if (member === null || !(await isMemberLevelOrAbove(member, 15))) {
+        return;
+      }
+
+      // eslint-disable-next-line no-case-declarations
+      const vote = await getAdminVote(specialPoll.pollId);
+
+      if (vote === null || vote.option.name !== labels.yes) {
+        return;
+      }
+
+      poll.decision = vote.option.name;
+      poll.done = true;
+
+      await updatePoll(poll);
+      break;
+
+    default:
+  }
+};
+
+export const decidePoll = async (pollId: string) => {
+  const poll = await getPollById(pollId);
+  const specialPoll = await getSpecialPollByPollId(pollId);
+
+  if (poll === null || poll.roles.length === 0) {
     return;
   }
 
@@ -224,6 +285,15 @@ export const decidePoll = async (pollId: string) => {
 
   const votes: Record<string, number> = {};
   const totalVoters = await getMembersByRoleIds(guild, poll.roles);
+
+  if (specialPoll !== null) {
+    await decideSpecialPollByAdministratorVote(poll, specialPoll);
+  }
+
+  if (poll.decision !== null) {
+    return;
+  }
+
   const threshold = await getPollThreshold(pollId);
 
   if (threshold === null) {
@@ -252,18 +322,15 @@ export const decidePoll = async (pollId: string) => {
     0,
   );
 
-  if (totalVotes === totalVoters.length) {
-    poll.done = true;
-
-    await updatePoll(poll);
-  }
-
-  const specialPoll = await getSpecialPollByPollId(pollId);
-
-  if (specialPoll === null) {
+  if (totalVotes !== totalVoters.length) {
     return;
   }
 
-  poll.decision = labels.no;
+  poll.done = true;
+
+  if (specialPoll !== null) {
+    poll.decision = labels.no;
+  }
+
   await updatePoll(poll);
 };
