@@ -3,9 +3,9 @@ import {
   getPollEmbed,
   getPollStatsComponents,
 } from "../components/polls.js";
+import { getBarByUserId } from "../data/Bar.js";
 import { getPollById } from "../data/Poll.js";
 import { getSpecialPollByUserAndType } from "../data/SpecialPoll.js";
-import { getVipBanByUserId } from "../data/VipBan.js";
 import {
   commandDescriptions,
   commandErrors,
@@ -62,22 +62,6 @@ export const data = new SlashCommandBuilder()
   )
   .addSubcommand((command) =>
     command
-      .setName("ban")
-      .setDescription(commandDescriptions["vip ban"])
-      .addUserOption((option) =>
-        option.setName("user").setDescription("Корисник").setRequired(true),
-      ),
-  )
-  .addSubcommand((command) =>
-    command
-      .setName("unban")
-      .setDescription(commandDescriptions["vip unban"])
-      .addUserOption((option) =>
-        option.setName("user").setDescription("Корисник").setRequired(true),
-      ),
-  )
-  .addSubcommand((command) =>
-    command
       .setName("recreate")
       .setDescription(commandDescriptions["vip recreate"]),
   );
@@ -91,10 +75,10 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const vipBan = await getVipBanByUserId(user.id);
+  const bar = await getBarByUserId(user.id);
 
-  if (vipBan !== null) {
-    await interaction.editReply(commandErrors.userVipBanned);
+  if (bar !== null) {
+    await interaction.editReply(commandErrors.userBarred);
 
     return;
   }
@@ -290,105 +274,6 @@ const handleVipUpgrade = async (interaction: ChatInputCommandInteraction) => {
   });
 };
 
-const handleVipBan = async (interaction: ChatInputCommandInteraction) => {
-  const user = interaction.options.getUser("user", true);
-
-  if (user.bot) {
-    await interaction.editReply(commandErrors.userBot);
-
-    return;
-  }
-
-  const member = await getMemberFromGuild(user.id, interaction);
-
-  if (member === null) {
-    await interaction.editReply(commandErrors.userNotMember);
-
-    return;
-  }
-
-  if (await isMemberAdmin(member)) {
-    await interaction.editReply(commandErrors.userAdmin);
-
-    return;
-  }
-
-  const pollId = await startSpecialPoll(interaction, user, "vipBan");
-
-  if (pollId === null) {
-    await interaction.editReply(commandErrors.userVipPending);
-
-    return;
-  }
-
-  const poll = await getPollById(pollId);
-
-  if (poll === null) {
-    await interaction.editReply(commandErrors.pollNotFound);
-
-    return;
-  }
-
-  const embed = await getPollEmbed(poll);
-  const components = getPollComponents(poll);
-  await interaction.channel?.send(
-    roleMention(await getRoleProperty("council")),
-  );
-  await interaction.editReply({
-    components,
-    embeds: [embed],
-  });
-
-  const statsComponents = getPollStatsComponents(poll);
-  await interaction.channel?.send({
-    components: statsComponents,
-    content: commandResponseFunctions.pollStats(poll.title),
-  });
-};
-
-const handleVipUnban = async (interaction: ChatInputCommandInteraction) => {
-  const user = interaction.options.getUser("user", true);
-  const vipBan = await getVipBanByUserId(user.id);
-
-  if (vipBan === null) {
-    await interaction.editReply(commandErrors.userNotVipBanned);
-
-    return;
-  }
-
-  const pollId = await startSpecialPoll(interaction, user, "vipUnban");
-
-  if (pollId === null) {
-    await interaction.editReply(commandErrors.userVipPending);
-
-    return;
-  }
-
-  const poll = await getPollById(pollId);
-
-  if (poll === null) {
-    await interaction.editReply(commandErrors.pollNotFound);
-
-    return;
-  }
-
-  const embed = await getPollEmbed(poll);
-  const components = getPollComponents(poll);
-  await interaction.channel?.send(
-    roleMention(await getRoleProperty("council")),
-  );
-  await interaction.editReply({
-    components,
-    embeds: [embed],
-  });
-
-  const statsComponents = getPollStatsComponents(poll);
-  await interaction.channel?.send({
-    components: statsComponents,
-    content: commandResponseFunctions.pollStats(poll.title),
-  });
-};
-
 const handleVipRecreate = async (interaction: ChatInputCommandInteraction) => {
   await recreateVipTemporaryChannel();
 
@@ -397,10 +282,8 @@ const handleVipRecreate = async (interaction: ChatInputCommandInteraction) => {
 
 const vipHandlers = {
   add: handleVipAdd,
-  ban: handleVipBan,
   recreate: handleVipRecreate,
   remove: handleVipRemove,
-  unban: handleVipUnban,
   upgrade: handleVipUpgrade,
 };
 

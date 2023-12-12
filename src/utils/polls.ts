@@ -37,8 +37,8 @@ export const specialPollTypes = [
   "councilRemove",
   "adminAdd",
   "adminRemove",
-  "vipBan",
-  "vipUnban",
+  "bar",
+  "unbar",
 ] as const;
 
 export const createPollChoices = (choices: readonly string[]) => {
@@ -113,14 +113,14 @@ export const startSpecialPoll = async (
       description = vipStringFunctions.vipUpgradeDescription(partialUser);
       break;
 
-    case "vipBan":
-      title = vipStringFunctions.vipBanTitle(vipUser.tag);
-      description = vipStringFunctions.vipBanDescription(partialUser);
+    case "bar":
+      title = vipStringFunctions.barTitle(vipUser.tag);
+      description = vipStringFunctions.barDescription(partialUser);
       break;
 
-    case "vipUnban":
-      title = vipStringFunctions.vipUnbanTitle(vipUser.tag);
-      description = vipStringFunctions.vipUnbanDescription(partialUser);
+    case "unbar":
+      title = vipStringFunctions.unbarTitle(vipUser.tag);
+      description = vipStringFunctions.unbarDescription(partialUser);
       break;
 
     default:

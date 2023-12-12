@@ -5,9 +5,9 @@ import { userMention } from "discord.js";
 export const vipStrings = {
   vipAcceptButton: "Прифаќам",
   vipAcceptedTitle: "Заклетва",
-  vipBanned: "Вашата молба беше одбиена.",
   vipConfirm:
     "Изјавувам дека функцијата „член на ВИП во официјалниот Дискорд сервер на студентите на ФИНКИ“ ќе ја вршам совесно и одговорно и ќе го почитувам Уставот, законите на Република Северна Македонија и правилата на официјалниот Discord сервер на студентите на ФИНКИ.",
+  vipRejected: "Вашата молба беше одбиена.",
   vipRequestActive: "Вашата молба е активна.",
   vipRequestButton: "Да",
   vipRequestFailed: "Настана грешка при испраќање на вашата молба.",
@@ -19,8 +19,36 @@ export const vipStrings = {
 };
 
 export const vipStringFunctions = {
+  barAccepted: (userId: string) =>
+    `# Корисникот ${userMention(userId)} е забранет.`,
+
+  barDescription: ({ tag, id }: PartialUser) =>
+    `Дали се согласувате корисникот ${tagAndMentionUser({
+      id,
+      tag,
+    })} да добие забрана?`,
+
+  barRejected: (userId: string) =>
+    `# Корисникот ${userMention(userId)} не е забранет.`,
+
+  barTitle: (userTag: string) => `Забрана за ${userTag}`,
+
   tempVipTopic: (date: string) =>
     `Задните соби на ВИП. Содржината се брише секој ден. Следно бришење е во ${date}.`,
+
+  unbarAccepted: (userId: string) =>
+    `# Забраната за корисникот ${userMention(userId)} е укината.`,
+
+  unbarDescription: ({ tag, id }: PartialUser) =>
+    `Дали се согласувате забраната за корисникот ${tagAndMentionUser({
+      id,
+      tag,
+    })} да биде укината?`,
+
+  unbarRejected: (userId: string) =>
+    `# Забраната за корисникот ${userMention(userId)} не е укината.`,
+
+  unbarTitle: (userTag: string) => `Укинување забрана за ${userTag}`,
 
   vipAddAccepted: (userId: string) =>
     `# Корисникот ${userMention(userId)} е одобрен како член на ВИП.`,
@@ -38,20 +66,6 @@ export const vipStringFunctions = {
     `# ${userMention(userId)} Советот донесе одлука да Ве покани во ВИП.`,
 
   vipAddTitle: (userTag: string) => `Влез во ВИП за ${userTag}`,
-
-  vipBanAccepted: (userId: string) =>
-    `# Корисникот ${userMention(userId)} е забранет во ВИП.`,
-
-  vipBanDescription: ({ tag, id }: PartialUser) =>
-    `Дали се согласувате корисникот ${tagAndMentionUser({
-      id,
-      tag,
-    })} да добие забрана за членство во ВИП?`,
-
-  vipBanRejected: (userId: string) =>
-    `# Корисникот ${userMention(userId)} не е забранет во ВИП.`,
-
-  vipBanTitle: (userTag: string) => `Забрана во ВИП за ${userTag}`,
 
   vipRemoveAccepted: (userId: string) =>
     `# Корисникот ${userMention(userId)} е избркан од ВИП.`,
@@ -72,20 +86,6 @@ export const vipStringFunctions = {
 
   vipRequestRejected: (userId: string) =>
     `# ${userMention(userId)} Вашата молба за влез во ВИП не беше одобрена.`,
-
-  vipUnbanAccepted: (userId: string) =>
-    `# Забраната во ВИП за корисникот ${userMention(userId)} е укината.`,
-
-  vipUnbanDescription: ({ tag, id }: PartialUser) =>
-    `Дали се согласувате забраната во ВИП за корисникот ${tagAndMentionUser({
-      id,
-      tag,
-    })} да биде укината?`,
-
-  vipUnbanRejected: (userId: string) =>
-    `# Забраната во ВИП за корисникот ${userMention(userId)} не е укината.`,
-
-  vipUnbanTitle: (userTag: string) => `Укинување забрана во ВИП за ${userTag}`,
 
   vipUpgradeAccepted: (userId: string) =>
     `# Корисникот ${userMention(

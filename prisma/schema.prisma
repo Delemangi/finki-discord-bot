@@ -193,7 +193,7 @@ model SpecialPoll {
   @@unique([userId, type])
 }
 
-model VipBan {
+model Bar {
   id String @id @default(uuid())
 
   userId String @unique

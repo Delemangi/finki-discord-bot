@@ -27,11 +27,11 @@ const commandPermissions: Record<
     permissions: [],
     roles: ["admin", "moderator", "fss"],
   },
-  "members invited": {
+  "members barred": {
     permissions: [],
     roles: ["admin", "moderator", "vip"],
   },
-  "members vipbanned": {
+  "members invited": {
     permissions: [],
     roles: ["admin", "moderator", "vip"],
   },
@@ -59,6 +59,10 @@ const commandPermissions: Record<
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
+  "special ban": {
+    permissions: [],
+    roles: ["council"],
+  },
   "special delete": {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
@@ -75,11 +79,11 @@ const commandPermissions: Record<
     permissions: [],
     roles: ["council"],
   },
-  "vip add": {
+  "special unbar": {
     permissions: [],
     roles: ["council"],
   },
-  "vip ban": {
+  "vip add": {
     permissions: [],
     roles: ["council"],
   },
@@ -88,10 +92,6 @@ const commandPermissions: Record<
     roles: ["admin", "moderator"],
   },
   "vip remove": {
-    permissions: [],
-    roles: ["council"],
-  },
-  "vip unban": {
     permissions: [],
     roles: ["council"],
   },

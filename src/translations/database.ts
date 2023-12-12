@@ -12,6 +12,8 @@ export const databaseErrorFunctions = {
 
   createAntosError: (error: unknown) => `Failed creating Anto facts\n${error}`,
 
+  createBarError: (error: unknown) => `Failed creating bars\n${error}`,
+
   createCompaniesError: (error: unknown) =>
     `Failed creating companies\n${error}`,
 
@@ -48,9 +50,9 @@ export const databaseErrorFunctions = {
   createSpecialPollError: (error: unknown) =>
     `Failed creating special poll\n${error}`,
 
-  createVipBanError: (error: unknown) => `Failed creating VIP ban\n${error}`,
-
   deleteAntoError: (error: unknown) => `Failed deleting Anto fact\n${error}`,
+
+  deleteBarError: (error: unknown) => `Failed deleting bar\n${error}`,
 
   deleteCompanyError: (error: unknown) => `Failed deleting company\n${error}`,
 
@@ -88,7 +90,10 @@ export const databaseErrorFunctions = {
   deleteSpecialPollError: (error: unknown) =>
     `Failed deleting special poll\n${error}`,
 
-  deleteVipBanError: (error: unknown) => `Failed deleting VIP ban\n${error}`,
+  getBarByUserIdError: (error: unknown) =>
+    `Failed getting bar by user ID\n${error}`,
+
+  getBarsError: (error: unknown) => `Failed getting bars\n${error}`,
 
   getCompaniesError: (error: unknown) => `Failed getting companies\n${error}`,
 
@@ -165,11 +170,6 @@ export const databaseErrorFunctions = {
 
   getSpecialPollsError: (error: unknown) =>
     `Failed getting special polls\n${error}`,
-
-  getVipBanByUserIdError: (error: unknown) =>
-    `Failed getting VIP ban by user ID\n${error}`,
-
-  getVipBansError: (error: unknown) => `Failed getting VIP bans\n${error}`,
 
   updateExperienceError: (error: unknown) =>
     `Failed updating experience\n${error}`,

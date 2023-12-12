@@ -9,6 +9,7 @@ import {
   getVipConfirmComponents,
   getVipConfirmEmbed,
 } from "../components/scripts.js";
+import { createBar, deleteBar, getBarByUserId } from "../data/Bar.js";
 import { getPollById } from "../data/Poll.js";
 import { getPollOptionById } from "../data/PollOption.js";
 import {
@@ -22,11 +23,6 @@ import {
   getSpecialPollByPollId,
   getSpecialPollByUserAndType,
 } from "../data/SpecialPoll.js";
-import {
-  createVipBan,
-  deleteVipBan,
-  getVipBanByUserId,
-} from "../data/VipBan.js";
 import {
   commandErrorFunctions,
   commandErrors,
@@ -555,7 +551,7 @@ const handlePollButtonForVipUpgradeVote = async (
   );
 };
 
-const handlePollButtonForVipBanVote = async (
+const handlePollButtonForBarVote = async (
   poll: Poll,
   specialPoll: SpecialPoll,
   member: GuildMember,
@@ -563,14 +559,12 @@ const handlePollButtonForVipBanVote = async (
   const vipChannel = getChannel("vip");
 
   if (poll.decision !== labels.yes) {
-    await vipChannel?.send(
-      vipStringFunctions.vipBanRejected(specialPoll.userId),
-    );
+    await vipChannel?.send(vipStringFunctions.barRejected(specialPoll.userId));
 
     return;
   }
 
-  await createVipBan({
+  await createBar({
     userId: specialPoll.userId,
   });
 
@@ -579,10 +573,10 @@ const handlePollButtonForVipBanVote = async (
   await member.roles.remove(vipRoleId);
   await member.roles.remove(councilRoleId);
 
-  await vipChannel?.send(vipStringFunctions.vipBanAccepted(specialPoll.userId));
+  await vipChannel?.send(vipStringFunctions.barAccepted(specialPoll.userId));
 };
 
-const handlePollButtonForVipUnbanVote = async (
+const handlePollButtonForUnbarVote = async (
   poll: Poll,
   specialPoll: SpecialPoll,
 ) => {
@@ -590,17 +584,15 @@ const handlePollButtonForVipUnbanVote = async (
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
-      vipStringFunctions.vipUnbanRejected(specialPoll.userId),
+      vipStringFunctions.unbarRejected(specialPoll.userId),
     );
 
     return;
   }
 
-  await deleteVipBan(specialPoll.userId);
+  await deleteBar(specialPoll.userId);
 
-  await vipChannel?.send(
-    vipStringFunctions.vipUnbanAccepted(specialPoll.userId),
-  );
+  await vipChannel?.send(vipStringFunctions.unbarAccepted(specialPoll.userId));
 };
 
 export const handlePollButtonForSpecialVote = async (
@@ -635,12 +627,12 @@ export const handlePollButtonForSpecialVote = async (
       await handlePollButtonForVipUpgradeVote(poll, specialPoll, member);
       break;
 
-    case "vipBan":
-      await handlePollButtonForVipBanVote(poll, specialPoll, member);
+    case "bar":
+      await handlePollButtonForBarVote(poll, specialPoll, member);
       break;
 
-    case "vipUnban":
-      await handlePollButtonForVipUnbanVote(poll, specialPoll);
+    case "unbar":
+      await handlePollButtonForUnbarVote(poll, specialPoll);
       break;
 
     default:
@@ -915,11 +907,11 @@ export const handleVipButton = async (
     return;
   }
 
-  const vipBan = await getVipBanByUserId(interaction.user.id);
+  const bar = await getBarByUserId(interaction.user.id);
 
-  if (vipBan !== null) {
+  if (bar !== null) {
     await interaction.reply({
-      content: vipStrings.vipBanned,
+      content: vipStrings.vipRejected,
       ephemeral: true,
     });
 

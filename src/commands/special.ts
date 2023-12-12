@@ -1,5 +1,11 @@
 import { getPaginationComponents } from "../components/pagination.js";
-import { getSpecialPollListEmbed } from "../components/polls.js";
+import {
+  getPollComponents,
+  getPollEmbed,
+  getPollStatsComponents,
+  getSpecialPollListEmbed,
+} from "../components/polls.js";
+import { getBarByUserId } from "../data/Bar.js";
 import { deletePoll, getPollById, updatePoll } from "../data/Poll.js";
 import { getPollVotesByPollId } from "../data/PollVote.js";
 import {
@@ -20,9 +26,10 @@ import { labels } from "../translations/labels.js";
 import { logErrorFunctions } from "../translations/logs.js";
 import { formatUsers } from "../translations/users.js";
 import { deleteResponse } from "../utils/channels.js";
-import { getConfigProperty } from "../utils/config.js";
+import { getConfigProperty, getRoleProperty } from "../utils/config.js";
 import { getGuild, getMemberFromGuild } from "../utils/guild.js";
 import { logger } from "../utils/logger.js";
+import { isMemberAdmin } from "../utils/members.js";
 import { safeReplyToInteraction } from "../utils/messages.js";
 import {
   abstainAllMissingVotes,
@@ -30,12 +37,14 @@ import {
   decidePoll,
   specialPollOptions,
   specialPollTypes,
+  startSpecialPoll,
 } from "../utils/polls.js";
 import { getMembersByRoleIds } from "../utils/roles.js";
 import { isNotNullish } from "../utils/utils.js";
 import {
   type ChatInputCommandInteraction,
   ComponentType,
+  roleMention,
   SlashCommandBuilder,
 } from "discord.js";
 
@@ -83,6 +92,22 @@ export const data = new SlashCommandBuilder()
       .setDescription(commandDescriptions["special remaining"])
       .addStringOption((option) =>
         option.setName("poll").setDescription("Анкета").setRequired(true),
+      ),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName("bar")
+      .setDescription(commandDescriptions["special bar"])
+      .addUserOption((option) =>
+        option.setName("user").setDescription("Корисник").setRequired(true),
+      ),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName("unbar")
+      .setDescription(commandDescriptions["special unbar"])
+      .addUserOption((option) =>
+        option.setName("user").setDescription("Корисник").setRequired(true),
       ),
   );
 
@@ -316,11 +341,112 @@ const handleSpecialRemaining = async (
   await safeReplyToInteraction(interaction, missingVotersFormatted);
 };
 
+const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
+  const user = interaction.options.getUser("user", true);
+
+  if (user.bot) {
+    await interaction.editReply(commandErrors.userBot);
+
+    return;
+  }
+
+  const member = await getMemberFromGuild(user.id, interaction);
+
+  if (member === null) {
+    await interaction.editReply(commandErrors.userNotMember);
+
+    return;
+  }
+
+  if (await isMemberAdmin(member)) {
+    await interaction.editReply(commandErrors.userAdmin);
+
+    return;
+  }
+
+  const pollId = await startSpecialPoll(interaction, user, "bar");
+
+  if (pollId === null) {
+    await interaction.editReply(commandErrors.userVipPending);
+
+    return;
+  }
+
+  const poll = await getPollById(pollId);
+
+  if (poll === null) {
+    await interaction.editReply(commandErrors.pollNotFound);
+
+    return;
+  }
+
+  const embed = await getPollEmbed(poll);
+  const components = getPollComponents(poll);
+  await interaction.channel?.send(
+    roleMention(await getRoleProperty("council")),
+  );
+  await interaction.editReply({
+    components,
+    embeds: [embed],
+  });
+
+  const statsComponents = getPollStatsComponents(poll);
+  await interaction.channel?.send({
+    components: statsComponents,
+    content: commandResponseFunctions.pollStats(poll.title),
+  });
+};
+
+const handleSpecialUnbar = async (interaction: ChatInputCommandInteraction) => {
+  const user = interaction.options.getUser("user", true);
+  const bar = await getBarByUserId(user.id);
+
+  if (bar === null) {
+    await interaction.editReply(commandErrors.userNotBarred);
+
+    return;
+  }
+
+  const pollId = await startSpecialPoll(interaction, user, "unbar");
+
+  if (pollId === null) {
+    await interaction.editReply(commandErrors.userVipPending);
+
+    return;
+  }
+
+  const poll = await getPollById(pollId);
+
+  if (poll === null) {
+    await interaction.editReply(commandErrors.pollNotFound);
+
+    return;
+  }
+
+  const embed = await getPollEmbed(poll);
+  const components = getPollComponents(poll);
+  await interaction.channel?.send(
+    roleMention(await getRoleProperty("council")),
+  );
+  await interaction.editReply({
+    components,
+    embeds: [embed],
+  });
+
+  const statsComponents = getPollStatsComponents(poll);
+  await interaction.channel?.send({
+    components: statsComponents,
+    content: commandResponseFunctions.pollStats(poll.title),
+  });
+};
+
 const specialHandlers = {
+  bar: handleSpecialBar,
   delete: handleSpecialDelete,
   list: handleSpecialList,
   override: handleSpecialOverride,
   remaining: handleSpecialRemaining,
+  unbar: handleSpecialUnbar,
 };
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {

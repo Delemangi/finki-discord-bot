@@ -1,4 +1,4 @@
-import { getVipBans } from "../data/VipBan.js";
+import { getBars } from "../data/Bar.js";
 import {
   commandDescriptions,
   commandErrors,
@@ -40,8 +40,8 @@ export const data = new SlashCommandBuilder()
   )
   .addSubcommand((command) =>
     command
-      .setName("vipbanned")
-      .setDescription(commandDescriptions["members vipbanned"]),
+      .setName("barred")
+      .setDescription(commandDescriptions["members barred"]),
   );
 
 const handleMembersCount = async (interaction: ChatInputCommandInteraction) => {
@@ -148,7 +148,7 @@ const handleMembersRegulars = async (
   await safeReplyToInteraction(interaction, invitedMemberNames);
 };
 
-const handleMembersVipBanned = async (
+const handleMembersBarred = async (
   interaction: ChatInputCommandInteraction,
 ) => {
   const guild = await getGuild(interaction);
@@ -159,40 +159,40 @@ const handleMembersVipBanned = async (
     return;
   }
 
-  const vipBans = await getVipBans();
+  const bars = await getBars();
 
-  if (vipBans === null) {
-    await interaction.editReply(commandErrors.vipBansFetchFailed);
-
-    return;
-  }
-
-  if (vipBans.length === 0) {
-    await interaction.editReply(commandResponses.noVipBanned);
+  if (bars === null) {
+    await interaction.editReply(commandErrors.barsFetchFailed);
 
     return;
   }
 
-  const bannedMembers = (
+  if (bars.length === 0) {
+    await interaction.editReply(commandResponses.noBarred);
+
+    return;
+  }
+
+  const barredMembers = (
     await Promise.all(
-      vipBans
+      bars
         .map(({ userId }) => userId)
         .map(async (id) => await getMemberFromGuild(id, interaction)),
     )
   ).filter(isNotNullish);
   const bannedMembersFormatted = formatUsers(
-    labels.vipBanned,
-    bannedMembers.map(({ user }) => user),
+    labels.barred,
+    barredMembers.map(({ user }) => user),
   );
 
   await safeReplyToInteraction(interaction, bannedMembersFormatted);
 };
 
 const membersHandlers = {
+  barred: handleMembersBarred,
   count: handleMembersCount,
   regulars: handleMembersRegulars,
   vip: handleMembersVip,
-  vipbanned: handleMembersVipBanned,
 };
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {

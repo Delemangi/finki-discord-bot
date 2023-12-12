@@ -1,4 +1,4 @@
-import { getVipBanByUserId } from "../data/VipBan.js";
+import { getBarByUserId } from "../data/Bar.js";
 import {
   commandDescriptions,
   commandErrors,
@@ -50,10 +50,10 @@ const handleRegularsAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const vipBan = await getVipBanByUserId(user.id);
+  const bar = await getBarByUserId(user.id);
 
-  if (vipBan !== null) {
-    await interaction.editReply(commandErrors.userVipBanned);
+  if (bar !== null) {
+    await interaction.editReply(commandErrors.userBarred);
 
     return;
   }
