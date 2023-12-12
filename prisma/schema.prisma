@@ -181,7 +181,7 @@ model SpecialPoll {
   id String @id @default(uuid())
 
   userId String
-  type   String @default("add")
+  type   String @default("vipAdd")
 
   pollId String @unique
   poll   Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade, onUpdate: Cascade)
