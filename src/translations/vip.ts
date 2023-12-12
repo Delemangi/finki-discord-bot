@@ -7,7 +7,7 @@ export const vipStrings = {
   vipAcceptedTitle: "Заклетва",
   vipBanned: "Вашата молба беше одбиена.",
   vipConfirm:
-    "Изјавувам дека функцијата „член на ВИП во официјалниот Discord сервер на студентите на ФИНКИ“ ќе ја вршам совесно и одговорно и ќе го почитувам Уставот, законите на Република Северна Македонија и правилата на официјалниот Discord сервер на студентите на ФИНКИ.",
+    "Изјавувам дека функцијата „член на ВИП во официјалниот Дискорд сервер на студентите на ФИНКИ“ ќе ја вршам совесно и одговорно и ќе го почитувам Уставот, законите на Република Северна Македонија и правилата на официјалниот Discord сервер на студентите на ФИНКИ.",
   vipRequestActive: "Вашата молба е активна.",
   vipRequestButton: "Да",
   vipRequestFailed: "Настана грешка при испраќање на вашата молба.",
@@ -35,10 +35,7 @@ export const vipStringFunctions = {
     `# Корисникот ${userMention(userId)} не е одобрен како член на ВИП.`,
 
   vipAddRequestAccepted: (userId: string) =>
-    `# ${userMention(userId)} Вашата молба за влез во ВИП беше одобрена.`,
-
-  vipAddRequestRejected: (userId: string) =>
-    `# ${userMention(userId)} Вашата молба за влез во ВИП не беше одобрена.`,
+    `# ${userMention(userId)} Советот донесе одлука да Ве покани во ВИП.`,
 
   vipAddTitle: (userTag: string) => `Влез во ВИП за ${userTag}`,
 
@@ -69,6 +66,12 @@ export const vipStringFunctions = {
     `# Корисникот ${userMention(userId)} не е избркан од ВИП.`,
 
   vipRemoveTitle: (userTag: string) => `Излез од ВИП за ${userTag}`,
+
+  vipRequestAccepted: (userId: string) =>
+    `# ${userMention(userId)} Вашата молба за влез во ВИП беше одобрена.`,
+
+  vipRequestRejected: (userId: string) =>
+    `# ${userMention(userId)} Вашата молба за влез во ВИП не беше одобрена.`,
 
   vipUnbanAccepted: (userId: string) =>
     `# Забраната во ВИП за корисникот ${userMention(userId)} е укината.`,

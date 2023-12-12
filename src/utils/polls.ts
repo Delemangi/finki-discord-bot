@@ -30,6 +30,7 @@ export const specialPollOptions = [
 ] as const;
 
 export const specialPollTypes = [
+  "vipRequest",
   "vipAdd",
   "vipRemove",
   "councilAdd",
@@ -96,6 +97,7 @@ export const startSpecialPoll = async (
   let description: string;
 
   switch (type) {
+    case "vipRequest":
     case "vipAdd":
       title = vipStringFunctions.vipAddTitle(vipUser.tag);
       description = vipStringFunctions.vipAddDescription(partialUser);
@@ -250,6 +252,7 @@ const decideSpecialPollByAdministratorVote = async (
   const member = await getMemberFromGuild(specialPoll.userId);
 
   switch (specialPoll.type) {
+    case "vipRequest":
     case "vipAdd":
       if (member === null || !(await isMemberLevelOrAbove(member, 15))) {
         return;

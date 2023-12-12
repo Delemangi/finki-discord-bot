@@ -450,7 +450,7 @@ export const handleRemoveCoursesButton = async (
   }
 };
 
-const handlePollButtonForVipAddVote = async (
+const handlePollButtonForVipRequestVote = async (
   poll: Poll,
   specialPoll: SpecialPoll,
 ) => {
@@ -461,9 +461,35 @@ const handlePollButtonForVipAddVote = async (
     const rejectComponents = getVipAcknowledgeComponents();
     await oathChannel?.send({
       components: rejectComponents,
-      content: vipStringFunctions.vipAddRequestRejected(specialPoll.userId),
+      content: vipStringFunctions.vipRequestRejected(specialPoll.userId),
     });
 
+    await vipChannel?.send(
+      vipStringFunctions.vipAddRejected(specialPoll.userId),
+    );
+
+    return;
+  }
+
+  const confirmEmbed = await getVipConfirmEmbed();
+  const confirmComponents = getVipConfirmComponents();
+  await oathChannel?.send({
+    components: confirmComponents,
+    content: vipStringFunctions.vipRequestAccepted(specialPoll.userId),
+    embeds: [confirmEmbed],
+  });
+
+  await vipChannel?.send(vipStringFunctions.vipAddAccepted(specialPoll.userId));
+};
+
+const handlePollButtonForVipAddVote = async (
+  poll: Poll,
+  specialPoll: SpecialPoll,
+) => {
+  const vipChannel = getChannel("vip");
+  const oathChannel = getChannel("oath");
+
+  if (poll.decision !== labels.yes) {
     await vipChannel?.send(
       vipStringFunctions.vipAddRejected(specialPoll.userId),
     );
@@ -549,8 +575,10 @@ const handlePollButtonForVipBanVote = async (
     userId: specialPoll.userId,
   });
 
-  const vipRole = await getRoleProperty("vip");
-  await member.roles.remove(vipRole);
+  const vipRoleId = await getRoleProperty("vip");
+  const councilRoleId = await getRoleProperty("council");
+  await member.roles.remove(vipRoleId);
+  await member.roles.remove(councilRoleId);
 
   await vipChannel?.send(vipStringFunctions.vipBanAccepted(specialPoll.userId));
 };
@@ -592,6 +620,10 @@ export const handlePollButtonForSpecialVote = async (
   }
 
   switch (type) {
+    case "vipRequest":
+      await handlePollButtonForVipRequestVote(poll, specialPoll);
+      break;
+
     case "vipAdd":
       await handlePollButtonForVipAddVote(poll, specialPoll);
       break;
@@ -947,18 +979,12 @@ export const handleVipButton = async (
 
     await interaction.message.delete();
 
-    const regularRole = getRole("regular");
-
-    if (regularRole !== undefined) {
-      await member.roles.remove(regularRole);
-    }
-
     return;
   }
 
   const existingPoll = await getSpecialPollByUserAndType(
     interaction.user.id,
-    "add",
+    "vipRequest",
   );
   if (existingPoll !== null) {
     const message = await interaction.reply({
@@ -983,7 +1009,7 @@ export const handleVipButton = async (
   const specialPollId = await startSpecialPoll(
     interaction,
     interaction.user,
-    "vipAdd",
+    "vipRequest",
   );
 
   if (specialPollId === null) {
