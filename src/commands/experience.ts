@@ -5,11 +5,11 @@ import {
 } from "../components/commands.js";
 import { getPaginationComponents } from "../components/pagination.js";
 import {
-  addExperienceByUserId,
   createExperience,
   getExperienceByUserId,
   getExperienceCount,
   getExperienceSorted,
+  updateExperience,
 } from "../data/Experience.js";
 import {
   commandDescriptions,
@@ -19,6 +19,7 @@ import {
 import { logErrorFunctions } from "../translations/logs.js";
 import { deleteResponse } from "../utils/channels.js";
 import { getConfigProperty } from "../utils/config.js";
+import { getLevelFromExperience } from "../utils/experience.js";
 import { logger } from "../utils/logger.js";
 import {
   type ChatInputCommandInteraction,
@@ -86,8 +87,35 @@ const handleExperienceAdd = async (
 ) => {
   const user = interaction.options.getUser("user", true);
   const experience = interaction.options.getNumber("experience", true);
+  const existingExperience =
+    (await getExperienceByUserId(user.id)) ??
+    (await createExperience({
+      experience: 0n,
+      lastMessage: new Date(),
+      level: 0,
+      messages: 0,
+      userId: user.id,
+    }));
 
-  await addExperienceByUserId(user.id, experience);
+  if (existingExperience === null) {
+    await interaction.editReply(commandErrors.dataFetchFailed);
+
+    return;
+  }
+
+  existingExperience.experience =
+    BigInt(existingExperience.experience) + BigInt(experience);
+  const newLevel = getLevelFromExperience(
+    BigInt(existingExperience.experience) + BigInt(experience),
+  );
+
+  existingExperience.experience = BigInt(existingExperience.experience);
+
+  if (newLevel !== existingExperience.level) {
+    existingExperience.level = newLevel;
+  }
+
+  await updateExperience(existingExperience);
 
   await interaction.editReply({
     allowedMentions: {

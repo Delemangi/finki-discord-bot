@@ -41,7 +41,7 @@ const getExperienceFromMessage = async (message: Message) => {
   );
 };
 
-const getLevelFromExperience = (experience: bigint) => {
+export const getLevelFromExperience = (experience: bigint) => {
   const delta = 800n;
   let level = 1n;
 
