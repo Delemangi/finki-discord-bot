@@ -87,6 +87,11 @@ export const commandDescriptions = {
   "script vip": "Испрати ембед за ВИП",
   "script years": "Испрати ембед за избирање години",
   session: "Превземи распоред за испитна сесија или колоквиумска недела",
+  "special delete": "Избриши специјална анкета",
+  "special list": "Прикажи листа од сите специјални анкети",
+  "special override": "Спроведи специјална анкета",
+  "special remaining":
+    "Прикажи листа од членови кои не гласале на специјална анкета",
   staff: "Превземи информации за професор",
   "statistics color": "Прикажи статистика за улогите за бои",
   "statistics course": "Прикажи статистика за улогите за предмети",
@@ -96,10 +101,6 @@ export const commandDescriptions = {
   "statistics year": "Прикажи статистика за улогите за години",
   "vip add": "Предложи нов член за ВИП",
   "vip ban": "Предложи забрана на член во ВИП",
-  "vip delete": "Избриши ВИП анкета",
-  "vip list": "Прикажи листа од сите ВИП анкети",
-  "vip override": "Одлучи ВИП анкета",
-  "vip remaining": "Прикажи листа од членови кои не гласале",
   "vip remove": "Предложи бркање на член на ВИП",
   "vip unban": "Предложи укинување на забрана на корисник во ВИП",
   "vip upgrade": "Предложи унапредување на член на ВИП",
@@ -127,7 +128,6 @@ export const commandResponses = {
   pollOpen: "Анкетата е отворена за гласање.",
   pollOptionsAdded: "Опциите се додадени.",
   pollOptionsDeleted: "Опциите се избришани.",
-  pollOverriden: "Анкетата е одлучена.",
   ruleCreated: "Креиравте правило.",
   ruleDeleted: "Го избришавте правилото.",
   scriptExecuted: "Ја извршивте скриптата.",
@@ -183,6 +183,9 @@ export const commandResponseFunctions = {
   ping: (ping: number | string) => `${ping} ms`,
 
   pollEdited: (edits: string) => `Ја изменивте анкетата (${edits}).`,
+
+  pollOverriden: (decision: string) =>
+    `Спроведовте специјална анкета со одлука ${inlineCode(decision)}.`,
 
   pollStats: (pollTitle: string) =>
     `Преглед на гласовите за анкетата ${inlineCode(pollTitle)}`,

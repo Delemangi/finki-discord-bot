@@ -287,33 +287,7 @@ export const getPollListNextPageEmbed = async (
     .setTimestamp();
 };
 
-export const getSpecialPollListFirstPageEmbed = async (
-  polls: SpecialPoll[],
-  pollsPerPage: number = 8,
-) => {
-  return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
-    .setTitle(labels.polls)
-    .setDescription(embedMessages.allSpecialPolls)
-    .addFields(
-      ...(await Promise.all(
-        polls.slice(0, pollsPerPage).map(async (poll) => ({
-          name: `${poll.type} (${await getUsername(poll.userId)})`,
-          value: poll.id,
-        })),
-      )),
-    )
-    .setFooter({
-      text: paginationStringFunctions.pollPage(
-        1,
-        Math.max(1, Math.ceil(polls.length / pollsPerPage)),
-        polls.length,
-      ),
-    })
-    .setTimestamp();
-};
-
-export const getSpecialPollListNextPageEmbed = async (
+export const getSpecialPollListEmbed = async (
   polls: SpecialPoll[],
   page: number,
   pollsPerPage: number = 8,

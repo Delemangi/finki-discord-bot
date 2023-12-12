@@ -1,6 +1,7 @@
 import { createPoll, getPollById, updatePoll } from "../data/Poll.js";
 import {
   countPollVotesByOptionId,
+  createPollVote,
   getPollVotesByPollId,
 } from "../data/PollVote.js";
 import {
@@ -333,4 +334,46 @@ export const decidePoll = async (pollId: string) => {
   }
 
   await updatePoll(poll);
+};
+
+export const abstainAllMissingVotes = async (pollId: string) => {
+  const poll = await getPollById(pollId);
+
+  if (poll === null) {
+    return;
+  }
+
+  const votes = await getPollVotesByPollId(pollId);
+
+  if (votes === null) {
+    return;
+  }
+
+  const voters = votes.map((vote) => vote.userId);
+  const guild = await getGuild();
+
+  if (guild === null) {
+    return;
+  }
+
+  const allVoters = await getMembersByRoleIds(guild, poll.roles);
+  const missingVoters = allVoters.filter((voter) => !voters.includes(voter));
+
+  for (const voter of missingVoters) {
+    await createPollVote({
+      option: {
+        connect: {
+          id:
+            poll.options.find((option) => option.name === labels.abstain)?.id ??
+            "",
+        },
+      },
+      poll: {
+        connect: {
+          id: pollId,
+        },
+      },
+      userId: voter,
+    });
+  }
 };

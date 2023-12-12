@@ -59,27 +59,27 @@ const commandPermissions: Record<
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
+  "special delete": {
+    permissions: [PermissionsBitField.Flags.Administrator],
+    roles: [],
+  },
+  "special list": {
+    permissions: [],
+    roles: ["admin", "moderator", "vip"],
+  },
+  "special override": {
+    permissions: [PermissionsBitField.Flags.Administrator],
+    roles: [],
+  },
+  "special remaining": {
+    permissions: [],
+    roles: ["council"],
+  },
   "vip add": {
     permissions: [],
     roles: ["council"],
   },
   "vip ban": {
-    permissions: [],
-    roles: ["council"],
-  },
-  "vip delete": {
-    permissions: [PermissionsBitField.Flags.Administrator],
-    roles: [],
-  },
-  "vip list": {
-    permissions: [],
-    roles: ["admin", "moderator", "vip"],
-  },
-  "vip override": {
-    permissions: [PermissionsBitField.Flags.Administrator],
-    roles: [],
-  },
-  "vip remaining": {
     permissions: [],
     roles: ["council"],
   },

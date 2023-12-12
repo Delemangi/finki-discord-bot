@@ -38,6 +38,7 @@ export const labels = {
   program: "Смер",
   questions: "Прашања",
   regulars: "Редовни",
+  remaining: "Останати",
   reminder: "Потсетник",
   requiredMajority: "Потребно мнозинство",
   result: "Резултат",
