@@ -14,6 +14,7 @@ import {
 } from "../translations/commands.js";
 import { recreateVipTemporaryChannel } from "../utils/channels.js";
 import { getRoleProperty } from "../utils/config.js";
+import { getMemberFromGuild } from "../utils/guild.js";
 import {
   isMemberAdmin,
   isMemberInCouncil,
@@ -98,11 +99,9 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const member = interaction.guild?.members.cache.find(
-    (mem) => mem.id === user.id,
-  );
+  const member = await getMemberFromGuild(user.id, interaction);
 
-  if (member === undefined) {
+  if (member === null) {
     await interaction.editReply(commandErrors.userNotMember);
 
     return;
@@ -170,11 +169,9 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const member = interaction.guild?.members.cache.find(
-    (mem) => mem.id === user.id,
-  );
+  const member = await getMemberFromGuild(user.id, interaction);
 
-  if (member === undefined) {
+  if (member === null) {
     await interaction.editReply(commandErrors.userNotMember);
 
     return;
@@ -234,11 +231,9 @@ const handleVipUpgrade = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const member = interaction.guild?.members.cache.find(
-    (mem) => mem.id === user.id,
-  );
+  const member = await getMemberFromGuild(user.id, interaction);
 
-  if (member === undefined) {
+  if (member === null) {
     await interaction.editReply(commandErrors.userNotMember);
 
     return;
@@ -304,11 +299,9 @@ const handleVipBan = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const member = interaction.guild?.members.cache.find(
-    (mem) => mem.id === user.id,
-  );
+  const member = await getMemberFromGuild(user.id, interaction);
 
-  if (member === undefined) {
+  if (member === null) {
     await interaction.editReply(commandErrors.userNotMember);
 
     return;

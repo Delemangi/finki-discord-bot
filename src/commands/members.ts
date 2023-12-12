@@ -8,7 +8,7 @@ import {
 import { labels } from "../translations/labels.js";
 import { formatUsers } from "../translations/users.js";
 import { getRoleProperty } from "../utils/config.js";
-import { getGuild } from "../utils/guild.js";
+import { getGuild, getMemberFromGuild } from "../utils/guild.js";
 import { safeReplyToInteraction } from "../utils/messages.js";
 import {
   getMembersByRoleIds,
@@ -61,13 +61,13 @@ const handleMembersVip = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  await interaction.guild?.members.fetch();
-
   const vipRoleId = await getRoleProperty("vip");
   const vipMemberIds = await getMembersByRoleIds(guild, [vipRoleId]);
-  const vipMembers = vipMemberIds
-    .map((id) => interaction.guild?.members.cache.get(id))
-    .filter(isNotNullish);
+  const vipMembers = (
+    await Promise.all(
+      vipMemberIds.map(async (id) => await getMemberFromGuild(id, interaction)),
+    )
+  ).filter(isNotNullish);
   const vipMembersFormatted = formatUsers(
     labels.vip,
     vipMembers.map(({ user }) => user),
@@ -79,9 +79,13 @@ const handleMembersVip = async (interaction: ChatInputCommandInteraction) => {
     adminRoleId,
     moderatorRoleId,
   ]);
-  const adminTeamMembers = adminTeamMemberIds
-    .map((id) => interaction.guild?.members.cache.get(id))
-    .filter(isNotNullish);
+  const adminTeamMembers = (
+    await Promise.all(
+      adminTeamMemberIds.map(
+        async (id) => await getMemberFromGuild(id, interaction),
+      ),
+    )
+  ).filter(isNotNullish);
   const adminTeamMembersFormatted = formatUsers(
     labels.administration,
     adminTeamMembers.map(({ user }) => user),
@@ -89,9 +93,13 @@ const handleMembersVip = async (interaction: ChatInputCommandInteraction) => {
 
   const veteranRoleId = await getRoleProperty("veteran");
   const veteranMemberIds = await getMembersByRoleIds(guild, [veteranRoleId]);
-  const veteranMembers = veteranMemberIds
-    .map((id) => interaction.guild?.members.cache.get(id))
-    .filter(isNotNullish);
+  const veteranMembers = (
+    await Promise.all(
+      veteranMemberIds.map(
+        async (id) => await getMemberFromGuild(id, interaction),
+      ),
+    )
+  ).filter(isNotNullish);
   const veteranMembersFormatted = formatUsers(
     labels.veterans,
     veteranMembers.map(({ user }) => user),
@@ -114,8 +122,6 @@ const handleMembersRegulars = async (
     return;
   }
 
-  await interaction.guild?.members.fetch();
-
   const regularRoleId = await getRoleProperty("regular");
   const vipRoleId = await getRoleProperty("vip");
   const moderatorRoleId = await getRoleProperty("moderator");
@@ -127,9 +133,13 @@ const handleMembersRegulars = async (
     [regularRoleId],
     [vipRoleId, moderatorRoleId, adminRoleId, veteranRoleId],
   );
-  const invitedMembers = invitedMemberIds
-    .map((id) => interaction.guild?.members.cache.get(id))
-    .filter(isNotNullish);
+  const invitedMembers = (
+    await Promise.all(
+      invitedMemberIds.map(
+        async (id) => await getMemberFromGuild(id, interaction),
+      ),
+    )
+  ).filter(isNotNullish);
   const invitedMemberNames = formatUsers(
     labels.regulars,
     invitedMembers.map(({ user }) => user),
@@ -163,10 +173,13 @@ const handleMembersVipBanned = async (
     return;
   }
 
-  const bannedMembers = vipBans
-    .map(({ userId }) => userId)
-    .map((id) => interaction.guild?.members.cache.get(id))
-    .filter(isNotNullish);
+  const bannedMembers = (
+    await Promise.all(
+      vipBans
+        .map(({ userId }) => userId)
+        .map(async (id) => await getMemberFromGuild(id, interaction)),
+    )
+  ).filter(isNotNullish);
   const bannedMembersFormatted = formatUsers(
     labels.vipBanned,
     bannedMembers.map(({ user }) => user),
