@@ -85,6 +85,7 @@ export const startSpecialPoll = async (
   vipUser: User,
   type: string,
   threshold = 0.5,
+  timestamp = new Date(Date.now() + 86_400_000),
 ) => {
   const partialUser = {
     id: vipUser.id,
@@ -162,6 +163,7 @@ export const startSpecialPoll = async (
         id: createdPoll.id,
       },
     },
+    timestamp,
     type,
     userId: vipUser.id,
   };

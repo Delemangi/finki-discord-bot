@@ -180,8 +180,9 @@ model PollVote {
 model SpecialPoll {
   id String @id @default(uuid())
 
-  userId String
-  type   String @default("vipAdd")
+  userId    String
+  type      String    @default("vipAdd")
+  timestamp DateTime?
 
   pollId String @unique
   poll   Poll   @relation(fields: [pollId], references: [id], onDelete: Cascade, onUpdate: Cascade)

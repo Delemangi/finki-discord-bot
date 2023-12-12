@@ -26,6 +26,9 @@ export const logMessageFunctions = {
 
   noRefreshNeeded: (property: string) => `No refresh needed for ${property}`,
 
+  specialPollOverriden: (type: string, userId: string, decision: string) =>
+    `Special poll ${type} for ${userId} overriden with decision ${decision}`,
+
   tempVipScheduled: (nextRun: string) =>
     `Temporary VIP channel scheduled for ${nextRun}`,
 
@@ -136,6 +139,9 @@ export const logErrorFunctions = {
     `Failed deleting message ${messageId}\n${error}`,
 
   scriptExecutionError: (error: unknown) => `Failed executing script\n${error}`,
+
+  specialPollLoadError: (error: unknown) =>
+    `Failed loading special polls\n${error}`,
 
   unknownInteractionError: (userId: string) =>
     `Unknown interaction from ${userId}`,
