@@ -61,37 +61,37 @@ const getNextVipCronRun = async (locale = "en-GB", offset = 1) => {
       }).format(nextRun);
 };
 
-export const scheduleVipTemporaryChannel = async () => {
+export const recreateVipTemporaryChannel = async () => {
   const guild = await getGuild();
-  const { cron, name, parent, position } = await getConfigProperty(
+  const { name, parent, position } = await getConfigProperty(
     "temporaryVIPChannel",
   );
 
-  Cron(cron, async () => {
-    const existingChannel = client.channels.cache.find(
-      (ch) => ch.type !== ChannelType.DM && ch.name === name,
-    );
+  const existingChannel = client.channels.cache.find(
+    (ch) => ch.type !== ChannelType.DM && ch.name === name,
+  );
 
-    if (existingChannel !== undefined) {
-      await existingChannel.delete();
-    }
+  if (existingChannel !== undefined) {
+    await existingChannel.delete();
+  }
 
-    const channel = await guild?.channels.create({
-      name,
-      parent,
-      topic: vipStringFunctions.tempVipTopic(
-        await getNextVipCronRun("mk-MK", 2),
-      ),
-      type: ChannelType.GuildText,
-    });
-    await channel?.setPosition(position, {
-      relative: true,
-    });
-
-    logger.info(
-      logMessageFunctions.tempVipScheduled(await getNextVipCronRun()),
-    );
+  const channel = await guild?.channels.create({
+    name,
+    parent,
+    topic: vipStringFunctions.tempVipTopic(await getNextVipCronRun("mk-MK")),
+    type: ChannelType.GuildText,
   });
+  await channel?.setPosition(position, {
+    relative: true,
+  });
+
+  logger.info(logMessageFunctions.tempVipScheduled(await getNextVipCronRun()));
+};
+
+export const scheduleVipTemporaryChannel = async () => {
+  const { cron } = await getConfigProperty("temporaryVIPChannel");
+
+  Cron(cron, recreateVipTemporaryChannel);
 
   logger.info(logMessageFunctions.tempVipScheduled(await getNextVipCronRun()));
 };

@@ -83,6 +83,10 @@ const commandPermissions: Record<
     permissions: [],
     roles: ["council"],
   },
+  "vip recreate": {
+    permissions: [],
+    roles: ["admin", "moderator"],
+  },
   "vip remove": {
     permissions: [],
     roles: ["council"],

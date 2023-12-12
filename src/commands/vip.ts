@@ -10,7 +10,9 @@ import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
+  commandResponses,
 } from "../translations/commands.js";
+import { recreateVipTemporaryChannel } from "../utils/channels.js";
 import { getRoleProperty } from "../utils/config.js";
 import {
   isMemberAdmin,
@@ -72,6 +74,11 @@ export const data = new SlashCommandBuilder()
       .addUserOption((option) =>
         option.setName("user").setDescription("Корисник").setRequired(true),
       ),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName("recreate")
+      .setDescription(commandDescriptions["vip recreate"]),
   );
 
 const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
@@ -389,9 +396,16 @@ const handleVipUnban = async (interaction: ChatInputCommandInteraction) => {
   });
 };
 
+const handleVipRecreate = async (interaction: ChatInputCommandInteraction) => {
+  await recreateVipTemporaryChannel();
+
+  await interaction.editReply(commandResponses.temporaryVipChannelRecreated);
+};
+
 const vipHandlers = {
   add: handleVipAdd,
   ban: handleVipBan,
+  recreate: handleVipRecreate,
   remove: handleVipRemove,
   unban: handleVipUnban,
   upgrade: handleVipUpgrade,
