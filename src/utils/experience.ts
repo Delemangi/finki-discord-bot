@@ -4,11 +4,9 @@ import {
   updateExperience,
 } from "../data/Experience.js";
 import { experienceMessages } from "../translations/experience.js";
-import { logMessageFunctions } from "../translations/logs.js";
 import { getChannel } from "./channels.js";
 import { getConfigProperty, getLevels, getRoleProperty } from "./config.js";
-import { logger } from "./logger.js";
-import { isMemberInVip } from "./members.js";
+import { isMemberInVip, isMemberLevel } from "./members.js";
 import { emojiRegex, urlRegex } from "./regex.js";
 import AsyncLock from "async-lock";
 import { type GuildMember, type Message } from "discord.js";
@@ -63,18 +61,23 @@ const awardMember = async (member: GuildMember, level: number) => {
     return;
   }
 
-  if (await isMemberInVip(member)) {
-    await member.roles.add(roles.add);
-  } else {
-    const councilRoleId = await getRoleProperty("council");
-    await member.roles.add(
-      roles.add.filter((roleId) => roleId !== councilRoleId),
-    );
+  await member.roles.add(roles.add);
+  await member.roles.remove(roles.remove);
 
-    logger.info(logMessageFunctions.userNotQualifiedForVip(member.user.tag));
+  if (await isMemberLevel(member, 10, false)) {
+    const regularRoleId = await getRoleProperty("regular");
+
+    await member.roles.add(regularRoleId);
   }
 
-  await member.roles.remove(roles.remove);
+  if (
+    (await isMemberInVip(member)) &&
+    !(await isMemberLevel(member, 15, false))
+  ) {
+    const councilRoleId = await getRoleProperty("council");
+
+    await member.roles.remove(councilRoleId);
+  }
 };
 
 const lock = new AsyncLock();

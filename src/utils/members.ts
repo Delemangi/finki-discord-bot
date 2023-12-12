@@ -57,9 +57,10 @@ export const isMemberAdmin = async (member: GuildMember) => {
   );
 };
 
-export const isMemberLevelOrAbove = async (
+export const isMemberLevel = async (
   member: GuildMember,
   level: number,
+  orAbove = true,
 ) => {
   const experience = await getExperienceByUserId(member.id);
 
@@ -67,5 +68,5 @@ export const isMemberLevelOrAbove = async (
     return false;
   }
 
-  return experience.level >= level;
+  return orAbove ? experience.level >= level : experience.level === level;
 };

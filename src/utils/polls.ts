@@ -14,7 +14,7 @@ import { type PollWithOptions } from "../types/PollWithOptions.js";
 import { client } from "./client.js";
 import { getRoleProperty } from "./config.js";
 import { getGuild, getMemberFromGuild } from "./guild.js";
-import { isMemberLevelOrAbove } from "./members.js";
+import { isMemberLevel } from "./members.js";
 import { getMembersByRoleIds } from "./roles.js";
 import { type Prisma, type SpecialPoll } from "@prisma/client";
 import {
@@ -254,7 +254,7 @@ const decideSpecialPollByAdministratorVote = async (
   switch (specialPoll.type) {
     case "vipRequest":
     case "vipAdd":
-      if (member === null || !(await isMemberLevelOrAbove(member, 15))) {
+      if (member === null || !(await isMemberLevel(member, 15))) {
         return;
       }
 

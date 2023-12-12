@@ -41,12 +41,11 @@ import { deleteResponse, getChannel } from "../utils/channels.js";
 import { getConfigProperty, getRoleProperty } from "../utils/config.js";
 import { getGuild } from "../utils/guild.js";
 import { logger } from "../utils/logger.js";
-import { isMemberInVip } from "../utils/members.js";
+import { isMemberInVip, isMemberLevel } from "../utils/members.js";
 import { decidePoll, startSpecialPoll } from "../utils/polls.js";
 import { userIdRegex } from "../utils/regex.js";
 import {
   getCourseRolesBySemester,
-  getRole,
   getRoleFromSet,
   getRoles,
 } from "../utils/roles.js";
@@ -927,7 +926,8 @@ export const handleVipButton = async (
     return;
   }
 
-  const vipRole = getRole("vip");
+  const vipRoleId = await getRoleProperty("vip");
+  const councilRoleId = await getRoleProperty("council");
 
   if (args[0] === "acknowledge") {
     if (
@@ -967,8 +967,10 @@ export const handleVipButton = async (
       await vipChannel.send(vipStringFunctions.vipWelcome(interaction.user.id));
     }
 
-    if (vipRole !== undefined) {
-      await member.roles.add(vipRole);
+    await member.roles.add(vipRoleId);
+
+    if (await isMemberLevel(member, 15)) {
+      await member.roles.add(councilRoleId);
     }
 
     const message = await interaction.reply({
