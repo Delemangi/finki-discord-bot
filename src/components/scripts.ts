@@ -3,7 +3,7 @@ import {
   embedMessages,
 } from "../translations/embeds.js";
 import { labels } from "../translations/labels.js";
-import { vipStrings } from "../translations/vip.js";
+import { specialStrings } from "../translations/special.js";
 import { getConfigProperty, getFromRoleConfig } from "../utils/config.js";
 import { type Rule } from "@prisma/client";
 import {
@@ -324,8 +324,8 @@ export const getRulesEmbed = async (rules: Rule[]) => {
 export const getVipRequestEmbed = async () => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle(vipStrings.vipRequestTitle)
-    .setDescription(vipStrings.vipRequestText);
+    .setTitle(specialStrings.vipRequestTitle)
+    .setDescription(specialStrings.vipRequestText);
 };
 
 export const getVipRequestComponents = () => {
@@ -335,7 +335,7 @@ export const getVipRequestComponents = () => {
   row.addComponents(
     new ButtonBuilder()
       .setCustomId("vip:request")
-      .setLabel(vipStrings.vipRequestButton)
+      .setLabel(specialStrings.vipRequestButton)
       .setStyle(ButtonStyle.Primary),
   );
   components.push(row);
@@ -346,8 +346,8 @@ export const getVipRequestComponents = () => {
 export const getVipConfirmEmbed = async () => {
   return new EmbedBuilder()
     .setColor(await getConfigProperty("color"))
-    .setTitle(vipStrings.vipAcceptedTitle)
-    .setDescription(vipStrings.vipConfirm);
+    .setTitle(specialStrings.vipAcceptedTitle)
+    .setDescription(specialStrings.vipConfirm);
 };
 
 export const getVipConfirmComponents = () => {
@@ -357,7 +357,7 @@ export const getVipConfirmComponents = () => {
   row.addComponents(
     new ButtonBuilder()
       .setCustomId("vip:confirm")
-      .setLabel(vipStrings.vipAcceptButton)
+      .setLabel(specialStrings.vipAcceptButton)
       .setStyle(ButtonStyle.Success),
   );
   components.push(row);
@@ -372,7 +372,7 @@ export const getVipAcknowledgeComponents = () => {
   row.addComponents(
     new ButtonBuilder()
       .setCustomId("vip:acknowledge")
-      .setLabel(vipStrings.vipAcceptButton)
+      .setLabel(specialStrings.vipAcceptButton)
       .setStyle(ButtonStyle.Success),
   );
   components.push(row);

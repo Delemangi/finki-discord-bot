@@ -14,6 +14,8 @@ export const commandDescriptions = {
   classroom: "Превземи информации за просторија",
   "config get": "Превземи конфигурација",
   "config set": "Измени конфигурација",
+  "council add": "Предложи нов член на Советот",
+  "council remove": "Отстрани член од Советот",
   "course info": "Превземи информации за предмет",
   "course participants": "Превземи број на слушатели на предмет",
   "course prerequisite": "Превземи предуслов за предмет",
@@ -104,7 +106,6 @@ export const commandDescriptions = {
   "vip add": "Предложи нов член за ВИП",
   "vip recreate": "Рекреирај го привремениот канал",
   "vip remove": "Предложи бркање на член на ВИП",
-  "vip upgrade": "Предложи унапредување на член на ВИП",
 };
 
 export const commandResponses = {
@@ -291,8 +292,9 @@ export const commandErrors = {
   userAdmin: "Корисникот е администратор.",
   userBarred: "Корисникот е забранет.",
   userBot: "Корисникот е бот.",
-  userFullVipMember: "Корисникот е полноправен член на ВИП.",
+  userCouncilMember: "Корисникот е член на Советот.",
   userNotBarred: "Корисникот не е забранет.",
+  userNotCouncilMember: "Корисникот не е член на Советот.",
   userNotFound: "Корисникот не постои.",
   userNotMember: "Корисникот не е член на серверот.",
   userNotRegular: "Корисникот не е член од редовните корисници.",

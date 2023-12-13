@@ -9,7 +9,7 @@ import {
   getSpecialPollByPollId,
 } from "../data/SpecialPoll.js";
 import { labels } from "../translations/labels.js";
-import { vipStringFunctions } from "../translations/vip.js";
+import { specialStringFunctions } from "../translations/special.js";
 import { type PollWithOptions } from "../types/PollWithOptions.js";
 import { client } from "./client.js";
 import { getRoleProperty } from "./config.js";
@@ -99,28 +99,34 @@ export const startSpecialPoll = async (
   switch (type) {
     case "vipRequest":
     case "vipAdd":
-      title = vipStringFunctions.vipAddTitle(vipUser.tag);
-      description = vipStringFunctions.vipAddDescription(partialUser);
+      title = specialStringFunctions.vipAddTitle(vipUser.tag);
+      description = specialStringFunctions.vipAddDescription(partialUser);
       break;
 
     case "vipRemove":
-      title = vipStringFunctions.vipRemoveTitle(vipUser.tag);
-      description = vipStringFunctions.vipRemoveDescription(partialUser);
+      title = specialStringFunctions.vipRemoveTitle(vipUser.tag);
+      description = specialStringFunctions.vipRemoveDescription(partialUser);
       break;
 
     case "councilAdd":
-      title = vipStringFunctions.vipUpgradeTitle(vipUser.tag);
-      description = vipStringFunctions.vipUpgradeDescription(partialUser);
+      title = specialStringFunctions.councilAddTitle(vipUser.tag);
+      description = specialStringFunctions.councilAddDescription(partialUser);
+      break;
+
+    case "councilRemove":
+      title = specialStringFunctions.councilRemoveTitle(vipUser.tag);
+      description =
+        specialStringFunctions.councilRemoveDescription(partialUser);
       break;
 
     case "bar":
-      title = vipStringFunctions.barTitle(vipUser.tag);
-      description = vipStringFunctions.barDescription(partialUser);
+      title = specialStringFunctions.barTitle(vipUser.tag);
+      description = specialStringFunctions.barDescription(partialUser);
       break;
 
     case "unbar":
-      title = vipStringFunctions.unbarTitle(vipUser.tag);
-      description = vipStringFunctions.unbarDescription(partialUser);
+      title = specialStringFunctions.unbarTitle(vipUser.tag);
+      description = specialStringFunctions.unbarDescription(partialUser);
       break;
 
     default:

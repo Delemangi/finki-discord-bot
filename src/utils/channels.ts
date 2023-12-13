@@ -4,7 +4,7 @@ import {
   logMessageFunctions,
   logMessages,
 } from "../translations/logs.js";
-import { vipStringFunctions } from "../translations/vip.js";
+import { specialStringFunctions } from "../translations/special.js";
 import { type ChannelName } from "../types/ChannelName.js";
 import { client } from "./client.js";
 import { getConfigProperty } from "./config.js";
@@ -78,7 +78,9 @@ export const recreateVipTemporaryChannel = async () => {
   const channel = await guild?.channels.create({
     name,
     parent,
-    topic: vipStringFunctions.tempVipTopic(await getNextVipCronRun("mk-MK")),
+    topic: specialStringFunctions.tempVipTopic(
+      await getNextVipCronRun("mk-MK"),
+    ),
     type: ChannelType.GuildText,
   });
   await channel?.setPosition(position, {

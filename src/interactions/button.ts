@@ -31,7 +31,10 @@ import {
 } from "../translations/commands.js";
 import { labels } from "../translations/labels.js";
 import { logErrorFunctions } from "../translations/logs.js";
-import { vipStringFunctions, vipStrings } from "../translations/vip.js";
+import {
+  specialStringFunctions,
+  specialStrings,
+} from "../translations/special.js";
 import { type PollWithOptions } from "../types/PollWithOptions.js";
 import { deleteResponse, getChannel } from "../utils/channels.js";
 import { getConfigProperty, getRoleProperty } from "../utils/config.js";
@@ -456,11 +459,11 @@ const handlePollButtonForVipRequestVote = async (
     const rejectComponents = getVipAcknowledgeComponents();
     await oathChannel?.send({
       components: rejectComponents,
-      content: vipStringFunctions.vipRequestRejected(specialPoll.userId),
+      content: specialStringFunctions.vipRequestRejected(specialPoll.userId),
     });
 
     await vipChannel?.send(
-      vipStringFunctions.vipAddRejected(specialPoll.userId),
+      specialStringFunctions.vipAddRejected(specialPoll.userId),
     );
 
     return;
@@ -470,11 +473,13 @@ const handlePollButtonForVipRequestVote = async (
   const confirmComponents = getVipConfirmComponents();
   await oathChannel?.send({
     components: confirmComponents,
-    content: vipStringFunctions.vipRequestAccepted(specialPoll.userId),
+    content: specialStringFunctions.vipRequestAccepted(specialPoll.userId),
     embeds: [confirmEmbed],
   });
 
-  await vipChannel?.send(vipStringFunctions.vipAddAccepted(specialPoll.userId));
+  await vipChannel?.send(
+    specialStringFunctions.vipAddAccepted(specialPoll.userId),
+  );
 };
 
 const handlePollButtonForVipAddVote = async (
@@ -486,7 +491,7 @@ const handlePollButtonForVipAddVote = async (
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
-      vipStringFunctions.vipAddRejected(specialPoll.userId),
+      specialStringFunctions.vipAddRejected(specialPoll.userId),
     );
 
     return;
@@ -496,11 +501,13 @@ const handlePollButtonForVipAddVote = async (
   const confirmComponents = getVipConfirmComponents();
   await oathChannel?.send({
     components: confirmComponents,
-    content: vipStringFunctions.vipAddRequestAccepted(specialPoll.userId),
+    content: specialStringFunctions.vipAddRequestAccepted(specialPoll.userId),
     embeds: [confirmEmbed],
   });
 
-  await vipChannel?.send(vipStringFunctions.vipAddAccepted(specialPoll.userId));
+  await vipChannel?.send(
+    specialStringFunctions.vipAddAccepted(specialPoll.userId),
+  );
 };
 
 const handlePollButtonForVipRemoveVote = async (
@@ -512,7 +519,7 @@ const handlePollButtonForVipRemoveVote = async (
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
-      vipStringFunctions.vipRemoveRejected(specialPoll.userId),
+      specialStringFunctions.vipRemoveRejected(specialPoll.userId),
     );
 
     return;
@@ -524,11 +531,11 @@ const handlePollButtonForVipRemoveVote = async (
   await member.roles.remove(councilRoleId);
 
   await vipChannel?.send(
-    vipStringFunctions.vipRemoveAccepted(specialPoll.userId),
+    specialStringFunctions.vipRemoveAccepted(specialPoll.userId),
   );
 };
 
-const handlePollButtonForVipUpgradeVote = async (
+const handlePollButtonForCouncilAddVote = async (
   poll: Poll,
   specialPoll: SpecialPoll,
   member: GuildMember,
@@ -537,7 +544,7 @@ const handlePollButtonForVipUpgradeVote = async (
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
-      vipStringFunctions.vipUpgradeRejected(specialPoll.userId),
+      specialStringFunctions.councilAddRejected(specialPoll.userId),
     );
 
     return;
@@ -547,7 +554,30 @@ const handlePollButtonForVipUpgradeVote = async (
   await member.roles.add(councilRole);
 
   await vipChannel?.send(
-    vipStringFunctions.vipUpgradeAccepted(specialPoll.userId),
+    specialStringFunctions.councilAddAccepted(specialPoll.userId),
+  );
+};
+
+const handlePollButtonForCouncilRemoveVote = async (
+  poll: Poll,
+  specialPoll: SpecialPoll,
+  member: GuildMember,
+) => {
+  const vipChannel = getChannel("vip");
+
+  if (poll.decision !== labels.yes) {
+    await vipChannel?.send(
+      specialStringFunctions.councilRemoveRejected(specialPoll.userId),
+    );
+
+    return;
+  }
+
+  const councilRole = await getRoleProperty("council");
+  await member.roles.remove(councilRole);
+
+  await vipChannel?.send(
+    specialStringFunctions.councilRemoveAccepted(specialPoll.userId),
   );
 };
 
@@ -559,7 +589,9 @@ const handlePollButtonForBarVote = async (
   const vipChannel = getChannel("vip");
 
   if (poll.decision !== labels.yes) {
-    await vipChannel?.send(vipStringFunctions.barRejected(specialPoll.userId));
+    await vipChannel?.send(
+      specialStringFunctions.barRejected(specialPoll.userId),
+    );
 
     return;
   }
@@ -573,7 +605,9 @@ const handlePollButtonForBarVote = async (
   await member.roles.remove(vipRoleId);
   await member.roles.remove(councilRoleId);
 
-  await vipChannel?.send(vipStringFunctions.barAccepted(specialPoll.userId));
+  await vipChannel?.send(
+    specialStringFunctions.barAccepted(specialPoll.userId),
+  );
 };
 
 const handlePollButtonForUnbarVote = async (
@@ -584,7 +618,7 @@ const handlePollButtonForUnbarVote = async (
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
-      vipStringFunctions.unbarRejected(specialPoll.userId),
+      specialStringFunctions.unbarRejected(specialPoll.userId),
     );
 
     return;
@@ -592,7 +626,9 @@ const handlePollButtonForUnbarVote = async (
 
   await deleteBar(specialPoll.userId);
 
-  await vipChannel?.send(vipStringFunctions.unbarAccepted(specialPoll.userId));
+  await vipChannel?.send(
+    specialStringFunctions.unbarAccepted(specialPoll.userId),
+  );
 };
 
 export const handlePollButtonForSpecialVote = async (
@@ -624,7 +660,11 @@ export const handlePollButtonForSpecialVote = async (
       break;
 
     case "councilAdd":
-      await handlePollButtonForVipUpgradeVote(poll, specialPoll, member);
+      await handlePollButtonForCouncilAddVote(poll, specialPoll, member);
+      break;
+
+    case "councilRemove":
+      await handlePollButtonForCouncilRemoveVote(poll, specialPoll, member);
       break;
 
     case "bar":
@@ -911,7 +951,7 @@ export const handleVipButton = async (
 
   if (bar !== null) {
     await interaction.reply({
-      content: vipStrings.vipRejected,
+      content: specialStrings.vipRejected,
       ephemeral: true,
     });
 
@@ -956,7 +996,9 @@ export const handleVipButton = async (
     const vipChannel = getChannel("vip");
 
     if (vipChannel?.isTextBased()) {
-      await vipChannel.send(vipStringFunctions.vipWelcome(interaction.user.id));
+      await vipChannel.send(
+        specialStringFunctions.vipWelcome(interaction.user.id),
+      );
     }
 
     await member.roles.add(vipRoleId);
@@ -966,7 +1008,7 @@ export const handleVipButton = async (
     }
 
     const message = await interaction.reply({
-      content: vipStringFunctions.vipWelcome(interaction.user.id),
+      content: specialStringFunctions.vipWelcome(interaction.user.id),
       ephemeral: true,
     });
     void deleteResponse(message);
@@ -982,7 +1024,7 @@ export const handleVipButton = async (
   );
   if (existingPoll !== null) {
     const message = await interaction.reply({
-      content: vipStrings.vipRequestActive,
+      content: specialStrings.vipRequestActive,
       ephemeral: true,
     });
     void deleteResponse(message);
@@ -992,7 +1034,7 @@ export const handleVipButton = async (
 
   if (await getConfigProperty("vipPause")) {
     const message = await interaction.reply({
-      content: vipStrings.vipRequestPaused,
+      content: specialStrings.vipRequestPaused,
       ephemeral: true,
     });
     void deleteResponse(message);
@@ -1008,7 +1050,7 @@ export const handleVipButton = async (
 
   if (specialPollId === null) {
     await interaction.reply({
-      content: vipStrings.vipRequestFailed,
+      content: specialStrings.vipRequestFailed,
       ephemeral: true,
     });
 
@@ -1019,7 +1061,7 @@ export const handleVipButton = async (
 
   if (pollWithOptions === null) {
     await interaction.reply({
-      content: vipStrings.vipRequestFailed,
+      content: specialStrings.vipRequestFailed,
       ephemeral: true,
     });
 
@@ -1040,7 +1082,7 @@ export const handleVipButton = async (
   });
 
   await interaction.reply({
-    content: vipStrings.vipRequestSent,
+    content: specialStrings.vipRequestSent,
     ephemeral: true,
   });
 };

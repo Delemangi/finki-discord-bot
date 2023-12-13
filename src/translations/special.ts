@@ -2,7 +2,7 @@ import { type PartialUser } from "../types/PartialUser.js";
 import { tagAndMentionUser } from "./users.js";
 import { userMention } from "discord.js";
 
-export const vipStrings = {
+export const specialStrings = {
   vipAcceptButton: "Прифаќам",
   vipAcceptedTitle: "Заклетва",
   vipConfirm:
@@ -18,7 +18,7 @@ export const vipStrings = {
   vipRequestTitle: "Членство во ВИП",
 };
 
-export const vipStringFunctions = {
+export const specialStringFunctions = {
   barAccepted: (userId: string) =>
     `# Корисникот ${userMention(userId)} е забранет.`,
 
@@ -32,6 +32,34 @@ export const vipStringFunctions = {
     `# Корисникот ${userMention(userId)} не е забранет.`,
 
   barTitle: (userTag: string) => `Забрана за ${userTag}`,
+
+  councilAddAccepted: (userId: string) =>
+    `# Корисникот ${userMention(userId)} е одобрен како член на Советот.`,
+
+  councilAddDescription: ({ tag, id }: PartialUser) =>
+    `Дали се согласувате корисникот ${tagAndMentionUser({
+      id,
+      tag,
+    })} да стане член на Советот?`,
+
+  councilAddRejected: (userId: string) =>
+    `# Корисникот ${userMention(userId)} не е одобрен како член на Советот.`,
+
+  councilAddTitle: (userTag: string) => `Влез во Советот за ${userTag}`,
+
+  councilRemoveAccepted: (userId: string) =>
+    `# Корисникот ${userMention(userId)} е избркан од Советот.`,
+
+  councilRemoveDescription: ({ tag, id }: PartialUser) =>
+    `Дали се согласувате корисникот ${tagAndMentionUser({
+      id,
+      tag,
+    })} да биде избркан од Советот?`,
+
+  councilRemoveRejected: (userId: string) =>
+    `# Корисникот ${userMention(userId)} не е избркан од Советот.`,
+
+  councilRemoveTitle: (userTag: string) => `Излез од Советот за ${userTag}`,
 
   tempVipTopic: (date: string) =>
     `Задните соби на ВИП. Содржината се брише секој ден. Следно бришење е во ${date}.`,
@@ -86,24 +114,6 @@ export const vipStringFunctions = {
 
   vipRequestRejected: (userId: string) =>
     `# ${userMention(userId)} Вашата молба за влез во ВИП не беше одобрена.`,
-
-  vipUpgradeAccepted: (userId: string) =>
-    `# Корисникот ${userMention(
-      userId,
-    )} е одобрен како полноправен член на ВИП.`,
-
-  vipUpgradeDescription: ({ tag, id }: PartialUser) =>
-    `Дали се согласувате корисникот ${tagAndMentionUser({
-      id,
-      tag,
-    })} да добие гласачки права во ВИП?`,
-
-  vipUpgradeRejected: (userId: string) =>
-    `# Корисникот ${userMention(
-      userId,
-    )} не е одобрен како полноправен член на ВИП.`,
-
-  vipUpgradeTitle: (userTag: string) => `Гласачки права во ВИП за ${userTag}`,
 
   vipWelcome: (userId: string) =>
     `# Добредојде во ВИП, ${userMention(userId)}!`,
