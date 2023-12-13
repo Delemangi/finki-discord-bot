@@ -15,7 +15,7 @@ const commandPermissions: Record<
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
-  "council add": {
+  council: {
     permissions: [],
     roles: ["council"],
   },
