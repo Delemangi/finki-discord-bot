@@ -55,6 +55,17 @@ export const data = new SlashCommandBuilder()
     subcommand
       .setName("leaderboard")
       .setDescription(commandDescriptions["experience leaderboard"]),
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName("set")
+      .setDescription(commandDescriptions["experience set"])
+      .addUserOption((option) =>
+        option.setName("user").setDescription("Корисник").setRequired(true),
+      )
+      .addNumberOption((option) =>
+        option.setName("experience").setDescription("Поени").setRequired(true),
+      ),
   );
 
 const handleExperienceGet = async (
@@ -239,10 +250,49 @@ const handleExperienceLeaderboard = async (
   });
 };
 
+const handleExperienceSet = async (
+  interaction: ChatInputCommandInteraction,
+) => {
+  const user = interaction.options.getUser("user", true);
+  const experience = interaction.options.getNumber("experience", true);
+  const existingExperience =
+    (await getExperienceByUserId(user.id)) ??
+    (await createExperience({
+      experience: 0n,
+      lastMessage: new Date(),
+      level: 0,
+      messages: 0,
+      userId: user.id,
+    }));
+
+  if (existingExperience === null) {
+    await interaction.editReply(commandErrors.dataFetchFailed);
+
+    return;
+  }
+
+  existingExperience.experience = BigInt(experience);
+  const newLevel = getLevelFromExperience(BigInt(experience));
+
+  if (newLevel !== existingExperience.level) {
+    existingExperience.level = newLevel;
+  }
+
+  await updateExperience(existingExperience);
+
+  await interaction.editReply({
+    allowedMentions: {
+      parse: [],
+    },
+    content: commandResponseFunctions.experienceSet(experience, user.id),
+  });
+};
+
 const experienceHandlers = {
   add: handleExperienceAdd,
   get: handleExperienceGet,
   leaderboard: handleExperienceLeaderboard,
+  set: handleExperienceSet,
 };
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
