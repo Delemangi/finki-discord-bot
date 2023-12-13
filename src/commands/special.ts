@@ -5,7 +5,6 @@ import {
   getPollStatsComponents,
   getSpecialPollListEmbed,
 } from "../components/polls.js";
-import { getBarByUserId } from "../data/Bar.js";
 import { deletePoll, getPollById, updatePoll } from "../data/Poll.js";
 import { getPollVotesByPollId } from "../data/PollVote.js";
 import {
@@ -29,7 +28,7 @@ import { deleteResponse } from "../utils/channels.js";
 import { getConfigProperty, getRoleProperty } from "../utils/config.js";
 import { getGuild, getMemberFromGuild } from "../utils/guild.js";
 import { logger } from "../utils/logger.js";
-import { isMemberAdmin } from "../utils/members.js";
+import { isMemberAdmin, isMemberBarred } from "../utils/members.js";
 import { safeReplyToInteraction } from "../utils/messages.js";
 import {
   abstainAllMissingVotes,
@@ -399,9 +398,8 @@ const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
 
 const handleSpecialUnbar = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser("user", true);
-  const bar = await getBarByUserId(user.id);
 
-  if (bar === null) {
+  if (await isMemberBarred(user.id)) {
     await interaction.editReply(commandErrors.userNotBarred);
 
     return;

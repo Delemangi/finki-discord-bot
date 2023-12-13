@@ -1,4 +1,3 @@
-import { getBarByUserId } from "../data/Bar.js";
 import {
   commandDescriptions,
   commandErrors,
@@ -6,7 +5,11 @@ import {
 } from "../translations/commands.js";
 import { getRoleProperty } from "../utils/config.js";
 import { getMemberFromGuild } from "../utils/guild.js";
-import { isMemberInVip, isMemberInvitedToVip } from "../utils/members.js";
+import {
+  isMemberBarred,
+  isMemberInVip,
+  isMemberInvitedToVip,
+} from "../utils/members.js";
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -50,9 +53,7 @@ const handleRegularsAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const bar = await getBarByUserId(user.id);
-
-  if (bar !== null) {
+  if (await isMemberBarred(user.id)) {
     await interaction.editReply(commandErrors.userBarred);
 
     return;

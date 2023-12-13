@@ -3,7 +3,6 @@ import {
   getPollEmbed,
   getPollStatsComponents,
 } from "../components/polls.js";
-import { getBarByUserId } from "../data/Bar.js";
 import { getPollById } from "../data/Poll.js";
 import { getSpecialPollByUserAndType } from "../data/SpecialPoll.js";
 import {
@@ -17,6 +16,7 @@ import { getRoleProperty } from "../utils/config.js";
 import { getMemberFromGuild } from "../utils/guild.js";
 import {
   isMemberAdmin,
+  isMemberBarred,
   isMemberInVip,
   isMemberInvitedToVip,
 } from "../utils/members.js";
@@ -66,9 +66,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const bar = await getBarByUserId(user.id);
-
-  if (bar !== null) {
+  if (await isMemberBarred(user.id)) {
     await interaction.editReply(commandErrors.userBarred);
 
     return;

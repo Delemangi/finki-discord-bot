@@ -1,3 +1,4 @@
+import { getBarByUserId } from "../data/Bar.js";
 import { getExperienceByUserId } from "../data/Experience.js";
 import { client } from "./client.js";
 import { getRoleProperty } from "./config.js";
@@ -69,4 +70,10 @@ export const isMemberLevel = async (
   }
 
   return orAbove ? experience.level >= level : experience.level === level;
+};
+
+export const isMemberBarred = async (userId: string) => {
+  const bar = await getBarByUserId(userId);
+
+  return bar !== null;
 };

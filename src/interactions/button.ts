@@ -9,7 +9,7 @@ import {
   getVipConfirmComponents,
   getVipConfirmEmbed,
 } from "../components/scripts.js";
-import { createBar, deleteBar, getBarByUserId } from "../data/Bar.js";
+import { createBar, deleteBar } from "../data/Bar.js";
 import { getPollById } from "../data/Poll.js";
 import { getPollOptionById } from "../data/PollOption.js";
 import {
@@ -40,7 +40,11 @@ import { deleteResponse, getChannel } from "../utils/channels.js";
 import { getConfigProperty, getRoleProperty } from "../utils/config.js";
 import { getGuild } from "../utils/guild.js";
 import { logger } from "../utils/logger.js";
-import { isMemberInVip, isMemberLevel } from "../utils/members.js";
+import {
+  isMemberBarred,
+  isMemberInVip,
+  isMemberLevel,
+} from "../utils/members.js";
 import { decidePoll, startSpecialPoll } from "../utils/polls.js";
 import { userIdRegex } from "../utils/regex.js";
 import {
@@ -947,9 +951,7 @@ export const handleVipButton = async (
     return;
   }
 
-  const bar = await getBarByUserId(interaction.user.id);
-
-  if (bar !== null) {
+  if (await isMemberBarred(interaction.user.id)) {
     await interaction.reply({
       content: specialStrings.vipRejected,
       ephemeral: true,

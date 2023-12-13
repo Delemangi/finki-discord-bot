@@ -11,7 +11,11 @@ import {
 } from "../translations/commands.js";
 import { getRoleProperty } from "../utils/config.js";
 import { getMemberFromGuild } from "../utils/guild.js";
-import { isMemberInCouncil, isMemberInVip } from "../utils/members.js";
+import {
+  isMemberBarred,
+  isMemberInCouncil,
+  isMemberInVip,
+} from "../utils/members.js";
 import { startSpecialPoll } from "../utils/polls.js";
 import {
   type ChatInputCommandInteraction,
@@ -60,6 +64,12 @@ const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
 
   if (member === null) {
     await interaction.editReply(commandErrors.userNotMember);
+
+    return;
+  }
+
+  if (await isMemberBarred(user.id)) {
+    await interaction.editReply(commandErrors.userBarred);
 
     return;
   }
