@@ -15,6 +15,10 @@ const commandPermissions: Record<
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
+  "council add": {
+    permissions: [],
+    roles: ["council"],
+  },
   embed: {
     permissions: [PermissionsBitField.Flags.ManageMessages],
     roles: [],
@@ -59,7 +63,7 @@ const commandPermissions: Record<
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
-  "special ban": {
+  "special bar": {
     permissions: [],
     roles: ["council"],
   },
@@ -92,10 +96,6 @@ const commandPermissions: Record<
     roles: ["admin", "moderator"],
   },
   "vip remove": {
-    permissions: [],
-    roles: ["council"],
-  },
-  "vip upgrade": {
     permissions: [],
     roles: ["council"],
   },
