@@ -399,7 +399,7 @@ const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
 const handleSpecialUnbar = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser("user", true);
 
-  if (await isMemberBarred(user.id)) {
+  if (!(await isMemberBarred(user.id))) {
     await interaction.editReply(commandErrors.userNotBarred);
 
     return;
