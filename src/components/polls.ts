@@ -180,7 +180,7 @@ export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
             ? labels.all
             : (await getMembersByRoleIds(guild, poll.roles)).length.toString(),
       },
-      {
+      (poll.roles.length > 0 && {
         inline: true,
         name: labels.requiredMajority,
         value: `${poll.threshold * 100}% (${threshold})`,
@@ -197,7 +197,7 @@ export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
         inline: true,
         name: "\u200B",
         value: "\u200B",
-      },
+      }),
     )
     .setFooter({
       text: `${labels.poll}: ${poll.id}`,
