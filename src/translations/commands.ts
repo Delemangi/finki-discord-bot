@@ -10,6 +10,8 @@ import {
 
 export const commandDescriptions = {
   about: "За Discord ботот",
+  "admin add": "Предложи нов администратор",
+  "admin remove": "Отстрани администратор",
   anto: "Превземи Анто факт",
   classroom: "Превземи информации за просторија",
   "config get": "Превземи конфигурација",
@@ -31,6 +33,7 @@ export const commandDescriptions = {
   "experience add": "Додади поени за активност",
   "experience get": "Превземи ниво и активност",
   "experience leaderboard": "Превземи листа на членови според активност",
+  "experience set": "Измени поени за активност",
   faq: "Превземи најчесто поставувано прашање",
   help: "Превземи листа од сите достапни команди",
   home: "Превземи линк до изворниот код",
@@ -173,6 +176,11 @@ export const commandResponseFunctions = {
       userId,
     )}.`,
 
+  experienceSet: (experience: number | string, userId: string) =>
+    `Ги поставивте поените за активност на корисникот ${userMention(
+      userId,
+    )} на ${experience}.`,
+
   multipleClassrooms: (classroom: string) =>
     `${bold(
       "НАПОМЕНА",
@@ -293,15 +301,17 @@ export const commandErrors = {
   userBarred: "Корисникот е забранет.",
   userBot: "Корисникот е бот.",
   userCouncilMember: "Корисникот е член на Советот.",
+  userNotAdmin: "Корисникот не е администратор.",
   userNotBarred: "Корисникот не е забранет.",
   userNotCouncilMember: "Корисникот не е член на Советот.",
   userNotFound: "Корисникот не постои.",
+  userNotLevel: "Корисникот е под потребното ниво.",
   userNotMember: "Корисникот не е член на серверот.",
   userNotRegular: "Корисникот не е член од редовните корисници.",
   userNotVipMember: "Корисникот не е член на ВИП.",
   userRegular: "Корисникот е член на редовните корисници.",
+  userSpecialPending: "Постои предлог за овој корисник.",
   userVipMember: "Корисникот е член на ВИП.",
-  userVipPending: "Постои предлог за овој корисник.",
 };
 
 export const commandErrorFunctions = {

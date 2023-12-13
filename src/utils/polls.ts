@@ -119,6 +119,16 @@ export const startSpecialPoll = async (
         specialStringFunctions.councilRemoveDescription(partialUser);
       break;
 
+    case "adminAdd":
+      title = specialStringFunctions.adminAddTitle(vipUser.tag);
+      description = specialStringFunctions.adminAddDescription(partialUser);
+      break;
+
+    case "adminRemove":
+      title = specialStringFunctions.adminRemoveTitle(vipUser.tag);
+      description = specialStringFunctions.adminRemoveDescription(partialUser);
+      break;
+
     case "bar":
       title = specialStringFunctions.barTitle(vipUser.tag);
       description = specialStringFunctions.barDescription(partialUser);

@@ -8,4 +8,5 @@ export type Roles =
   | "ombudsman"
   | "regular"
   | "veteran"
-  | "vip";
+  | "vip"
+  | "admins";

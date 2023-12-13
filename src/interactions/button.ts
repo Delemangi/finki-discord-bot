@@ -585,6 +585,58 @@ const handlePollButtonForCouncilRemoveVote = async (
   );
 };
 
+const handlePollButtonForAdminAddVote = async (
+  poll: Poll,
+  specialPoll: SpecialPoll,
+  member: GuildMember,
+) => {
+  const vipChannel = getChannel("vip");
+
+  if (poll.decision !== labels.yes) {
+    await vipChannel?.send(
+      specialStringFunctions.adminAddRejected(specialPoll.userId),
+    );
+
+    return;
+  }
+
+  const adminsRole = await getRoleProperty("admins");
+  const moderatorRole = await getRoleProperty("moderator");
+
+  await member.roles.add(adminsRole);
+  await member.roles.add(moderatorRole);
+
+  await vipChannel?.send(
+    specialStringFunctions.adminAddAccepted(specialPoll.userId),
+  );
+};
+
+const handlePollButtonForAdminRemoveVote = async (
+  poll: Poll,
+  specialPoll: SpecialPoll,
+  member: GuildMember,
+) => {
+  const vipChannel = getChannel("vip");
+
+  if (poll.decision !== labels.yes) {
+    await vipChannel?.send(
+      specialStringFunctions.adminRemoveRejected(specialPoll.userId),
+    );
+
+    return;
+  }
+
+  const adminsRole = await getRoleProperty("admins");
+  const moderatorRole = await getRoleProperty("moderator");
+
+  await member.roles.remove(adminsRole);
+  await member.roles.remove(moderatorRole);
+
+  await vipChannel?.send(
+    specialStringFunctions.adminRemoveAccepted(specialPoll.userId),
+  );
+};
+
 const handlePollButtonForBarVote = async (
   poll: Poll,
   specialPoll: SpecialPoll,
@@ -669,6 +721,14 @@ export const handlePollButtonForSpecialVote = async (
 
     case "councilRemove":
       await handlePollButtonForCouncilRemoveVote(poll, specialPoll, member);
+      break;
+
+    case "adminAdd":
+      await handlePollButtonForAdminAddVote(poll, specialPoll, member);
+      break;
+
+    case "adminRemove":
+      await handlePollButtonForAdminRemoveVote(poll, specialPoll, member);
       break;
 
     case "bar":

@@ -31,6 +31,7 @@ const defaultConfig: BotConfig = {
   leveling: true,
   roles: {
     admin: "",
+    admins: "",
     booster: "",
     contributor: "",
     council: "",

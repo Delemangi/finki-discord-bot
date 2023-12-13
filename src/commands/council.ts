@@ -89,7 +89,7 @@ const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
   const pollId = await startSpecialPoll(interaction, user, "councilAdd", 0.67);
 
   if (pollId === null) {
-    await interaction.editReply(commandErrors.userVipPending);
+    await interaction.editReply(commandErrors.userSpecialPending);
 
     return;
   }
@@ -152,7 +152,7 @@ const handleCouncilRemove = async (
   );
 
   if (pollId === null) {
-    await interaction.editReply(commandErrors.userVipPending);
+    await interaction.editReply(commandErrors.userSpecialPending);
 
     return;
   }

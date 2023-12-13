@@ -366,7 +366,7 @@ const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
   const pollId = await startSpecialPoll(interaction, user, "bar");
 
   if (pollId === null) {
-    await interaction.editReply(commandErrors.userVipPending);
+    await interaction.editReply(commandErrors.userSpecialPending);
 
     return;
   }
@@ -408,7 +408,7 @@ const handleSpecialUnbar = async (interaction: ChatInputCommandInteraction) => {
   const pollId = await startSpecialPoll(interaction, user, "unbar");
 
   if (pollId === null) {
-    await interaction.editReply(commandErrors.userVipPending);
+    await interaction.editReply(commandErrors.userSpecialPending);
 
     return;
   }

@@ -19,6 +19,39 @@ export const specialStrings = {
 };
 
 export const specialStringFunctions = {
+  adminAddAccepted: (userId: string) =>
+    `# Корисникот ${userMention(
+      userId,
+    )} е одобрен како член на Администрацијата.`,
+
+  adminAddDescription: ({ tag, id }: PartialUser) =>
+    `Дали се согласувате корисникот ${tagAndMentionUser({
+      id,
+      tag,
+    })} да стане член на Администрацијата?`,
+
+  adminAddRejected: (userId: string) =>
+    `# Корисникот ${userMention(
+      userId,
+    )} не е одобрен како член на Администрацијата.`,
+
+  adminAddTitle: (userTag: string) => `Влез во Администрација за ${userTag}`,
+
+  adminRemoveAccepted: (userId: string) =>
+    `# Корисникот ${userMention(userId)} е избркан од Администрацијата.`,
+
+  adminRemoveDescription: ({ tag, id }: PartialUser) =>
+    `Дали се согласувате корисникот ${tagAndMentionUser({
+      id,
+      tag,
+    })} да биде избркан од Администрацијата?`,
+
+  adminRemoveRejected: (userId: string) =>
+    `# Корисникот ${userMention(userId)} не е избркан од Администрацијата.`,
+
+  adminRemoveTitle: (userTag: string) =>
+    `Излез од Администрација за ${userTag}`,
+
   barAccepted: (userId: string) =>
     `# Корисникот ${userMention(userId)} е забранет.`,
 
