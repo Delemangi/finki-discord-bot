@@ -72,6 +72,13 @@ const handleExperienceGet = async (
   interaction: ChatInputCommandInteraction,
 ) => {
   const user = interaction.options.getUser("user") ?? interaction.user;
+
+  if (user.bot) {
+    await interaction.editReply(commandErrors.userBot);
+
+    return;
+  }
+
   const userId = user.id;
   const experience =
     (await getExperienceByUserId(userId)) ??
@@ -97,6 +104,13 @@ const handleExperienceAdd = async (
   interaction: ChatInputCommandInteraction,
 ) => {
   const user = interaction.options.getUser("user", true);
+
+  if (user.bot) {
+    await interaction.editReply(commandErrors.userBot);
+
+    return;
+  }
+
   const experience = interaction.options.getNumber("experience", true);
   const existingExperience =
     (await getExperienceByUserId(user.id)) ??
@@ -254,6 +268,13 @@ const handleExperienceSet = async (
   interaction: ChatInputCommandInteraction,
 ) => {
   const user = interaction.options.getUser("user", true);
+
+  if (user.bot) {
+    await interaction.editReply(commandErrors.userBot);
+
+    return;
+  }
+
   const experience = interaction.options.getNumber("experience", true);
   const existingExperience =
     (await getExperienceByUserId(user.id)) ??
