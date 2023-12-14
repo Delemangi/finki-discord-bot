@@ -27,6 +27,10 @@ const commandPermissions: Record<
     permissions: [],
     roles: ["admin"],
   },
+  "experience set": {
+    permissions: [],
+    roles: ["admin"],
+  },
   manage: {
     permissions: [],
     roles: ["admin", "moderator", "fss"],
