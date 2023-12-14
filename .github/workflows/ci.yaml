@@ -1,13 +1,36 @@
-name: Publish Docker image
+name: CI/CD Workflow
 
 on:
   push:
     branches:
       - "master"
+  pull_request:
+    branches:
+      - "master"
 
 jobs:
+  eslint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install dependencies
+        run: npm i
+
+      - name: Run ESLint
+        id: eslint
+        run: npm run lint
+
   docker:
     runs-on: ubuntu-latest
+    needs: eslint
 
     steps:
       - name: Set up QEMU
