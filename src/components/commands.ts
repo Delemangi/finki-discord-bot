@@ -427,10 +427,7 @@ export const getStudentInfoEmbed = async (member: GuildMember) => {
     .filter((role) =>
       Object.keys(getFromRoleConfig('courses')).includes(role.name),
     )
-    .map(
-      (role) =>
-        `${roleMention(role.id)}: ${getFromRoleConfig('courses')[role.name]}`,
-    )
+    .map((role) => roleMention(role.id))
     .join('\n');
   const other = member.roles.cache
     .filter((role) => getFromRoleConfig('other').includes(role.name))
