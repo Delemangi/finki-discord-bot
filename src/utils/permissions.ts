@@ -11,6 +11,10 @@ const commandPermissions: Record<
     roles: Roles[];
   }
 > = {
+  admin: {
+    permissions: [],
+    roles: ["council"],
+  },
   config: {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
