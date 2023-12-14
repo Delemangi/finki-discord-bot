@@ -6,6 +6,8 @@ It's recommended, but not required to run this inside a Docker container.
 
 ## Installation
 
+For development purposes, be sure to run `npm run prepare` to install the Git pre-commit hooks.
+
 ### Installation (Docker)
 
 1. Clone the repository: `git clone git@github.com:Delemangi/finki-discord-bot.git`
