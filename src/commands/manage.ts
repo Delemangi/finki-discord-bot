@@ -3,262 +3,262 @@ import {
   getLinkEmbed,
   getQuestionComponents,
   getQuestionEmbed,
-} from "../components/commands.js";
-import { createAnto, createAntos, deleteAnto } from "../data/Anto.js";
+} from '../components/commands.js';
+import { createAnto, createAntos, deleteAnto } from '../data/Anto.js';
 import {
   createCompanies,
   createCompany,
   deleteCompany,
-} from "../data/Company.js";
-import { createInfoMessage, getInfoMessage } from "../data/InfoMessage.js";
-import { createLink, deleteLink, getLink, updateLink } from "../data/Link.js";
+} from '../data/Company.js';
+import { createInfoMessage, getInfoMessage } from '../data/InfoMessage.js';
+import { createLink, deleteLink, getLink, updateLink } from '../data/Link.js';
 import {
   createQuestion,
   deleteQuestion,
   getQuestion,
   updateQuestion,
-} from "../data/Question.js";
+} from '../data/Question.js';
 import {
   createQuestionLinks,
   deleteQuestionLinksByQuestionId,
-} from "../data/QuestionLink.js";
-import { createRule, deleteRule } from "../data/Rule.js";
-import { AntosSchema } from "../schemas/AntosSchema.js";
-import { CompaniesSchema } from "../schemas/CompaniesSchema.js";
-import { LinksSchema } from "../schemas/LinksSchema.js";
+} from '../data/QuestionLink.js';
+import { createRule, deleteRule } from '../data/Rule.js';
+import { AntosSchema } from '../schemas/AntosSchema.js';
+import { CompaniesSchema } from '../schemas/CompaniesSchema.js';
+import { LinksSchema } from '../schemas/LinksSchema.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponses,
-} from "../translations/commands.js";
-import { labels } from "../translations/labels.js";
-import { logErrorFunctions } from "../translations/logs.js";
-import { logger } from "../utils/logger.js";
-import { linkRegex } from "../utils/regex.js";
-import { InfoMessageType } from "@prisma/client";
+} from '../translations/commands.js';
+import { labels } from '../translations/labels.js';
+import { logErrorFunctions } from '../translations/logs.js';
+import { logger } from '../utils/logger.js';
+import { linkRegex } from '../utils/regex.js';
+import { InfoMessageType } from '@prisma/client';
 import {
   type ChatInputCommandInteraction,
   codeBlock,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "manage";
+const name = 'manage';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription("Менаџирај")
+  .setDescription('Менаџирај')
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("question-set")
-      .setDescription(commandDescriptions["manage question-set"])
+      .setName('question-set')
+      .setDescription(commandDescriptions['manage question-set'])
       .addStringOption((option) =>
         option
-          .setName("question")
-          .setDescription("Прашање")
+          .setName('question')
+          .setDescription('Прашање')
           .setRequired(true)
           .setAutocomplete(true),
       )
       .addStringOption((option) =>
-        option.setName("answer").setDescription("Одговор").setRequired(true),
+        option.setName('answer').setDescription('Одговор').setRequired(true),
       )
       .addStringOption((option) =>
         option
-          .setName("links")
-          .setDescription("Линкови во JSON формат")
+          .setName('links')
+          .setDescription('Линкови во JSON формат')
           .setRequired(false),
       ),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("question-delete")
-      .setDescription(commandDescriptions["manage question-delete"])
+      .setName('question-delete')
+      .setDescription(commandDescriptions['manage question-delete'])
       .addStringOption((option) =>
         option
-          .setName("question")
-          .setDescription("Прашање")
+          .setName('question')
+          .setDescription('Прашање')
           .setRequired(true)
           .setAutocomplete(true),
       ),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("question-content")
-      .setDescription(commandDescriptions["manage question-content"])
+      .setName('question-content')
+      .setDescription(commandDescriptions['manage question-content'])
       .addStringOption((option) =>
         option
-          .setName("question")
-          .setDescription("Прашање")
+          .setName('question')
+          .setDescription('Прашање')
           .setRequired(true)
           .setAutocomplete(true),
       ),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("link-set")
-      .setDescription(commandDescriptions["manage link-set"])
+      .setName('link-set')
+      .setDescription(commandDescriptions['manage link-set'])
       .addStringOption((option) =>
         option
-          .setName("link")
-          .setDescription("Име на линк")
+          .setName('link')
+          .setDescription('Име на линк')
           .setRequired(true)
           .setAutocomplete(true),
       )
       .addStringOption((option) =>
         option
-          .setName("url")
-          .setDescription("Линк до ресурс")
+          .setName('url')
+          .setDescription('Линк до ресурс')
           .setRequired(true),
       )
       .addStringOption((option) =>
-        option.setName("description").setDescription("Опис").setRequired(false),
+        option.setName('description').setDescription('Опис').setRequired(false),
       ),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("link-delete")
-      .setDescription(commandDescriptions["manage link-delete"])
+      .setName('link-delete')
+      .setDescription(commandDescriptions['manage link-delete'])
       .addStringOption((option) =>
         option
-          .setName("link")
-          .setDescription("Линк")
+          .setName('link')
+          .setDescription('Линк')
           .setRequired(true)
           .setAutocomplete(true),
       ),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("link-content")
-      .setDescription(commandDescriptions["manage link-content"])
+      .setName('link-content')
+      .setDescription(commandDescriptions['manage link-content'])
       .addStringOption((option) =>
         option
-          .setName("link")
-          .setDescription("Линк")
+          .setName('link')
+          .setDescription('Линк')
           .setRequired(true)
           .setAutocomplete(true),
       ),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("anto-add")
-      .setDescription(commandDescriptions["manage anto-add"])
+      .setName('anto-add')
+      .setDescription(commandDescriptions['manage anto-add'])
       .addStringOption((option) =>
-        option.setName("anto").setDescription("Анто").setRequired(true),
+        option.setName('anto').setDescription('Анто').setRequired(true),
       ),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("anto-delete")
-      .setDescription(commandDescriptions["manage anto-delete"])
+      .setName('anto-delete')
+      .setDescription(commandDescriptions['manage anto-delete'])
       .addStringOption((option) =>
-        option.setName("anto").setDescription("Анто").setRequired(true),
+        option.setName('anto').setDescription('Анто').setRequired(true),
       ),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("anto-mass-add")
-      .setDescription(commandDescriptions["manage anto-mass-add"])
+      .setName('anto-mass-add')
+      .setDescription(commandDescriptions['manage anto-mass-add'])
       .addStringOption((option) =>
         option
-          .setName("antos")
-          .setDescription("Анто-и во JSON формат")
+          .setName('antos')
+          .setDescription('Анто-и во JSON формат')
           .setRequired(true),
       ),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("rule-set")
-      .setDescription(commandDescriptions["manage rule-set"])
+      .setName('rule-set')
+      .setDescription(commandDescriptions['manage rule-set'])
       .addStringOption((option) =>
-        option.setName("rule").setDescription("Правило").setRequired(true),
+        option.setName('rule').setDescription('Правило').setRequired(true),
       ),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("rule-delete")
-      .setDescription(commandDescriptions["manage rule-delete"])
+      .setName('rule-delete')
+      .setDescription(commandDescriptions['manage rule-delete'])
       .addStringOption((option) =>
         option
-          .setName("rule")
-          .setDescription("Правило")
+          .setName('rule')
+          .setDescription('Правило')
           .setRequired(true)
           .setAutocomplete(true),
       ),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("infomessage-set")
-      .setDescription(commandDescriptions["manage infomessage-set"])
+      .setName('infomessage-set')
+      .setDescription(commandDescriptions['manage infomessage-set'])
       .addNumberOption((option) =>
         option
-          .setName("index")
-          .setDescription("Број на порака")
+          .setName('index')
+          .setDescription('Број на порака')
           .setRequired(true),
       )
       .addStringOption((option) =>
         option
-          .setName("type")
-          .setDescription("Тип на порака")
+          .setName('type')
+          .setDescription('Тип на порака')
           .setRequired(true)
           .setChoices(
             {
-              name: "Текст",
-              value: "text",
+              name: 'Текст',
+              value: 'text',
             },
             {
-              name: "Слика",
-              value: "image",
+              name: 'Слика',
+              value: 'image',
             },
           ),
       )
       .addStringOption((option) =>
         option
-          .setName("content")
-          .setDescription("Содржина (текст или линк до слика)")
+          .setName('content')
+          .setDescription('Содржина (текст или линк до слика)')
           .setRequired(true),
       ),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("infomessage-delete")
-      .setDescription(commandDescriptions["manage infomessage-delete"])
+      .setName('infomessage-delete')
+      .setDescription(commandDescriptions['manage infomessage-delete'])
       .addNumberOption((option) =>
         option
-          .setName("index")
-          .setDescription("Број на порака")
+          .setName('index')
+          .setDescription('Број на порака')
           .setRequired(true),
       ),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("company-set")
-      .setDescription(commandDescriptions["manage company-set"])
+      .setName('company-set')
+      .setDescription(commandDescriptions['manage company-set'])
       .addStringOption((option) =>
         option
-          .setName("company")
-          .setDescription("Име на компанија")
+          .setName('company')
+          .setDescription('Име на компанија')
           .setRequired(true),
       ),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("company-delete")
-      .setDescription(commandDescriptions["manage company-delete"])
+      .setName('company-delete')
+      .setDescription(commandDescriptions['manage company-delete'])
       .addStringOption((option) =>
         option
-          .setName("company")
-          .setDescription("Име на компанија")
+          .setName('company')
+          .setDescription('Име на компанија')
           .setRequired(true)
           .setAutocomplete(true),
       ),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("company-mass-add")
-      .setDescription(commandDescriptions["manage company-mass-add"])
+      .setName('company-mass-add')
+      .setDescription(commandDescriptions['manage company-mass-add'])
       .addStringOption((option) =>
         option
-          .setName("companies")
-          .setDescription("Компании во JSON формат")
+          .setName('companies')
+          .setDescription('Компании во JSON формат')
           .setRequired(true),
       ),
   );
@@ -266,11 +266,11 @@ export const data = new SlashCommandBuilder()
 const handleManageQuestionSet = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const keyword = interaction.options.getString("question", true);
+  const keyword = interaction.options.getString('question', true);
   const answer = interaction.options
-    .getString("answer", true)
-    .replaceAll("\\n", "\n");
-  const links = interaction.options.getString("links");
+    .getString('answer', true)
+    .replaceAll('\\n', '\n');
+  const links = interaction.options.getString('links');
   const question = await getQuestion(keyword);
   let parsedLinks;
 
@@ -375,7 +375,7 @@ const handleManageQuestionSet = async (
 const handleManageQuestionDelete = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const keyword = interaction.options.getString("question", true);
+  const keyword = interaction.options.getString('question', true);
   const question = await getQuestion(keyword);
 
   if (question === null) {
@@ -391,7 +391,7 @@ const handleManageQuestionDelete = async (
 const handleManageQuestionContent = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const keyword = interaction.options.getString("question", true);
+  const keyword = interaction.options.getString('question', true);
   const question = await getQuestion(keyword);
 
   if (question === null) {
@@ -401,11 +401,11 @@ const handleManageQuestionContent = async (
   }
 
   await interaction.editReply(
-    "Име:" +
+    'Име:' +
       codeBlock(question.name) +
-      "\nОдговор:" +
-      codeBlock(question.content.replaceAll("\n", "\\n")) +
-      "\nЛинкови:" +
+      '\nОдговор:' +
+      codeBlock(question.content.replaceAll('\n', '\\n')) +
+      '\nЛинкови:' +
       codeBlock(
         JSON.stringify(
           question.links
@@ -430,11 +430,11 @@ const handleManageQuestionContent = async (
 const handleManageLinkSet = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const keyword = interaction.options.getString("link", true);
+  const keyword = interaction.options.getString('link', true);
   const description = interaction.options
-    .getString("description")
-    ?.replaceAll("\\n", "\n");
-  const url = interaction.options.getString("url", true);
+    .getString('description')
+    ?.replaceAll('\\n', '\n');
+  const url = interaction.options.getString('url', true);
   const link = await getLink(keyword);
 
   if (!linkRegex.test(url)) {
@@ -504,7 +504,7 @@ const handleManageLinkSet = async (
 const handleManageLinkDelete = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const keyword = interaction.options.getString("link", true);
+  const keyword = interaction.options.getString('link', true);
   const link = await getLink(keyword);
 
   if (link === null) {
@@ -520,7 +520,7 @@ const handleManageLinkDelete = async (
 const handleManageLinkContent = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const keyword = interaction.options.getString("link", true);
+  const keyword = interaction.options.getString('link', true);
   const link = await getLink(keyword);
 
   if (link === null) {
@@ -530,11 +530,11 @@ const handleManageLinkContent = async (
   }
 
   await interaction.editReply(
-    "Име:" +
+    'Име:' +
       codeBlock(link.name) +
-      "\nОпис:" +
-      codeBlock(link.description?.replaceAll("\n", "\\n") ?? labels.none) +
-      "\nЛинк:" +
+      '\nОпис:' +
+      codeBlock(link.description?.replaceAll('\n', '\\n') ?? labels.none) +
+      '\nЛинк:' +
       codeBlock(link.url),
   );
 };
@@ -542,7 +542,7 @@ const handleManageLinkContent = async (
 const handleManageAntoAdd = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const anto = interaction.options.getString("anto", true);
+  const anto = interaction.options.getString('anto', true);
   const createdAnto = await createAnto({
     quote: anto,
     userId: interaction.user.id,
@@ -560,7 +560,7 @@ const handleManageAntoAdd = async (
 const handleManageAntoDelete = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const anto = interaction.options.getString("anto", true);
+  const anto = interaction.options.getString('anto', true);
   const deletedAnto = await deleteAnto(anto);
 
   if (deletedAnto === null) {
@@ -575,7 +575,7 @@ const handleManageAntoDelete = async (
 const handleManageAntoMassAdd = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const antos = interaction.options.getString("antos", true);
+  const antos = interaction.options.getString('antos', true);
   let parsedAntos;
 
   try {
@@ -606,7 +606,7 @@ const handleManageAntoMassAdd = async (
 const handleManageRuleSet = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const rule = interaction.options.getString("rule", true);
+  const rule = interaction.options.getString('rule', true);
 
   await createRule({
     rule,
@@ -619,7 +619,7 @@ const handleManageRuleSet = async (
 const handleManageRuleDelete = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const rule = interaction.options.getString("rule", true);
+  const rule = interaction.options.getString('rule', true);
 
   await deleteRule(rule);
 
@@ -629,18 +629,18 @@ const handleManageRuleDelete = async (
 const handleMangeInfoMessageSet = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const index = interaction.options.getNumber("index", true);
-  const type = interaction.options.getString("type", true);
+  const index = interaction.options.getNumber('index', true);
+  const type = interaction.options.getString('type', true);
   const content = interaction.options
-    .getString("content", true)
-    .replaceAll("\\n", "\n");
+    .getString('content', true)
+    .replaceAll('\\n', '\n');
   const infoMessage = await getInfoMessage(index);
 
   if (infoMessage === null) {
     await createInfoMessage({
       content,
       index,
-      type: type === "text" ? InfoMessageType.TEXT : InfoMessageType.IMAGE,
+      type: type === 'text' ? InfoMessageType.TEXT : InfoMessageType.IMAGE,
       userId: interaction.user.id,
     });
   }
@@ -651,7 +651,7 @@ const handleMangeInfoMessageSet = async (
 const handleManageInfoMessageDelete = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const index = interaction.options.getNumber("index", true);
+  const index = interaction.options.getNumber('index', true);
 
   const infoMessage = await getInfoMessage(index);
 
@@ -665,7 +665,7 @@ const handleManageInfoMessageDelete = async (
 };
 
 const handleCompanySet = async (interaction: ChatInputCommandInteraction) => {
-  const company = interaction.options.getString("company", true);
+  const company = interaction.options.getString('company', true);
 
   const createdCompany = await createCompany({
     name: company,
@@ -684,7 +684,7 @@ const handleCompanySet = async (interaction: ChatInputCommandInteraction) => {
 const handleCompanyDelete = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const company = interaction.options.getString("company", true);
+  const company = interaction.options.getString('company', true);
 
   const deletedCompany = await deleteCompany(company);
 
@@ -700,7 +700,7 @@ const handleCompanyDelete = async (
 const handleCompanyMassAdd = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const companies = interaction.options.getString("companies", true);
+  const companies = interaction.options.getString('companies', true);
   let parsedCompanies;
 
   try {
@@ -729,22 +729,22 @@ const handleCompanyMassAdd = async (
 };
 
 const manageHandlers = {
-  "anto-add": handleManageAntoAdd,
-  "anto-delete": handleManageAntoDelete,
-  "anto-mass-add": handleManageAntoMassAdd,
-  "company-delete": handleCompanyDelete,
-  "company-mass-add": handleCompanyMassAdd,
-  "company-set": handleCompanySet,
-  "infomessage-delete": handleManageInfoMessageDelete,
-  "infomessage-set": handleMangeInfoMessageSet,
-  "link-content": handleManageLinkContent,
-  "link-delete": handleManageLinkDelete,
-  "link-set": handleManageLinkSet,
-  "question-content": handleManageQuestionContent,
-  "question-delete": handleManageQuestionDelete,
-  "question-set": handleManageQuestionSet,
-  "rule-delete": handleManageRuleDelete,
-  "rule-set": handleManageRuleSet,
+  'anto-add': handleManageAntoAdd,
+  'anto-delete': handleManageAntoDelete,
+  'anto-mass-add': handleManageAntoMassAdd,
+  'company-delete': handleCompanyDelete,
+  'company-mass-add': handleCompanyMassAdd,
+  'company-set': handleCompanySet,
+  'infomessage-delete': handleManageInfoMessageDelete,
+  'infomessage-set': handleMangeInfoMessageSet,
+  'link-content': handleManageLinkContent,
+  'link-delete': handleManageLinkDelete,
+  'link-set': handleManageLinkSet,
+  'question-content': handleManageQuestionContent,
+  'question-delete': handleManageQuestionDelete,
+  'question-set': handleManageQuestionSet,
+  'rule-delete': handleManageRuleDelete,
+  'rule-set': handleManageRuleSet,
 };
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {

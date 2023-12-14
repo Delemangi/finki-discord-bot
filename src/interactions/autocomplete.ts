@@ -1,19 +1,19 @@
-import { getCompanies } from "../data/Company.js";
-import { getLinkNames } from "../data/Link.js";
-import { getQuestionNames } from "../data/Question.js";
-import { getRules } from "../data/Rule.js";
-import { logErrorFunctions } from "../translations/logs.js";
+import { getCompanies } from '../data/Company.js';
+import { getLinkNames } from '../data/Link.js';
+import { getQuestionNames } from '../data/Question.js';
+import { getRules } from '../data/Rule.js';
+import { logErrorFunctions } from '../translations/logs.js';
 import {
   getClassrooms,
   getCourses,
   getFromRoleConfig,
   getSessions,
   getStaff,
-} from "../utils/config.js";
-import { logger } from "../utils/logger.js";
-import { transformOptions } from "../utils/options.js";
-import { createOptions } from "./utils.js";
-import { type AutocompleteInteraction } from "discord.js";
+} from '../utils/config.js';
+import { logger } from '../utils/logger.js';
+import { transformOptions } from '../utils/options.js';
+import { createOptions } from './utils.js';
+import { type AutocompleteInteraction } from 'discord.js';
 
 let transformedCourses: Array<[string, string]> | null = null;
 let transformedProfessors: Array<[string, string]> | null = null;
@@ -64,7 +64,7 @@ export const handleCourseRoleAutocomplete = async (
 ) => {
   if (transformedCourseRoles === null) {
     transformedCourseRoles = Object.entries(
-      transformOptions(Object.values(getFromRoleConfig("courses"))),
+      transformOptions(Object.values(getFromRoleConfig('courses'))),
     );
   }
 

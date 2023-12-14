@@ -1,14 +1,14 @@
 import {
   commandDescriptions,
   commandResponseFunctions,
-} from "../translations/commands.js";
-import { client } from "../utils/client.js";
+} from '../translations/commands.js';
+import { client } from '../utils/client.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "ping";
+const name = 'ping';
 
 export const data = new SlashCommandBuilder()
   .setName(name)

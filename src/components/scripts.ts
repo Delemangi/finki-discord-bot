@@ -1,11 +1,11 @@
 import {
   embedMessageFunctions,
   embedMessages,
-} from "../translations/embeds.js";
-import { labels } from "../translations/labels.js";
-import { specialStrings } from "../translations/special.js";
-import { getConfigProperty, getFromRoleConfig } from "../utils/config.js";
-import { type Rule } from "@prisma/client";
+} from '../translations/embeds.js';
+import { labels } from '../translations/labels.js';
+import { specialStrings } from '../translations/special.js';
+import { getConfigProperty, getFromRoleConfig } from '../utils/config.js';
+import { type Rule } from '@prisma/client';
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -13,11 +13,11 @@ import {
   EmbedBuilder,
   inlineCode,
   italic,
-} from "discord.js";
+} from 'discord.js';
 
 export const getColorsEmbed = async (image: string) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(embedMessages.nameColor)
     .setDescription(embedMessages.chooseNameColor)
     .setFooter({
@@ -28,7 +28,7 @@ export const getColorsEmbed = async (image: string) => {
 
 export const getColorsComponents = () => {
   const components = [];
-  const roles = getFromRoleConfig("color");
+  const roles = getFromRoleConfig('color');
 
   for (let index1 = 0; index1 < roles.length; index1 += 5) {
     const row = new ActionRowBuilder<ButtonBuilder>();
@@ -40,7 +40,7 @@ export const getColorsComponents = () => {
       }
 
       const button = new ButtonBuilder()
-        .setCustomId(`color:${roles[index2] ?? ""}`)
+        .setCustomId(`color:${roles[index2] ?? ''}`)
         .setLabel(`${index2 + 1}`)
         .setStyle(ButtonStyle.Secondary);
 
@@ -56,17 +56,17 @@ export const getColorsComponents = () => {
 
 export const getCoursesEmbed = async (roleSet: string, roles: string[]) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
-    .setTitle(`${roleSet.length > 1 ? "" : embedMessages.semester} ${roleSet}`)
+    .setColor(await getConfigProperty('color'))
+    .setTitle(`${roleSet.length > 1 ? '' : embedMessages.semester} ${roleSet}`)
     .setDescription(
       roles
         .map(
           (role, index) =>
-            `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
-              getFromRoleConfig("courses")[role]
+            `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
+              getFromRoleConfig('courses')[role]
             }`,
         )
-        .join("\n"),
+        .join('\n'),
     )
     .setFooter({
       text: embedMessages.multipleOptions,
@@ -102,7 +102,7 @@ export const getCoursesComponents = (roles: string[]) => {
 
 export const getCoursesAddEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(embedMessages.massCourseAdd)
     .setDescription(embedMessages.chooseSemesterMassCourseAdd)
     .setFooter({
@@ -152,7 +152,7 @@ export const getCoursesAddComponents = (roleSets: string[]) => {
 
 export const getCoursesRemoveEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(embedMessages.massCourseRemove)
     .setDescription(embedMessages.chooseSemesterMassCourseRemove)
     .setFooter({
@@ -202,7 +202,7 @@ export const getCoursesRemoveComponents = (roleSets: string[]) => {
 
 export const getNotificationsEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(embedMessages.notifications)
     .setDescription(embedMessages.chooseNotifications)
     .setFooter({
@@ -211,7 +211,7 @@ export const getNotificationsEmbed = async () => {
 };
 
 export const getNotificationsComponents = () => {
-  const roles = getFromRoleConfig("notification");
+  const roles = getFromRoleConfig('notification');
   const components = [];
 
   for (let index1 = 0; index1 < roles.length; index1 += 5) {
@@ -224,8 +224,8 @@ export const getNotificationsComponents = () => {
       }
 
       const button = new ButtonBuilder()
-        .setCustomId(`notification:${roles[index2] ?? ""}`)
-        .setLabel(roles[index2] ?? "")
+        .setCustomId(`notification:${roles[index2] ?? ''}`)
+        .setLabel(roles[index2] ?? '')
         .setStyle(ButtonStyle.Secondary);
 
       buttons.push(button);
@@ -240,8 +240,8 @@ export const getNotificationsComponents = () => {
 
 export const getProgramsEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
-    .setTitle("Смер")
+    .setColor(await getConfigProperty('color'))
+    .setTitle('Смер')
     .setDescription(embedMessages.chooseProgram)
     .setFooter({
       text: embedMessages.onlyOneOption,
@@ -249,7 +249,7 @@ export const getProgramsEmbed = async () => {
 };
 
 export const getProgramsComponents = () => {
-  const roles = getFromRoleConfig("program");
+  const roles = getFromRoleConfig('program');
   const components = [];
 
   for (let index1 = 0; index1 < roles.length; index1 += 5) {
@@ -262,8 +262,8 @@ export const getProgramsComponents = () => {
       }
 
       const button = new ButtonBuilder()
-        .setCustomId(`program:${roles[index2] ?? ""}`)
-        .setLabel(roles[index2] ?? "")
+        .setCustomId(`program:${roles[index2] ?? ''}`)
+        .setLabel(roles[index2] ?? '')
         .setStyle(ButtonStyle.Secondary);
 
       buttons.push(button);
@@ -278,8 +278,8 @@ export const getProgramsComponents = () => {
 
 export const getYearsEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
-    .setTitle("Година на студирање")
+    .setColor(await getConfigProperty('color'))
+    .setTitle('Година на студирање')
     .setDescription(embedMessages.chooseYear)
     .setFooter({
       text: embedMessages.onlyOneOption,
@@ -287,7 +287,7 @@ export const getYearsEmbed = async () => {
 };
 
 export const getYearsComponents = () => {
-  const roles = getFromRoleConfig("year");
+  const roles = getFromRoleConfig('year');
   const components = new ActionRowBuilder<ButtonBuilder>();
   const buttons = [];
 
@@ -307,23 +307,23 @@ export const getYearsComponents = () => {
 
 export const getRulesEmbed = async (rules: Rule[]) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(labels.rules)
     .setDescription(
       `${rules
         .map(
           (value, index) =>
-            `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
+            `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
               value.rule
             }`,
         )
-        .join("\n\n")} \n\n ${italic(embedMessages.breakRules)}.`,
+        .join('\n\n')} \n\n ${italic(embedMessages.breakRules)}.`,
     );
 };
 
 export const getVipRequestEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(specialStrings.vipRequestTitle)
     .setDescription(specialStrings.vipRequestText);
 };
@@ -334,7 +334,7 @@ export const getVipRequestComponents = () => {
   const row = new ActionRowBuilder<ButtonBuilder>();
   row.addComponents(
     new ButtonBuilder()
-      .setCustomId("vip:request")
+      .setCustomId('vip:request')
       .setLabel(specialStrings.vipRequestButton)
       .setStyle(ButtonStyle.Primary),
   );
@@ -345,7 +345,7 @@ export const getVipRequestComponents = () => {
 
 export const getVipConfirmEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(specialStrings.vipAcceptedTitle)
     .setDescription(specialStrings.vipConfirm);
 };
@@ -356,7 +356,7 @@ export const getVipConfirmComponents = () => {
   const row = new ActionRowBuilder<ButtonBuilder>();
   row.addComponents(
     new ButtonBuilder()
-      .setCustomId("vip:confirm")
+      .setCustomId('vip:confirm')
       .setLabel(specialStrings.vipAcceptButton)
       .setStyle(ButtonStyle.Success),
   );
@@ -371,7 +371,7 @@ export const getVipAcknowledgeComponents = () => {
   const row = new ActionRowBuilder<ButtonBuilder>();
   row.addComponents(
     new ButtonBuilder()
-      .setCustomId("vip:acknowledge")
+      .setCustomId('vip:acknowledge')
       .setLabel(specialStrings.vipAcceptButton)
       .setStyle(ButtonStyle.Success),
   );

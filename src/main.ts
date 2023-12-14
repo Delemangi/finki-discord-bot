@@ -1,12 +1,12 @@
 /* eslint-disable import/no-unassigned-import */
-import "dotenv/config";
-import { logErrorFunctions } from "./translations/logs.js";
-import { client } from "./utils/client.js";
-import { registerCommands } from "./utils/commands.js";
-import { checkEnvironmentVariables, getToken } from "./utils/config.js";
-import { attachEventListeners } from "./utils/events.js";
-import { remind } from "./utils/reminders.js";
-import { closeSpecialPolls } from "./utils/special.js";
+import 'dotenv/config';
+import { logErrorFunctions } from './translations/logs.js';
+import { client } from './utils/client.js';
+import { registerCommands } from './utils/commands.js';
+import { checkEnvironmentVariables, getToken } from './utils/config.js';
+import { attachEventListeners } from './utils/events.js';
+import { remind } from './utils/reminders.js';
+import { closeSpecialPolls } from './utils/special.js';
 
 // Initialization
 

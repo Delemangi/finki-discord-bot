@@ -1,27 +1,27 @@
-import { createPoll, getPollById, updatePoll } from "../data/Poll.js";
+import { createPoll, getPollById, updatePoll } from '../data/Poll.js';
 import {
   countPollVotesByOptionId,
   createPollVote,
   getPollVotesByPollId,
-} from "../data/PollVote.js";
+} from '../data/PollVote.js';
 import {
   createSpecialPoll,
   getSpecialPollByPollId,
-} from "../data/SpecialPoll.js";
-import { labels } from "../translations/labels.js";
-import { specialStringFunctions } from "../translations/special.js";
-import { type PollWithOptions } from "../types/PollWithOptions.js";
-import { client } from "./client.js";
-import { getRoleProperty } from "./config.js";
-import { getGuild, getMemberFromGuild } from "./guild.js";
-import { isMemberLevel } from "./members.js";
-import { getMembersByRoleIds } from "./roles.js";
-import { type Prisma, type SpecialPoll } from "@prisma/client";
+} from '../data/SpecialPoll.js';
+import { labels } from '../translations/labels.js';
+import { specialStringFunctions } from '../translations/special.js';
+import { type PollWithOptions } from '../types/PollWithOptions.js';
+import { client } from './client.js';
+import { getRoleProperty } from './config.js';
+import { getGuild, getMemberFromGuild } from './guild.js';
+import { isMemberLevel } from './members.js';
+import { getMembersByRoleIds } from './roles.js';
+import { type Prisma, type SpecialPoll } from '@prisma/client';
 import {
   type ButtonInteraction,
   type ChatInputCommandInteraction,
   type User,
-} from "discord.js";
+} from 'discord.js';
 
 export const specialPollOptions = [
   labels.yes,
@@ -30,15 +30,15 @@ export const specialPollOptions = [
 ] as const;
 
 export const specialPollTypes = [
-  "vipRequest",
-  "vipAdd",
-  "vipRemove",
-  "councilAdd",
-  "councilRemove",
-  "adminAdd",
-  "adminRemove",
-  "bar",
-  "unbar",
+  'vipRequest',
+  'vipAdd',
+  'vipRemove',
+  'councilAdd',
+  'councilRemove',
+  'adminAdd',
+  'adminRemove',
+  'bar',
+  'unbar',
 ] as const;
 
 export const createPollChoices = (choices: readonly string[]) => {
@@ -97,44 +97,44 @@ export const startSpecialPoll = async (
   let description: string;
 
   switch (type) {
-    case "vipRequest":
-    case "vipAdd":
+    case 'vipRequest':
+    case 'vipAdd':
       title = specialStringFunctions.vipAddTitle(vipUser.tag);
       description = specialStringFunctions.vipAddDescription(partialUser);
       break;
 
-    case "vipRemove":
+    case 'vipRemove':
       title = specialStringFunctions.vipRemoveTitle(vipUser.tag);
       description = specialStringFunctions.vipRemoveDescription(partialUser);
       break;
 
-    case "councilAdd":
+    case 'councilAdd':
       title = specialStringFunctions.councilAddTitle(vipUser.tag);
       description = specialStringFunctions.councilAddDescription(partialUser);
       break;
 
-    case "councilRemove":
+    case 'councilRemove':
       title = specialStringFunctions.councilRemoveTitle(vipUser.tag);
       description =
         specialStringFunctions.councilRemoveDescription(partialUser);
       break;
 
-    case "adminAdd":
+    case 'adminAdd':
       title = specialStringFunctions.adminAddTitle(vipUser.tag);
       description = specialStringFunctions.adminAddDescription(partialUser);
       break;
 
-    case "adminRemove":
+    case 'adminRemove':
       title = specialStringFunctions.adminRemoveTitle(vipUser.tag);
       description = specialStringFunctions.adminRemoveDescription(partialUser);
       break;
 
-    case "bar":
+    case 'bar':
       title = specialStringFunctions.barTitle(vipUser.tag);
       description = specialStringFunctions.barDescription(partialUser);
       break;
 
-    case "unbar":
+    case 'unbar':
       title = specialStringFunctions.unbarTitle(vipUser.tag);
       description = specialStringFunctions.unbarDescription(partialUser);
       break;
@@ -163,10 +163,10 @@ export const startSpecialPoll = async (
         },
       ],
     },
-    roles: [await getRoleProperty("council")],
+    roles: [await getRoleProperty('council')],
     threshold,
     title,
-    userId: client.user?.id ?? "",
+    userId: client.user?.id ?? '',
   };
 
   const createdPoll = await createPoll(poll);
@@ -214,7 +214,7 @@ export const getPollThreshold = async (pollId: string) => {
 
   const totalVoters = await getMembersByRoleIds(guild, poll.roles);
   const abstenstions = await countPollVotesByOptionId(
-    poll.options.find((option) => option.name === labels.abstain)?.id ?? "",
+    poll.options.find((option) => option.name === labels.abstain)?.id ?? '',
   );
   const rawThreshold =
     (totalVoters.length - (abstenstions ?? 0)) * poll.threshold;
@@ -244,7 +244,7 @@ export const getAdminVote = async (pollId: string) => {
     return null;
   }
 
-  const adminRoleId = await getRoleProperty("admin");
+  const adminRoleId = await getRoleProperty('admin');
   const votes = await getPollVotesByPollId(pollId);
 
   if (votes === null) {
@@ -268,8 +268,8 @@ const decideSpecialPollByAdministratorVote = async (
   const member = await getMemberFromGuild(specialPoll.userId);
 
   switch (specialPoll.type) {
-    case "vipRequest":
-    case "vipAdd":
+    case 'vipRequest':
+    case 'vipAdd':
       if (member === null || !(await isMemberLevel(member, 15))) {
         return;
       }
@@ -386,7 +386,7 @@ export const abstainAllMissingVotes = async (pollId: string) => {
         connect: {
           id:
             poll.options.find((option) => option.name === labels.abstain)?.id ??
-            "",
+            '',
         },
       },
       poll: {

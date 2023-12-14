@@ -1,13 +1,13 @@
-import { databaseErrorFunctions } from "../translations/database.js";
-import { logger } from "../utils/logger.js";
-import { database } from "./database.js";
-import { type Prisma } from "@prisma/client";
+import { databaseErrorFunctions } from '../translations/database.js';
+import { logger } from '../utils/logger.js';
+import { database } from './database.js';
+import { type Prisma } from '@prisma/client';
 
 export const getBars = async () => {
   try {
     return await database.bar.findMany({
       orderBy: {
-        userId: "asc",
+        userId: 'asc',
       },
     });
   } catch (error) {

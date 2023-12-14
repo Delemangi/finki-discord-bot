@@ -1,7 +1,7 @@
-import { databaseErrorFunctions } from "../translations/database.js";
-import { logger } from "../utils/logger.js";
-import { database } from "./database.js";
-import { type InfoMessage, type Prisma } from "@prisma/client";
+import { databaseErrorFunctions } from '../translations/database.js';
+import { logger } from '../utils/logger.js';
+import { database } from './database.js';
+import { type InfoMessage, type Prisma } from '@prisma/client';
 
 export const createInfoMessage = async (
   message?: Prisma.InfoMessageCreateInput,
@@ -43,7 +43,7 @@ export const getInfoMessages = async () => {
   try {
     return await database.infoMessage.findMany({
       orderBy: {
-        index: "asc",
+        index: 'asc',
       },
     });
   } catch (error) {

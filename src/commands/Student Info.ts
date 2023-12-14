@@ -1,12 +1,12 @@
-import { getStudentInfoEmbed } from "../components/commands.js";
+import { getStudentInfoEmbed } from '../components/commands.js';
 import {
   ApplicationCommandType,
   ContextMenuCommandBuilder,
   type GuildMember,
   type UserContextMenuCommandInteraction,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "Student Info";
+const name = 'Student Info';
 
 export const data = new ContextMenuCommandBuilder()
   .setName(name)

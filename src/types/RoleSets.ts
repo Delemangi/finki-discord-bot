@@ -1,6 +1,6 @@
 export type RoleSets =
-  | "color"
-  | "courses"
-  | "notification"
-  | "program"
-  | "year";
+  | 'color'
+  | 'courses'
+  | 'notification'
+  | 'program'
+  | 'year';

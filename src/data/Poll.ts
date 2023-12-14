@@ -1,8 +1,8 @@
-import { databaseErrorFunctions } from "../translations/database.js";
-import { type PollWithOptions } from "../types/PollWithOptions.js";
-import { logger } from "../utils/logger.js";
-import { database } from "./database.js";
-import { type Prisma } from "@prisma/client";
+import { databaseErrorFunctions } from '../translations/database.js';
+import { type PollWithOptions } from '../types/PollWithOptions.js';
+import { logger } from '../utils/logger.js';
+import { database } from './database.js';
+import { type Prisma } from '@prisma/client';
 
 export const createPoll = async (poll?: Prisma.PollCreateInput) => {
   if (poll === undefined) {
@@ -58,7 +58,7 @@ export const getPolls = async () => {
       include: {
         options: {
           orderBy: {
-            name: "asc",
+            name: 'asc',
           },
         },
       },
@@ -80,7 +80,7 @@ export const getPollById = async (pollId?: string) => {
       include: {
         options: {
           orderBy: {
-            name: "asc",
+            name: 'asc',
           },
         },
       },

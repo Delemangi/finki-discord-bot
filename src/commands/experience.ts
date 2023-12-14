@@ -2,76 +2,76 @@ import {
   getExperienceEmbed,
   getExperienceLeaderboardFirstPageEmbed,
   getExperienceLeaderboardNextPageEmbed,
-} from "../components/commands.js";
-import { getPaginationComponents } from "../components/pagination.js";
+} from '../components/commands.js';
+import { getPaginationComponents } from '../components/pagination.js';
 import {
   createExperience,
   getExperienceByUserId,
   getExperienceCount,
   getExperienceSorted,
   updateExperience,
-} from "../data/Experience.js";
+} from '../data/Experience.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-} from "../translations/commands.js";
-import { logErrorFunctions } from "../translations/logs.js";
-import { deleteResponse } from "../utils/channels.js";
-import { getConfigProperty } from "../utils/config.js";
-import { getLevelFromExperience } from "../utils/experience.js";
-import { logger } from "../utils/logger.js";
+} from '../translations/commands.js';
+import { logErrorFunctions } from '../translations/logs.js';
+import { deleteResponse } from '../utils/channels.js';
+import { getConfigProperty } from '../utils/config.js';
+import { getLevelFromExperience } from '../utils/experience.js';
+import { logger } from '../utils/logger.js';
 import {
   type ChatInputCommandInteraction,
   ComponentType,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "experience";
+const name = 'experience';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription("experience")
+  .setDescription('experience')
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("get")
-      .setDescription(commandDescriptions["experience get"])
+      .setName('get')
+      .setDescription(commandDescriptions['experience get'])
       .addUserOption((option) =>
-        option.setName("user").setDescription("Корисник").setRequired(false),
+        option.setName('user').setDescription('Корисник').setRequired(false),
       ),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("add")
-      .setDescription(commandDescriptions["experience add"])
+      .setName('add')
+      .setDescription(commandDescriptions['experience add'])
       .addUserOption((option) =>
-        option.setName("user").setDescription("Корисник").setRequired(true),
+        option.setName('user').setDescription('Корисник').setRequired(true),
       )
       .addNumberOption((option) =>
-        option.setName("experience").setDescription("Поени").setRequired(true),
+        option.setName('experience').setDescription('Поени').setRequired(true),
       ),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("leaderboard")
-      .setDescription(commandDescriptions["experience leaderboard"]),
+      .setName('leaderboard')
+      .setDescription(commandDescriptions['experience leaderboard']),
   )
   .addSubcommand((subcommand) =>
     subcommand
-      .setName("set")
-      .setDescription(commandDescriptions["experience set"])
+      .setName('set')
+      .setDescription(commandDescriptions['experience set'])
       .addUserOption((option) =>
-        option.setName("user").setDescription("Корисник").setRequired(true),
+        option.setName('user').setDescription('Корисник').setRequired(true),
       )
       .addNumberOption((option) =>
-        option.setName("experience").setDescription("Поени").setRequired(true),
+        option.setName('experience').setDescription('Поени').setRequired(true),
       ),
   );
 
 const handleExperienceGet = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const user = interaction.options.getUser("user") ?? interaction.user;
+  const user = interaction.options.getUser('user') ?? interaction.user;
 
   if (user.bot) {
     await interaction.editReply(commandErrors.userBot);
@@ -103,7 +103,7 @@ const handleExperienceGet = async (
 const handleExperienceAdd = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const user = interaction.options.getUser("user", true);
+  const user = interaction.options.getUser('user', true);
 
   if (user.bot) {
     await interaction.editReply(commandErrors.userBot);
@@ -111,7 +111,7 @@ const handleExperienceAdd = async (
     return;
   }
 
-  const experience = interaction.options.getNumber("experience", true);
+  const experience = interaction.options.getNumber('experience', true);
   const existingExperience =
     (await getExperienceByUserId(user.id)) ??
     (await createExperience({
@@ -174,8 +174,8 @@ const handleExperienceLeaderboard = async (
   const embed = await getExperienceLeaderboardFirstPageEmbed(experience, total);
   const components = [
     pages === 0 || pages === 1
-      ? getPaginationComponents("exp")
-      : getPaginationComponents("exp", "start"),
+      ? getPaginationComponents('exp')
+      : getPaginationComponents('exp', 'start'),
   ];
   const message = await interaction.editReply({
     components,
@@ -183,10 +183,10 @@ const handleExperienceLeaderboard = async (
   });
   const collector = message.createMessageComponentCollector({
     componentType: ComponentType.Button,
-    idle: await getConfigProperty("buttonIdleTime"),
+    idle: await getConfigProperty('buttonIdleTime'),
   });
 
-  collector.on("collect", async (buttonInteraction) => {
+  collector.on('collect', async (buttonInteraction) => {
     if (
       buttonInteraction.user.id !==
       buttonInteraction.message.interaction?.user.id
@@ -200,7 +200,7 @@ const handleExperienceLeaderboard = async (
       return;
     }
 
-    const id = buttonInteraction.customId.split(":")[1];
+    const id = buttonInteraction.customId.split(':')[1];
 
     if (id === undefined) {
       return;
@@ -212,24 +212,24 @@ const handleExperienceLeaderboard = async (
         buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.[0],
       ) - 1;
 
-    if (id === "first") {
+    if (id === 'first') {
       page = 0;
-    } else if (id === "last") {
+    } else if (id === 'last') {
       page = pages - 1;
-    } else if (id === "previous") {
+    } else if (id === 'previous') {
       page--;
-    } else if (id === "next") {
+    } else if (id === 'next') {
       page++;
     }
 
     if (page === 0 && (pages === 0 || pages === 1)) {
-      buttons = getPaginationComponents("exp");
+      buttons = getPaginationComponents('exp');
     } else if (page === 0) {
-      buttons = getPaginationComponents("exp", "start");
+      buttons = getPaginationComponents('exp', 'start');
     } else if (page === pages - 1) {
-      buttons = getPaginationComponents("exp", "end");
+      buttons = getPaginationComponents('exp', 'end');
     } else {
-      buttons = getPaginationComponents("exp", "middle");
+      buttons = getPaginationComponents('exp', 'middle');
     }
 
     const nextEmbed = await getExperienceLeaderboardNextPageEmbed(
@@ -253,10 +253,10 @@ const handleExperienceLeaderboard = async (
     }
   });
 
-  collector.on("end", async () => {
+  collector.on('end', async () => {
     try {
       await interaction.editReply({
-        components: [getPaginationComponents("exp")],
+        components: [getPaginationComponents('exp')],
       });
     } catch (error) {
       logger.error(logErrorFunctions.collectorEndError(name, error));
@@ -267,7 +267,7 @@ const handleExperienceLeaderboard = async (
 const handleExperienceSet = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const user = interaction.options.getUser("user", true);
+  const user = interaction.options.getUser('user', true);
 
   if (user.bot) {
     await interaction.editReply(commandErrors.userBot);
@@ -275,7 +275,7 @@ const handleExperienceSet = async (
     return;
   }
 
-  const experience = interaction.options.getNumber("experience", true);
+  const experience = interaction.options.getNumber('experience', true);
   const existingExperience =
     (await getExperienceByUserId(user.id)) ??
     (await createExperience({

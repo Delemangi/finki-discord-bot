@@ -1,5 +1,5 @@
-import { Client } from "discord.js";
-import { GatewayIntentBits } from "discord-api-types/v10";
+import { Client } from 'discord.js';
+import { GatewayIntentBits } from 'discord-api-types/v10';
 
 const intents = [
   GatewayIntentBits.Guilds,
@@ -9,7 +9,7 @@ const intents = [
 const presence = {
   activities: [
     {
-      name: "World Domination",
+      name: 'World Domination',
     },
   ],
 };

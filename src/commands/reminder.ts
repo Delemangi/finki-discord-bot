@@ -1,34 +1,34 @@
-import { createReminder } from "../data/Reminder.js";
+import { createReminder } from '../data/Reminder.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-} from "../translations/commands.js";
-import { parseDate } from "chrono-node";
+} from '../translations/commands.js';
+import { parseDate } from 'chrono-node';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
   time,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "reminder";
+const name = 'reminder';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription(commandDescriptions[name])
   .addStringOption((option) =>
-    option.setName("description").setDescription("Опис").setRequired(true),
+    option.setName('description').setDescription('Опис').setRequired(true),
   )
   .addStringOption((option) =>
     option
-      .setName("when")
-      .setDescription("Датум и/или време")
+      .setName('when')
+      .setDescription('Датум и/или време')
       .setRequired(true),
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const description = interaction.options.getString("description", true);
-  const when = interaction.options.getString("when", true);
+  const description = interaction.options.getString('description', true);
+  const when = interaction.options.getString('when', true);
 
   const date = parseDate(when);
 
@@ -46,6 +46,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   });
 
   await interaction.editReply(
-    commandResponseFunctions.reminderCreated(time(date, "F"), description),
+    commandResponseFunctions.reminderCreated(time(date, 'F'), description),
   );
 };

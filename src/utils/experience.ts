@@ -2,19 +2,19 @@ import {
   createExperience,
   getExperienceByUserId,
   updateExperience,
-} from "../data/Experience.js";
-import { experienceMessages } from "../translations/experience.js";
-import { getChannel } from "./channels.js";
-import { getConfigProperty, getLevels, getRoleProperty } from "./config.js";
-import { isMemberInVip, isMemberLevel } from "./members.js";
-import { emojiRegex, urlRegex } from "./regex.js";
-import AsyncLock from "async-lock";
-import { type GuildMember, type Message } from "discord.js";
+} from '../data/Experience.js';
+import { experienceMessages } from '../translations/experience.js';
+import { getChannel } from './channels.js';
+import { getConfigProperty, getLevels, getRoleProperty } from './config.js';
+import { isMemberInVip, isMemberLevel } from './members.js';
+import { emojiRegex, urlRegex } from './regex.js';
+import AsyncLock from 'async-lock';
+import { type GuildMember, type Message } from 'discord.js';
 
 const coefficient = (1 + Math.sqrt(5)) / 2 - 1;
 
 const cleanMessage = (message: string) => {
-  return message.trim().replaceAll(emojiRegex, "$1").replaceAll(urlRegex, "");
+  return message.trim().replaceAll(emojiRegex, '$1').replaceAll(urlRegex, '');
 };
 
 const countLinks = (message: string) => {
@@ -65,7 +65,7 @@ const awardMember = async (member: GuildMember, level: number) => {
   await member.roles.remove(roles.remove);
 
   if (await isMemberLevel(member, 10, false)) {
-    const regularRoleId = await getRoleProperty("regular");
+    const regularRoleId = await getRoleProperty('regular');
 
     await member.roles.add(regularRoleId);
   }
@@ -74,7 +74,7 @@ const awardMember = async (member: GuildMember, level: number) => {
     (await isMemberInVip(member)) &&
     !(await isMemberLevel(member, 15, false))
   ) {
-    const councilRoleId = await getRoleProperty("council");
+    const councilRoleId = await getRoleProperty('council');
 
     await member.roles.remove(councilRoleId);
   }
@@ -83,7 +83,7 @@ const awardMember = async (member: GuildMember, level: number) => {
 const lock = new AsyncLock();
 
 export const addExperience = async (message: Message) => {
-  if (!(await getConfigProperty("leveling"))) {
+  if (!(await getConfigProperty('leveling'))) {
     return;
   }
 
@@ -120,7 +120,7 @@ export const addExperience = async (message: Message) => {
     if (level !== currentLevel.level) {
       currentLevel.level = level;
 
-      const channel = getChannel("activity");
+      const channel = getChannel('activity');
       await channel?.send({
         allowedMentions: {
           parse: [],

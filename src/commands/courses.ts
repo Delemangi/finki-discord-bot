@@ -1,43 +1,43 @@
 import {
   getCoursesPrerequisiteEmbed,
   getCoursesProgramEmbed,
-} from "../components/commands.js";
+} from '../components/commands.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-} from "../translations/commands.js";
-import { programMapping } from "../translations/programs.js";
-import { type ProgramName } from "../types/ProgramName.js";
-import { getGuild } from "../utils/guild.js";
-import { createPollChoices } from "../utils/polls.js";
-import { getCourseRolesBySemester } from "../utils/roles.js";
+} from '../translations/commands.js';
+import { programMapping } from '../translations/programs.js';
+import { type ProgramName } from '../types/ProgramName.js';
+import { getGuild } from '../utils/guild.js';
+import { createPollChoices } from '../utils/polls.js';
+import { getCourseRolesBySemester } from '../utils/roles.js';
 import {
   type ChatInputCommandInteraction,
   type GuildMember,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "courses";
+const name = 'courses';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription("Get all...")
+  .setDescription('Get all...')
   .addSubcommand((command) =>
     command
-      .setName("program")
-      .setDescription(commandDescriptions["courses program"])
+      .setName('program')
+      .setDescription(commandDescriptions['courses program'])
       .addStringOption((option) =>
         option
-          .setName("program")
-          .setDescription("Смер")
+          .setName('program')
+          .setDescription('Смер')
           .setRequired(true)
           .addChoices(...createPollChoices(Object.keys(programMapping))),
       )
       .addNumberOption((option) =>
         option
-          .setName("semester")
-          .setDescription("Семестар")
+          .setName('semester')
+          .setDescription('Семестар')
           .setRequired(true)
           .setMinValue(1)
           .setMaxValue(8),
@@ -45,24 +45,24 @@ export const data = new SlashCommandBuilder()
   )
   .addSubcommand((command) =>
     command
-      .setName("prerequisite")
-      .setDescription(commandDescriptions["courses prerequisite"])
+      .setName('prerequisite')
+      .setDescription(commandDescriptions['courses prerequisite'])
       .addStringOption((option) =>
         option
-          .setName("course")
-          .setDescription("Курс")
+          .setName('course')
+          .setDescription('Курс')
           .setRequired(true)
           .setAutocomplete(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("add")
-      .setDescription(commandDescriptions["courses add"])
+      .setName('add')
+      .setDescription(commandDescriptions['courses add'])
       .addNumberOption((option) =>
         option
-          .setName("semester")
-          .setDescription("Семестар")
+          .setName('semester')
+          .setDescription('Семестар')
           .setRequired(true)
           .setMinValue(1)
           .setMaxValue(8),
@@ -70,12 +70,12 @@ export const data = new SlashCommandBuilder()
   )
   .addSubcommand((command) =>
     command
-      .setName("remove")
-      .setDescription(commandDescriptions["courses remove"])
+      .setName('remove')
+      .setDescription(commandDescriptions['courses remove'])
       .addNumberOption((option) =>
         option
-          .setName("semester")
-          .setDescription("Семестар")
+          .setName('semester')
+          .setDescription('Семестар')
           .setRequired(true)
           .setMinValue(1)
           .setMaxValue(8),
@@ -85,8 +85,8 @@ export const data = new SlashCommandBuilder()
 const handleCoursesProgram = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const program = interaction.options.getString("program", true) as ProgramName;
-  const semester = interaction.options.getNumber("semester", true);
+  const program = interaction.options.getString('program', true) as ProgramName;
+  const semester = interaction.options.getNumber('semester', true);
 
   const embeds = await getCoursesProgramEmbed(program, semester);
   await interaction.editReply({
@@ -97,7 +97,7 @@ const handleCoursesProgram = async (
 const handleCoursesPrerequisite = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const course = interaction.options.getString("course", true);
+  const course = interaction.options.getString('course', true);
 
   const embed = await getCoursesPrerequisiteEmbed(course);
   await interaction.editReply({
@@ -114,7 +114,7 @@ const handleCoursesAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const semester = interaction.options.getNumber("semester", true);
+  const semester = interaction.options.getNumber('semester', true);
   const member = interaction.member as GuildMember;
   const roles = getCourseRolesBySemester(guild, semester);
 
@@ -135,7 +135,7 @@ const handleCoursesRemove = async (
     return;
   }
 
-  const semester = interaction.options.getNumber("semester", true);
+  const semester = interaction.options.getNumber('semester', true);
   const member = interaction.member as GuildMember;
   const roles = getCourseRolesBySemester(guild, semester);
 

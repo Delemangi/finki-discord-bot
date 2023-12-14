@@ -1,7 +1,7 @@
-import { databaseErrorFunctions } from "../translations/database.js";
-import { logger } from "../utils/logger.js";
-import { database } from "./database.js";
-import { type Experience, type Prisma } from "@prisma/client";
+import { databaseErrorFunctions } from '../translations/database.js';
+import { logger } from '../utils/logger.js';
+import { database } from './database.js';
+import { type Experience, type Prisma } from '@prisma/client';
 
 export const createExperience = async (
   experience?: Prisma.ExperienceCreateInput,
@@ -53,7 +53,7 @@ export const getExperienceSorted = async (limit: number = 512) => {
   try {
     return await database.experience.findMany({
       orderBy: {
-        experience: "desc",
+        experience: 'desc',
       },
       take: limit,
     });

@@ -1,1 +1,1 @@
-export type PaginationPosition = "end" | "middle" | "none" | "start";
+export type PaginationPosition = 'end' | 'middle' | 'none' | 'start';

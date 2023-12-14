@@ -1,14 +1,14 @@
-import { getRandomAnto } from "../data/Anto.js";
+import { getRandomAnto } from '../data/Anto.js';
 import {
   commandDescriptions,
   commandErrors,
-} from "../translations/commands.js";
+} from '../translations/commands.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "anto";
+const name = 'anto';
 
 export const data = new SlashCommandBuilder()
   .setName(name)

@@ -1,47 +1,47 @@
-import { getBars } from "../data/Bar.js";
+import { getBars } from '../data/Bar.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
   commandResponses,
-} from "../translations/commands.js";
-import { labels } from "../translations/labels.js";
-import { formatUsers } from "../translations/users.js";
-import { getRoleProperty } from "../utils/config.js";
-import { getGuild, getMemberFromGuild } from "../utils/guild.js";
-import { safeReplyToInteraction } from "../utils/messages.js";
+} from '../translations/commands.js';
+import { labels } from '../translations/labels.js';
+import { formatUsers } from '../translations/users.js';
+import { getRoleProperty } from '../utils/config.js';
+import { getGuild, getMemberFromGuild } from '../utils/guild.js';
+import { safeReplyToInteraction } from '../utils/messages.js';
 import {
   getMembersByRoleIds,
   getMembersByRoleIdsExtended,
-} from "../utils/roles.js";
-import { isNotNullish } from "../utils/utils.js";
+} from '../utils/roles.js';
+import { isNotNullish } from '../utils/utils.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "members";
+const name = 'members';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription("Members")
+  .setDescription('Members')
   .addSubcommand((command) =>
     command
-      .setName("count")
-      .setDescription(commandDescriptions["members count"]),
+      .setName('count')
+      .setDescription(commandDescriptions['members count']),
   )
   .addSubcommand((command) =>
-    command.setName("vip").setDescription(commandDescriptions["members vip"]),
-  )
-  .addSubcommand((command) =>
-    command
-      .setName("regulars")
-      .setDescription(commandDescriptions["members regulars"]),
+    command.setName('vip').setDescription(commandDescriptions['members vip']),
   )
   .addSubcommand((command) =>
     command
-      .setName("barred")
-      .setDescription(commandDescriptions["members barred"]),
+      .setName('regulars')
+      .setDescription(commandDescriptions['members regulars']),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName('barred')
+      .setDescription(commandDescriptions['members barred']),
   );
 
 const handleMembersCount = async (interaction: ChatInputCommandInteraction) => {
@@ -61,7 +61,7 @@ const handleMembersVip = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const vipRoleId = await getRoleProperty("vip");
+  const vipRoleId = await getRoleProperty('vip');
   const vipMemberIds = await getMembersByRoleIds(guild, [vipRoleId]);
   const vipMembers = (
     await Promise.all(
@@ -73,8 +73,8 @@ const handleMembersVip = async (interaction: ChatInputCommandInteraction) => {
     vipMembers.map(({ user }) => user),
   );
 
-  const adminRoleId = await getRoleProperty("admin");
-  const moderatorRoleId = await getRoleProperty("moderator");
+  const adminRoleId = await getRoleProperty('admin');
+  const moderatorRoleId = await getRoleProperty('moderator');
   const adminTeamMemberIds = await getMembersByRoleIds(guild, [
     adminRoleId,
     moderatorRoleId,
@@ -91,7 +91,7 @@ const handleMembersVip = async (interaction: ChatInputCommandInteraction) => {
     adminTeamMembers.map(({ user }) => user),
   );
 
-  const veteranRoleId = await getRoleProperty("veteran");
+  const veteranRoleId = await getRoleProperty('veteran');
   const veteranMemberIds = await getMembersByRoleIds(guild, [veteranRoleId]);
   const veteranMembers = (
     await Promise.all(
@@ -122,11 +122,11 @@ const handleMembersRegulars = async (
     return;
   }
 
-  const regularRoleId = await getRoleProperty("regular");
-  const vipRoleId = await getRoleProperty("vip");
-  const moderatorRoleId = await getRoleProperty("moderator");
-  const adminRoleId = await getRoleProperty("admin");
-  const veteranRoleId = await getRoleProperty("veteran");
+  const regularRoleId = await getRoleProperty('regular');
+  const vipRoleId = await getRoleProperty('vip');
+  const moderatorRoleId = await getRoleProperty('moderator');
+  const adminRoleId = await getRoleProperty('admin');
+  const veteranRoleId = await getRoleProperty('veteran');
 
   const invitedMemberIds = await getMembersByRoleIdsExtended(
     guild,

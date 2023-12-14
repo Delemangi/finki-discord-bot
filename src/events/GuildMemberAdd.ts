@@ -1,5 +1,5 @@
-import { createExperience, getExperienceByUserId } from "../data/Experience.js";
-import { type ClientEvents, Events } from "discord.js";
+import { createExperience, getExperienceByUserId } from '../data/Experience.js';
+import { type ClientEvents, Events } from 'discord.js';
 
 export const name = Events.GuildMemberAdd;
 

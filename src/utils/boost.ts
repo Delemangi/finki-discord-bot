@@ -1,4 +1,4 @@
-import { GuildPremiumTier } from "discord.js";
+import { GuildPremiumTier } from 'discord.js';
 
 export const getMaxEmojisByBoostLevel = (boostLevel: GuildPremiumTier) => {
   switch (boostLevel) {

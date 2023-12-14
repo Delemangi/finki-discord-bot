@@ -1,4 +1,4 @@
-import { userMention } from "discord.js";
+import { userMention } from 'discord.js';
 
 export const experienceMessages = {
   levelUp: (userId: string, level: number | string) =>

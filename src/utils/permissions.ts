@@ -1,8 +1,8 @@
-import { commandDescriptions } from "../translations/commands.js";
-import { type Roles } from "../types/Roles.js";
-import { getRoleProperty } from "./config.js";
-import { isMemberAdministrator } from "./members.js";
-import { type GuildMember, PermissionsBitField } from "discord.js";
+import { commandDescriptions } from '../translations/commands.js';
+import { type Roles } from '../types/Roles.js';
+import { getRoleProperty } from './config.js';
+import { isMemberAdministrator } from './members.js';
+import { type GuildMember, PermissionsBitField } from 'discord.js';
 
 const commandPermissions: Record<
   string,
@@ -13,7 +13,7 @@ const commandPermissions: Record<
 > = {
   admin: {
     permissions: [],
-    roles: ["council"],
+    roles: ['council'],
   },
   config: {
     permissions: [PermissionsBitField.Flags.Administrator],
@@ -21,37 +21,37 @@ const commandPermissions: Record<
   },
   council: {
     permissions: [],
-    roles: ["council"],
+    roles: ['council'],
   },
   embed: {
     permissions: [PermissionsBitField.Flags.ManageMessages],
     roles: [],
   },
-  "experience add": {
+  'experience add': {
     permissions: [],
-    roles: ["admin"],
+    roles: ['admin'],
   },
-  "experience set": {
+  'experience set': {
     permissions: [],
-    roles: ["admin"],
+    roles: ['admin'],
   },
   manage: {
     permissions: [],
-    roles: ["admin", "moderator", "fss"],
+    roles: ['admin', 'moderator', 'fss'],
   },
-  "members barred": {
+  'members barred': {
     permissions: [],
-    roles: ["admin", "moderator", "vip"],
+    roles: ['admin', 'moderator', 'vip'],
   },
-  "members invited": {
+  'members invited': {
     permissions: [],
-    roles: ["admin", "moderator", "vip"],
+    roles: ['admin', 'moderator', 'vip'],
   },
   message: {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
-  "poll delete": {
+  'poll delete': {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
@@ -65,54 +65,54 @@ const commandPermissions: Record<
   },
   regulars: {
     permissions: [],
-    roles: ["admin", "moderator"],
+    roles: ['admin', 'moderator'],
   },
   script: {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
-  "special bar": {
+  'special bar': {
     permissions: [],
-    roles: ["council"],
+    roles: ['council'],
   },
-  "special delete": {
+  'special delete': {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
-  "special list": {
+  'special list': {
     permissions: [],
-    roles: ["admin", "moderator", "vip"],
+    roles: ['admin', 'moderator', 'vip'],
   },
-  "special override": {
+  'special override': {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],
   },
-  "special remaining": {
+  'special remaining': {
     permissions: [],
-    roles: ["council"],
+    roles: ['council'],
   },
-  "special unbar": {
+  'special unbar': {
     permissions: [],
-    roles: ["council"],
+    roles: ['council'],
   },
-  "vip add": {
+  'vip add': {
     permissions: [],
-    roles: ["council"],
+    roles: ['council'],
   },
-  "vip recreate": {
+  'vip recreate': {
     permissions: [],
-    roles: ["admin", "moderator"],
+    roles: ['admin', 'moderator'],
   },
-  "vip remove": {
+  'vip remove': {
     permissions: [],
-    roles: ["council"],
+    roles: ['council'],
   },
 };
 
 const getCommandPermission = async (
   command: string,
 ): Promise<[bigint[], string[]]> => {
-  const topCommand = command.split(" ")[0];
+  const topCommand = command.split(' ')[0];
 
   if (Object.keys(commandPermissions).includes(command)) {
     return [

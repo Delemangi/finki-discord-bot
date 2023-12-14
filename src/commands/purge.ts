@@ -2,15 +2,15 @@ import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-} from "../translations/commands.js";
+} from '../translations/commands.js';
 import {
   type ChatInputCommandInteraction,
   PermissionFlagsBits,
   SlashCommandBuilder,
-} from "discord.js";
-import { setTimeout } from "node:timers/promises";
+} from 'discord.js';
+import { setTimeout } from 'node:timers/promises';
 
-const name = "purge";
+const name = 'purge';
 const permission = PermissionFlagsBits.ManageMessages;
 
 export const data = new SlashCommandBuilder()
@@ -18,8 +18,8 @@ export const data = new SlashCommandBuilder()
   .setDescription(commandDescriptions[name])
   .addNumberOption((option) =>
     option
-      .setName("count")
-      .setDescription("Број на пораки (меѓу 1 и 100)")
+      .setName('count')
+      .setDescription('Број на пораки (меѓу 1 и 100)')
       .setMinValue(1)
       .setMaxValue(100)
       .setRequired(true),
@@ -38,7 +38,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const count = Math.round(interaction.options.getNumber("count", true));
+  const count = Math.round(interaction.options.getNumber('count', true));
 
   await interaction.editReply(commandResponseFunctions.deletingMessages(count));
   await setTimeout(500);

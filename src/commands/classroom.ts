@@ -1,31 +1,31 @@
-import { getClassroomEmbed } from "../components/commands.js";
+import { getClassroomEmbed } from '../components/commands.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-} from "../translations/commands.js";
-import { getClassrooms } from "../utils/config.js";
+} from '../translations/commands.js';
+import { getClassrooms } from '../utils/config.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "classroom";
+const name = 'classroom';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription(commandDescriptions[name])
   .addStringOption((option) =>
     option
-      .setName("classroom")
-      .setDescription("Просторија")
+      .setName('classroom')
+      .setDescription('Просторија')
       .setRequired(true)
       .setAutocomplete(true),
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const classroom = interaction.options.getString("classroom", true);
-  const [classroomName] = classroom.split(" ");
+  const classroom = interaction.options.getString('classroom', true);
+  const [classroomName] = classroom.split(' ');
   const classrooms = getClassrooms().filter(
     (cl) =>
       cl.classroom.toString().toLowerCase() === classroomName?.toLowerCase(),

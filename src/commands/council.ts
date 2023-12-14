@@ -2,57 +2,57 @@ import {
   getPollComponents,
   getPollEmbed,
   getPollStatsComponents,
-} from "../components/polls.js";
-import { getPollById } from "../data/Poll.js";
+} from '../components/polls.js';
+import { getPollById } from '../data/Poll.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-} from "../translations/commands.js";
-import { getRoleProperty } from "../utils/config.js";
-import { getMemberFromGuild } from "../utils/guild.js";
+} from '../translations/commands.js';
+import { getRoleProperty } from '../utils/config.js';
+import { getMemberFromGuild } from '../utils/guild.js';
 import {
   isMemberBarred,
   isMemberInCouncil,
   isMemberInVip,
-} from "../utils/members.js";
-import { startSpecialPoll } from "../utils/polls.js";
+} from '../utils/members.js';
+import { startSpecialPoll } from '../utils/polls.js';
 import {
   type ChatInputCommandInteraction,
   roleMention,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "council";
+const name = 'council';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription("Council")
+  .setDescription('Council')
   .addSubcommand((command) =>
     command
-      .setName("add")
-      .setDescription(commandDescriptions["council add"])
+      .setName('add')
+      .setDescription(commandDescriptions['council add'])
       .addUserOption((option) =>
         option
-          .setName("user")
-          .setDescription("Предлог корисник за член на Советот")
+          .setName('user')
+          .setDescription('Предлог корисник за член на Советот')
           .setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("remove")
-      .setDescription(commandDescriptions["council remove"])
+      .setName('remove')
+      .setDescription(commandDescriptions['council remove'])
       .addUserOption((option) =>
         option
-          .setName("user")
-          .setDescription("Член на Советот")
+          .setName('user')
+          .setDescription('Член на Советот')
           .setRequired(true),
       ),
   );
 
 const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
-  const user = interaction.options.getUser("user", true);
+  const user = interaction.options.getUser('user', true);
 
   if (user.bot) {
     await interaction.editReply(commandErrors.userBot);
@@ -86,7 +86,7 @@ const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, "councilAdd", 0.67);
+  const pollId = await startSpecialPoll(interaction, user, 'councilAdd', 0.67);
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.userSpecialPending);
@@ -105,7 +105,7 @@ const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
   await interaction.channel?.send(
-    roleMention(await getRoleProperty("council")),
+    roleMention(await getRoleProperty('council')),
   );
   await interaction.editReply({
     components,
@@ -122,7 +122,7 @@ const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
 const handleCouncilRemove = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const user = interaction.options.getUser("user", true);
+  const user = interaction.options.getUser('user', true);
 
   if (user.bot) {
     await interaction.editReply(commandErrors.userBot);
@@ -147,7 +147,7 @@ const handleCouncilRemove = async (
   const pollId = await startSpecialPoll(
     interaction,
     user,
-    "councilRemove",
+    'councilRemove',
     0.67,
   );
 
@@ -168,7 +168,7 @@ const handleCouncilRemove = async (
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
   await interaction.channel?.send(
-    roleMention(await getRoleProperty("council")),
+    roleMention(await getRoleProperty('council')),
   );
   await interaction.editReply({
     components,

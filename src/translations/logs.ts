@@ -2,27 +2,27 @@ import {
   type ButtonInteraction,
   type ChatInputCommandInteraction,
   type UserContextMenuCommandInteraction,
-} from "discord.js";
+} from 'discord.js';
 
 export const logShortStrings = {
-  auto: "[Auto]",
-  button: "[Button]",
-  chat: "[Chat]",
-  dm: "DM",
-  guild: "Guild",
-  pollStats: "Poll Stats",
-  user: "[User]",
+  auto: '[Auto]',
+  button: '[Button]',
+  chat: '[Chat]',
+  dm: 'DM',
+  guild: 'Guild',
+  pollStats: 'Poll Stats',
+  user: '[User]',
 };
 
 export const logMessages = {
-  channelsInitialized: "Channels initialized",
-  commandsRegistered: "Commands registered",
-  rolesInitialized: "Roles initialized",
+  channelsInitialized: 'Channels initialized',
+  commandsRegistered: 'Commands registered',
+  rolesInitialized: 'Roles initialized',
 };
 
 export const logMessageFunctions = {
   loggedIn: (username: string | undefined) =>
-    `Logged in as ${username ?? "an unknown user"}`,
+    `Logged in as ${username ?? 'an unknown user'}`,
 
   noRefreshNeeded: (property: string) => `No refresh needed for ${property}`,
 

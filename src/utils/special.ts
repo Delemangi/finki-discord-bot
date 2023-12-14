@@ -1,14 +1,14 @@
-import { getPollById } from "../data/Poll.js";
-import { getSpecialPolls } from "../data/SpecialPoll.js";
-import { handlePollButtonForSpecialVote } from "../interactions/button.js";
+import { getPollById } from '../data/Poll.js';
+import { getSpecialPolls } from '../data/SpecialPoll.js';
+import { handlePollButtonForSpecialVote } from '../interactions/button.js';
 import {
   logErrorFunctions,
   logMessageFunctions,
-} from "../translations/logs.js";
-import { getMemberFromGuild } from "./guild.js";
-import { logger } from "./logger.js";
-import { abstainAllMissingVotes, decidePoll } from "./polls.js";
-import { setTimeout } from "node:timers/promises";
+} from '../translations/logs.js';
+import { getMemberFromGuild } from './guild.js';
+import { logger } from './logger.js';
+import { abstainAllMissingVotes, decidePoll } from './polls.js';
+import { setTimeout } from 'node:timers/promises';
 
 export const closeSpecialPolls = async () => {
   while (true) {
@@ -41,7 +41,7 @@ export const closeSpecialPolls = async () => {
             logMessageFunctions.specialPollOverriden(
               specialPoll.type,
               specialPoll.userId,
-              newPoll.decision ?? "unknown",
+              newPoll.decision ?? 'unknown',
             ),
           );
         }

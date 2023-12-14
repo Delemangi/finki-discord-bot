@@ -3,14 +3,14 @@ import {
   getButtonEmbed,
   getChatInputCommandEmbed,
   getUserContextMenuCommandEmbed,
-} from "../components/logs.js";
-import { commandErrors } from "../translations/commands.js";
-import { logErrorFunctions, logShortStrings } from "../translations/logs.js";
-import { deleteResponse, logEmbed } from "../utils/channels.js";
-import { getCommand } from "../utils/commands.js";
-import { getMemberFromGuild } from "../utils/guild.js";
-import { logger } from "../utils/logger.js";
-import { hasCommandPermission } from "../utils/permissions.js";
+} from '../components/logs.js';
+import { commandErrors } from '../translations/commands.js';
+import { logErrorFunctions, logShortStrings } from '../translations/logs.js';
+import { deleteResponse, logEmbed } from '../utils/channels.js';
+import { getCommand } from '../utils/commands.js';
+import { getMemberFromGuild } from '../utils/guild.js';
+import { logger } from '../utils/logger.js';
+import { hasCommandPermission } from '../utils/permissions.js';
 import {
   handleClassroomAutocomplete,
   handleCompanyAutocomplete,
@@ -21,7 +21,7 @@ import {
   handleQuestionAutocomplete,
   handleRuleAutocomplete,
   handleSessionAutocomplete,
-} from "./autocomplete.js";
+} from './autocomplete.js';
 import {
   handleAddCoursesButton,
   handleColorButton,
@@ -33,15 +33,15 @@ import {
   handleRemoveCoursesButton,
   handleVipButton,
   handleYearButton,
-} from "./button.js";
+} from './button.js';
 import {
   type AutocompleteInteraction,
   type ButtonInteraction,
   type ChatInputCommandInteraction,
   type UserContextMenuCommandInteraction,
-} from "discord.js";
+} from 'discord.js';
 
-const ignoredButtons = ["help", "polls", "exp"];
+const ignoredButtons = ['help', 'polls', 'exp'];
 
 export const handleChatInputCommand = async (
   interaction: ChatInputCommandInteraction,
@@ -69,7 +69,7 @@ export const handleChatInputCommand = async (
   await logEmbed(
     await getChatInputCommandEmbed(interaction),
     interaction,
-    "commands",
+    'commands',
   );
 
   if (command === undefined) {
@@ -88,8 +88,8 @@ export const handleChatInputCommand = async (
 
   const fullCommand = (
     interaction.commandName +
-    " " +
-    (interaction.options.getSubcommand(false) ?? "")
+    ' ' +
+    (interaction.options.getSubcommand(false) ?? '')
   ).trim();
 
   if (!(await hasCommandPermission(member, fullCommand))) {
@@ -138,7 +138,7 @@ export const handleUserContextMenuCommand = async (
   await logEmbed(
     await getUserContextMenuCommandEmbed(interaction),
     interaction,
-    "commands",
+    'commands',
   );
 
   if (command === undefined) {
@@ -169,10 +169,10 @@ const buttonInteractionHandlers = {
   year: handleYearButton,
 };
 
-const ephemeralResponseButtons = ["addCourses", "removeCourses"];
+const ephemeralResponseButtons = ['addCourses', 'removeCourses'];
 
 export const handleButton = async (interaction: ButtonInteraction) => {
-  const [command, ...args] = interaction.customId.split(":");
+  const [command, ...args] = interaction.customId.split(':');
 
   logger.info(
     `${logShortStrings.button} ${interaction.user.tag}: ${
@@ -186,7 +186,7 @@ export const handleButton = async (interaction: ButtonInteraction) => {
   await logEmbed(
     getButtonEmbed(interaction, command, args),
     interaction,
-    "commands",
+    'commands',
   );
 
   if (command === undefined) {
@@ -243,7 +243,7 @@ export const handleAutocomplete = async (
         : logShortStrings.guild
     }]`,
   );
-  await logEmbed(getAutocompleteEmbed(interaction), interaction, "commands");
+  await logEmbed(getAutocompleteEmbed(interaction), interaction, 'commands');
 
   if (Object.keys(autocompleteInteractionHandlers).includes(option.name)) {
     await autocompleteInteractionHandlers[

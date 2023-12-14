@@ -1,28 +1,28 @@
 import {
   commandDescriptions,
   commandErrors,
-} from "../translations/commands.js";
-import { getSessions } from "../utils/config.js";
+} from '../translations/commands.js';
+import { getSessions } from '../utils/config.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "session";
+const name = 'session';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription(commandDescriptions[name])
   .addStringOption((option) =>
     option
-      .setName("session")
-      .setDescription("Сесија")
+      .setName('session')
+      .setDescription('Сесија')
       .setRequired(true)
       .setAutocomplete(true),
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const session = interaction.options.getString("session", true);
+  const session = interaction.options.getString('session', true);
   const information = Object.entries(getSessions()).find(
     ([key]) => key.toLowerCase() === session.toLowerCase(),
   );

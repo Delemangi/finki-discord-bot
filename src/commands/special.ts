@@ -1,35 +1,35 @@
-import { getPaginationComponents } from "../components/pagination.js";
+import { getPaginationComponents } from '../components/pagination.js';
 import {
   getPollComponents,
   getPollEmbed,
   getPollStatsComponents,
   getSpecialPollListEmbed,
-} from "../components/polls.js";
-import { deletePoll, getPollById, updatePoll } from "../data/Poll.js";
-import { getPollVotesByPollId } from "../data/PollVote.js";
+} from '../components/polls.js';
+import { deletePoll, getPollById, updatePoll } from '../data/Poll.js';
+import { getPollVotesByPollId } from '../data/PollVote.js';
 import {
   deleteSpecialPoll,
   getSpecialPollById,
   getSpecialPollByPollId,
   getSpecialPollByUserAndType,
   getSpecialPolls,
-} from "../data/SpecialPoll.js";
-import { handlePollButtonForSpecialVote } from "../interactions/button.js";
+} from '../data/SpecialPoll.js';
+import { handlePollButtonForSpecialVote } from '../interactions/button.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
   commandResponses,
-} from "../translations/commands.js";
-import { labels } from "../translations/labels.js";
-import { logErrorFunctions } from "../translations/logs.js";
-import { formatUsers } from "../translations/users.js";
-import { deleteResponse } from "../utils/channels.js";
-import { getConfigProperty, getRoleProperty } from "../utils/config.js";
-import { getGuild, getMemberFromGuild } from "../utils/guild.js";
-import { logger } from "../utils/logger.js";
-import { isMemberAdmin, isMemberBarred } from "../utils/members.js";
-import { safeReplyToInteraction } from "../utils/messages.js";
+} from '../translations/commands.js';
+import { labels } from '../translations/labels.js';
+import { logErrorFunctions } from '../translations/logs.js';
+import { formatUsers } from '../translations/users.js';
+import { deleteResponse } from '../utils/channels.js';
+import { getConfigProperty, getRoleProperty } from '../utils/config.js';
+import { getGuild, getMemberFromGuild } from '../utils/guild.js';
+import { logger } from '../utils/logger.js';
+import { isMemberAdmin, isMemberBarred } from '../utils/members.js';
+import { safeReplyToInteraction } from '../utils/messages.js';
 import {
   abstainAllMissingVotes,
   createPollChoices,
@@ -37,76 +37,76 @@ import {
   specialPollOptions,
   specialPollTypes,
   startSpecialPoll,
-} from "../utils/polls.js";
-import { getMembersByRoleIds } from "../utils/roles.js";
-import { isNotNullish } from "../utils/utils.js";
+} from '../utils/polls.js';
+import { getMembersByRoleIds } from '../utils/roles.js';
+import { isNotNullish } from '../utils/utils.js';
 import {
   type ChatInputCommandInteraction,
   ComponentType,
   roleMention,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "special";
+const name = 'special';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription("Special")
+  .setDescription('Special')
   .addSubcommand((command) =>
-    command.setName("list").setDescription(commandDescriptions["special list"]),
+    command.setName('list').setDescription(commandDescriptions['special list']),
   )
   .addSubcommand((command) =>
     command
-      .setName("delete")
-      .setDescription(commandDescriptions["special delete"])
+      .setName('delete')
+      .setDescription(commandDescriptions['special delete'])
       .addStringOption((option) =>
-        option.setName("poll").setDescription("Анкета").setRequired(true),
+        option.setName('poll').setDescription('Анкета').setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("override")
-      .setDescription(commandDescriptions["special override"])
+      .setName('override')
+      .setDescription(commandDescriptions['special override'])
       .addUserOption((option) =>
-        option.setName("user").setDescription("Корисник").setRequired(true),
+        option.setName('user').setDescription('Корисник').setRequired(true),
       )
       .addStringOption((option) =>
         option
-          .setName("type")
-          .setDescription("Тип на анкета")
+          .setName('type')
+          .setDescription('Тип на анкета')
           .setRequired(true)
           .addChoices(...createPollChoices(specialPollTypes)),
       )
       .addStringOption((option) =>
         option
-          .setName("decision")
-          .setDescription("Одлука")
+          .setName('decision')
+          .setDescription('Одлука')
           .setRequired(false)
           .addChoices(...createPollChoices(specialPollOptions)),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("remaining")
-      .setDescription(commandDescriptions["special remaining"])
+      .setName('remaining')
+      .setDescription(commandDescriptions['special remaining'])
       .addStringOption((option) =>
-        option.setName("poll").setDescription("Анкета").setRequired(true),
+        option.setName('poll').setDescription('Анкета').setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("bar")
-      .setDescription(commandDescriptions["special bar"])
+      .setName('bar')
+      .setDescription(commandDescriptions['special bar'])
       .addUserOption((option) =>
-        option.setName("user").setDescription("Корисник").setRequired(true),
+        option.setName('user').setDescription('Корисник').setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("unbar")
-      .setDescription(commandDescriptions["special unbar"])
+      .setName('unbar')
+      .setDescription(commandDescriptions['special unbar'])
       .addUserOption((option) =>
-        option.setName("user").setDescription("Корисник").setRequired(true),
+        option.setName('user').setDescription('Корисник').setRequired(true),
       ),
   );
 
@@ -124,8 +124,8 @@ const handleSpecialList = async (interaction: ChatInputCommandInteraction) => {
   const embed = await getSpecialPollListEmbed(specialPolls, 0, pollsPerPage);
   const components = [
     pages === 0 || pages === 1
-      ? getPaginationComponents("polls")
-      : getPaginationComponents("polls", "start"),
+      ? getPaginationComponents('polls')
+      : getPaginationComponents('polls', 'start'),
   ];
   const message = await interaction.editReply({
     components,
@@ -133,10 +133,10 @@ const handleSpecialList = async (interaction: ChatInputCommandInteraction) => {
   });
   const collector = message.createMessageComponentCollector({
     componentType: ComponentType.Button,
-    time: await getConfigProperty("buttonIdleTime"),
+    time: await getConfigProperty('buttonIdleTime'),
   });
 
-  collector.on("collect", async (buttonInteraction) => {
+  collector.on('collect', async (buttonInteraction) => {
     if (
       buttonInteraction.user.id !==
       buttonInteraction.message.interaction?.user.id
@@ -150,7 +150,7 @@ const handleSpecialList = async (interaction: ChatInputCommandInteraction) => {
       return;
     }
 
-    const id = buttonInteraction.customId.split(":")[1];
+    const id = buttonInteraction.customId.split(':')[1];
 
     if (id === undefined) {
       return;
@@ -162,24 +162,24 @@ const handleSpecialList = async (interaction: ChatInputCommandInteraction) => {
         buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.[0],
       ) - 1;
 
-    if (id === "first") {
+    if (id === 'first') {
       page = 0;
-    } else if (id === "last") {
+    } else if (id === 'last') {
       page = pages - 1;
-    } else if (id === "previous") {
+    } else if (id === 'previous') {
       page--;
-    } else if (id === "next") {
+    } else if (id === 'next') {
       page++;
     }
 
     if (page === 0 && (pages === 0 || pages === 1)) {
-      buttons = getPaginationComponents("polls");
+      buttons = getPaginationComponents('polls');
     } else if (page === 0) {
-      buttons = getPaginationComponents("polls", "start");
+      buttons = getPaginationComponents('polls', 'start');
     } else if (page === pages - 1) {
-      buttons = getPaginationComponents("polls", "end");
+      buttons = getPaginationComponents('polls', 'end');
     } else {
-      buttons = getPaginationComponents("polls", "middle");
+      buttons = getPaginationComponents('polls', 'middle');
     }
 
     const nextEmbed = await getSpecialPollListEmbed(
@@ -203,10 +203,10 @@ const handleSpecialList = async (interaction: ChatInputCommandInteraction) => {
     }
   });
 
-  collector.on("end", async () => {
+  collector.on('end', async () => {
     try {
       await message.edit({
-        components: [getPaginationComponents("polls")],
+        components: [getPaginationComponents('polls')],
       });
     } catch (error) {
       logger.error(logErrorFunctions.collectorEndError(name, error));
@@ -217,7 +217,7 @@ const handleSpecialList = async (interaction: ChatInputCommandInteraction) => {
 const handleSpecialDelete = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const pollId = interaction.options.getString("poll", true);
+  const pollId = interaction.options.getString('poll', true);
 
   const specialPoll =
     (await getSpecialPollByPollId(pollId)) ??
@@ -244,9 +244,9 @@ const handleSpecialDelete = async (
 const handleSpecialOverride = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const user = interaction.options.getUser("user", true);
-  const type = interaction.options.getString("type", true);
-  const decision = interaction.options.getString("decision");
+  const user = interaction.options.getUser('user', true);
+  const type = interaction.options.getString('type', true);
+  const decision = interaction.options.getString('decision');
 
   const specialPoll = await getSpecialPollByUserAndType(user.id, type);
   const poll = await getPollById(specialPoll?.pollId);
@@ -301,7 +301,7 @@ const handleSpecialRemaining = async (
     return;
   }
 
-  const pollId = interaction.options.getString("poll", true);
+  const pollId = interaction.options.getString('poll', true);
   const poll = await getPollById(pollId);
 
   if (poll === null) {
@@ -341,7 +341,7 @@ const handleSpecialRemaining = async (
 };
 
 const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
-  const user = interaction.options.getUser("user", true);
+  const user = interaction.options.getUser('user', true);
 
   if (user.bot) {
     await interaction.editReply(commandErrors.userBot);
@@ -363,7 +363,7 @@ const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, "bar");
+  const pollId = await startSpecialPoll(interaction, user, 'bar');
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.userSpecialPending);
@@ -382,7 +382,7 @@ const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
   await interaction.channel?.send(
-    roleMention(await getRoleProperty("council")),
+    roleMention(await getRoleProperty('council')),
   );
   await interaction.editReply({
     components,
@@ -397,7 +397,7 @@ const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handleSpecialUnbar = async (interaction: ChatInputCommandInteraction) => {
-  const user = interaction.options.getUser("user", true);
+  const user = interaction.options.getUser('user', true);
 
   if (!(await isMemberBarred(user.id))) {
     await interaction.editReply(commandErrors.userNotBarred);
@@ -405,7 +405,7 @@ const handleSpecialUnbar = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, "unbar");
+  const pollId = await startSpecialPoll(interaction, user, 'unbar');
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.userSpecialPending);
@@ -424,7 +424,7 @@ const handleSpecialUnbar = async (interaction: ChatInputCommandInteraction) => {
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
   await interaction.channel?.send(
-    roleMention(await getRoleProperty("council")),
+    roleMention(await getRoleProperty('council')),
   );
   await interaction.editReply({
     components,

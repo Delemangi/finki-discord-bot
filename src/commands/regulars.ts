@@ -2,49 +2,49 @@ import {
   commandDescriptions,
   commandErrors,
   commandResponses,
-} from "../translations/commands.js";
-import { getRoleProperty } from "../utils/config.js";
-import { getMemberFromGuild } from "../utils/guild.js";
+} from '../translations/commands.js';
+import { getRoleProperty } from '../utils/config.js';
+import { getMemberFromGuild } from '../utils/guild.js';
 import {
   isMemberBarred,
   isMemberInVip,
   isMemberInvitedToVip,
-} from "../utils/members.js";
+} from '../utils/members.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "regulars";
+const name = 'regulars';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription("Regulars")
+  .setDescription('Regulars')
   .addSubcommand((command) =>
     command
-      .setName("add")
-      .setDescription(commandDescriptions["regulars add"])
+      .setName('add')
+      .setDescription(commandDescriptions['regulars add'])
       .addUserOption((option) =>
         option
-          .setName("user")
-          .setDescription("Предлог корисник за член на редовните")
+          .setName('user')
+          .setDescription('Предлог корисник за член на редовните')
           .setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("remove")
-      .setDescription(commandDescriptions["regulars remove"])
+      .setName('remove')
+      .setDescription(commandDescriptions['regulars remove'])
       .addUserOption((option) =>
         option
-          .setName("user")
-          .setDescription("Предлог корисник за член на редовните")
+          .setName('user')
+          .setDescription('Предлог корисник за член на редовните')
           .setRequired(true),
       ),
   );
 
 const handleRegularsAdd = async (interaction: ChatInputCommandInteraction) => {
-  const user = interaction.options.getUser("user", true);
+  const user = interaction.options.getUser('user', true);
   const member = await getMemberFromGuild(user.id, interaction);
 
   if (member === null) {
@@ -71,7 +71,7 @@ const handleRegularsAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const regularRole = await getRoleProperty("regular");
+  const regularRole = await getRoleProperty('regular');
   await member.roles.add(regularRole);
 
   await interaction.editReply(commandResponses.userGivenRegular);
@@ -80,7 +80,7 @@ const handleRegularsAdd = async (interaction: ChatInputCommandInteraction) => {
 const handleRegularsRemove = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const user = interaction.options.getUser("user", true);
+  const user = interaction.options.getUser('user', true);
   const member = await getMemberFromGuild(user.id, interaction);
 
   if (member === null) {
@@ -95,7 +95,7 @@ const handleRegularsRemove = async (
     return;
   }
 
-  const regularRole = await getRoleProperty("regular");
+  const regularRole = await getRoleProperty('regular');
   await member.roles.remove(regularRole);
 
   await interaction.editReply(commandResponses.userRemovedRegular);

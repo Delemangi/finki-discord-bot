@@ -1,22 +1,22 @@
-import { aboutMessage, botName } from "../translations/about.js";
-import { commandDescriptions } from "../translations/commands.js";
+import { aboutMessage, botName } from '../translations/about.js';
+import { commandDescriptions } from '../translations/commands.js';
 import {
   embedMessageFunctions,
   embedMessages,
-} from "../translations/embeds.js";
-import { labels } from "../translations/labels.js";
-import { paginationStringFunctions } from "../translations/pagination.js";
-import { programMapping } from "../translations/programs.js";
-import { type Classroom } from "../types/Classroom.js";
-import { type CourseInformation } from "../types/CourseInformation.js";
-import { type CourseParticipants } from "../types/CourseParticipants.js";
-import { type CoursePrerequisites } from "../types/CoursePrerequisites.js";
-import { type CourseStaff } from "../types/CourseStaff.js";
-import { type ProgramName } from "../types/ProgramName.js";
-import { type QuestionWithLinks } from "../types/QuestionWithLinks.js";
-import { type Staff } from "../types/Staff.js";
-import { client } from "../utils/client.js";
-import { commandMention } from "../utils/commands.js";
+} from '../translations/embeds.js';
+import { labels } from '../translations/labels.js';
+import { paginationStringFunctions } from '../translations/pagination.js';
+import { programMapping } from '../translations/programs.js';
+import { type Classroom } from '../types/Classroom.js';
+import { type CourseInformation } from '../types/CourseInformation.js';
+import { type CourseParticipants } from '../types/CourseParticipants.js';
+import { type CoursePrerequisites } from '../types/CoursePrerequisites.js';
+import { type CourseStaff } from '../types/CourseStaff.js';
+import { type ProgramName } from '../types/ProgramName.js';
+import { type QuestionWithLinks } from '../types/QuestionWithLinks.js';
+import { type Staff } from '../types/Staff.js';
+import { client } from '../utils/client.js';
+import { commandMention } from '../utils/commands.js';
 import {
   getConfigProperty,
   getFromRoleConfig,
@@ -24,10 +24,10 @@ import {
   getParticipants,
   getPrerequisites,
   getProfessors,
-} from "../utils/config.js";
-import { getUsername } from "../utils/members.js";
-import { linkProfessors, transformCoursePrerequisites } from "./utils.js";
-import { type Experience, type Link, type Question } from "@prisma/client";
+} from '../utils/config.js';
+import { getUsername } from '../utils/members.js';
+import { linkProfessors, transformCoursePrerequisites } from './utils.js';
+import { type Experience, type Link, type Question } from '@prisma/client';
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -38,21 +38,21 @@ import {
   roleMention,
   type User,
   userMention,
-} from "discord.js";
+} from 'discord.js';
 
 export const getAboutEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(botName)
     .setDescription(
-      aboutMessage(commandMention("help"), commandMention("list questions")),
+      aboutMessage(commandMention('help'), commandMention('list questions')),
     )
     .setTimestamp();
 };
 
 export const getClassroomEmbed = async (information: Classroom) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(`${information.classroom.toString()} (${information.location})`)
     .addFields(
       {
@@ -83,12 +83,12 @@ export const getCourseParticipantsEmbed = async (
   information: CourseParticipants,
 ) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(information.course)
     .setDescription(embedMessages.courseParticipantsInfo)
     .addFields(
       ...Object.entries(information)
-        .filter(([year]) => year !== "course")
+        .filter(([year]) => year !== 'course')
         .map(([year, participants]) => ({
           inline: true,
           name: year,
@@ -100,7 +100,7 @@ export const getCourseParticipantsEmbed = async (
 
 export const getCourseProfessorsEmbed = async (information: CourseStaff) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(information.course)
     .addFields(
       {
@@ -121,13 +121,13 @@ export const getCoursePrerequisiteEmbed = async (
   information: CoursePrerequisites,
 ) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(information.course)
     .addFields({
       inline: true,
       name: labels.prerequisites,
       value:
-        information.prerequisite === ""
+        information.prerequisite === ''
           ? labels.none
           : information.prerequisite,
     })
@@ -136,7 +136,7 @@ export const getCoursePrerequisiteEmbed = async (
 
 export const getCourseInfoEmbed = async (information: CourseInformation) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(information.course)
     .addFields(
       {
@@ -174,14 +174,14 @@ export const getCourseSummaryEmbed = async (course: string) => {
 
   return [
     new EmbedBuilder()
-      .setColor(await getConfigProperty("color"))
+      .setColor(await getConfigProperty('color'))
       .setTitle(course)
       .setDescription(embedMessages.courseSummaryInfo),
-    new EmbedBuilder().setColor(await getConfigProperty("color")).addFields(
+    new EmbedBuilder().setColor(await getConfigProperty('color')).addFields(
       {
         name: labels.prerequisites,
         value:
-          prerequisite === undefined || prerequisite.prerequisite === ""
+          prerequisite === undefined || prerequisite.prerequisite === ''
             ? labels.none
             : prerequisite.prerequisite,
       },
@@ -204,7 +204,7 @@ export const getCourseSummaryEmbed = async (course: string) => {
         value: info === undefined ? labels.unknown : info.level.toString(),
       },
     ),
-    new EmbedBuilder().setColor(await getConfigProperty("color")).addFields(
+    new EmbedBuilder().setColor(await getConfigProperty('color')).addFields(
       {
         inline: true,
         name: labels.professors,
@@ -223,11 +223,11 @@ export const getCourseSummaryEmbed = async (course: string) => {
       },
     ),
     new EmbedBuilder()
-      .setColor(await getConfigProperty("color"))
+      .setColor(await getConfigProperty('color'))
       .setDescription(embedMessages.courseParticipantsInfo)
       .addFields(
         ...Object.entries(participants ?? {})
-          .filter(([year]) => year !== "course")
+          .filter(([year]) => year !== 'course')
           .map(([year, part]) => ({
             inline: true,
             name: year,
@@ -245,84 +245,84 @@ export const getCoursesProgramEmbed = async (
     programMapping[program],
     semester,
   );
-  const elective = courses.filter((course) => course.type === "изборен");
+  const elective = courses.filter((course) => course.type === 'изборен');
   const mandatory = courses.filter(
     (course) =>
-      course.type === "задолжителен" || course.type === "задолжителен (изб.)",
+      course.type === 'задолжителен' || course.type === 'задолжителен (изб.)',
   );
 
   return [
     new EmbedBuilder()
-      .setColor(await getConfigProperty("color"))
+      .setColor(await getConfigProperty('color'))
       .setTitle(`Предмети за ${program}, семестар ${semester}`)
-      .setDescription("Предусловите за предметите се под истиот реден број."),
+      .setDescription('Предусловите за предметите се под истиот реден број.'),
     new EmbedBuilder()
-      .setColor(await getConfigProperty("color"))
-      .setTitle("Задолжителни")
+      .setColor(await getConfigProperty('color'))
+      .setTitle('Задолжителни')
       .setDescription(
         mandatory.length === 0
           ? labels.none
           : mandatory
               .map(
                 (course, index) =>
-                  `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
+                  `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
                     course.course
                   } ${
-                    course.type === "задолжителен (изб.)"
-                      ? "(изборен за 3 год. студии)"
-                      : ""
+                    course.type === 'задолжителен (изб.)'
+                      ? '(изборен за 3 год. студии)'
+                      : ''
                   }`,
               )
-              .join("\n"),
+              .join('\n'),
       ),
     new EmbedBuilder()
-      .setColor(await getConfigProperty("color"))
-      .setTitle("Задолжителни - предуслови")
+      .setColor(await getConfigProperty('color'))
+      .setTitle('Задолжителни - предуслови')
       .setDescription(
         mandatory.length === 0
           ? labels.none
           : mandatory
               .map(
                 (course, index) =>
-                  `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
-                    course.prerequisite === ""
+                  `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
+                    course.prerequisite === ''
                       ? labels.none
                       : course.prerequisite
                   }`,
               )
-              .join("\n"),
+              .join('\n'),
       ),
     new EmbedBuilder()
-      .setColor(await getConfigProperty("color"))
-      .setTitle("Изборни")
+      .setColor(await getConfigProperty('color'))
+      .setTitle('Изборни')
       .setDescription(
         elective.length === 0
           ? labels.none
           : elective
               .map(
                 (course, index) =>
-                  `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
+                  `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
                     course.course
                   }`,
               )
-              .join("\n"),
+              .join('\n'),
       ),
     new EmbedBuilder()
-      .setColor(await getConfigProperty("color"))
-      .setTitle("Изборни - предуслови")
+      .setColor(await getConfigProperty('color'))
+      .setTitle('Изборни - предуслови')
       .setDescription(
         elective.length === 0
           ? labels.none
           : elective
               .map(
                 (course, index) =>
-                  `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
-                    course.prerequisite === ""
+                  `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
+                    course.prerequisite === ''
                       ? labels.none
                       : course.prerequisite
                   }`,
               )
-              .join("\n"),
+              .join('\n'),
       )
       .setTimestamp(),
   ];
@@ -334,7 +334,7 @@ export const getCoursesPrerequisiteEmbed = async (course: string) => {
   );
 
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(`Предмети со предуслов ${course}`)
     .setDescription(
       courses.length === 0
@@ -342,18 +342,18 @@ export const getCoursesPrerequisiteEmbed = async (course: string) => {
         : courses
             .map(
               (prerequisite, index) =>
-                `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
+                `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
                   prerequisite.course
                 }`,
             )
-            .join("\n"),
+            .join('\n'),
     )
     .setTimestamp();
 };
 
 export const getStaffEmbed = async (information: Staff) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(`${information.name}`)
     .addFields(
       {
@@ -374,7 +374,7 @@ export const getStaffEmbed = async (information: Staff) => {
         inline: true,
         name: labels.finki,
         value:
-          information.finki === ""
+          information.finki === ''
             ? labels.none
             : `[${labels.link}](${information.finki})`,
       },
@@ -382,7 +382,7 @@ export const getStaffEmbed = async (information: Staff) => {
         inline: true,
         name: labels.courses,
         value:
-          information.courses === ""
+          information.courses === ''
             ? labels.none
             : `[${labels.link}](${information.courses})`,
       },
@@ -390,7 +390,7 @@ export const getStaffEmbed = async (information: Staff) => {
         inline: true,
         name: labels.timetable,
         value:
-          information.raspored === ""
+          information.raspored === ''
             ? labels.none
             : `[${labels.link}](${information.raspored})`,
       },
@@ -398,7 +398,7 @@ export const getStaffEmbed = async (information: Staff) => {
         inline: true,
         name: labels.consultations,
         value:
-          information.konsultacii === ""
+          information.konsultacii === ''
             ? labels.none
             : `[${labels.link}](${information.konsultacii})`,
       },
@@ -408,37 +408,37 @@ export const getStaffEmbed = async (information: Staff) => {
 
 export const getStudentInfoEmbed = async (member: GuildMember) => {
   const yearRole = member.roles.cache.find((role) =>
-    getFromRoleConfig("year").includes(role.name),
+    getFromRoleConfig('year').includes(role.name),
   );
   const programRole = member.roles.cache.find((role) =>
-    getFromRoleConfig("program").includes(role.name),
+    getFromRoleConfig('program').includes(role.name),
   );
   const colorRole = member.roles.cache.find((role) =>
-    getFromRoleConfig("color").includes(role.name),
+    getFromRoleConfig('color').includes(role.name),
   );
   const levelRole = member.roles.cache.find((role) =>
-    getFromRoleConfig("level").includes(role.name),
+    getFromRoleConfig('level').includes(role.name),
   );
   const notificationRoles = member.roles.cache
-    .filter((role) => getFromRoleConfig("notification").includes(role.name))
+    .filter((role) => getFromRoleConfig('notification').includes(role.name))
     .map((role) => roleMention(role.id))
-    .join("\n");
+    .join('\n');
   const courseRoles = member.roles.cache
     .filter((role) =>
-      Object.keys(getFromRoleConfig("courses")).includes(role.name),
+      Object.keys(getFromRoleConfig('courses')).includes(role.name),
     )
     .map(
       (role) =>
-        `${roleMention(role.id)}: ${getFromRoleConfig("courses")[role.name]}`,
+        `${roleMention(role.id)}: ${getFromRoleConfig('courses')[role.name]}`,
     )
-    .join("\n");
+    .join('\n');
   const other = member.roles.cache
-    .filter((role) => getFromRoleConfig("other").includes(role.name))
+    .filter((role) => getFromRoleConfig('other').includes(role.name))
     .map((role) => roleMention(role.id))
-    .join("\n");
+    .join('\n');
 
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setAuthor({
       iconURL: member.user.displayAvatarURL(),
       name: member.user.tag,
@@ -471,26 +471,26 @@ export const getStudentInfoEmbed = async (member: GuildMember) => {
       {
         inline: true,
         name: labels.notifications,
-        value: notificationRoles === "" ? labels.none : notificationRoles,
+        value: notificationRoles === '' ? labels.none : notificationRoles,
       },
       {
         name: labels.courses,
-        value: courseRoles === "" ? labels.none : courseRoles,
+        value: courseRoles === '' ? labels.none : courseRoles,
       },
       {
         name: labels.other,
-        value: other === "" ? labels.none : other,
+        value: other === '' ? labels.none : other,
       },
     )
     .setTimestamp();
 };
 
 export const getExperienceEmbed = async (experience: Experience) => {
-  const guild = client.guilds.cache.get(await getConfigProperty("guild"));
+  const guild = client.guilds.cache.get(await getConfigProperty('guild'));
   const user = guild?.members.cache.get(experience.userId)?.user as User;
 
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setAuthor({
       iconURL: user.displayAvatarURL(),
       name: user.tag,
@@ -519,12 +519,12 @@ export const getExperienceLeaderboardFirstPageEmbed = async (
   const total = experience.length;
 
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(labels.activity)
     .addFields(
       await Promise.all(
         experience.slice(0, perPage).map(async (exp, index) => ({
-          name: "\u200B",
+          name: '\u200B',
           value: `${index + 1}. ${await getUsername(exp.userId)} (${userMention(
             exp.userId,
           )}): ${labels.level}: ${exp.level} | ${labels.points}: ${
@@ -552,14 +552,14 @@ export const getExperienceLeaderboardNextPageEmbed = async (
   const total = experience.length;
 
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(labels.activity)
     .addFields(
       await Promise.all(
         experience
           .slice(perPage * page, perPage * (page + 1))
           .map(async (exp, index) => ({
-            name: "\u200B",
+            name: '\u200B',
             value: `${perPage * page + index + 1}. ${await getUsername(
               exp.userId,
             )} (${userMention(exp.userId)}): ${labels.level}: ${exp.level} | ${
@@ -582,7 +582,7 @@ export const getExperienceLeaderboardNextPageEmbed = async (
 
 export const getQuestionEmbed = async (question: Question) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(question.name)
     .setDescription(question.content)
     .setTimestamp();
@@ -604,14 +604,14 @@ export const getQuestionComponents = (question: QuestionWithLinks) => {
       if (
         name === undefined ||
         url === undefined ||
-        name === "" ||
-        url === ""
+        name === '' ||
+        url === ''
       ) {
         break;
       }
 
       const button = new ButtonBuilder()
-        .setURL(url.startsWith("http") ? url : `https://${url}`)
+        .setURL(url.startsWith('http') ? url : `https://${url}`)
         .setLabel(name)
         .setStyle(ButtonStyle.Link);
 
@@ -627,7 +627,7 @@ export const getQuestionComponents = (question: QuestionWithLinks) => {
 
 export const getLinkEmbed = async (link: Link) => {
   const embed = new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(link.name)
     .setTimestamp();
 
@@ -642,7 +642,7 @@ export const getLinkComponents = (link: Link) => {
   return [
     new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
-        .setURL(link.url.startsWith("http") ? link.url : `https://${link.url}`)
+        .setURL(link.url.startsWith('http') ? link.url : `https://${link.url}`)
         .setLabel(labels.link)
         .setStyle(ButtonStyle.Link),
     ),
@@ -651,36 +651,36 @@ export const getLinkComponents = (link: Link) => {
 
 export const getListQuestionsEmbed = async (questions: Question[]) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(labels.questions)
     .setDescription(
       `${embedMessageFunctions.allQuestions(
-        commandMention("faq"),
+        commandMention('faq'),
       )}\n\n${questions
         .map(
           (question, index) =>
-            `${inlineCode((index + 1).toString().padStart(2, "0"))} ${
+            `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
               question.name
             }`,
         )
-        .join("\n")}`,
+        .join('\n')}`,
     )
     .setTimestamp();
 };
 
 export const getListLinksEmbed = async (links: Link[]) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(labels.links)
     .setDescription(
-      `${embedMessageFunctions.allLinks(commandMention("link"))}\n\n${links
+      `${embedMessageFunctions.allLinks(commandMention('link'))}\n\n${links
         .map(
           (link, index) =>
-            `${inlineCode((index + 1).toString().padStart(2, "0"))} [${
+            `${inlineCode((index + 1).toString().padStart(2, '0'))} [${
               link.name
             }](${link.url})`,
         )
-        .join("\n")}`,
+        .join('\n')}`,
     )
     .setTimestamp();
 };
@@ -691,7 +691,7 @@ export const getHelpEmbed = async (
   commandsPerPage: number = 8,
 ) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(labels.commands)
     .setDescription(embedMessages.allCommands)
     .addFields(

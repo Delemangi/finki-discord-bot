@@ -3,63 +3,63 @@ import {
   getPollEmbed,
   getPollInfoEmbed,
   getPollStatsComponents,
-} from "../components/polls.js";
+} from '../components/polls.js';
 import {
   getVipAcknowledgeComponents,
   getVipConfirmComponents,
   getVipConfirmEmbed,
-} from "../components/scripts.js";
-import { createBar, deleteBar } from "../data/Bar.js";
-import { getPollById } from "../data/Poll.js";
-import { getPollOptionById } from "../data/PollOption.js";
+} from '../components/scripts.js';
+import { createBar, deleteBar } from '../data/Bar.js';
+import { getPollById } from '../data/Poll.js';
+import { getPollOptionById } from '../data/PollOption.js';
 import {
   createPollVote,
   deletePollVote,
   getPollVotesByOptionId,
   getPollVotesByPollIdAndUserId,
-} from "../data/PollVote.js";
+} from '../data/PollVote.js';
 import {
   deleteSpecialPoll,
   getSpecialPollByPollId,
   getSpecialPollByUserAndType,
-} from "../data/SpecialPoll.js";
+} from '../data/SpecialPoll.js';
 import {
   commandErrorFunctions,
   commandErrors,
   commandResponseFunctions,
   commandResponses,
-} from "../translations/commands.js";
-import { labels } from "../translations/labels.js";
-import { logErrorFunctions } from "../translations/logs.js";
+} from '../translations/commands.js';
+import { labels } from '../translations/labels.js';
+import { logErrorFunctions } from '../translations/logs.js';
 import {
   specialStringFunctions,
   specialStrings,
-} from "../translations/special.js";
-import { type PollWithOptions } from "../types/PollWithOptions.js";
-import { deleteResponse, getChannel } from "../utils/channels.js";
-import { getConfigProperty, getRoleProperty } from "../utils/config.js";
-import { getGuild } from "../utils/guild.js";
-import { logger } from "../utils/logger.js";
+} from '../translations/special.js';
+import { type PollWithOptions } from '../types/PollWithOptions.js';
+import { deleteResponse, getChannel } from '../utils/channels.js';
+import { getConfigProperty, getRoleProperty } from '../utils/config.js';
+import { getGuild } from '../utils/guild.js';
+import { logger } from '../utils/logger.js';
 import {
   isMemberBarred,
   isMemberInVip,
   isMemberLevel,
-} from "../utils/members.js";
-import { decidePoll, startSpecialPoll } from "../utils/polls.js";
-import { userIdRegex } from "../utils/regex.js";
+} from '../utils/members.js';
+import { decidePoll, startSpecialPoll } from '../utils/polls.js';
+import { userIdRegex } from '../utils/regex.js';
 import {
   getCourseRolesBySemester,
   getRoleFromSet,
   getRoles,
-} from "../utils/roles.js";
-import { type Poll, type PollOption, type SpecialPoll } from "@prisma/client";
+} from '../utils/roles.js';
+import { type Poll, type PollOption, type SpecialPoll } from '@prisma/client';
 import {
   type ButtonInteraction,
   type GuildMember,
   type GuildMemberRoleManager,
   roleMention,
   userMention,
-} from "discord.js";
+} from 'discord.js';
 
 export const handleCourseButton = async (
   interaction: ButtonInteraction,
@@ -85,7 +85,7 @@ export const handleCourseButton = async (
     return;
   }
 
-  const role = getRoleFromSet(guild, "courses", args[0]);
+  const role = getRoleFromSet(guild, 'courses', args[0]);
 
   if (role === undefined) {
     logger.warn(
@@ -144,7 +144,7 @@ export const handleYearButton = async (
     return;
   }
 
-  const role = getRoleFromSet(guild, "year", args[0]);
+  const role = getRoleFromSet(guild, 'year', args[0]);
 
   if (role === undefined) {
     logger.warn(
@@ -161,7 +161,7 @@ export const handleYearButton = async (
   if (roles.cache.has(role.id)) {
     await roles.remove(role);
   } else {
-    await roles.remove(getRoles(guild, "year"));
+    await roles.remove(getRoles(guild, 'year'));
     await roles.add(role);
     removed = false;
   }
@@ -204,7 +204,7 @@ export const handleProgramButton = async (
     return;
   }
 
-  const role = getRoleFromSet(guild, "program", args[0]);
+  const role = getRoleFromSet(guild, 'program', args[0]);
 
   if (role === undefined) {
     logger.warn(
@@ -221,7 +221,7 @@ export const handleProgramButton = async (
   if (roles.cache.has(role.id)) {
     await roles.remove(role);
   } else {
-    await roles.remove(getRoles(guild, "program"));
+    await roles.remove(getRoles(guild, 'program'));
     await roles.add(role);
     removed = false;
   }
@@ -264,7 +264,7 @@ export const handleNotificationButton = async (
     return;
   }
 
-  const role = getRoleFromSet(guild, "notification", args[0]);
+  const role = getRoleFromSet(guild, 'notification', args[0]);
 
   if (role === undefined) {
     logger.warn(
@@ -326,7 +326,7 @@ export const handleColorButton = async (
     return;
   }
 
-  const role = getRoleFromSet(guild, "color", args[0]);
+  const role = getRoleFromSet(guild, 'color', args[0]);
 
   if (role === undefined) {
     logger.warn(
@@ -343,7 +343,7 @@ export const handleColorButton = async (
   if (roles.cache.has(role.id)) {
     await roles.remove(role);
   } else {
-    await roles.remove(getRoles(guild, "color"));
+    await roles.remove(getRoles(guild, 'color'));
     await roles.add(role);
     removed = false;
   }
@@ -389,8 +389,8 @@ export const handleAddCoursesButton = async (
   const semester = Number(args[0]);
   const member = interaction.member as GuildMember;
   const roles =
-    args[0] === "all"
-      ? getRoles(guild, "courses")
+    args[0] === 'all'
+      ? getRoles(guild, 'courses')
       : getCourseRolesBySemester(guild, semester);
 
   await member.roles.add(roles);
@@ -398,7 +398,7 @@ export const handleAddCoursesButton = async (
   try {
     await interaction.editReply({
       content:
-        args[0] === "all"
+        args[0] === 'all'
           ? commandResponses.allCoursesAdded
           : commandResponseFunctions.semesterCoursesAdded(semester),
     });
@@ -434,8 +434,8 @@ export const handleRemoveCoursesButton = async (
   const semester = Number(args[0]);
   const member = interaction.member as GuildMember;
   const roles =
-    args[0] === "all"
-      ? getRoles(guild, "courses")
+    args[0] === 'all'
+      ? getRoles(guild, 'courses')
       : getCourseRolesBySemester(guild, semester);
 
   await member.roles.remove(roles);
@@ -443,7 +443,7 @@ export const handleRemoveCoursesButton = async (
   try {
     await interaction.editReply({
       content:
-        args[0] === "all"
+        args[0] === 'all'
           ? commandResponses.allCoursesRemoved
           : commandResponseFunctions.semesterCoursesRemoved(semester),
     });
@@ -456,8 +456,8 @@ const handlePollButtonForVipRequestVote = async (
   poll: Poll,
   specialPoll: SpecialPoll,
 ) => {
-  const vipChannel = getChannel("vip");
-  const oathChannel = getChannel("oath");
+  const vipChannel = getChannel('vip');
+  const oathChannel = getChannel('oath');
 
   if (poll.decision !== labels.yes) {
     const rejectComponents = getVipAcknowledgeComponents();
@@ -490,8 +490,8 @@ const handlePollButtonForVipAddVote = async (
   poll: Poll,
   specialPoll: SpecialPoll,
 ) => {
-  const vipChannel = getChannel("vip");
-  const oathChannel = getChannel("oath");
+  const vipChannel = getChannel('vip');
+  const oathChannel = getChannel('oath');
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
@@ -519,7 +519,7 @@ const handlePollButtonForVipRemoveVote = async (
   specialPoll: SpecialPoll,
   member: GuildMember,
 ) => {
-  const vipChannel = getChannel("vip");
+  const vipChannel = getChannel('vip');
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
@@ -529,8 +529,8 @@ const handlePollButtonForVipRemoveVote = async (
     return;
   }
 
-  const vipRoleId = await getRoleProperty("vip");
-  const councilRoleId = await getRoleProperty("council");
+  const vipRoleId = await getRoleProperty('vip');
+  const councilRoleId = await getRoleProperty('council');
   await member.roles.remove(vipRoleId);
   await member.roles.remove(councilRoleId);
 
@@ -544,7 +544,7 @@ const handlePollButtonForCouncilAddVote = async (
   specialPoll: SpecialPoll,
   member: GuildMember,
 ) => {
-  const vipChannel = getChannel("vip");
+  const vipChannel = getChannel('vip');
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
@@ -554,7 +554,7 @@ const handlePollButtonForCouncilAddVote = async (
     return;
   }
 
-  const councilRole = await getRoleProperty("council");
+  const councilRole = await getRoleProperty('council');
   await member.roles.add(councilRole);
 
   await vipChannel?.send(
@@ -567,7 +567,7 @@ const handlePollButtonForCouncilRemoveVote = async (
   specialPoll: SpecialPoll,
   member: GuildMember,
 ) => {
-  const vipChannel = getChannel("vip");
+  const vipChannel = getChannel('vip');
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
@@ -577,7 +577,7 @@ const handlePollButtonForCouncilRemoveVote = async (
     return;
   }
 
-  const councilRole = await getRoleProperty("council");
+  const councilRole = await getRoleProperty('council');
   await member.roles.remove(councilRole);
 
   await vipChannel?.send(
@@ -590,7 +590,7 @@ const handlePollButtonForAdminAddVote = async (
   specialPoll: SpecialPoll,
   member: GuildMember,
 ) => {
-  const vipChannel = getChannel("vip");
+  const vipChannel = getChannel('vip');
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
@@ -600,8 +600,8 @@ const handlePollButtonForAdminAddVote = async (
     return;
   }
 
-  const adminsRole = await getRoleProperty("admins");
-  const moderatorRole = await getRoleProperty("moderator");
+  const adminsRole = await getRoleProperty('admins');
+  const moderatorRole = await getRoleProperty('moderator');
 
   await member.roles.add(adminsRole);
   await member.roles.add(moderatorRole);
@@ -616,7 +616,7 @@ const handlePollButtonForAdminRemoveVote = async (
   specialPoll: SpecialPoll,
   member: GuildMember,
 ) => {
-  const vipChannel = getChannel("vip");
+  const vipChannel = getChannel('vip');
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
@@ -626,8 +626,8 @@ const handlePollButtonForAdminRemoveVote = async (
     return;
   }
 
-  const adminsRole = await getRoleProperty("admins");
-  const moderatorRole = await getRoleProperty("moderator");
+  const adminsRole = await getRoleProperty('admins');
+  const moderatorRole = await getRoleProperty('moderator');
 
   await member.roles.remove(adminsRole);
   await member.roles.remove(moderatorRole);
@@ -642,7 +642,7 @@ const handlePollButtonForBarVote = async (
   specialPoll: SpecialPoll,
   member: GuildMember,
 ) => {
-  const vipChannel = getChannel("vip");
+  const vipChannel = getChannel('vip');
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
@@ -656,8 +656,8 @@ const handlePollButtonForBarVote = async (
     userId: specialPoll.userId,
   });
 
-  const vipRoleId = await getRoleProperty("vip");
-  const councilRoleId = await getRoleProperty("council");
+  const vipRoleId = await getRoleProperty('vip');
+  const councilRoleId = await getRoleProperty('council');
   await member.roles.remove(vipRoleId);
   await member.roles.remove(councilRoleId);
 
@@ -670,7 +670,7 @@ const handlePollButtonForUnbarVote = async (
   poll: Poll,
   specialPoll: SpecialPoll,
 ) => {
-  const vipChannel = getChannel("vip");
+  const vipChannel = getChannel('vip');
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
@@ -703,39 +703,39 @@ export const handlePollButtonForSpecialVote = async (
   }
 
   switch (type) {
-    case "vipRequest":
+    case 'vipRequest':
       await handlePollButtonForVipRequestVote(poll, specialPoll);
       break;
 
-    case "vipAdd":
+    case 'vipAdd':
       await handlePollButtonForVipAddVote(poll, specialPoll);
       break;
 
-    case "vipRemove":
+    case 'vipRemove':
       await handlePollButtonForVipRemoveVote(poll, specialPoll, member);
       break;
 
-    case "councilAdd":
+    case 'councilAdd':
       await handlePollButtonForCouncilAddVote(poll, specialPoll, member);
       break;
 
-    case "councilRemove":
+    case 'councilRemove':
       await handlePollButtonForCouncilRemoveVote(poll, specialPoll, member);
       break;
 
-    case "adminAdd":
+    case 'adminAdd':
       await handlePollButtonForAdminAddVote(poll, specialPoll, member);
       break;
 
-    case "adminRemove":
+    case 'adminRemove':
       await handlePollButtonForAdminRemoveVote(poll, specialPoll, member);
       break;
 
-    case "bar":
+    case 'bar':
       await handlePollButtonForBarVote(poll, specialPoll, member);
       break;
 
-    case "unbar":
+    case 'unbar':
       await handlePollButtonForUnbarVote(poll, specialPoll);
       break;
 
@@ -854,9 +854,9 @@ export const handlePollButton = async (
   const pollId = args[0]?.toString();
   const optionId = args[1]?.toString();
   const poll = await getPollById(pollId);
-  const option = optionId === "info" ? null : await getPollOptionById(optionId);
+  const option = optionId === 'info' ? null : await getPollOptionById(optionId);
 
-  if (optionId === "info" && poll !== null) {
+  if (optionId === 'info' && poll !== null) {
     const infoEmbed = await getPollInfoEmbed(guild, poll);
     await interaction.reply({
       embeds: [infoEmbed],
@@ -991,7 +991,7 @@ export const handlePollStatsButton = async (
     content:
       votes.length === 0
         ? commandResponses.noVoters
-        : votes.map((vote) => userMention(vote.userId)).join(", "),
+        : votes.map((vote) => userMention(vote.userId)).join(', '),
     ephemeral: true,
   });
 };
@@ -1020,10 +1020,10 @@ export const handleVipButton = async (
     return;
   }
 
-  const vipRoleId = await getRoleProperty("vip");
-  const councilRoleId = await getRoleProperty("council");
+  const vipRoleId = await getRoleProperty('vip');
+  const councilRoleId = await getRoleProperty('council');
 
-  if (args[0] === "acknowledge") {
+  if (args[0] === 'acknowledge') {
     if (
       interaction.user.id !== userIdRegex.exec(interaction.message.content)?.[0]
     ) {
@@ -1042,7 +1042,7 @@ export const handleVipButton = async (
     return;
   }
 
-  if (args[0] === "confirm") {
+  if (args[0] === 'confirm') {
     if (
       interaction.user.id !== userIdRegex.exec(interaction.message.content)?.[0]
     ) {
@@ -1055,7 +1055,7 @@ export const handleVipButton = async (
       return;
     }
 
-    const vipChannel = getChannel("vip");
+    const vipChannel = getChannel('vip');
 
     if (vipChannel?.isTextBased()) {
       await vipChannel.send(
@@ -1082,7 +1082,7 @@ export const handleVipButton = async (
 
   const existingPoll = await getSpecialPollByUserAndType(
     interaction.user.id,
-    "vipRequest",
+    'vipRequest',
   );
   if (existingPoll !== null) {
     const message = await interaction.reply({
@@ -1094,7 +1094,7 @@ export const handleVipButton = async (
     return;
   }
 
-  if (await getConfigProperty("vipPause")) {
+  if (await getConfigProperty('vipPause')) {
     const message = await interaction.reply({
       content: specialStrings.vipRequestPaused,
       ephemeral: true,
@@ -1107,7 +1107,7 @@ export const handleVipButton = async (
   const specialPollId = await startSpecialPoll(
     interaction,
     interaction.user,
-    "vipRequest",
+    'vipRequest',
   );
 
   if (specialPollId === null) {
@@ -1130,13 +1130,13 @@ export const handleVipButton = async (
     return;
   }
 
-  const channel = getChannel("polls");
+  const channel = getChannel('polls');
 
   await channel?.send({
     components: getPollComponents(pollWithOptions),
     embeds: [await getPollEmbed(pollWithOptions)],
   });
-  await channel?.send(roleMention(await getRoleProperty("council")));
+  await channel?.send(roleMention(await getRoleProperty('council')));
   const components = getPollStatsComponents(pollWithOptions);
   await channel?.send({
     components,

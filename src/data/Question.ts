@@ -1,8 +1,8 @@
-import { databaseErrorFunctions } from "../translations/database.js";
-import { type QuestionWithLinks } from "../types/QuestionWithLinks.js";
-import { logger } from "../utils/logger.js";
-import { database } from "./database.js";
-import { type Prisma } from "@prisma/client";
+import { databaseErrorFunctions } from '../translations/database.js';
+import { type QuestionWithLinks } from '../types/QuestionWithLinks.js';
+import { logger } from '../utils/logger.js';
+import { database } from './database.js';
+import { type Prisma } from '@prisma/client';
 
 export const getQuestions = async () => {
   try {
@@ -11,7 +11,7 @@ export const getQuestions = async () => {
         links: true,
       },
       orderBy: {
-        name: "asc",
+        name: 'asc',
       },
     });
   } catch (error) {
@@ -143,7 +143,7 @@ export const getNthQuestion = async (index?: number) => {
         links: true,
       },
       orderBy: {
-        name: "asc",
+        name: 'asc',
       },
       skip: index - 1,
     });

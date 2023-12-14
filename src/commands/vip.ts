@@ -2,63 +2,63 @@ import {
   getPollComponents,
   getPollEmbed,
   getPollStatsComponents,
-} from "../components/polls.js";
-import { getPollById } from "../data/Poll.js";
-import { getSpecialPollByUserAndType } from "../data/SpecialPoll.js";
+} from '../components/polls.js';
+import { getPollById } from '../data/Poll.js';
+import { getSpecialPollByUserAndType } from '../data/SpecialPoll.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
   commandResponses,
-} from "../translations/commands.js";
-import { recreateVipTemporaryChannel } from "../utils/channels.js";
-import { getRoleProperty } from "../utils/config.js";
-import { getMemberFromGuild } from "../utils/guild.js";
+} from '../translations/commands.js';
+import { recreateVipTemporaryChannel } from '../utils/channels.js';
+import { getRoleProperty } from '../utils/config.js';
+import { getMemberFromGuild } from '../utils/guild.js';
 import {
   isMemberAdmin,
   isMemberBarred,
   isMemberInVip,
   isMemberInvitedToVip,
-} from "../utils/members.js";
-import { startSpecialPoll } from "../utils/polls.js";
+} from '../utils/members.js';
+import { startSpecialPoll } from '../utils/polls.js';
 import {
   type ChatInputCommandInteraction,
   roleMention,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "vip";
+const name = 'vip';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription("VIP")
+  .setDescription('VIP')
   .addSubcommand((command) =>
     command
-      .setName("add")
-      .setDescription(commandDescriptions["vip add"])
+      .setName('add')
+      .setDescription(commandDescriptions['vip add'])
       .addUserOption((option) =>
         option
-          .setName("user")
-          .setDescription("Предлог корисник за член на ВИП")
+          .setName('user')
+          .setDescription('Предлог корисник за член на ВИП')
           .setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("remove")
-      .setDescription(commandDescriptions["vip remove"])
+      .setName('remove')
+      .setDescription(commandDescriptions['vip remove'])
       .addUserOption((option) =>
-        option.setName("user").setDescription("Член на ВИП").setRequired(true),
+        option.setName('user').setDescription('Член на ВИП').setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("recreate")
-      .setDescription(commandDescriptions["vip recreate"]),
+      .setName('recreate')
+      .setDescription(commandDescriptions['vip recreate']),
   );
 
 const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
-  const user = interaction.options.getUser("user", true);
+  const user = interaction.options.getUser('user', true);
 
   if (user.bot) {
     await interaction.editReply(commandErrors.userBot);
@@ -92,7 +92,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const existingPoll = await getSpecialPollByUserAndType(user.id, "vipAdd");
+  const existingPoll = await getSpecialPollByUserAndType(user.id, 'vipAdd');
 
   if (existingPoll !== null) {
     await interaction.editReply(commandErrors.userSpecialPending);
@@ -100,7 +100,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, "vipAdd");
+  const pollId = await startSpecialPoll(interaction, user, 'vipAdd');
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.pollCreationFailed);
@@ -119,7 +119,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
   await interaction.channel?.send(
-    roleMention(await getRoleProperty("council")),
+    roleMention(await getRoleProperty('council')),
   );
   await interaction.editReply({
     components,
@@ -134,7 +134,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
-  const user = interaction.options.getUser("user", true);
+  const user = interaction.options.getUser('user', true);
 
   if (user.bot) {
     await interaction.editReply(commandErrors.userBot);
@@ -162,7 +162,7 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, "vipRemove");
+  const pollId = await startSpecialPoll(interaction, user, 'vipRemove');
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.userSpecialPending);
@@ -181,7 +181,7 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
   await interaction.channel?.send(
-    roleMention(await getRoleProperty("council")),
+    roleMention(await getRoleProperty('council')),
   );
   await interaction.editReply({
     components,

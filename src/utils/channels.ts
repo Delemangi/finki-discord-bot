@@ -1,16 +1,16 @@
-import { labels } from "../translations/labels.js";
+import { labels } from '../translations/labels.js';
 import {
   logErrorFunctions,
   logMessageFunctions,
   logMessages,
-} from "../translations/logs.js";
-import { specialStringFunctions } from "../translations/special.js";
-import { type ChannelName } from "../types/ChannelName.js";
-import { client } from "./client.js";
-import { getConfigProperty } from "./config.js";
-import { getGuild } from "./guild.js";
-import { logger } from "./logger.js";
-import { Cron } from "croner";
+} from '../translations/logs.js';
+import { specialStringFunctions } from '../translations/special.js';
+import { type ChannelName } from '../types/ChannelName.js';
+import { client } from './client.js';
+import { getConfigProperty } from './config.js';
+import { getGuild } from './guild.js';
+import { logger } from './logger.js';
+import { Cron } from 'croner';
 import {
   type ActionRowBuilder,
   type ButtonBuilder,
@@ -20,15 +20,15 @@ import {
   type Interaction,
   type InteractionResponse,
   type Message,
-} from "discord.js";
-import { setTimeout } from "node:timers/promises";
+} from 'discord.js';
+import { setTimeout } from 'node:timers/promises';
 
 const channels: Partial<
   Record<ChannelName, GuildTextBasedChannel | undefined>
 > = {};
 
 export const initializeChannels = async () => {
-  const channelIds = await getConfigProperty("channels");
+  const channelIds = await getConfigProperty('channels');
 
   if (channelIds === undefined) {
     return;
@@ -49,22 +49,22 @@ export const initializeChannels = async () => {
 
 export const getChannel = (type: ChannelName) => channels[type];
 
-const getNextVipCronRun = async (locale = "en-GB", offset = 1) => {
-  const { cron } = await getConfigProperty("temporaryVIPChannel");
+const getNextVipCronRun = async (locale = 'en-GB', offset = 1) => {
+  const { cron } = await getConfigProperty('temporaryVIPChannel');
   const nextRun = Cron(cron).nextRuns(offset).at(-1);
 
   return nextRun === null
     ? labels.unknown
     : new Intl.DateTimeFormat(locale, {
-        dateStyle: "full",
-        timeStyle: "long",
+        dateStyle: 'full',
+        timeStyle: 'long',
       }).format(nextRun);
 };
 
 export const recreateVipTemporaryChannel = async () => {
   const guild = await getGuild();
   const { name, parent, position } = await getConfigProperty(
-    "temporaryVIPChannel",
+    'temporaryVIPChannel',
   );
 
   const existingChannel = client.channels.cache.find(
@@ -79,7 +79,7 @@ export const recreateVipTemporaryChannel = async () => {
     name,
     parent,
     topic: specialStringFunctions.tempVipTopic(
-      await getNextVipCronRun("mk-MK"),
+      await getNextVipCronRun('mk-MK'),
     ),
     type: ChannelType.GuildText,
   });
@@ -91,7 +91,7 @@ export const recreateVipTemporaryChannel = async () => {
 };
 
 export const scheduleVipTemporaryChannel = async () => {
-  const { cron } = await getConfigProperty("temporaryVIPChannel");
+  const { cron } = await getConfigProperty('temporaryVIPChannel');
 
   Cron(cron, recreateVipTemporaryChannel);
 
@@ -131,7 +131,7 @@ export const sendEmbed = async (
       })
     : await channel.send({
         components,
-        content: "_ _\n".repeat(newlines),
+        content: '_ _\n'.repeat(newlines),
         embeds: [embed],
       });
 };
@@ -140,7 +140,7 @@ export const deleteResponse = async (
   message: InteractionResponse | Message,
   interval?: number,
 ) => {
-  const ephemeralReplyTime = await getConfigProperty("ephemeralReplyTime");
+  const ephemeralReplyTime = await getConfigProperty('ephemeralReplyTime');
 
   await setTimeout(interval ?? ephemeralReplyTime);
 

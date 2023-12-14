@@ -1,29 +1,29 @@
-import { getStaffEmbed } from "../components/commands.js";
+import { getStaffEmbed } from '../components/commands.js';
 import {
   commandDescriptions,
   commandErrors,
-} from "../translations/commands.js";
-import { getStaff } from "../utils/config.js";
+} from '../translations/commands.js';
+import { getStaff } from '../utils/config.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "staff";
+const name = 'staff';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription(commandDescriptions[name])
   .addStringOption((option) =>
     option
-      .setName("professor")
-      .setDescription("Професор")
+      .setName('professor')
+      .setDescription('Професор')
       .setRequired(true)
       .setAutocomplete(true),
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const professor = interaction.options.getString("professor", true);
+  const professor = interaction.options.getString('professor', true);
   const information = getStaff().find(
     (staff) => staff.name.toLowerCase() === professor.toLowerCase(),
   );

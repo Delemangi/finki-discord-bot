@@ -1,30 +1,30 @@
 import {
   getListLinksEmbed,
   getListQuestionsEmbed,
-} from "../components/commands.js";
-import { getLinks } from "../data/Link.js";
-import { getQuestions } from "../data/Question.js";
+} from '../components/commands.js';
+import { getLinks } from '../data/Link.js';
+import { getQuestions } from '../data/Question.js';
 import {
   commandDescriptions,
   commandErrors,
-} from "../translations/commands.js";
+} from '../translations/commands.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "list";
+const name = 'list';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription("List")
+  .setDescription('List')
   .addSubcommand((command) =>
     command
-      .setName("questions")
-      .setDescription(commandDescriptions["list questions"]),
+      .setName('questions')
+      .setDescription(commandDescriptions['list questions']),
   )
   .addSubcommand((command) =>
-    command.setName("links").setDescription(commandDescriptions["list links"]),
+    command.setName('links').setDescription(commandDescriptions['list links']),
   );
 
 const handleListQuestions = async (

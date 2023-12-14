@@ -1,15 +1,15 @@
 import {
   commandDescriptions,
   commandErrors,
-} from "../translations/commands.js";
-import { getGuild } from "../utils/guild.js";
+} from '../translations/commands.js';
+import { getGuild } from '../utils/guild.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
   type TextChannel,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "invite";
+const name = 'invite';
 
 export const data = new SlashCommandBuilder()
   .setName(name)

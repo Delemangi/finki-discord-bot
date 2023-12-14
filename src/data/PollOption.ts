@@ -1,7 +1,7 @@
-import { databaseErrorFunctions } from "../translations/database.js";
-import { logger } from "../utils/logger.js";
-import { database } from "./database.js";
-import { type Prisma } from "@prisma/client";
+import { databaseErrorFunctions } from '../translations/database.js';
+import { logger } from '../utils/logger.js';
+import { database } from './database.js';
+import { type Prisma } from '@prisma/client';
 
 export const getPollOptionById = async (optionId?: string) => {
   if (optionId === undefined) {
@@ -54,7 +54,7 @@ export const getMostPopularOptionByPollId = async (pollId?: string) => {
     return await database.pollOption.findFirst({
       orderBy: {
         votes: {
-          _count: "desc",
+          _count: 'desc',
         },
       },
       where: {

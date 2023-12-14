@@ -2,41 +2,41 @@ import {
   commandDescriptions,
   commandErrors,
   commandResponses,
-} from "../translations/commands.js";
-import { logErrorFunctions } from "../translations/logs.js";
-import { logger } from "../utils/logger.js";
+} from '../translations/commands.js';
+import { logErrorFunctions } from '../translations/logs.js';
+import { logger } from '../utils/logger.js';
 import {
   type Channel,
   type ChatInputCommandInteraction,
   EmbedBuilder,
   PermissionFlagsBits,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "embed";
+const name = 'embed';
 const permission = PermissionFlagsBits.ManageMessages;
 
 export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription(commandDescriptions[name])
   .addChannelOption((option) =>
-    option.setName("channel").setDescription("Канал").setRequired(true),
+    option.setName('channel').setDescription('Канал').setRequired(true),
   )
   .addStringOption((option) =>
-    option.setName("json").setDescription("JSON").setRequired(true),
+    option.setName('json').setDescription('JSON').setRequired(true),
   )
   .addBooleanOption((option) =>
     option
-      .setName("timestamp")
-      .setDescription("Дали да се додаде време?")
+      .setName('timestamp')
+      .setDescription('Дали да се додаде време?')
       .setRequired(false),
   )
   .setDefaultMemberPermissions(permission);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const channel = interaction.options.getChannel("channel", true) as Channel;
-  const json = interaction.options.getString("json", true);
-  const timestamp = interaction.options.getBoolean("timestamp") ?? false;
+  const channel = interaction.options.getChannel('channel', true) as Channel;
+  const json = interaction.options.getString('json', true);
+  const timestamp = interaction.options.getBoolean('timestamp') ?? false;
 
   if (!channel.isTextBased() || channel.isDMBased()) {
     await interaction.editReply(commandErrors.invalidChannel);

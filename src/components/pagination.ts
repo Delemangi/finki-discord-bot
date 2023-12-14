@@ -1,93 +1,93 @@
-import { type PaginationPosition } from "../types/PaginationPosition.js";
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
+import { type PaginationPosition } from '../types/PaginationPosition.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
 export const getPaginationComponents = (
   name: string,
-  position: PaginationPosition = "none",
+  position: PaginationPosition = 'none',
 ) => {
-  if (position === "none") {
+  if (position === 'none') {
     return new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
         .setCustomId(`${name}:first`)
-        .setEmoji("⏪")
+        .setEmoji('⏪')
         .setStyle(ButtonStyle.Primary)
         .setDisabled(true),
       new ButtonBuilder()
         .setCustomId(`${name}:previous`)
-        .setEmoji("⬅️")
+        .setEmoji('⬅️')
         .setStyle(ButtonStyle.Primary)
         .setDisabled(true),
       new ButtonBuilder()
         .setCustomId(`${name}:next`)
-        .setEmoji("➡️")
+        .setEmoji('➡️')
         .setStyle(ButtonStyle.Primary)
         .setDisabled(true),
       new ButtonBuilder()
         .setCustomId(`${name}:last`)
-        .setEmoji("⏩")
+        .setEmoji('⏩')
         .setStyle(ButtonStyle.Primary)
         .setDisabled(true),
     );
   }
 
-  if (position === "start") {
+  if (position === 'start') {
     return new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
         .setCustomId(`${name}:first`)
-        .setEmoji("⏪")
+        .setEmoji('⏪')
         .setStyle(ButtonStyle.Primary)
         .setDisabled(true),
       new ButtonBuilder()
         .setCustomId(`${name}:previous`)
-        .setEmoji("⬅️")
+        .setEmoji('⬅️')
         .setStyle(ButtonStyle.Primary)
         .setDisabled(true),
       new ButtonBuilder()
         .setCustomId(`${name}:next`)
-        .setEmoji("➡️")
+        .setEmoji('➡️')
         .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
         .setCustomId(`${name}:last`)
-        .setEmoji("⏩")
+        .setEmoji('⏩')
         .setStyle(ButtonStyle.Primary),
     );
-  } else if (position === "middle") {
+  } else if (position === 'middle') {
     return new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
         .setCustomId(`${name}:first`)
-        .setEmoji("⏪")
+        .setEmoji('⏪')
         .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
         .setCustomId(`${name}:previous`)
-        .setEmoji("⬅️")
+        .setEmoji('⬅️')
         .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
         .setCustomId(`${name}:next`)
-        .setEmoji("➡️")
+        .setEmoji('➡️')
         .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
         .setCustomId(`${name}:last`)
-        .setEmoji("⏩")
+        .setEmoji('⏩')
         .setStyle(ButtonStyle.Primary),
     );
   } else {
     return new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
         .setCustomId(`${name}:first`)
-        .setEmoji("⏪")
+        .setEmoji('⏪')
         .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
         .setCustomId(`${name}:previous`)
-        .setEmoji("⬅️")
+        .setEmoji('⬅️')
         .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
         .setCustomId(`${name}:next`)
-        .setEmoji("➡️")
+        .setEmoji('➡️')
         .setStyle(ButtonStyle.Primary)
         .setDisabled(true),
       new ButtonBuilder()
         .setCustomId(`${name}:last`)
-        .setEmoji("⏩")
+        .setEmoji('⏩')
         .setStyle(ButtonStyle.Primary)
         .setDisabled(true),
     );

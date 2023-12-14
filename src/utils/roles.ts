@@ -1,11 +1,11 @@
-import { logMessages } from "../translations/logs.js";
-import { type Roles } from "../types/Roles.js";
-import { type RoleSets } from "../types/RoleSets.js";
-import { client } from "./client.js";
-import { getConfigProperty, getFromRoleConfig } from "./config.js";
-import { logger } from "./logger.js";
-import { isNotNullish } from "./utils.js";
-import { type Guild, type Role } from "discord.js";
+import { logMessages } from '../translations/logs.js';
+import { type Roles } from '../types/Roles.js';
+import { type RoleSets } from '../types/RoleSets.js';
+import { client } from './client.js';
+import { getConfigProperty, getFromRoleConfig } from './config.js';
+import { logger } from './logger.js';
+import { isNotNullish } from './utils.js';
+import { type Guild, type Role } from 'discord.js';
 
 const roles: Partial<Record<Roles, Role | undefined>> = {};
 const roleSets: Record<RoleSets, Role[]> = {
@@ -17,8 +17,8 @@ const roleSets: Record<RoleSets, Role[]> = {
 };
 
 export const initializeRoles = async () => {
-  const roleIds = await getConfigProperty("roles");
-  const guild = client.guilds.cache.get(await getConfigProperty("guild"));
+  const roleIds = await getConfigProperty('roles');
+  const guild = client.guilds.cache.get(await getConfigProperty('guild'));
 
   if (roleIds === undefined || guild === undefined) {
     return;
@@ -38,8 +38,8 @@ export const initializeRoles = async () => {
 export const refreshRoles = (guild: Guild, type: RoleSets) => {
   if (roleSets[type].length === 0) {
     const roleNames =
-      type === "courses"
-        ? Object.keys(getFromRoleConfig("courses"))
+      type === 'courses'
+        ? Object.keys(getFromRoleConfig('courses'))
         : getFromRoleConfig(type);
 
     const roleSet = roleNames.map((roleName) =>
@@ -69,21 +69,21 @@ export const getRoles = (guild: Guild, type: RoleSets) => {
 };
 
 export const getCourseRolesBySemester = (guild: Guild, semester: number) => {
-  const courses = getFromRoleConfig("course")[semester];
+  const courses = getFromRoleConfig('course')[semester];
 
   if (courses === undefined) {
     return [];
   }
 
   if (roleSets.courses.length === 0) {
-    refreshRoles(guild, "courses");
+    refreshRoles(guild, 'courses');
   }
 
   return roleSets.courses.filter((role) => courses.includes(role.name));
 };
 
 export const getCourseRoleByCourseName = (guild: Guild, course: string) => {
-  const roleName = Object.entries(getFromRoleConfig("courses")).find(
+  const roleName = Object.entries(getFromRoleConfig('courses')).find(
     ([, courseName]) => course === courseName,
   );
 

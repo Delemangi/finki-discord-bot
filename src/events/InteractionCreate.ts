@@ -3,10 +3,10 @@ import {
   handleButton,
   handleChatInputCommand,
   handleUserContextMenuCommand,
-} from "../interactions/handlers.js";
-import { logErrorFunctions } from "../translations/logs.js";
-import { logger } from "../utils/logger.js";
-import { type ClientEvents, Events } from "discord.js";
+} from '../interactions/handlers.js';
+import { logErrorFunctions } from '../translations/logs.js';
+import { logger } from '../utils/logger.js';
+import { type ClientEvents, Events } from 'discord.js';
 
 export const name = Events.InteractionCreate;
 

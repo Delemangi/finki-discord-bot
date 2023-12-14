@@ -1,21 +1,21 @@
-import { getMostPopularOptionByPollId } from "../data/PollOption.js";
+import { getMostPopularOptionByPollId } from '../data/PollOption.js';
 import {
   getPollVotesByOptionId,
   getPollVotesByPollId,
-} from "../data/PollVote.js";
+} from '../data/PollVote.js';
 import {
   embedMessageFunctions,
   embedMessages,
-} from "../translations/embeds.js";
-import { labels } from "../translations/labels.js";
-import { paginationStringFunctions } from "../translations/pagination.js";
-import { type PollWithOptions } from "../types/PollWithOptions.js";
-import { getConfigProperty } from "../utils/config.js";
-import { getUsername } from "../utils/members.js";
-import { getPollThreshold } from "../utils/polls.js";
-import { getMembersByRoleIds } from "../utils/roles.js";
-import { generatePollPercentageBar, truncateString } from "./utils.js";
-import { type Poll, type SpecialPoll } from "@prisma/client";
+} from '../translations/embeds.js';
+import { labels } from '../translations/labels.js';
+import { paginationStringFunctions } from '../translations/pagination.js';
+import { type PollWithOptions } from '../types/PollWithOptions.js';
+import { getConfigProperty } from '../utils/config.js';
+import { getUsername } from '../utils/members.js';
+import { getPollThreshold } from '../utils/polls.js';
+import { getMembersByRoleIds } from '../utils/roles.js';
+import { generatePollPercentageBar, truncateString } from './utils.js';
+import { type Poll, type SpecialPoll } from '@prisma/client';
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -27,13 +27,13 @@ import {
   italic,
   roleMention,
   userMention,
-} from "discord.js";
+} from 'discord.js';
 
 export const getPollEmbed = async (poll: PollWithOptions) => {
   const votes = (await getPollVotesByPollId(poll.id))?.length ?? 0;
 
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setAuthor(
       poll.done
         ? {
@@ -57,14 +57,14 @@ export const getPollEmbed = async (poll: PollWithOptions) => {
 
               return `${(index + 1)
                 .toString()
-                .padStart(2, "0")} ${option.name.padEnd(
+                .padStart(2, '0')} ${option.name.padEnd(
                 Math.max(...poll.options.map((opt) => opt.name.length)),
               )} - [${bar}] - ${optionVotes} [${
-                votes > 0 ? fraction.toFixed(2).padStart(5, "0") : "00"
+                votes > 0 ? fraction.toFixed(2).padStart(5, '0') : '00'
               }%]`;
             }),
           )
-        ).join("\n"),
+        ).join('\n'),
       )}${
         poll.done
           ? `\n${labels.result}: ${inlineCode(
@@ -72,7 +72,7 @@ export const getPollEmbed = async (poll: PollWithOptions) => {
                 (await getMostPopularOptionByPollId(poll.id))?.name ??
                 labels.none,
             )}\n`
-          : ""
+          : ''
       }`,
     )
     .setFooter({
@@ -144,7 +144,7 @@ export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
   const turnout = `(${((votes / voters.length) * 100).toFixed(2)}%)`;
 
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(poll.title)
     .addFields(
       {
@@ -170,7 +170,7 @@ export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
       {
         inline: true,
         name: labels.votes,
-        value: `${votes} ${poll.roles.length > 0 ? turnout : ""}`,
+        value: `${votes} ${poll.roles.length > 0 ? turnout : ''}`,
       },
       {
         inline: true,
@@ -190,13 +190,13 @@ export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
         name: labels.roles,
         value:
           poll.roles.length > 0
-            ? poll.roles.map((role) => roleMention(role)).join(", ")
+            ? poll.roles.map((role) => roleMention(role)).join(', ')
             : labels.none,
       },
       {
         inline: true,
-        name: "\u200B",
-        value: "\u200B",
+        name: '\u200B',
+        value: '\u200B',
       }),
     )
     .setFooter({
@@ -238,7 +238,7 @@ export const getPollListFirstPageEmbed = async (
   pollsPerPage: number = 8,
 ) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(labels.polls)
     .setDescription(embedMessageFunctions.allPolls(all))
     .addFields(
@@ -265,7 +265,7 @@ export const getPollListNextPageEmbed = async (
   pollsPerPage: number = 8,
 ) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(labels.polls)
     .setDescription(embedMessageFunctions.allPolls(all))
     .addFields(
@@ -293,7 +293,7 @@ export const getSpecialPollListEmbed = async (
   pollsPerPage: number = 8,
 ) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty("color"))
+    .setColor(await getConfigProperty('color'))
     .setTitle(labels.polls)
     .setDescription(embedMessages.allSpecialPolls)
     .addFields(

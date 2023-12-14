@@ -2,54 +2,54 @@ import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-} from "../translations/commands.js";
+} from '../translations/commands.js';
 import {
   getMaxEmojisByBoostLevel,
   getMaxStickersByBoostLevel,
-} from "../utils/boost.js";
-import { getGuild } from "../utils/guild.js";
-import { safeReplyToInteraction } from "../utils/messages.js";
-import { getRoles } from "../utils/roles.js";
+} from '../utils/boost.js';
+import { getGuild } from '../utils/guild.js';
+import { safeReplyToInteraction } from '../utils/messages.js';
+import { getRoles } from '../utils/roles.js';
 import {
   type ChatInputCommandInteraction,
   roleMention,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "statistics";
+const name = 'statistics';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription("Color")
+  .setDescription('Color')
   .addSubcommand((command) =>
     command
-      .setName("color")
-      .setDescription(commandDescriptions["statistics color"]),
+      .setName('color')
+      .setDescription(commandDescriptions['statistics color']),
   )
   .addSubcommand((command) =>
     command
-      .setName("program")
-      .setDescription(commandDescriptions["statistics program"]),
+      .setName('program')
+      .setDescription(commandDescriptions['statistics program']),
   )
   .addSubcommand((command) =>
     command
-      .setName("year")
-      .setDescription(commandDescriptions["statistics year"]),
+      .setName('year')
+      .setDescription(commandDescriptions['statistics year']),
   )
   .addSubcommand((command) =>
     command
-      .setName("course")
-      .setDescription(commandDescriptions["statistics course"]),
+      .setName('course')
+      .setDescription(commandDescriptions['statistics course']),
   )
   .addSubcommand((command) =>
     command
-      .setName("notification")
-      .setDescription(commandDescriptions["statistics notification"]),
+      .setName('notification')
+      .setDescription(commandDescriptions['statistics notification']),
   )
   .addSubcommand((command) =>
     command
-      .setName("server")
-      .setDescription(commandDescriptions["statistics server"]),
+      .setName('server')
+      .setDescription(commandDescriptions['statistics server']),
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
@@ -66,22 +66,22 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const subcommand = interaction.options.getSubcommand(true);
 
   if (
-    subcommand === "color" ||
-    subcommand === "program" ||
-    subcommand === "year" ||
-    subcommand === "course" ||
-    subcommand === "notification"
+    subcommand === 'color' ||
+    subcommand === 'program' ||
+    subcommand === 'year' ||
+    subcommand === 'course' ||
+    subcommand === 'notification'
   ) {
     const roles = getRoles(
       guild,
-      subcommand === "course" ? "courses" : subcommand,
+      subcommand === 'course' ? 'courses' : subcommand,
     );
     roles.sort((a, b) => b.members.size - a.members.size);
     const output = roles.map(
       (role) => `${roleMention(role.id)}: ${role.members.size}`,
     );
 
-    await safeReplyToInteraction(interaction, output.join("\n"));
+    await safeReplyToInteraction(interaction, output.join('\n'));
   } else {
     const output = [];
     const boostLevel = guild.premiumTier;
@@ -121,6 +121,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       commandResponseFunctions.serverInvitesStat(guild.invites.cache.size),
     );
 
-    await interaction.editReply(output.join("\n"));
+    await interaction.editReply(output.join('\n'));
   }
 };

@@ -1,13 +1,13 @@
-import { databaseErrorFunctions } from "../translations/database.js";
-import { logger } from "../utils/logger.js";
-import { database } from "./database.js";
-import { type Link, type Prisma } from "@prisma/client";
+import { databaseErrorFunctions } from '../translations/database.js';
+import { logger } from '../utils/logger.js';
+import { database } from './database.js';
+import { type Link, type Prisma } from '@prisma/client';
 
 export const getLinks = async () => {
   try {
     return await database.link.findMany({
       orderBy: {
-        name: "asc",
+        name: 'asc',
       },
     });
   } catch (error) {
@@ -110,7 +110,7 @@ export const getNthLink = async (index?: number) => {
   try {
     return await database.link.findFirst({
       orderBy: {
-        name: "asc",
+        name: 'asc',
       },
       skip: index - 1,
     });

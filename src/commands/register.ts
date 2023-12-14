@@ -2,20 +2,20 @@ import {
   commandDescriptions,
   commandErrors,
   commandResponses,
-} from "../translations/commands.js";
-import { logErrorFunctions } from "../translations/logs.js";
-import { getCommands } from "../utils/commands.js";
-import { getApplicationId, getToken } from "../utils/config.js";
-import { logger } from "../utils/logger.js";
+} from '../translations/commands.js';
+import { logErrorFunctions } from '../translations/logs.js';
+import { getCommands } from '../utils/commands.js';
+import { getApplicationId, getToken } from '../utils/config.js';
+import { logger } from '../utils/logger.js';
 import {
   type ChatInputCommandInteraction,
   PermissionFlagsBits,
   REST,
   Routes,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "register";
+const name = 'register';
 const permission = PermissionFlagsBits.Administrator;
 
 export const data = new SlashCommandBuilder()

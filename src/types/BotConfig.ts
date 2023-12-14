@@ -1,6 +1,6 @@
-import { type ChannelName } from "./ChannelName.js";
-import { type Roles } from "./Roles.js";
-import { type ColorResolvable } from "discord.js";
+import { type ChannelName } from './ChannelName.js';
+import { type Roles } from './Roles.js';
+import { type ColorResolvable } from 'discord.js';
 
 export type BotConfig = {
   buttonIdleTime: number;

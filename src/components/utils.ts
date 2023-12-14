@@ -1,10 +1,10 @@
-import { embedLabels } from "../translations/embeds.js";
-import { labels } from "../translations/labels.js";
-import { logErrorFunctions } from "../translations/logs.js";
-import { type ProgramShorthand } from "../types/ProgramShorthand.js";
-import { getPrerequisites, getStaff } from "../utils/config.js";
-import { logger } from "../utils/logger.js";
-import { getRoleFromSet } from "../utils/roles.js";
+import { embedLabels } from '../translations/embeds.js';
+import { labels } from '../translations/labels.js';
+import { logErrorFunctions } from '../translations/logs.js';
+import { type ProgramShorthand } from '../types/ProgramShorthand.js';
+import { getPrerequisites, getStaff } from '../utils/config.js';
+import { logger } from '../utils/logger.js';
+import { getRoleFromSet } from '../utils/roles.js';
 import {
   type ButtonInteraction,
   channelMention,
@@ -13,18 +13,18 @@ import {
   type Interaction,
   roleMention,
   type UserContextMenuCommandInteraction,
-} from "discord.js";
+} from 'discord.js';
 
 export const truncateString = (
   string: string | null | undefined,
   length: number,
 ) => {
   if (string === null || string === undefined) {
-    return "";
+    return '';
   }
 
   return string.length > length
-    ? string.slice(0, Math.max(0, length - 3)) + "..."
+    ? string.slice(0, Math.max(0, length - 3)) + '...'
     : string;
 };
 
@@ -41,7 +41,7 @@ export const getButtonCommand = (command?: string) => {
     case undefined:
       return embedLabels.unknown;
 
-    case "pollStats":
+    case 'pollStats':
       return embedLabels.pollStats;
 
     default:
@@ -56,22 +56,22 @@ export const getButtonInfo = (
   args: string[],
 ) => {
   switch (command) {
-    case "course":
+    case 'course':
       return {
         name: getButtonCommand(command),
         value:
           interaction.guild && args[0]
             ? roleMention(
-                getRoleFromSet(interaction.guild, "courses", args[0])?.id ??
+                getRoleFromSet(interaction.guild, 'courses', args[0])?.id ??
                   embedLabels.unknown,
               )
             : embedLabels.unknown,
       };
 
-    case "year":
-    case "program":
-    case "notification":
-    case "color":
+    case 'year':
+    case 'program':
+    case 'notification':
+    case 'color':
       return {
         name: getButtonCommand(command),
         value:
@@ -83,14 +83,14 @@ export const getButtonInfo = (
             : embedLabels.unknown,
       };
 
-    case "help":
-    case "exp":
-    case "polls":
-    case "poll":
-    case "pollStats":
-    case "addCourses":
-    case "removeCourses":
-    case "vip":
+    case 'help':
+    case 'exp':
+    case 'polls':
+    case 'poll':
+    case 'pollStats':
+    case 'addCourses':
+    case 'removeCourses':
+    case 'vip':
       return {
         name: getButtonCommand(command),
         value:
@@ -106,12 +106,12 @@ export const getButtonInfo = (
 };
 
 export const linkProfessors = (professors: string) => {
-  if (professors === "") {
+  if (professors === '') {
     return labels.none;
   }
 
   return professors
-    .split("\n")
+    .split('\n')
     .map((professor) => [
       professor,
       getStaff().find((staff) => professor.includes(staff.name))?.finki,
@@ -119,7 +119,7 @@ export const linkProfessors = (professors: string) => {
     .map(([professor, finki]) =>
       finki ? `[${professor}](${finki})` : professor,
     )
-    .join("\n");
+    .join('\n');
 };
 
 export const fetchMessageUrl = async (
@@ -152,17 +152,17 @@ export const transformCoursePrerequisites = (
     .filter((prerequisite) => prerequisite.semester === semester)
     .filter(
       (prerequisite) =>
-        prerequisite[program] === "задолжителен" ||
-        prerequisite[program] === "изборен" ||
-        prerequisite[program] === "нема" ||
-        prerequisite[program] === "задолжителен (изб.)",
+        prerequisite[program] === 'задолжителен' ||
+        prerequisite[program] === 'изборен' ||
+        prerequisite[program] === 'нема' ||
+        prerequisite[program] === 'задолжителен (изб.)',
     )
     .map((prerequisite) =>
-      prerequisite[program] === "нема"
+      prerequisite[program] === 'нема'
         ? {
             course: prerequisite.course,
             prerequisite: labels.none,
-            type: "изборен",
+            type: 'изборен',
           }
         : {
             course: prerequisite.course,
@@ -174,12 +174,12 @@ export const transformCoursePrerequisites = (
 
 export const generatePollPercentageBar = (percentage: number) => {
   if (percentage === 0) {
-    return ".".repeat(20);
+    return '.'.repeat(20);
   }
 
   const progressBar =
-    "█".repeat(Math.floor(percentage / 5)) +
-    (percentage - Math.floor(percentage) >= 0.5 ? "▌" : "");
+    '█'.repeat(Math.floor(percentage / 5)) +
+    (percentage - Math.floor(percentage) >= 0.5 ? '▌' : '');
 
-  return progressBar + ".".repeat(Math.max(0, 20 - progressBar.length));
+  return progressBar + '.'.repeat(Math.max(0, 20 - progressBar.length));
 };

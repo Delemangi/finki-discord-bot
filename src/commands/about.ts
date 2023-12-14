@@ -1,11 +1,11 @@
-import { getAboutEmbed } from "../components/commands.js";
-import { commandDescriptions } from "../translations/commands.js";
+import { getAboutEmbed } from '../components/commands.js';
+import { commandDescriptions } from '../translations/commands.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "about";
+const name = 'about';
 
 export const data = new SlashCommandBuilder()
   .setName(name)

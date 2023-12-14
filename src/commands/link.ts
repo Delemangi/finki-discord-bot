@@ -1,29 +1,29 @@
-import { getLinkComponents, getLinkEmbed } from "../components/commands.js";
-import { getLink, getNthLink } from "../data/Link.js";
+import { getLinkComponents, getLinkEmbed } from '../components/commands.js';
+import { getLink, getNthLink } from '../data/Link.js';
 import {
   commandDescriptions,
   commandErrors,
-} from "../translations/commands.js";
+} from '../translations/commands.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "link";
+const name = 'link';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription(commandDescriptions[name])
   .addStringOption((option) =>
     option
-      .setName("link")
-      .setDescription("Линк")
+      .setName('link')
+      .setDescription('Линк')
       .setRequired(true)
       .setAutocomplete(true),
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  const keyword = interaction.options.getString("link", true);
+  const keyword = interaction.options.getString('link', true);
   const link = Number.isNaN(Number(keyword))
     ? await getLink(keyword)
     : await getNthLink(Number(keyword));

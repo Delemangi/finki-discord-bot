@@ -4,7 +4,7 @@ import {
   type ContextMenuCommandInteraction,
   type SlashCommandBuilder,
   type SlashCommandSubcommandGroupBuilder,
-} from "discord.js";
+} from 'discord.js';
 
 export type Command = {
   data:

@@ -1,21 +1,21 @@
-import { logErrorFunctions, logMessages } from "../translations/logs.js";
-import { type Command } from "../types/Command.js";
-import { client } from "./client.js";
-import { getApplicationId, getToken } from "./config.js";
-import { logger } from "./logger.js";
+import { logErrorFunctions, logMessages } from '../translations/logs.js';
+import { type Command } from '../types/Command.js';
+import { client } from './client.js';
+import { getApplicationId, getToken } from './config.js';
+import { logger } from './logger.js';
 import {
   type ChatInputCommandInteraction,
   Collection,
   REST,
   Routes,
-} from "discord.js";
-import { readdirSync } from "node:fs";
+} from 'discord.js';
+import { readdirSync } from 'node:fs';
 
 const commands = new Collection<string, Command>();
 
 const refreshCommands = async () => {
-  const commandFiles = readdirSync("./dist/commands").filter((file) =>
-    file.endsWith(".js"),
+  const commandFiles = readdirSync('./dist/commands').filter((file) =>
+    file.endsWith('.js'),
   );
 
   commands.clear();
@@ -48,11 +48,11 @@ export const getCommands = async () => {
 
 export const commandMention = (name: string | undefined) => {
   if (name === undefined) {
-    return "";
+    return '';
   }
 
   const command = client.application?.commands.cache.find(
-    (cmd) => cmd.name === (name.includes(" ") ? name.split(" ")[0] : name),
+    (cmd) => cmd.name === (name.includes(' ') ? name.split(' ')[0] : name),
   );
 
   if (command === undefined) {

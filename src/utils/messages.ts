@@ -1,14 +1,14 @@
-import { labels } from "../translations/labels.js";
-import { type ChatInputCommandInteraction, codeBlock } from "discord.js";
+import { labels } from '../translations/labels.js';
+import { type ChatInputCommandInteraction, codeBlock } from 'discord.js';
 
 export const splitMessage = function* (message: string) {
-  if (message === "") {
-    yield "";
+  if (message === '') {
+    yield '';
 
     return;
   }
 
-  const delimiters = ["\n"];
+  const delimiters = ['\n'];
   const length = 1_999;
   let output;
   let index = message.length;
@@ -35,7 +35,7 @@ export const splitMessage = function* (message: string) {
       currentMessage = currentMessage.slice(index);
     } else {
       output = currentMessage;
-      currentMessage = "";
+      currentMessage = '';
     }
 
     yield output;
@@ -52,7 +52,7 @@ export const safeReplyToInteraction = async (
   },
 ) => {
   const {
-    language = "",
+    language = '',
     mentionUsers = false,
     useCodeBlock = false,
   } = options ?? {};

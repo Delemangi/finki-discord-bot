@@ -16,27 +16,27 @@ import {
   getVipRequestEmbed,
   getYearsComponents,
   getYearsEmbed,
-} from "../components/scripts.js";
-import { getCompanies } from "../data/Company.js";
-import { getInfoMessages } from "../data/InfoMessage.js";
-import { getRules } from "../data/Rule.js";
+} from '../components/scripts.js';
+import { getCompanies } from '../data/Company.js';
+import { getInfoMessages } from '../data/InfoMessage.js';
+import { getRules } from '../data/Rule.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponses,
-} from "../translations/commands.js";
-import { logErrorFunctions } from "../translations/logs.js";
-import { threadMessageFunctions } from "../translations/threads.js";
-import { sendEmbed } from "../utils/channels.js";
-import { getCommands } from "../utils/commands.js";
+} from '../translations/commands.js';
+import { logErrorFunctions } from '../translations/logs.js';
+import { threadMessageFunctions } from '../translations/threads.js';
+import { sendEmbed } from '../utils/channels.js';
+import { getCommands } from '../utils/commands.js';
 import {
   getApplicationId,
   getCourses,
   getFromRoleConfig,
   getToken,
-} from "../utils/config.js";
-import { logger } from "../utils/logger.js";
-import { InfoMessageType } from "@prisma/client";
+} from '../utils/config.js';
+import { logger } from '../utils/logger.js';
+import { InfoMessageType } from '@prisma/client';
 import {
   type Channel,
   ChannelType,
@@ -48,136 +48,136 @@ import {
   REST,
   Routes,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "script";
+const name = 'script';
 const permission = PermissionFlagsBits.Administrator;
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription("Script")
+  .setDescription('Script')
   .addSubcommand((command) =>
     command
-      .setName("courses")
-      .setDescription(commandDescriptions["script courses"])
+      .setName('courses')
+      .setDescription(commandDescriptions['script courses'])
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true),
+        option.setName('channel').setDescription('Канал').setRequired(true),
       )
       .addNumberOption((option) =>
         option
-          .setName("newlines")
-          .setDescription("Број на празни редови")
+          .setName('newlines')
+          .setDescription('Број на празни редови')
           .setRequired(false),
       )
       .addStringOption((option) =>
         option
-          .setName("rolesets")
-          .setDescription("Сетови на улоги")
+          .setName('rolesets')
+          .setDescription('Сетови на улоги')
           .setRequired(false),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("colors")
-      .setDescription(commandDescriptions["script colors"])
+      .setName('colors')
+      .setDescription(commandDescriptions['script colors'])
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true),
+        option.setName('channel').setDescription('Канал').setRequired(true),
       )
       .addStringOption((option) =>
-        option.setName("image").setDescription("Слика").setRequired(true),
+        option.setName('image').setDescription('Слика').setRequired(true),
       )
       .addNumberOption((option) =>
         option
-          .setName("newlines")
-          .setDescription("Број на празни редови")
+          .setName('newlines')
+          .setDescription('Број на празни редови')
           .setRequired(false),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("notifications")
-      .setDescription(commandDescriptions["script notifications"])
+      .setName('notifications')
+      .setDescription(commandDescriptions['script notifications'])
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true),
+        option.setName('channel').setDescription('Канал').setRequired(true),
       )
       .addNumberOption((option) =>
         option
-          .setName("newlines")
-          .setDescription("Број на празни редови")
+          .setName('newlines')
+          .setDescription('Број на празни редови')
           .setRequired(false),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("programs")
-      .setDescription(commandDescriptions["script programs"])
+      .setName('programs')
+      .setDescription(commandDescriptions['script programs'])
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true),
+        option.setName('channel').setDescription('Канал').setRequired(true),
       )
       .addNumberOption((option) =>
         option
-          .setName("newlines")
-          .setDescription("Број на празни редови")
+          .setName('newlines')
+          .setDescription('Број на празни редови')
           .setRequired(false),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("years")
-      .setDescription(commandDescriptions["script years"])
+      .setName('years')
+      .setDescription(commandDescriptions['script years'])
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true),
+        option.setName('channel').setDescription('Канал').setRequired(true),
       )
       .addNumberOption((option) =>
         option
-          .setName("newlines")
-          .setDescription("Број на празни редови")
+          .setName('newlines')
+          .setDescription('Број на празни редови')
           .setRequired(false),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("rules")
-      .setDescription(commandDescriptions["script rules"])
+      .setName('rules')
+      .setDescription(commandDescriptions['script rules'])
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true),
+        option.setName('channel').setDescription('Канал').setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("register")
-      .setDescription(commandDescriptions["script register"]),
+      .setName('register')
+      .setDescription(commandDescriptions['script register']),
   )
   .addSubcommand((command) =>
     command
-      .setName("vip")
-      .setDescription(commandDescriptions["script vip"])
+      .setName('vip')
+      .setDescription(commandDescriptions['script vip'])
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true),
+        option.setName('channel').setDescription('Канал').setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("info")
-      .setDescription(commandDescriptions["script info"])
+      .setName('info')
+      .setDescription(commandDescriptions['script info'])
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true),
+        option.setName('channel').setDescription('Канал').setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("coursesforum")
-      .setDescription("Courses forum")
+      .setName('coursesforum')
+      .setDescription('Courses forum')
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true),
+        option.setName('channel').setDescription('Канал').setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("companiesforum")
-      .setDescription("Companies forum")
+      .setName('companiesforum')
+      .setDescription('Companies forum')
       .addChannelOption((option) =>
-        option.setName("channel").setDescription("Канал").setRequired(true),
+        option.setName('channel').setDescription('Канал').setRequired(true),
       ),
   )
   .setDefaultMemberPermissions(permission);
@@ -185,16 +185,16 @@ export const data = new SlashCommandBuilder()
 const handleScriptCourses = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const channel = interaction.options.getChannel("channel", true) as Channel;
-  const newlines = interaction.options.getNumber("newlines") ?? 0;
-  const roleSets = interaction.options.getString("rolesets")?.split(",") ?? [];
+  const channel = interaction.options.getChannel('channel', true) as Channel;
+  const newlines = interaction.options.getNumber('newlines') ?? 0;
+  const roleSets = interaction.options.getString('rolesets')?.split(',') ?? [];
 
   if (!channel.isTextBased() || channel.isDMBased()) {
     await interaction.editReply(commandErrors.invalidChannel);
   }
 
-  for (const roleSet of roleSets.length === 0 ? "12345678" : roleSets) {
-    const roles = getFromRoleConfig("course")[roleSet];
+  for (const roleSet of roleSets.length === 0 ? '12345678' : roleSets) {
+    const roles = getFromRoleConfig('course')[roleSet];
 
     if (roles === undefined) {
       await interaction.editReply(commandErrors.invalidRoles);
@@ -222,7 +222,7 @@ const handleScriptCourses = async (
 
   const addEmbed = await getCoursesAddEmbed();
   const addComponents = getCoursesAddComponents(
-    roleSets.length === 0 ? Array.from("12345678") : roleSets,
+    roleSets.length === 0 ? Array.from('12345678') : roleSets,
   );
   try {
     await sendEmbed(
@@ -241,7 +241,7 @@ const handleScriptCourses = async (
 
   const removeEmbed = await getCoursesRemoveEmbed();
   const removeComponents = getCoursesRemoveComponents(
-    roleSets.length === 0 ? Array.from("12345678") : roleSets,
+    roleSets.length === 0 ? Array.from('12345678') : roleSets,
   );
   try {
     await sendEmbed(
@@ -258,9 +258,9 @@ const handleScriptCourses = async (
 };
 
 const handleScriptColors = async (interaction: ChatInputCommandInteraction) => {
-  const channel = interaction.options.getChannel("channel", true) as Channel;
-  const image = interaction.options.getString("image", true);
-  const newlines = interaction.options.getNumber("newlines") ?? 0;
+  const channel = interaction.options.getChannel('channel', true) as Channel;
+  const image = interaction.options.getString('image', true);
+  const newlines = interaction.options.getNumber('newlines') ?? 0;
 
   if (!channel.isTextBased() || channel.isDMBased()) {
     await interaction.editReply(commandErrors.invalidChannel);
@@ -285,8 +285,8 @@ const handleScriptColors = async (interaction: ChatInputCommandInteraction) => {
 const handleScriptNotifications = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const channel = interaction.options.getChannel("channel", true) as Channel;
-  const newlines = interaction.options.getNumber("newlines") ?? 0;
+  const channel = interaction.options.getChannel('channel', true) as Channel;
+  const newlines = interaction.options.getNumber('newlines') ?? 0;
 
   if (!channel.isTextBased() || channel.isDMBased()) {
     await interaction.editReply(commandErrors.invalidChannel);
@@ -311,8 +311,8 @@ const handleScriptNotifications = async (
 const handleScriptPrograms = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const channel = interaction.options.getChannel("channel", true) as Channel;
-  const newlines = interaction.options.getNumber("newlines") ?? 0;
+  const channel = interaction.options.getChannel('channel', true) as Channel;
+  const newlines = interaction.options.getNumber('newlines') ?? 0;
 
   if (!channel.isTextBased() || channel.isDMBased()) {
     await interaction.editReply(commandErrors.invalidChannel);
@@ -335,8 +335,8 @@ const handleScriptPrograms = async (
 };
 
 const handleScriptYears = async (interaction: ChatInputCommandInteraction) => {
-  const channel = interaction.options.getChannel("channel", true) as Channel;
-  const newlines = interaction.options.getNumber("newlines") ?? 0;
+  const channel = interaction.options.getChannel('channel', true) as Channel;
+  const newlines = interaction.options.getNumber('newlines') ?? 0;
 
   if (!channel.isTextBased() || channel.isDMBased()) {
     await interaction.editReply(commandErrors.invalidChannel);
@@ -380,7 +380,7 @@ const handleScriptRegister = async (
 };
 
 const handleScriptRules = async (interaction: ChatInputCommandInteraction) => {
-  const channel = interaction.options.getChannel("channel", true) as Channel;
+  const channel = interaction.options.getChannel('channel', true) as Channel;
 
   if (!channel.isTextBased() || channel.isDMBased()) {
     await interaction.editReply(commandErrors.invalidChannel);
@@ -408,7 +408,7 @@ const handleScriptRules = async (interaction: ChatInputCommandInteraction) => {
 
 const handleScriptVip = async (interaction: ChatInputCommandInteraction) => {
   const channel = interaction.options.getChannel(
-    "channel",
+    'channel',
     true,
   ) as GuildBasedChannel;
 
@@ -432,7 +432,7 @@ const handleScriptVip = async (interaction: ChatInputCommandInteraction) => {
 
 const handleScriptInfo = async (interaction: ChatInputCommandInteraction) => {
   const channel = interaction.options.getChannel(
-    "channel",
+    'channel',
     true,
   ) as GuildBasedChannel;
 
@@ -466,7 +466,7 @@ const handleScriptInfo = async (interaction: ChatInputCommandInteraction) => {
           allowedMentions: {
             parse: [],
           },
-          content: message.content.replaceAll("\\n", "\n"),
+          content: message.content.replaceAll('\\n', '\n'),
         });
       } catch (error) {
         await interaction.editReply(commandErrors.scriptNotExecuted);
@@ -482,7 +482,7 @@ const handleScriptInfo = async (interaction: ChatInputCommandInteraction) => {
 
 const handleCoursesForum = async (interaction: ChatInputCommandInteraction) => {
   const channel = interaction.options.getChannel(
-    "channel",
+    'channel',
     true,
   ) as GuildBasedChannel;
 
@@ -504,7 +504,7 @@ const handleCompaniesForum = async (
   interaction: ChatInputCommandInteraction,
 ) => {
   const channel = interaction.options.getChannel(
-    "channel",
+    'channel',
     true,
   ) as GuildBasedChannel;
 

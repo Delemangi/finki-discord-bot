@@ -2,58 +2,58 @@ import {
   getPollComponents,
   getPollEmbed,
   getPollStatsComponents,
-} from "../components/polls.js";
-import { getPollById } from "../data/Poll.js";
+} from '../components/polls.js';
+import { getPollById } from '../data/Poll.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-} from "../translations/commands.js";
-import { getRoleProperty } from "../utils/config.js";
-import { getMemberFromGuild } from "../utils/guild.js";
+} from '../translations/commands.js';
+import { getRoleProperty } from '../utils/config.js';
+import { getMemberFromGuild } from '../utils/guild.js';
 import {
   isMemberAdmin,
   isMemberBarred,
   isMemberInVip,
   isMemberLevel,
-} from "../utils/members.js";
-import { startSpecialPoll } from "../utils/polls.js";
+} from '../utils/members.js';
+import { startSpecialPoll } from '../utils/polls.js';
 import {
   type ChatInputCommandInteraction,
   roleMention,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "admin";
+const name = 'admin';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription("Admin")
+  .setDescription('Admin')
   .addSubcommand((command) =>
     command
-      .setName("add")
-      .setDescription(commandDescriptions["admin add"])
+      .setName('add')
+      .setDescription(commandDescriptions['admin add'])
       .addUserOption((option) =>
         option
-          .setName("user")
-          .setDescription("Предлог корисник за администратор")
+          .setName('user')
+          .setDescription('Предлог корисник за администратор')
           .setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("remove")
-      .setDescription(commandDescriptions["admin remove"])
+      .setName('remove')
+      .setDescription(commandDescriptions['admin remove'])
       .addUserOption((option) =>
         option
-          .setName("user")
-          .setDescription("Администратор")
+          .setName('user')
+          .setDescription('Администратор')
           .setRequired(true),
       ),
   );
 
 const handleAdminAdd = async (interaction: ChatInputCommandInteraction) => {
-  const user = interaction.options.getUser("user", true);
+  const user = interaction.options.getUser('user', true);
   const member = await getMemberFromGuild(user.id, interaction);
 
   if (member === null) {
@@ -86,7 +86,7 @@ const handleAdminAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, "adminAdd", 0.67);
+  const pollId = await startSpecialPoll(interaction, user, 'adminAdd', 0.67);
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.userSpecialPending);
@@ -105,7 +105,7 @@ const handleAdminAdd = async (interaction: ChatInputCommandInteraction) => {
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
   await interaction.channel?.send(
-    roleMention(await getRoleProperty("council")),
+    roleMention(await getRoleProperty('council')),
   );
   await interaction.editReply({
     components,
@@ -120,7 +120,7 @@ const handleAdminAdd = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handleAdminRemove = async (interaction: ChatInputCommandInteraction) => {
-  const user = interaction.options.getUser("user", true);
+  const user = interaction.options.getUser('user', true);
   const member = await getMemberFromGuild(user.id, interaction);
 
   if (member === null) {
@@ -135,7 +135,7 @@ const handleAdminRemove = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, "adminRemove", 0.67);
+  const pollId = await startSpecialPoll(interaction, user, 'adminRemove', 0.67);
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.userSpecialPending);
@@ -154,7 +154,7 @@ const handleAdminRemove = async (interaction: ChatInputCommandInteraction) => {
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
   await interaction.channel?.send(
-    roleMention(await getRoleProperty("council")),
+    roleMention(await getRoleProperty('council')),
   );
   await interaction.editReply({
     components,

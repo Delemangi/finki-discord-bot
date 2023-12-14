@@ -1,11 +1,11 @@
-import { embedLabels } from "../translations/embeds.js";
-import { getConfigProperty } from "../utils/config.js";
+import { embedLabels } from '../translations/embeds.js';
+import { getConfigProperty } from '../utils/config.js';
 import {
   fetchMessageUrl,
   getButtonCommand,
   getButtonInfo,
   getChannelMention,
-} from "./utils.js";
+} from './utils.js';
 import {
   type AutocompleteInteraction,
   type ButtonInteraction,
@@ -14,9 +14,9 @@ import {
   inlineCode,
   type UserContextMenuCommandInteraction,
   userMention,
-} from "discord.js";
+} from 'discord.js';
 
-const color = await getConfigProperty("color");
+const color = await getConfigProperty('color');
 
 export const getChatInputCommandEmbed = async (
   interaction: ChatInputCommandInteraction,
@@ -93,7 +93,7 @@ export const getUserContextMenuCommandEmbed = async (
 
 export const getButtonEmbed = (
   interaction: ButtonInteraction,
-  command: string = "unknown",
+  command: string = 'unknown',
   args: string[] = [],
 ) => {
   return new EmbedBuilder()
@@ -160,7 +160,7 @@ export const getAutocompleteEmbed = (interaction: AutocompleteInteraction) => {
         inline: true,
         name: embedLabels.value,
         value:
-          focused.value === "" ? embedLabels.empty : inlineCode(focused.value),
+          focused.value === '' ? embedLabels.empty : inlineCode(focused.value),
       },
     )
     .setFooter({

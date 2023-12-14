@@ -1,21 +1,21 @@
-import { type PartialUser } from "../types/PartialUser.js";
-import { tagAndMentionUser } from "./users.js";
-import { userMention } from "discord.js";
+import { type PartialUser } from '../types/PartialUser.js';
+import { tagAndMentionUser } from './users.js';
+import { userMention } from 'discord.js';
 
 export const specialStrings = {
-  vipAcceptButton: "Прифаќам",
-  vipAcceptedTitle: "Заклетва",
+  vipAcceptButton: 'Прифаќам',
+  vipAcceptedTitle: 'Заклетва',
   vipConfirm:
-    "Изјавувам дека функцијата „член на ВИП во официјалниот Дискорд сервер на студентите на ФИНКИ“ ќе ја вршам совесно и одговорно и ќе го почитувам Уставот, законите на Република Северна Македонија и правилата на официјалниот Discord сервер на студентите на ФИНКИ.",
-  vipRejected: "Вашата молба беше одбиена.",
-  vipRequestActive: "Вашата молба е активна.",
-  vipRequestButton: "Да",
-  vipRequestFailed: "Настана грешка при испраќање на вашата молба.",
-  vipRequestPaused: "Молбите за влез во ВИП се моментално ставени во мирување.",
-  vipRequestSent: "Вашата молба е испратена. Ќе бидете известени за одлуката.",
+    'Изјавувам дека функцијата „член на ВИП во официјалниот Дискорд сервер на студентите на ФИНКИ“ ќе ја вршам совесно и одговорно и ќе го почитувам Уставот, законите на Република Северна Македонија и правилата на официјалниот Discord сервер на студентите на ФИНКИ.',
+  vipRejected: 'Вашата молба беше одбиена.',
+  vipRequestActive: 'Вашата молба е активна.',
+  vipRequestButton: 'Да',
+  vipRequestFailed: 'Настана грешка при испраќање на вашата молба.',
+  vipRequestPaused: 'Молбите за влез во ВИП се моментално ставени во мирување.',
+  vipRequestSent: 'Вашата молба е испратена. Ќе бидете известени за одлуката.',
   vipRequestText:
-    "Дали сакате да станете член на ВИП во серверот на студентите на ФИНКИ?",
-  vipRequestTitle: "Членство во ВИП",
+    'Дали сакате да станете член на ВИП во серверот на студентите на ФИНКИ?',
+  vipRequestTitle: 'Членство во ВИП',
 };
 
 export const specialStringFunctions = {

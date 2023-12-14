@@ -1,4 +1,4 @@
-import { getPaginationComponents } from "../components/pagination.js";
+import { getPaginationComponents } from '../components/pagination.js';
 import {
   getPollComponents,
   getPollEmbed,
@@ -6,218 +6,218 @@ import {
   getPollListFirstPageEmbed,
   getPollListNextPageEmbed,
   getPollStatsComponents,
-} from "../components/polls.js";
-import { deletePoll, getPollById, getPolls, updatePoll } from "../data/Poll.js";
+} from '../components/polls.js';
+import { deletePoll, getPollById, getPolls, updatePoll } from '../data/Poll.js';
 import {
   createPollOption,
   deletePollOptionsByPollIdAndName,
   getMostPopularOptionByPollId,
-} from "../data/PollOption.js";
-import { getSpecialPollByPollId } from "../data/SpecialPoll.js";
+} from '../data/PollOption.js';
+import { getSpecialPollByPollId } from '../data/SpecialPoll.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
   commandResponses,
-} from "../translations/commands.js";
-import { logErrorFunctions } from "../translations/logs.js";
-import { deleteResponse } from "../utils/channels.js";
-import { commandMention } from "../utils/commands.js";
-import { getConfigProperty, getRoleProperty } from "../utils/config.js";
-import { getGuild } from "../utils/guild.js";
-import { logger } from "../utils/logger.js";
-import { startPoll } from "../utils/polls.js";
+} from '../translations/commands.js';
+import { logErrorFunctions } from '../translations/logs.js';
+import { deleteResponse } from '../utils/channels.js';
+import { commandMention } from '../utils/commands.js';
+import { getConfigProperty, getRoleProperty } from '../utils/config.js';
+import { getGuild } from '../utils/guild.js';
+import { logger } from '../utils/logger.js';
+import { startPoll } from '../utils/polls.js';
 import {
   type ChatInputCommandInteraction,
   ComponentType,
   roleMention,
   SlashCommandBuilder,
-} from "discord.js";
+} from 'discord.js';
 
-const name = "poll";
+const name = 'poll';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription("Poll")
+  .setDescription('Poll')
   .addSubcommand((command) =>
     command
-      .setName("create")
-      .setDescription(commandDescriptions["poll create"])
+      .setName('create')
+      .setDescription(commandDescriptions['poll create'])
       .addStringOption((option) =>
-        option.setName("title").setDescription("Наслов").setRequired(true),
+        option.setName('title').setDescription('Наслов').setRequired(true),
       )
       .addStringOption((option) =>
-        option.setName("description").setDescription("Опис").setRequired(true),
+        option.setName('description').setDescription('Опис').setRequired(true),
       )
       .addStringOption((option) =>
         option
-          .setName("options")
+          .setName('options')
           .setDescription(
-            "Опции (максимум 24, минимум 1, уникатни, разделени со запирки)",
+            'Опции (максимум 24, минимум 1, уникатни, разделени со запирки)',
           )
           .setRequired(true),
       )
       .addBooleanOption((option) =>
         option
-          .setName("anonymous")
-          .setDescription("Дали е анонимна анкетата?")
+          .setName('anonymous')
+          .setDescription('Дали е анонимна анкетата?')
           .setRequired(false),
       )
       .addBooleanOption((option) =>
         option
-          .setName("multiple")
-          .setDescription("Дали е анкетата multiple choice?")
+          .setName('multiple')
+          .setDescription('Дали е анкетата multiple choice?')
           .setRequired(false),
       )
       .addBooleanOption((option) =>
         option
-          .setName("open")
+          .setName('open')
           .setDescription(
-            "Дали е анкетата отворена (ажурирање од други корисници)?",
+            'Дали е анкетата отворена (ажурирање од други корисници)?',
           )
           .setRequired(false),
       )
       .addStringOption((option) =>
         option
-          .setName("roles")
-          .setDescription("Улоги за кои е анкетата (IDs, разделени со запирки)")
+          .setName('roles')
+          .setDescription('Улоги за кои е анкетата (IDs, разделени со запирки)')
           .setRequired(false),
       )
       .addNumberOption((option) =>
         option
-          .setName("threshold")
-          .setDescription("Праг за завршување на анкетата")
+          .setName('threshold')
+          .setDescription('Праг за завршување на анкетата')
           .setRequired(false),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("edit")
-      .setDescription(commandDescriptions["poll edit"])
+      .setName('edit')
+      .setDescription(commandDescriptions['poll edit'])
       .addStringOption((option) =>
-        option.setName("id").setDescription("Анкета").setRequired(true),
+        option.setName('id').setDescription('Анкета').setRequired(true),
       )
       .addStringOption((option) =>
-        option.setName("title").setDescription("Наслов").setRequired(false),
+        option.setName('title').setDescription('Наслов').setRequired(false),
       )
       .addStringOption((option) =>
-        option.setName("description").setDescription("Опис").setRequired(false),
+        option.setName('description').setDescription('Опис').setRequired(false),
       )
       .addStringOption((option) =>
         option
-          .setName("roles")
-          .setDescription("Улоги за кои е анкетата (IDs, разделени со запирки)")
+          .setName('roles')
+          .setDescription('Улоги за кои е анкетата (IDs, разделени со запирки)')
           .setRequired(false),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("stats")
-      .setDescription(commandDescriptions["poll stats"])
+      .setName('stats')
+      .setDescription(commandDescriptions['poll stats'])
       .addStringOption((option) =>
-        option.setName("id").setDescription("Анкета").setRequired(true),
+        option.setName('id').setDescription('Анкета').setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("show")
-      .setDescription(commandDescriptions["poll show"])
+      .setName('show')
+      .setDescription(commandDescriptions['poll show'])
       .addStringOption((option) =>
-        option.setName("id").setDescription("Анкета").setRequired(true),
+        option.setName('id').setDescription('Анкета').setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("add")
-      .setDescription(commandDescriptions["poll add"])
+      .setName('add')
+      .setDescription(commandDescriptions['poll add'])
       .addStringOption((option) =>
-        option.setName("id").setDescription("Анкета").setRequired(true),
+        option.setName('id').setDescription('Анкета').setRequired(true),
       )
       .addStringOption((option) =>
         option
-          .setName("options")
-          .setDescription("Опции (максимум 24, уникатни, разделени со запирки)")
+          .setName('options')
+          .setDescription('Опции (максимум 24, уникатни, разделени со запирки)')
           .setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("remove")
-      .setDescription(commandDescriptions["poll remove"])
+      .setName('remove')
+      .setDescription(commandDescriptions['poll remove'])
       .addStringOption((option) =>
-        option.setName("id").setDescription("Анкета").setRequired(true),
+        option.setName('id').setDescription('Анкета').setRequired(true),
       )
       .addStringOption((option) =>
         option
-          .setName("options")
-          .setDescription("Опции (индекси)")
+          .setName('options')
+          .setDescription('Опции (индекси)')
           .setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("delete")
-      .setDescription(commandDescriptions["poll delete"])
+      .setName('delete')
+      .setDescription(commandDescriptions['poll delete'])
       .addStringOption((option) =>
-        option.setName("id").setDescription("Анкета").setRequired(true),
+        option.setName('id').setDescription('Анкета').setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("open")
-      .setDescription(commandDescriptions["poll open"])
+      .setName('open')
+      .setDescription(commandDescriptions['poll open'])
       .addStringOption((option) =>
-        option.setName("id").setDescription("Анкета").setRequired(true),
+        option.setName('id').setDescription('Анкета').setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("close")
-      .setDescription(commandDescriptions["poll close"])
+      .setName('close')
+      .setDescription(commandDescriptions['poll close'])
       .addStringOption((option) =>
-        option.setName("id").setDescription("Анкета").setRequired(true),
+        option.setName('id').setDescription('Анкета').setRequired(true),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("list")
-      .setDescription(commandDescriptions["poll list"])
+      .setName('list')
+      .setDescription(commandDescriptions['poll list'])
       .addBooleanOption((option) =>
         option
-          .setName("all")
-          .setDescription("Дали да се листаат сите анкети?")
+          .setName('all')
+          .setDescription('Дали да се листаат сите анкети?')
           .setRequired(false),
       ),
   )
   .addSubcommand((command) =>
     command
-      .setName("info")
-      .setDescription(commandDescriptions["poll info"])
+      .setName('info')
+      .setDescription(commandDescriptions['poll info'])
       .addStringOption((option) =>
-        option.setName("id").setDescription("Анкета").setRequired(true),
+        option.setName('id').setDescription('Анкета').setRequired(true),
       ),
   )
   .setDMPermission(false);
 
 const handlePollCreate = async (interaction: ChatInputCommandInteraction) => {
-  const title = interaction.options.getString("title", true);
-  const description = interaction.options.getString("description", true);
+  const title = interaction.options.getString('title', true);
+  const description = interaction.options.getString('description', true);
   const options = Array.from(
     new Set(
       interaction.options
-        .getString("options", true)
-        .split(",")
+        .getString('options', true)
+        .split(',')
         .filter(Boolean)
         .map((option) => option.trim()),
     ),
   );
-  const anonymous = interaction.options.getBoolean("anonymous") ?? true;
-  const multiple = interaction.options.getBoolean("multiple") ?? false;
-  const open = interaction.options.getBoolean("open") ?? false;
-  const roles = (interaction.options.getString("roles")?.trim() ?? "")
-    .split(",")
+  const anonymous = interaction.options.getBoolean('anonymous') ?? true;
+  const multiple = interaction.options.getBoolean('multiple') ?? false;
+  const open = interaction.options.getBoolean('open') ?? false;
+  const roles = (interaction.options.getString('roles')?.trim() ?? '')
+    .split(',')
     .filter(Boolean);
-  const threshold = interaction.options.getNumber("threshold") ?? 0.5;
+  const threshold = interaction.options.getNumber('threshold') ?? 0.5;
 
   if (options.length === 0) {
     await interaction.editReply(commandErrors.pollNoOptions);
@@ -266,13 +266,13 @@ const handlePollCreate = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handlePollEdit = async (interaction: ChatInputCommandInteraction) => {
-  const id = interaction.options.getString("id", true).trim();
-  const title = interaction.options.getString("title");
-  const description = interaction.options.getString("description");
+  const id = interaction.options.getString('id', true).trim();
+  const title = interaction.options.getString('title');
+  const description = interaction.options.getString('description');
   const roles = interaction.options
-    .getString("roles")
+    .getString('roles')
     ?.trim()
-    .split(",")
+    .split(',')
     .filter(Boolean);
 
   const changed = [];
@@ -287,30 +287,30 @@ const handlePollEdit = async (interaction: ChatInputCommandInteraction) => {
 
   if (title !== null) {
     poll.title = title;
-    changed.push("наслов");
+    changed.push('наслов');
   }
 
   if (description !== null) {
     poll.description = description;
-    changed.push("опис");
+    changed.push('опис');
   }
 
   if (roles !== undefined) {
     poll.roles = roles;
-    changed.push("улоги");
+    changed.push('улоги');
   }
 
   await updatePoll(poll);
 
   await interaction.editReply(
-    commandResponseFunctions.pollEdited(changed.join(", ")) +
-      ". " +
-      commandResponseFunctions.seePollChanges(commandMention("poll show")),
+    commandResponseFunctions.pollEdited(changed.join(', ')) +
+      '. ' +
+      commandResponseFunctions.seePollChanges(commandMention('poll show')),
   );
 };
 
 const handlePollStats = async (interaction: ChatInputCommandInteraction) => {
-  const id = interaction.options.getString("id", true).trim();
+  const id = interaction.options.getString('id', true).trim();
   const poll = await getPollById(id);
 
   if (poll === null) {
@@ -333,7 +333,7 @@ const handlePollStats = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
-  const id = interaction.options.getString("id", true).trim();
+  const id = interaction.options.getString('id', true).trim();
   const poll = await getPollById(id);
 
   if (poll === null) {
@@ -353,7 +353,7 @@ const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
       allowedMentions: {
         parse: [],
       },
-      content: roleMention(await getRoleProperty("council")),
+      content: roleMention(await getRoleProperty('council')),
     }),
   });
 
@@ -367,10 +367,10 @@ const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handlePollAdd = async (interaction: ChatInputCommandInteraction) => {
-  const id = interaction.options.getString("id", true).trim();
+  const id = interaction.options.getString('id', true).trim();
   const options = interaction.options
-    .getString("options", true)
-    .split(",")
+    .getString('options', true)
+    .split(',')
     .filter(Boolean)
     .map((option) => option.trim());
   const poll = await getPollById(id);
@@ -417,16 +417,16 @@ const handlePollAdd = async (interaction: ChatInputCommandInteraction) => {
 
   await interaction.editReply(
     commandResponses.pollOptionsAdded +
-      ". " +
-      commandResponseFunctions.seePollChanges(commandMention("poll show")),
+      '. ' +
+      commandResponseFunctions.seePollChanges(commandMention('poll show')),
   );
 };
 
 const handlePollRemove = async (interaction: ChatInputCommandInteraction) => {
-  const id = interaction.options.getString("id", true).trim();
+  const id = interaction.options.getString('id', true).trim();
   const options = interaction.options
-    .getString("options", true)
-    .split(",")
+    .getString('options', true)
+    .split(',')
     .filter(Boolean)
     .map((option) => option.trim());
   const poll = await getPollById(id);
@@ -457,13 +457,13 @@ const handlePollRemove = async (interaction: ChatInputCommandInteraction) => {
 
   await interaction.editReply(
     commandResponses.pollOptionsDeleted +
-      ". " +
-      commandResponseFunctions.seePollChanges(commandMention("poll show")),
+      '. ' +
+      commandResponseFunctions.seePollChanges(commandMention('poll show')),
   );
 };
 
 const handlePollDelete = async (interaction: ChatInputCommandInteraction) => {
-  const id = interaction.options.getString("id", true).trim();
+  const id = interaction.options.getString('id', true).trim();
   const poll = await getPollById(id);
 
   if (poll === null) {
@@ -478,7 +478,7 @@ const handlePollDelete = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handlePollOpen = async (interaction: ChatInputCommandInteraction) => {
-  const id = interaction.options.getString("id", true).trim();
+  const id = interaction.options.getString('id', true).trim();
   const poll = await getPollById(id);
 
   if (poll === null) {
@@ -506,7 +506,7 @@ const handlePollOpen = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handlePollClose = async (interaction: ChatInputCommandInteraction) => {
-  const id = interaction.options.getString("id", true).trim();
+  const id = interaction.options.getString('id', true).trim();
   const poll = await getPollById(id);
 
   if (poll === null) {
@@ -540,7 +540,7 @@ const handlePollClose = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handlePollList = async (interaction: ChatInputCommandInteraction) => {
-  const all = interaction.options.getBoolean("all") ?? false;
+  const all = interaction.options.getBoolean('all') ?? false;
 
   const polls = all
     ? await getPolls()
@@ -557,8 +557,8 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
   const embed = await getPollListFirstPageEmbed(polls, all);
   const components = [
     pages === 0 || pages === 1
-      ? getPaginationComponents("polls")
-      : getPaginationComponents("polls", "start"),
+      ? getPaginationComponents('polls')
+      : getPaginationComponents('polls', 'start'),
   ];
   const message = await interaction.editReply({
     components,
@@ -566,10 +566,10 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
   });
   const collector = message.createMessageComponentCollector({
     componentType: ComponentType.Button,
-    time: await getConfigProperty("buttonIdleTime"),
+    time: await getConfigProperty('buttonIdleTime'),
   });
 
-  collector.on("collect", async (buttonInteraction) => {
+  collector.on('collect', async (buttonInteraction) => {
     if (
       buttonInteraction.user.id !==
       buttonInteraction.message.interaction?.user.id
@@ -583,7 +583,7 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
       return;
     }
 
-    const id = buttonInteraction.customId.split(":")[1];
+    const id = buttonInteraction.customId.split(':')[1];
 
     if (id === undefined) {
       return;
@@ -595,24 +595,24 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
         buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.[0],
       ) - 1;
 
-    if (id === "first") {
+    if (id === 'first') {
       page = 0;
-    } else if (id === "last") {
+    } else if (id === 'last') {
       page = pages - 1;
-    } else if (id === "previous") {
+    } else if (id === 'previous') {
       page--;
-    } else if (id === "next") {
+    } else if (id === 'next') {
       page++;
     }
 
     if (page === 0 && (pages === 0 || pages === 1)) {
-      buttons = getPaginationComponents("polls");
+      buttons = getPaginationComponents('polls');
     } else if (page === 0) {
-      buttons = getPaginationComponents("polls", "start");
+      buttons = getPaginationComponents('polls', 'start');
     } else if (page === pages - 1) {
-      buttons = getPaginationComponents("polls", "end");
+      buttons = getPaginationComponents('polls', 'end');
     } else {
-      buttons = getPaginationComponents("polls", "middle");
+      buttons = getPaginationComponents('polls', 'middle');
     }
 
     const nextEmbed = await getPollListNextPageEmbed(polls, page, all);
@@ -632,10 +632,10 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
     }
   });
 
-  collector.on("end", async () => {
+  collector.on('end', async () => {
     try {
       await message.edit({
-        components: [getPaginationComponents("polls")],
+        components: [getPaginationComponents('polls')],
       });
     } catch (error) {
       logger.error(logErrorFunctions.collectorEndError(name, error));
@@ -645,7 +645,7 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
 
 const handlePollInfo = async (interaction: ChatInputCommandInteraction) => {
   const guild = await getGuild(interaction);
-  const id = interaction.options.getString("id", true).trim();
+  const id = interaction.options.getString('id', true).trim();
   const poll = await getPollById(id);
 
   if (guild === null) {
