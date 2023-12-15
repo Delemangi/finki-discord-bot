@@ -194,10 +194,6 @@ sessions
 files
 config
 
-# IDEs
-.idea
-.vscode
-
 # Database
 db
 migration/
