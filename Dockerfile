@@ -25,10 +25,10 @@ CMD [ "npm", "run", "dev" ]
 FROM --platform=${PLATFORM} node:20-alpine AS production
 WORKDIR /app
 
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/prisma ./prisma
-COPY --from=build /app/package.json ./
-COPY --from=build /app/start.sh ./
+COPY --from=development /app/dist ./dist
+COPY --from=development /app/prisma ./prisma
+COPY --from=development /app/package.json ./
+COPY --from=development /app/start.sh ./
 
 RUN npm i --production
 
