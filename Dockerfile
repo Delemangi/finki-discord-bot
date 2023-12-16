@@ -1,7 +1,7 @@
 ARG PLATFORM="linux/amd64"
 
 # Build stage
-FROM --platform=${PLATFORM} node:20-alpine AS build
+FROM node:20 AS development
 WORKDIR /app
 
 COPY package*.json ./
@@ -15,18 +15,23 @@ RUN npm run build
 
 COPY start.sh ./
 
-RUN npm prune --production
+RUN apt-get update && apt-get install postgresql-client gnupg2 -y && apt-get clean
+
+COPY nodemon.json ./
+
+CMD [ "npm", "run", "dev" ]
 
 # Production stage
-FROM node:20-alpine AS production
+FROM --platform=${PLATFORM} node:20-alpine AS production
 WORKDIR /app
 
-RUN apk update && apk add postgresql-client && apk cache clean
-
 COPY --from=build /app/dist ./dist
-COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/prisma ./prisma
 COPY --from=build /app/package.json ./
 COPY --from=build /app/start.sh ./
 
-CMD [ "sh", "/app/start.sh" ]
+RUN npm i --production
+
+RUN apk update && apk add postgresql-client && apk cache clean
+
+CMD [ "npm", "run", "start" ]

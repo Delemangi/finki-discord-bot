@@ -8,6 +8,8 @@ It's recommended, but not required to run this inside a Docker container.
 
 For development purposes, be sure to run `npm run prepare` to install the Git pre-commit hooks.
 
+Also, this project contains a dev container configuration for hot reloading. If you encounter issues in the dev container with Prisma, then run `npm run generate` to regenerate the Prisma client.
+
 ### Installation (Docker)
 
 1. Clone the repository: `git clone git@github.com:Delemangi/finki-discord-bot.git`

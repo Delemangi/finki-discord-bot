@@ -1,0 +1,11 @@
+{
+  "exec": "node --loader ts-node/esm ./src/main.ts",
+  "ext": "*",
+  "legacyWatch": true,
+  "watch": [
+    "src"
+  ],
+  "watchOptions": {
+    "interval": 1000
+  }
+}

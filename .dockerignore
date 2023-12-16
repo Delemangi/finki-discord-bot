@@ -1,16 +1,30 @@
 # Node modules
 node_modules
 
+# Git
+.git
+.gitignore
+
+# Docker
+.dockerignore
+Dockerfile*
+docker-compose*
+
 # Output
 dist
 
 # Logs
 bot.log
 
-# User defined folders
+# Configuration
 config
 files
 sessions
 
-# Environment variables
-.env
+# Environment
+.env*
+
+# GitHub
+.github
+*.md
+LICENSE

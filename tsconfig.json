@@ -24,5 +24,10 @@
     "resolveJsonModule": true,
     "strict": true,
     "target": "ESNext",
+  },
+  "ts-node": {
+    "swc": true,
+    "files": true,
+    "transpileOnly": true
   }
 }

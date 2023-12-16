@@ -1,8 +1,8 @@
 version: "3.8"
 
 services:
-  db:
-    container_name: finki-db
+  database:
+    container_name: finki-database
     image: postgres:16
     restart: unless-stopped
     env_file:
@@ -12,13 +12,12 @@ services:
 
   bot:
     container_name: finki-bot
-    image: finki-discord-bot:latest
-    build: .
+    image: delemangi/finki-discord-bot:latest
     restart: unless-stopped
     env_file:
       - .env
     depends_on:
-      - db
+      - database
     volumes:
       - ./config:/app/config
       - ./sessions:/app/sessions

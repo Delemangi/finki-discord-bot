@@ -1,0 +1,43 @@
+version: "3.8"
+
+services:
+  database:
+    container_name: finki-database-dev
+    image: postgres:16
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_PORT}:${POSTGRES_PORT}"
+    env_file:
+      - .env
+    volumes:
+      - ./db:/var/lib/postgresql/data
+
+  bot:
+    container_name: finki-bot-dev
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: development
+    image: finki-discord-bot-dev:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      - database
+    volumes:
+      - .:/app
+    command: ["npm", "run", "dev"]
+
+  pgadmin:
+    container_name: finki-pgadmin-dev
+    image: dpage/pgadmin4:8
+    restart: unless-stopped
+    ports:
+      - 8080:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=test@test.com
+      - PGADMIN_DEFAULT_PASSWORD=test
+    depends_on:
+      - database
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
