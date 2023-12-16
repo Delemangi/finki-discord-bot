@@ -1,4 +1,4 @@
-## Contributing
+# Contributing
 
 [fork]: /fork
 [pr]: /compare
@@ -22,7 +22,7 @@ We'd also love PRs. If you're thinking of a large PR, we advise opening up an is
 3. Install the Git pre-commit hooks: `npm run prepare`.
 4. Create a new branch: `git checkout -b <name>`.
 5. Make your changes.
-6. Format your code and check for issues: `npm run lint:fix`.
+6. Format your code and check for issues: `npm run format`.
 7. Push to your fork and [submit a pull request][pr].
 8. Pat your self on the back and wait for your pull request to be reviewed and merged.
 
