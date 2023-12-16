@@ -28,9 +28,11 @@ WORKDIR /app
 COPY --from=development /app/dist ./dist
 COPY --from=development /app/prisma ./prisma
 COPY --from=development /app/package.json ./
+COPY --from=development /app/package-lock.json ./
 COPY --from=development /app/start.sh ./
 
-RUN npm i --production
+RUN npm i
+RUN npm prune --production
 
 RUN apk update && apk add postgresql-client && apk cache clean
 
