@@ -117,8 +117,18 @@ export const addExperience = async (message: Message) => {
     currentLevel.experience = BigInt(currentLevel.experience) + experience;
     const level = getLevelFromExperience(currentLevel.experience);
 
+    await updateExperience(currentLevel);
+
     if (level !== currentLevel.level) {
       currentLevel.level = level;
+
+      await updateExperience(currentLevel);
+
+      if (message.member === null) {
+        return;
+      }
+
+      await awardMember(message.member, level);
 
       const channel = getChannel('activity');
       await channel?.send({
@@ -130,14 +140,6 @@ export const addExperience = async (message: Message) => {
           currentLevel.level,
         ),
       });
-
-      if (message.member === null) {
-        return;
-      }
-
-      await awardMember(message.member, currentLevel.level);
     }
-
-    await updateExperience(currentLevel);
   });
 };
