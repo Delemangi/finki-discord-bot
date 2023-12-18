@@ -48,7 +48,7 @@
     "apply": "prisma migrate deploy",
     "migrate": "prisma migrate dev --name a",
     "prepare": "husky install",
-    "start": "./start.sh"
+    "start": "sh ./start.sh"
   },
   "type": "module",
   "version": "4.0.0"
