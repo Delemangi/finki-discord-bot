@@ -48,7 +48,7 @@
     "apply": "prisma migrate deploy",
     "migrate": "prisma migrate dev --name a",
     "prepare": "husky install",
-    "start": "sh ./start.sh"
+    "start": "node dist/main.js"
   },
   "type": "module",
   "version": "4.0.0"

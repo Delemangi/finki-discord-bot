@@ -4,6 +4,7 @@ node_modules
 # Git
 .git
 .gitignore
+.gitattributes
 
 # Docker
 .dockerignore
@@ -28,3 +29,19 @@ sessions
 .github
 *.md
 LICENSE
+
+# Dev container
+.devcontainer
+
+# ESLint
+.eslintcache
+.eslintrc*
+
+# Database
+db
+
+# pgAdmin
+pgadmin
+
+# SonarCloud
+sonar-project.properties

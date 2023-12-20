@@ -6,4 +6,4 @@ until PGPASSWORD="$POSTGRES_PASSWORD" pg_isready --host="$POSTGRES_HOST" --port=
 done
 
 echo "Starting the bot..."
-npm run apply && node dist/main.js
+npm run apply && npm run start

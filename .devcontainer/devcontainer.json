@@ -1,21 +1,9 @@
 {
-  "customizations": {
-    "vscode": {
-      "sonarlint.pathToNodeExecutable": "node",
-      "terminal.integrated.shell.linux": "/bin/bash"
-    }
-  },
   "dockerComposeFile": "../docker-compose.dev.yaml",
-  "features": {
-    "ghcr.io/devcontainers/features/common-utils:2": {},
-    "ghcr.io/devcontainers/features/git:1": {},
-    "ghcr.io/devcontainers/features/java:1": {}
-  },
   "forwardPorts": [
     8080
   ],
   "name": "finki-discord-bot",
-  "postCreateCommand": "npm i",
   "service": "bot",
   "shutdownAction": "stopCompose",
   "workspaceFolder": "/app"

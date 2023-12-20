@@ -1,23 +1,19 @@
 ARG PLATFORM="linux/amd64"
 
-# Build stage
-FROM node:20 AS development
+# Development stage
+FROM node:20-alpine AS development
 WORKDIR /app
 
-COPY package*.json ./
+RUN apk add --no-cache postgresql-client git gnupg openjdk17 nodejs
+
+COPY package.json package-lock.json ./
 RUN npm i
 
 COPY prisma ./prisma
 RUN npx prisma generate
 
-COPY src tsconfig.json ./
+COPY . ./
 RUN npm run build
-
-COPY start.sh ./
-
-RUN apt-get update && apt-get install postgresql-client gnupg2 -y && apt-get clean
-
-COPY nodemon.json ./
 
 CMD [ "npm", "run", "dev" ]
 
@@ -25,15 +21,13 @@ CMD [ "npm", "run", "dev" ]
 FROM --platform=${PLATFORM} node:20-alpine AS production
 WORKDIR /app
 
-COPY --from=development /app/dist ./dist
-COPY --from=development /app/prisma ./prisma
-COPY --from=development /app/package.json ./
-COPY --from=development /app/package-lock.json ./
-COPY --from=development /app/start.sh ./
+RUN apk add --no-cache postgresql-client
 
-RUN npm i
+COPY --from=development /app/package.json /app/start.sh ./
+COPY --from=development /app/node_modules ./node_modules
 RUN npm prune --production
 
-RUN apk update && apk add postgresql-client && apk cache clean
+COPY --from=development /app/prisma ./prisma
+COPY --from=development /app/dist ./dist
 
-CMD [ "npm", "run", "start" ]
+CMD [ "sh", "./start.sh" ]
