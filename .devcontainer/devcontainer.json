@@ -3,9 +3,6 @@
   "forwardPorts": [
     8080
   ],
-  "mounts": [
-    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.gnupg,target=/root/.gnupg,type=bind,consistency=cached"
-  ],
   "name": "finki-discord-bot",
   "service": "bot",
   "shutdownAction": "stopCompose",
