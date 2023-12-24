@@ -4,7 +4,7 @@ ARG PLATFORM="linux/amd64"
 FROM node:20-alpine AS development
 WORKDIR /app
 
-RUN apk add --no-cache postgresql-client openjdk17 nodejs
+RUN apk add --no-cache postgresql-client git openjdk17 nodejs
 
 COPY package.json package-lock.json ./
 RUN npm i
