@@ -34,7 +34,7 @@ import {
 import { labels } from '../translations/labels.js';
 import { logErrorFunctions } from '../translations/logs.js';
 import { logger } from '../utils/logger.js';
-import { linkRegex } from '../utils/regex.js';
+import { LINK_REGEX } from '../utils/regex.js';
 import { InfoMessageType } from '@prisma/client';
 import {
   type ChatInputCommandInteraction,
@@ -437,7 +437,7 @@ const handleManageLinkSet = async (
   const url = interaction.options.getString('url', true);
   const link = await getLink(keyword);
 
-  if (!linkRegex.test(url)) {
+  if (!LINK_REGEX.test(url)) {
     await interaction.editReply(commandErrors.invalidLink);
 
     return;

@@ -6,19 +6,20 @@ import {
 import { experienceMessages } from '../translations/experience.js';
 import { getChannel } from './channels.js';
 import { getConfigProperty, getLevels, getRoleProperty } from './config.js';
+import { COUNCIL_LEVEL, REGULAR_LEVEL } from './levels.js';
 import { isMemberInVip, isMemberLevel } from './members.js';
-import { emojiRegex, urlRegex } from './regex.js';
+import { EMOJI_REGEX, URL_REGEX } from './regex.js';
 import AsyncLock from 'async-lock';
 import { type GuildMember, type Message } from 'discord.js';
 
 const coefficient = (1 + Math.sqrt(5)) / 2 - 1;
 
 const cleanMessage = (message: string) => {
-  return message.trim().replaceAll(emojiRegex, '$1').replaceAll(urlRegex, '');
+  return message.trim().replaceAll(EMOJI_REGEX, '$1').replaceAll(URL_REGEX, '');
 };
 
 const countLinks = (message: string) => {
-  return urlRegex.exec(message)?.length ?? 0;
+  return URL_REGEX.exec(message)?.length ?? 0;
 };
 
 const getExperienceFromMessage = async (message: Message) => {
@@ -64,7 +65,7 @@ const awardMember = async (member: GuildMember, level: number) => {
   await member.roles.add(roles.add);
   await member.roles.remove(roles.remove);
 
-  if (await isMemberLevel(member, 10, false)) {
+  if (await isMemberLevel(member, REGULAR_LEVEL, false)) {
     const regularRoleId = await getRoleProperty('regular');
 
     await member.roles.add(regularRoleId);
@@ -72,11 +73,18 @@ const awardMember = async (member: GuildMember, level: number) => {
 
   if (
     (await isMemberInVip(member)) &&
-    !(await isMemberLevel(member, 15, false))
+    (await isMemberLevel(member, COUNCIL_LEVEL, false))
   ) {
     const councilRoleId = await getRoleProperty('council');
+    await member.roles.add(councilRoleId);
 
-    await member.roles.remove(councilRoleId);
+    const vipChannel = getChannel('vip');
+    await vipChannel?.send({
+      allowedMentions: {
+        parse: [],
+      },
+      content: experienceMessages.council(member.id),
+    });
   }
 };
 

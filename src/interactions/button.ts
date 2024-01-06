@@ -39,6 +39,7 @@ import { type PollWithOptions } from '../types/PollWithOptions.js';
 import { deleteResponse, getChannel } from '../utils/channels.js';
 import { getConfigProperty, getRoleProperty } from '../utils/config.js';
 import { getGuild } from '../utils/guild.js';
+import { COUNCIL_LEVEL, REGULAR_LEVEL } from '../utils/levels.js';
 import { logger } from '../utils/logger.js';
 import {
   isMemberBarred,
@@ -46,7 +47,7 @@ import {
   isMemberLevel,
 } from '../utils/members.js';
 import { decidePoll, startSpecialPoll } from '../utils/polls.js';
-import { userIdRegex } from '../utils/regex.js';
+import { USER_ID_REGEX } from '../utils/regex.js';
 import {
   getCourseRolesBySemester,
   getRoleFromSet,
@@ -1025,7 +1026,8 @@ export const handleVipButton = async (
 
   if (args[0] === 'acknowledge') {
     if (
-      interaction.user.id !== userIdRegex.exec(interaction.message.content)?.[0]
+      interaction.user.id !==
+      USER_ID_REGEX.exec(interaction.message.content)?.[0]
     ) {
       const resp = await interaction.reply({
         content: commandErrors.oathNoPermission,
@@ -1044,7 +1046,8 @@ export const handleVipButton = async (
 
   if (args[0] === 'confirm') {
     if (
-      interaction.user.id !== userIdRegex.exec(interaction.message.content)?.[0]
+      interaction.user.id !==
+      USER_ID_REGEX.exec(interaction.message.content)?.[0]
     ) {
       const resp = await interaction.reply({
         content: commandErrors.oathNoPermission,
@@ -1065,7 +1068,7 @@ export const handleVipButton = async (
 
     await member.roles.add(vipRoleId);
 
-    if (await isMemberLevel(member, 15)) {
+    if (await isMemberLevel(member, COUNCIL_LEVEL)) {
       await member.roles.add(councilRoleId);
     }
 
@@ -1080,13 +1083,9 @@ export const handleVipButton = async (
     return;
   }
 
-  const existingPoll = await getSpecialPollByUserAndType(
-    interaction.user.id,
-    'vipRequest',
-  );
-  if (existingPoll !== null) {
+  if (await getConfigProperty('vipPause')) {
     const message = await interaction.reply({
-      content: specialStrings.vipRequestActive,
+      content: specialStrings.vipRequestPaused,
       ephemeral: true,
     });
     void deleteResponse(message);
@@ -1094,9 +1093,23 @@ export const handleVipButton = async (
     return;
   }
 
-  if (await getConfigProperty('vipPause')) {
+  if (!(await isMemberLevel(member, REGULAR_LEVEL))) {
     const message = await interaction.reply({
-      content: specialStrings.vipRequestPaused,
+      content: specialStrings.vipRequestUnderLevel,
+      ephemeral: true,
+    });
+    void deleteResponse(message);
+
+    return;
+  }
+
+  const existingPoll = await getSpecialPollByUserAndType(
+    interaction.user.id,
+    'vipRequest',
+  );
+  if (existingPoll !== null) {
+    const message = await interaction.reply({
+      content: specialStrings.vipRequestActive,
       ephemeral: true,
     });
     void deleteResponse(message);

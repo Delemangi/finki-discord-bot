@@ -16,6 +16,7 @@ export const specialStrings = {
   vipRequestText:
     'Дали сакате да станете член на ВИП во серверот на студентите на ФИНКИ?',
   vipRequestTitle: 'Членство во ВИП',
+  vipRequestUnderLevel: 'Не го исполнувате условот за ниво за аплицирање.',
 };
 
 export const specialStringFunctions = {
