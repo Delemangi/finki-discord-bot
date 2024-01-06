@@ -25,5 +25,9 @@ export const getMemberFromGuild = async (
     return null;
   }
 
-  return await guild.members.fetch(userId);
+  try {
+    return await guild.members.fetch(userId);
+  } catch {
+    return null;
+  }
 };
