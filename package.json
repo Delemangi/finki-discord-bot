@@ -44,7 +44,7 @@
     "dev": "nodemon",
     "generate": "prisma generate",
     "lint": "eslint . --ext .ts --cache",
-    "fix": "eslint . --ext .ts --fix",
+    "format": "eslint . --ext .ts --fix",
     "apply": "prisma migrate deploy",
     "migrate": "prisma migrate dev --name a",
     "prepare": "husky install",
