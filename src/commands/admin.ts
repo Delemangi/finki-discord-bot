@@ -11,6 +11,7 @@ import {
 } from '../translations/commands.js';
 import { getRoleProperty } from '../utils/config.js';
 import { getMemberFromGuild } from '../utils/guild.js';
+import { ADMIN_LEVEL } from '../utils/levels.js';
 import {
   isMemberAdmin,
   isMemberBarred,
@@ -74,7 +75,7 @@ const handleAdminAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (!(await isMemberLevel(member, 15))) {
+  if (!(await isMemberLevel(member, ADMIN_LEVEL))) {
     await interaction.editReply(commandErrors.userNotLevel);
 
     return;
