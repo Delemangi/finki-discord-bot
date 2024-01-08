@@ -77,6 +77,7 @@ export const recreateVipTemporaryChannel = async () => {
 
   const channel = await guild?.channels.create({
     name,
+    nsfw: true,
     parent,
     topic: specialStringFunctions.tempVipTopic(
       await getNextVipCronRun('mk-MK'),
