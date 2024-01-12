@@ -1,5 +1,3 @@
-// Commands
-
 import {
   bold,
   codeBlock,
