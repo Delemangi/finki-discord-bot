@@ -216,6 +216,9 @@ export const commandResponseFunctions = {
   semesterCoursesRemoved: (semester: number | string) =>
     `Ги отстранивте предметите од семестар ${semester}.`,
 
+  serverAnimatedEmojiStat: (emojiCount: number, maxCount: number) =>
+    `Анимирани емоџиња: ${emojiCount} / ${maxCount}`,
+
   serverChannelsStat: (channelCount: number) => `Канали: ${channelCount} / 500`,
 
   serverEmojiStat: (emojiCount: number, maxCount: number) =>

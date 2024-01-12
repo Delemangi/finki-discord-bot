@@ -103,7 +103,14 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     await guild.emojis.fetch();
     output.push(
       commandResponseFunctions.serverEmojiStat(
-        guild.emojis.cache.size,
+        guild.emojis.cache.filter((emoji) => !emoji.animated).size,
+        getMaxEmojisByBoostLevel(boostLevel),
+      ),
+    );
+
+    output.push(
+      commandResponseFunctions.serverAnimatedEmojiStat(
+        guild.emojis.cache.filter((emoji) => emoji.animated).size,
         getMaxEmojisByBoostLevel(boostLevel),
       ),
     );
