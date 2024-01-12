@@ -304,7 +304,7 @@ const handlePollEdit = async (interaction: ChatInputCommandInteraction) => {
 
   await interaction.editReply(
     commandResponseFunctions.pollEdited(changed.join(', ')) +
-      '. ' +
+      ' ' +
       commandResponseFunctions.seePollChanges(commandMention('poll show')),
   );
 };
