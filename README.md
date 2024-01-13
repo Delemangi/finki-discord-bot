@@ -54,3 +54,12 @@ Create a `sessions` folder in the root directory. All the session schedule files
 ## Logging
 
 The bot logs `info` and above messages in the console, and logs `debug` and above messages in `bot.log`, which gets wiped on every bot restart.
+
+## Future
+
+Here is a list of features that are planned:
+
+- Moving away from configuration files as much as possible, and keeping everything in the database
+- Ticketing system
+- Web application for configuring the bot
+- Testing
