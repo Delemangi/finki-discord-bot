@@ -8,9 +8,9 @@ export const experienceMessages = {
     )} достигна ниво ${COUNCIL_LEVEL} и стана член на Советот!`,
 
   levelUp: (userId: string, level: number | string) =>
-    `Корисникот ${userMention(userId)} достигна ниво ${level}.` +
-      level.toString() ===
-    REGULAR_LEVEL.toString()
-      ? ' Корисникот е сега член на редовните корисници!'
-      : '',
+    `Корисникот ${userMention(userId)} достигна ниво ${level}.${
+      level.toString() === REGULAR_LEVEL.toString()
+        ? ' Корисникот е сега член на редовните корисници!'
+        : ''
+    }`,
 };
