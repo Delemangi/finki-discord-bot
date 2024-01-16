@@ -657,8 +657,10 @@ const handlePollButtonForBarVote = async (
     userId: specialPoll.userId,
   });
 
+  const regularsRoleId = await getRoleProperty('regular');
   const vipRoleId = await getRoleProperty('vip');
   const councilRoleId = await getRoleProperty('council');
+  await member.roles.remove(regularsRoleId);
   await member.roles.remove(vipRoleId);
   await member.roles.remove(councilRoleId);
 

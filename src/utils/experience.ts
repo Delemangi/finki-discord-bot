@@ -7,7 +7,7 @@ import { experienceMessages } from '../translations/experience.js';
 import { getChannel } from './channels.js';
 import { getConfigProperty, getLevels, getRoleProperty } from './config.js';
 import { COUNCIL_LEVEL, REGULAR_LEVEL } from './levels.js';
-import { isMemberInVip, isMemberLevel } from './members.js';
+import { isMemberBarred, isMemberInVip, isMemberLevel } from './members.js';
 import { EMOJI_REGEX, URL_REGEX } from './regex.js';
 import AsyncLock from 'async-lock';
 import { type GuildMember, type Message } from 'discord.js';
@@ -64,6 +64,10 @@ const awardMember = async (member: GuildMember, level: number) => {
 
   await member.roles.add(roles.add);
   await member.roles.remove(roles.remove);
+
+  if (await isMemberBarred(member.id)) {
+    return;
+  }
 
   if (await isMemberLevel(member, REGULAR_LEVEL, false)) {
     const regularRoleId = await getRoleProperty('regular');
