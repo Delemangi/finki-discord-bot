@@ -40,12 +40,12 @@
     "url": "https://github.com/Delemangi/finki-discord-bot.git"
   },
   "scripts": {
+    "apply": "prisma migrate deploy",
     "build": "rimraf dist && tsc",
     "dev": "nodemon",
+    "format": "eslint . --ext .ts --fix",
     "generate": "prisma generate",
     "lint": "eslint . --ext .ts --cache",
-    "format": "eslint . --ext .ts --fix",
-    "apply": "prisma migrate deploy",
     "migrate": "prisma migrate dev --name a",
     "prepare": "husky install",
     "start": "node dist/main.js"
