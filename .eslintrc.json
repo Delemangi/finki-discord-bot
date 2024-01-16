@@ -10,7 +10,8 @@
     {
       "extends": [
         "canonical/module",
-        "canonical/typescript-type-checking"
+        "canonical/typescript-type-checking",
+        "canonical/zod"
       ],
       "files": "*.ts",
       "parserOptions": {
