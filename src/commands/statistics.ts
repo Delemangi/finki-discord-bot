@@ -86,7 +86,22 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     const output = [];
     const boostLevel = guild.premiumTier;
 
-    output.push(commandResponseFunctions.serverMembersStat(guild.memberCount));
+    output.push(
+      commandResponseFunctions.serverMembersStat(
+        guild.memberCount,
+        guild.maximumMembers,
+      ),
+    );
+
+    output.push(
+      commandResponseFunctions.serverBoostStat(
+        guild.premiumSubscriptionCount ?? 0,
+      ),
+    );
+
+    output.push(
+      commandResponseFunctions.serverBoostLevelStat(guild.premiumTier),
+    );
 
     await guild.channels.fetch();
     output.push(
@@ -126,6 +141,11 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     await guild.invites.fetch();
     output.push(
       commandResponseFunctions.serverInvitesStat(guild.invites.cache.size),
+    );
+
+    await guild.commands.fetch();
+    output.push(
+      commandResponseFunctions.serverCommandsStat(guild.commands.cache.size),
     );
 
     await interaction.editReply(output.join('\n'));

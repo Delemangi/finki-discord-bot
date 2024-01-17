@@ -1,6 +1,7 @@
 import {
   bold,
   codeBlock,
+  type GuildPremiumTier,
   inlineCode,
   roleMention,
   userMention,
@@ -217,7 +218,14 @@ export const commandResponseFunctions = {
   serverAnimatedEmojiStat: (emojiCount: number, maxCount: number) =>
     `Анимирани емоџиња: ${emojiCount} / ${maxCount}`,
 
+  serverBoostLevelStat: (boostLevel: GuildPremiumTier) => `Ниво: ${boostLevel}`,
+
+  serverBoostStat: (boostCount: number) =>
+    `Бустови: ${boostCount} / 30 (Tier 2)`,
+
   serverChannelsStat: (channelCount: number) => `Канали: ${channelCount} / 500`,
+
+  serverCommandsStat: (commandCount: number) => `Команди: ${commandCount}`,
 
   serverEmojiStat: (emojiCount: number, maxCount: number) =>
     `Емоџиња: ${emojiCount} / ${maxCount}`,
@@ -227,7 +235,8 @@ export const commandResponseFunctions = {
   serverMembers: (memberCount: number | string | undefined) =>
     `Серверот има ${memberCount ?? 'непознат број на'} членови.`,
 
-  serverMembersStat: (memberCount: number) => `Членови: ${memberCount}`,
+  serverMembersStat: (memberCount: number, maxMembers: number | null) =>
+    `Членови: ${memberCount}${maxMembers === null ? '' : ` / ${maxMembers}`}`,
 
   serverRolesStat: (roleCount: number) => `Улоги: ${roleCount} / 250`,
 
