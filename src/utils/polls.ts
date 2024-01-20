@@ -254,9 +254,8 @@ export const getAdminVote = async (pollId: string) => {
 
   await guild.members.fetch();
 
-  const adminVote = votes.find(
-    (vote) =>
-      guild.members.cache.get(vote.userId)?.roles.cache.has(adminRoleId),
+  const adminVote = votes.find((vote) =>
+    guild.members.cache.get(vote.userId)?.roles.cache.has(adminRoleId),
   );
 
   return adminVote ?? null;
