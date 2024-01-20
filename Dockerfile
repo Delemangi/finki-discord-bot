@@ -23,7 +23,7 @@ RUN apk add --no-cache postgresql-client
 
 COPY --from=development /app/package.json /app/start.sh ./
 COPY --from=development /app/node_modules ./node_modules
-RUN npm prune --production
+RUN npm i @prisma/client && npm prune --production
 
 COPY --from=development /app/prisma ./prisma
 COPY --from=development /app/dist ./dist
