@@ -29,6 +29,7 @@ sessions
 .github
 *.md
 LICENSE
+README.md
 
 # Dev container
 .devcontainer
@@ -45,3 +46,19 @@ pgadmin
 
 # SonarCloud
 sonar-project.properties
+
+# Husky
+.husky
+
+# VS Code
+.vscode
+
+# EditorConfig
+.editorconfig
+
+# Nodemon
+nodemon.json
+
+# Scripts
+restart.sh
+restart.bat
