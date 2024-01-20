@@ -21,12 +21,13 @@ WORKDIR /app
 
 RUN apk add --no-cache postgresql-client
 
-COPY --from=development /app/package.json /app/start.sh ./
+COPY package.json package-lock.json start.sh ./
+
 COPY --from=development /app/node_modules ./node_modules
 RUN npm prune --production
 
-COPY --from=development /app/prisma ./prisma
-RUN if [ "${TARGETPLATFORM}" != "${BUILDPLATFORM}" ]; then npm run generate; fi
+COPY prisma ./prisma
+RUN npm run generate
 
 COPY --from=development /app/dist ./dist
 
