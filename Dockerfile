@@ -1,7 +1,5 @@
-ARG PLATFORM="linux/amd64"
-
 # Development stage
-FROM node:20-alpine AS development
+FROM --platform=${BUILDPLATFORM} node:20-alpine AS development
 WORKDIR /app
 
 RUN apk add --no-cache postgresql-client git openjdk17 nodejs
@@ -18,7 +16,7 @@ RUN npm run build
 CMD [ "npm", "run", "dev" ]
 
 # Production stage
-FROM --platform=${PLATFORM} node:20-alpine AS production
+FROM --platform=${TARGETPLATFORM} node:20-alpine AS production
 WORKDIR /app
 
 RUN apk add --no-cache postgresql-client
