@@ -5,10 +5,10 @@ WORKDIR /app
 RUN apk add --no-cache postgresql-client git openjdk17 nodejs
 
 COPY package.json package-lock.json ./
-RUN npm i
+RUN npm i --ignore-scripts
 
 COPY prisma ./prisma
-RUN npx prisma generate
+RUN npm run generate
 
 COPY . ./
 RUN npm run build
