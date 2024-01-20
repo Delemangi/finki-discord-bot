@@ -34,6 +34,8 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   if (date === null || date === undefined) {
     await interaction.editReply(commandErrors.invalidDateTime);
+
+    return;
   }
 
   await createReminder({
