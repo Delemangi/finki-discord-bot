@@ -1,8 +1,23 @@
 # FINKI Discord Bot
 
-Discord bot for the [`FINKI Students`](https://discord.gg/finki-studenti-810997107376914444) Discord server, powered by [discord.js](https://github.com/discordjs/discord.js) 14. Requires Node.js ≥ 18 and PostgreSQL.
+Discord bot for the [`FCSE Students`](https://discord.gg/finki-studenti-810997107376914444) Discord server, powered by [discord.js](https://github.com/discordjs/discord.js) 14. Requires Node.js ≥ 18 and PostgreSQL.
 
 It's recommended, but not required to run this inside a Docker container.
+
+## Features
+
+This discord bot contains many features personalized for the above-mentioned Discord server. Some of the highlights include:
+
+- Extensible FAQ and common links system
+- Providing about courses: general information, participants, professors, and so on
+- Providing information about other aspects, such as professors' contact information, classrooms, previous timetables of exam sessions, and so on
+- Management of user content through commands
+- Extensible permissions system
+- Fully featured polls
+- Automation of the entire management of the server, allowing members to vote in new admins and such
+- Experience & leveling
+- Moderation
+- Miscellaneous functionalities, such as reminders, sending embeds for rules, role assignments
 
 ## Installation
 
@@ -12,8 +27,17 @@ Also, this project contains a dev container configuration for hot reloading. If 
 
 ### Installation (Docker)
 
+The project is available as a Docker image on DockerHub as `delemangi/finki-discord-bot`.
+
+Using the provided production Docker Compose setup:
+
+1. Download the `docker-compose.prod.yaml` from the repository, put it in a folder and rename it to `docker-compose.yaml`
+2. Pull the images: `docker compose pull`
+
+Using the repository:
+
 1. Clone the repository: `git clone git@github.com:Delemangi/finki-discord-bot.git`
-2. Build the images: `docker compose build [--build-arg PLATFORM=...]`
+2. Build the images: `docker compose build`
 
 ### Installation (Normal)
 
@@ -25,15 +49,17 @@ Also, this project contains a dev container configuration for hot reloading. If 
 
 ### Running (Docker)
 
-`docker compose up`
+Regardless of the Docker steps you have followed above for installation, run `docker compose up`
 
 ### Running (Normal)
 
-`npm run start:prod`
+`npm run start`
 
 ## Configuration
 
-### Basic configuration
+### Main
+
+The configuration is currently split into a `.env` file which contains login information for the bot and for the database, and several `json` configuration files for command output.
 
 1. Create a `.env` file in the root directory containing the environment variables as specified in the `.env.sample` file in the repository
 2. Create a `config` folder in the root directory containing:
@@ -63,3 +89,9 @@ Here is a list of features that are planned:
 - Ticketing system
 - Web application for configuring the bot
 - Testing
+- More moderation and lockdown functionalities
+- Bundling, if there is an easy way to achieve it
+
+## License
+
+This project is licensed under the MIT license.
