@@ -47,7 +47,7 @@
     "generate": "prisma generate",
     "lint": "eslint . --ext .ts --cache",
     "migrate": "prisma migrate dev --name a",
-    "prepare": "husky install",
+    "prepare": "husky",
     "start": "node dist/main.js"
   },
   "type": "module",
