@@ -76,7 +76,7 @@ export const getPollEmbed = async (poll: PollWithOptions) => {
       }`,
     )
     .setFooter({
-      text: `${labels.poll}: ${poll.id}`,
+      text: poll.id,
     })
     .setTimestamp();
 };
@@ -200,7 +200,7 @@ export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
       }),
     )
     .setFooter({
-      text: `${labels.poll}: ${poll.id}`,
+      text: poll.id,
     })
     .setTimestamp();
 };
