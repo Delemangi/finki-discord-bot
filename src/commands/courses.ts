@@ -6,12 +6,13 @@ import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
+  commandResponses,
 } from '../translations/commands.js';
 import { programMapping } from '../translations/programs.js';
 import { type ProgramName } from '../types/ProgramName.js';
 import { getGuild } from '../utils/guild.js';
 import { createPollChoices } from '../utils/polls.js';
-import { getCourseRolesBySemester } from '../utils/roles.js';
+import { getCourseRolesBySemester, getRoles } from '../utils/roles.js';
 import {
   type ChatInputCommandInteraction,
   type GuildMember,
@@ -63,7 +64,7 @@ export const data = new SlashCommandBuilder()
         option
           .setName('semester')
           .setDescription('Семестар')
-          .setRequired(true)
+          .setRequired(false)
           .setMinValue(1)
           .setMaxValue(8),
       ),
@@ -76,7 +77,7 @@ export const data = new SlashCommandBuilder()
         option
           .setName('semester')
           .setDescription('Семестар')
-          .setRequired(true)
+          .setRequired(false)
           .setMinValue(1)
           .setMaxValue(8),
       ),
@@ -114,13 +115,18 @@ const handleCoursesAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const semester = interaction.options.getNumber('semester', true);
+  const semester = interaction.options.getNumber('semester');
   const member = interaction.member as GuildMember;
-  const roles = getCourseRolesBySemester(guild, semester);
+  const roles =
+    semester === null
+      ? getRoles(guild, 'courses')
+      : getCourseRolesBySemester(guild, semester);
 
   await member.roles.add(roles);
   await interaction.editReply(
-    commandResponseFunctions.semesterCoursesAdded(semester),
+    semester === null
+      ? commandResponses.allSemestersCoursesAdded
+      : commandResponseFunctions.semesterCoursesAdded(semester),
   );
 };
 
@@ -135,13 +141,18 @@ const handleCoursesRemove = async (
     return;
   }
 
-  const semester = interaction.options.getNumber('semester', true);
+  const semester = interaction.options.getNumber('semester');
   const member = interaction.member as GuildMember;
-  const roles = getCourseRolesBySemester(guild, semester);
+  const roles =
+    semester === null
+      ? getRoles(guild, 'courses')
+      : getCourseRolesBySemester(guild, semester);
 
   await member.roles.remove(roles);
   await interaction.editReply(
-    commandResponseFunctions.semesterCoursesRemoved(semester),
+    semester === null
+      ? commandResponses.allSemestersCoursesRemoved
+      : commandResponseFunctions.semesterCoursesRemoved(semester),
   );
 };
 

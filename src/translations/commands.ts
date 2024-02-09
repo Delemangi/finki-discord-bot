@@ -113,6 +113,8 @@ export const commandDescriptions = {
 export const commandResponses = {
   allCoursesAdded: 'Ги земавте сите предмети.',
   allCoursesRemoved: 'Ги отстранивте сите предмети.',
+  allSemestersCoursesAdded: 'Ги земавте предметите од сите семестри.',
+  allSemestersCoursesRemoved: 'Ги отстранивте предметите од сите семестри.',
   antoDeleted: 'Го избришавте Анто фактот.',
   antosCreated: 'Креиравте Анто фактот.',
   commandsRegistered: 'Ги регистриравте командите.',
