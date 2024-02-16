@@ -222,7 +222,7 @@ export const commandResponseFunctions = {
 
   serverBoostLevelStat: (boostLevel: GuildPremiumTier) => `Ниво: ${boostLevel}`,
 
-  serverBoostStat: (boostCount: number) => `Бустови: ${boostCount} / 30`,
+  serverBoostStat: (boostCount: number) => `Бустови: ${boostCount}`,
 
   serverChannelsStat: (channelCount: number) => `Канали: ${channelCount} / 500`,
 
