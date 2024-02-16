@@ -394,14 +394,6 @@ export const getStaffEmbed = async (information: Staff) => {
             ? labels.none
             : `[${labels.link}](${information.raspored})`,
       },
-      {
-        inline: true,
-        name: labels.consultations,
-        value:
-          information.konsultacii === ''
-            ? labels.none
-            : `[${labels.link}](${information.konsultacii})`,
-      },
     )
     .setTimestamp();
 };
