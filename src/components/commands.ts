@@ -371,6 +371,11 @@ export const getStaffEmbed = async (information: Staff) => {
         value: information.position,
       },
       {
+        inline: true,
+        name: labels.cabinet,
+        value: information.cabinet,
+      },
+      {
         name: labels.email,
         value: information.email,
       },

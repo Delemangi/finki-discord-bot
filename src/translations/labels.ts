@@ -8,6 +8,7 @@ export const labels = {
   assistants: 'Асистенти',
   author: 'Автор',
   barred: 'Забранети',
+  cabinet: 'Кабинет',
   capacity: 'Капацитет',
   closed: 'Затворено',
   code: 'Код',
