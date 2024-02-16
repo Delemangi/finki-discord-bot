@@ -143,11 +143,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       commandResponseFunctions.serverInvitesStat(guild.invites.cache.size),
     );
 
-    await guild.commands.fetch();
-    output.push(
-      commandResponseFunctions.serverCommandsStat(guild.commands.cache.size),
-    );
-
     await interaction.editReply(output.join('\n'));
   }
 };
