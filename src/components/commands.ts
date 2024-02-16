@@ -75,6 +75,10 @@ export const getClassroomEmbed = async (information: Classroom) => {
         name: labels.capacity,
         value: information.capacity.toString(),
       },
+      {
+        name: labels.description,
+        value: information.description,
+      },
     )
     .setTimestamp();
 };

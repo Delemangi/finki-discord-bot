@@ -15,6 +15,7 @@ export const labels = {
   commands: 'Команди',
   consultations: 'Консултации',
   courses: 'Предмети',
+  description: 'Опис',
   dm: 'DM',
   email: 'Електронска пошта',
   finki: 'ФИНКИ',
