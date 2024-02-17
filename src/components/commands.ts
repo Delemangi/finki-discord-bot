@@ -372,8 +372,8 @@ export const getStaffEmbed = async (information: Staff) => {
       },
       {
         inline: true,
-        name: labels.cabinet,
-        value: information.cabinet,
+        name: labels.cabinet.toString(),
+        value: information.cabinet.toString(),
       },
       {
         name: labels.email,
