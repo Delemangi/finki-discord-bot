@@ -655,11 +655,11 @@ const handleManageInfoMessageGet = async (
   }
 
   if (infoMessage.type === InfoMessageType.IMAGE) {
-    await interaction.channel?.send({
+    await interaction.editReply({
       files: [infoMessage.content],
     });
   } else if (infoMessage.type === InfoMessageType.TEXT) {
-    await interaction.channel?.send({
+    await interaction.editReply({
       allowedMentions: {
         parse: [],
       },
