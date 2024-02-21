@@ -10,7 +10,12 @@ import {
   createCompany,
   deleteCompany,
 } from '../data/Company.js';
-import { createInfoMessage, getInfoMessage } from '../data/InfoMessage.js';
+import {
+  createInfoMessage,
+  deleteInfoMessage,
+  getInfoMessage,
+  updateInfoMessage,
+} from '../data/InfoMessage.js';
 import { createLink, deleteLink, getLink, updateLink } from '../data/Link.js';
 import {
   createQuestion,
@@ -182,6 +187,17 @@ export const data = new SlashCommandBuilder()
           .setDescription('Правило')
           .setRequired(true)
           .setAutocomplete(true),
+      ),
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName('infomessage-get')
+      .setDescription(commandDescriptions['manage infomessage-get'])
+      .addNumberOption((option) =>
+        option
+          .setName('index')
+          .setDescription('Број на порака')
+          .setRequired(true),
       ),
   )
   .addSubcommand((subcommand) =>
@@ -626,6 +642,32 @@ const handleManageRuleDelete = async (
   await interaction.editReply(commandResponses.ruleDeleted);
 };
 
+const handleManageInfoMessageGet = async (
+  interaction: ChatInputCommandInteraction,
+) => {
+  const index = interaction.options.getNumber('index', true);
+  const infoMessage = await getInfoMessage(index);
+
+  if (infoMessage === null) {
+    await interaction.editReply(commandErrors.infoNotFound);
+
+    return;
+  }
+
+  if (infoMessage.type === InfoMessageType.IMAGE) {
+    await interaction.channel?.send({
+      files: [infoMessage.content],
+    });
+  } else if (infoMessage.type === InfoMessageType.TEXT) {
+    await interaction.channel?.send({
+      allowedMentions: {
+        parse: [],
+      },
+      content: infoMessage.content.replaceAll('\\n', '\n'),
+    });
+  }
+};
+
 const handleMangeInfoMessageSet = async (
   interaction: ChatInputCommandInteraction,
 ) => {
@@ -643,9 +685,16 @@ const handleMangeInfoMessageSet = async (
       type: type === 'text' ? InfoMessageType.TEXT : InfoMessageType.IMAGE,
       userId: interaction.user.id,
     });
-  }
 
-  await interaction.editReply(commandResponses.infoCreated);
+    await interaction.editReply(commandResponses.infoCreated);
+  } else {
+    infoMessage.content = content;
+    infoMessage.type =
+      type === 'text' ? InfoMessageType.TEXT : InfoMessageType.IMAGE;
+    await updateInfoMessage(infoMessage);
+
+    await interaction.editReply(commandResponses.infoUpdated);
+  }
 };
 
 const handleManageInfoMessageDelete = async (
@@ -660,6 +709,8 @@ const handleManageInfoMessageDelete = async (
 
     return;
   }
+
+  await deleteInfoMessage(index);
 
   await interaction.editReply(commandResponses.infoDeleted);
 };
@@ -736,6 +787,7 @@ const manageHandlers = {
   'company-mass-add': handleCompanyMassAdd,
   'company-set': handleCompanySet,
   'infomessage-delete': handleManageInfoMessageDelete,
+  'infomessage-get': handleManageInfoMessageGet,
   'infomessage-set': handleMangeInfoMessageSet,
   'link-content': handleManageLinkContent,
   'link-delete': handleManageLinkDelete,
