@@ -79,6 +79,7 @@ export const commandDescriptions = {
   question: 'Преземи најчесто поставувано прашање',
   register: 'Регистрирај команди',
   'regulars add': 'Додади нов редовен член',
+  'regulars recreate': 'Рекреирај го привремениот канал за редовни',
   'regulars remove': 'Отстрани редовен член',
   reminder: 'Креирај потсетник',
   rules: 'Преземи правила на серверот',
@@ -107,7 +108,7 @@ export const commandDescriptions = {
   'statistics server': 'Прикажи статистика за серверот',
   'statistics year': 'Прикажи статистика за улогите за години',
   'vip add': 'Предложи нов член за ВИП',
-  'vip recreate': 'Рекреирај го привремениот канал',
+  'vip recreate': 'Рекреирај го привремениот канал за ВИП',
   'vip remove': 'Предложи бркање на член на ВИП',
 };
 
@@ -139,7 +140,7 @@ export const commandResponses = {
   ruleCreated: 'Креиравте правило.',
   ruleDeleted: 'Го избришавте правилото.',
   scriptExecuted: 'Ја извршивте скриптата.',
-  temporaryVipChannelRecreated: 'Го рекреиравте привремениот канал.',
+  temporaryChannelRecreated: 'Го рекреиравте привремениот канал.',
   userGivenRegular: 'Го додадовте корисникот во редовните корисници.',
   userRemovedRegular: 'Го отстранивте корисникот од редовните корисници.',
   voteRemoved: 'Го тргнавте гласот.',

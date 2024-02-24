@@ -198,7 +198,7 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
 const handleVipRecreate = async (interaction: ChatInputCommandInteraction) => {
   await recreateVipTemporaryChannel();
 
-  await interaction.editReply(commandResponses.temporaryVipChannelRecreated);
+  await interaction.editReply(commandResponses.temporaryChannelRecreated);
 };
 
 const vipHandlers = {

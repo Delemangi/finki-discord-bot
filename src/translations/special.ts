@@ -95,6 +95,9 @@ export const specialStringFunctions = {
 
   councilRemoveTitle: (userTag: string) => `Излез од Советот за ${userTag}`,
 
+  tempRegularsTopic: (date: string) =>
+    `Задните соби на редовните. Содржината се брише секој ден. Следно бришење е во ${date}.`,
+
   tempVipTopic: (date: string) =>
     `Задните соби на ВИП. Содржината се брише секој ден. Следно бришење е во ${date}.`,
 

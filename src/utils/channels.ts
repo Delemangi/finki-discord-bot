@@ -7,7 +7,7 @@ import {
 import { specialStringFunctions } from '../translations/special.js';
 import { type ChannelName } from '../types/ChannelName.js';
 import { client } from './client.js';
-import { getConfigProperty } from './config.js';
+import { getConfigProperty, getRoleProperty } from './config.js';
 import { getGuild } from './guild.js';
 import { logger } from './logger.js';
 import { Cron } from 'croner';
@@ -20,6 +20,8 @@ import {
   type Interaction,
   type InteractionResponse,
   type Message,
+  OverwriteType,
+  PermissionFlagsBits,
 } from 'discord.js';
 import { setTimeout } from 'node:timers/promises';
 
@@ -49,7 +51,7 @@ export const initializeChannels = async () => {
 
 export const getChannel = (type: ChannelName) => channels[type];
 
-const getNextVipCronRun = async (locale = 'en-GB', offset = 1) => {
+const getNextChannelRecreationTime = async (locale = 'en-GB', offset = 1) => {
   const { cron } = await getConfigProperty('temporaryVIPChannel');
   const nextRun = Cron(cron).nextRuns(offset).at(-1);
 
@@ -80,7 +82,7 @@ export const recreateVipTemporaryChannel = async () => {
     nsfw: true,
     parent,
     topic: specialStringFunctions.tempVipTopic(
-      await getNextVipCronRun('mk-MK'),
+      await getNextChannelRecreationTime('mk-MK'),
     ),
     type: ChannelType.GuildText,
   });
@@ -88,7 +90,80 @@ export const recreateVipTemporaryChannel = async () => {
     relative: true,
   });
 
-  logger.info(logMessageFunctions.tempVipScheduled(await getNextVipCronRun()));
+  logger.info(
+    logMessageFunctions.tempVipScheduled(await getNextChannelRecreationTime()),
+  );
+};
+
+export const recreateRegularsTemporaryChannel = async () => {
+  const guild = await getGuild();
+  const { name, parent, position } = await getConfigProperty(
+    'temporaryRegularsChannel',
+  );
+
+  const existingChannel = client.channels.cache.find(
+    (ch) => ch.type !== ChannelType.DM && ch.name === name,
+  );
+
+  if (existingChannel !== undefined) {
+    await existingChannel.delete();
+  }
+
+  const channel = await guild?.channels.create({
+    name,
+    nsfw: true,
+    parent,
+    permissionOverwrites: [
+      {
+        allow: [PermissionFlagsBits.ViewChannel],
+        id: await getRoleProperty('admin'),
+        type: OverwriteType.Role,
+      },
+      {
+        allow: [PermissionFlagsBits.ViewChannel],
+        id: await getRoleProperty('moderator'),
+        type: OverwriteType.Role,
+      },
+      {
+        allow: [PermissionFlagsBits.ViewChannel],
+        id: await getRoleProperty('veteran'),
+        type: OverwriteType.Role,
+      },
+      {
+        allow: [PermissionFlagsBits.ViewChannel],
+        id: await getRoleProperty('vip'),
+        type: OverwriteType.Role,
+      },
+      {
+        allow: [PermissionFlagsBits.ViewChannel],
+        id: await getRoleProperty('booster'),
+        type: OverwriteType.Role,
+      },
+      {
+        allow: [PermissionFlagsBits.ViewChannel],
+        id: await getRoleProperty('regular'),
+        type: OverwriteType.Role,
+      },
+      {
+        deny: [PermissionFlagsBits.ViewChannel],
+        id: guild?.roles.everyone.id,
+        type: OverwriteType.Role,
+      },
+    ],
+    topic: specialStringFunctions.tempRegularsTopic(
+      await getNextChannelRecreationTime('mk-MK'),
+    ),
+    type: ChannelType.GuildText,
+  });
+  await channel?.setPosition(position, {
+    relative: true,
+  });
+
+  logger.info(
+    logMessageFunctions.tempRegularsScheduled(
+      await getNextChannelRecreationTime(),
+    ),
+  );
 };
 
 export const scheduleVipTemporaryChannel = async () => {
@@ -96,7 +171,21 @@ export const scheduleVipTemporaryChannel = async () => {
 
   Cron(cron, recreateVipTemporaryChannel);
 
-  logger.info(logMessageFunctions.tempVipScheduled(await getNextVipCronRun()));
+  logger.info(
+    logMessageFunctions.tempVipScheduled(await getNextChannelRecreationTime()),
+  );
+};
+
+export const scheduleRegularsTemporaryChannel = async () => {
+  const { cron } = await getConfigProperty('temporaryRegularsChannel');
+
+  Cron(cron, recreateRegularsTemporaryChannel);
+
+  logger.info(
+    logMessageFunctions.tempRegularsScheduled(
+      await getNextChannelRecreationTime(),
+    ),
+  );
 };
 
 export const logEmbed = async (

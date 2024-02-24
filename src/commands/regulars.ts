@@ -3,6 +3,7 @@ import {
   commandErrors,
   commandResponses,
 } from '../translations/commands.js';
+import { recreateRegularsTemporaryChannel } from '../utils/channels.js';
 import { getRoleProperty } from '../utils/config.js';
 import { getMemberFromGuild } from '../utils/guild.js';
 import {
@@ -41,6 +42,11 @@ export const data = new SlashCommandBuilder()
           .setDescription('Предлог корисник за член на редовните')
           .setRequired(true),
       ),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName('recreate')
+      .setDescription(commandDescriptions['regulars recreate']),
   );
 
 const handleRegularsAdd = async (interaction: ChatInputCommandInteraction) => {
@@ -101,8 +107,17 @@ const handleRegularsRemove = async (
   await interaction.editReply(commandResponses.userRemovedRegular);
 };
 
+const handleRegularsRecreate = async (
+  interaction: ChatInputCommandInteraction,
+) => {
+  await recreateRegularsTemporaryChannel();
+
+  await interaction.editReply(commandResponses.temporaryChannelRecreated);
+};
+
 const regularsHandlers = {
   add: handleRegularsAdd,
+  recreate: handleRegularsRecreate,
   remove: handleRegularsRemove,
 };
 

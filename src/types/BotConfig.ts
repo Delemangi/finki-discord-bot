@@ -12,6 +12,12 @@ export type BotConfig = {
   guild: string;
   leveling: boolean;
   roles: Record<Roles, string>;
+  temporaryRegularsChannel: {
+    cron: string;
+    name: string;
+    parent: string;
+    position: number;
+  };
   temporaryVIPChannel: {
     cron: string;
     name: string;

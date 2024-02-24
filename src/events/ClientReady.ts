@@ -1,6 +1,7 @@
 import { logMessageFunctions } from '../translations/logs.js';
 import {
   initializeChannels,
+  scheduleRegularsTemporaryChannel,
   scheduleVipTemporaryChannel,
 } from '../utils/channels.js';
 import { client as bot } from '../utils/client.js';
@@ -15,6 +16,7 @@ export const execute = async (...[client]: ClientEvents[typeof name]) => {
   await initializeChannels();
   await initializeRoles();
   void scheduleVipTemporaryChannel();
+  void scheduleRegularsTemporaryChannel();
   await client.application?.commands.fetch();
   logger.info(logMessageFunctions.loggedIn(bot.user?.tag));
 };

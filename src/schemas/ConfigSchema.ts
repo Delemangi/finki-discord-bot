@@ -32,6 +32,14 @@ export const ConfigSchema = z
         vip: z.string().nullable(),
       })
       .strict(),
+    temporaryRegularsChannel: z
+      .object({
+        cron: z.string(),
+        name: z.string(),
+        parent: z.string(),
+        position: z.number(),
+      })
+      .strict(),
     temporaryVIPChannel: z
       .object({
         cron: z.string(),

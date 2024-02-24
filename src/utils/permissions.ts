@@ -67,6 +67,10 @@ const commandPermissions: Record<
     permissions: [],
     roles: ['admin', 'moderator'],
   },
+  'regulars recreate': {
+    permissions: [],
+    roles: ['admin', 'moderator'],
+  },
   script: {
     permissions: [PermissionsBitField.Flags.Administrator],
     roles: [],

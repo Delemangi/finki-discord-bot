@@ -42,6 +42,12 @@ const defaultConfig: BotConfig = {
     veteran: '',
     vip: '',
   },
+  temporaryRegularsChannel: {
+    cron: '20 4 * * *',
+    name: '🚫︱лаб-13',
+    parent: '1060626238760300685',
+    position: 1,
+  },
   temporaryVIPChannel: {
     cron: '20 4 * * *',
     name: '🚪︱задни-соби',
