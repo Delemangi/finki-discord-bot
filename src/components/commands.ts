@@ -363,21 +363,24 @@ export const getStaffEmbed = async (information: Staff) => {
       {
         inline: true,
         name: labels.title,
-        value: information.title,
+        value: information.title === '' ? labels.none : information.title,
       },
       {
         inline: true,
         name: labels.position,
-        value: information.position,
+        value: information.position === '' ? labels.none : information.position,
       },
       {
         inline: true,
         name: labels.cabinet.toString(),
-        value: information.cabinet.toString(),
+        value:
+          information.cabinet === ''
+            ? labels.none
+            : information.cabinet.toString(),
       },
       {
         name: labels.email,
-        value: information.email,
+        value: information.email === '' ? labels.none : information.email,
       },
       {
         inline: true,
