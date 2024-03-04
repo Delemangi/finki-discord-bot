@@ -155,6 +155,9 @@ export const databaseErrorFunctions = {
   getRandomAntoError: (error: unknown) =>
     `Failed getting random Anto fact\n${error}`,
 
+  getReminderByIdError: (error: unknown) =>
+    `Failed getting reminder by ID\n${error}`,
+
   getRemindersByUserIdError: (error: unknown) =>
     `Failed getting reminders by user ID\n${error}`,
 

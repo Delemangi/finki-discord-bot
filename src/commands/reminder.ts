@@ -1,3 +1,4 @@
+import { getRemindersComponents } from '../components/reminders.js';
 import { createReminder, getRemindersByUserId } from '../data/Reminder.js';
 import {
   commandDescriptions,
@@ -35,6 +36,11 @@ export const data = new SlashCommandBuilder()
     command
       .setName('list')
       .setDescription(commandDescriptions['reminder list']),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName('delete')
+      .setDescription(commandDescriptions['reminder delete']),
   );
 
 const handleReminderCreate = async (
@@ -96,8 +102,33 @@ const handleReminderList = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply(remindersList);
 };
 
+const handleReminderDelete = async (
+  interaction: ChatInputCommandInteraction,
+) => {
+  const reminders = await getRemindersByUserId(interaction.user.id);
+
+  if (reminders === null) {
+    await interaction.editReply(commandErrors.remindersLoadError);
+
+    return;
+  }
+
+  if (reminders.length === 0) {
+    await interaction.editReply(commandResponses.noReminders);
+
+    return;
+  }
+
+  const components = await getRemindersComponents(reminders);
+  await interaction.editReply({
+    components,
+    content: commandResponses.chooseRemindersToDelete,
+  });
+};
+
 const reminderHandlers = {
   create: handleReminderCreate,
+  delete: handleReminderDelete,
   list: handleReminderList,
 };
 

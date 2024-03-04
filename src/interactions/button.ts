@@ -4,6 +4,7 @@ import {
   getPollInfoEmbed,
   getPollStatsComponents,
 } from '../components/polls.js';
+import { getRemindersComponents } from '../components/reminders.js';
 import {
   getVipAcknowledgeComponents,
   getVipConfirmComponents,
@@ -18,6 +19,11 @@ import {
   getPollVotesByOptionId,
   getPollVotesByPollIdAndUserId,
 } from '../data/PollVote.js';
+import {
+  deleteReminder,
+  getReminderById,
+  getRemindersByUserId,
+} from '../data/Reminder.js';
 import {
   deleteSpecialPoll,
   getSpecialPollByPollId,
@@ -1161,5 +1167,60 @@ export const handleVipButton = async (
   await interaction.reply({
     content: specialStrings.vipRequestSent,
     ephemeral: true,
+  });
+};
+
+export const handleReminderDeleteButton = async (
+  interaction: ButtonInteraction,
+  args: string[],
+) => {
+  const [reminderId, authorId] = args;
+
+  if (reminderId === undefined || authorId === undefined) {
+    await interaction.reply({
+      content: commandErrors.commandError,
+      ephemeral: true,
+    });
+
+    return;
+  }
+
+  const reminder = await getReminderById(reminderId);
+
+  if (authorId !== interaction.user.id) {
+    await interaction.reply({
+      content: commandErrors.reminderNoPermission,
+      ephemeral: true,
+    });
+
+    return;
+  }
+
+  if (reminder === null) {
+    const newReminders = await getRemindersByUserId(authorId);
+    const newComponents = await getRemindersComponents(newReminders ?? []);
+
+    await interaction.message.edit({
+      components: newComponents,
+    });
+
+    return;
+  }
+
+  if (reminder.userId !== interaction.user.id) {
+    return;
+  }
+
+  await deleteReminder(reminderId);
+
+  await interaction.reply({
+    content: commandResponses.reminderDeleted,
+    ephemeral: true,
+  });
+
+  const reminders = await getRemindersByUserId(interaction.user.id);
+  const components = await getRemindersComponents(reminders ?? []);
+  await interaction.message.edit({
+    components,
   });
 };

@@ -34,6 +34,24 @@ export const getRemindersByUserId = async (userId?: string) => {
   }
 };
 
+export const getReminderById = async (reminderId?: string) => {
+  if (reminderId === undefined) {
+    return null;
+  }
+
+  try {
+    return await database.reminder.findUnique({
+      where: {
+        id: reminderId,
+      },
+    });
+  } catch (error) {
+    logger.error(databaseErrorFunctions.getReminderByIdError(error));
+
+    return null;
+  }
+};
+
 export const createReminder = async (reminder?: Prisma.ReminderCreateInput) => {
   if (reminder === undefined) {
     return null;
