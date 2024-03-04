@@ -20,6 +20,9 @@ export const getRemindersByUserId = async (userId?: string) => {
 
   try {
     return await database.reminder.findMany({
+      orderBy: {
+        timestamp: 'asc',
+      },
       where: {
         userId,
       },

@@ -1,8 +1,9 @@
-import { createReminder } from '../data/Reminder.js';
+import { createReminder, getRemindersByUserId } from '../data/Reminder.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
+  commandResponses,
 } from '../translations/commands.js';
 import { parseDate } from 'chrono-node';
 import {
@@ -29,6 +30,11 @@ export const data = new SlashCommandBuilder()
           .setDescription('Датум и/или време')
           .setRequired(true),
       ),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName('list')
+      .setDescription(commandDescriptions['reminder list']),
   );
 
 const handleReminderCreate = async (
@@ -65,8 +71,34 @@ const handleReminderCreate = async (
   });
 };
 
+const handleReminderList = async (interaction: ChatInputCommandInteraction) => {
+  const reminders = await getRemindersByUserId(interaction.user.id);
+
+  if (reminders === null) {
+    await interaction.editReply(commandErrors.remindersLoadError);
+
+    return;
+  }
+
+  if (reminders.length === 0) {
+    await interaction.editReply(commandResponses.noReminders);
+
+    return;
+  }
+
+  const remindersList = reminders
+    .map(
+      (reminder, index) =>
+        `${index}. ${time(reminder.timestamp, 'F')} - ${reminder.description}`,
+    )
+    .join('\n');
+
+  await interaction.editReply(remindersList);
+};
+
 const reminderHandlers = {
   create: handleReminderCreate,
+  list: handleReminderList,
 };
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
