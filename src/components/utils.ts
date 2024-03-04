@@ -17,7 +17,7 @@ import {
 
 export const truncateString = (
   string: string | null | undefined,
-  length: number,
+  length: number = 100,
 ) => {
   if (string === null || string === undefined) {
     return '';
