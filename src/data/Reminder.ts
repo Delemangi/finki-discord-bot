@@ -13,6 +13,24 @@ export const getReminders = async () => {
   }
 };
 
+export const getRemindersByUserId = async (userId?: string) => {
+  if (userId === undefined) {
+    return null;
+  }
+
+  try {
+    return await database.reminder.findMany({
+      where: {
+        userId,
+      },
+    });
+  } catch (error) {
+    logger.error(databaseErrorFunctions.getRemindersByUserIdError(error));
+
+    return null;
+  }
+};
+
 export const createReminder = async (reminder?: Prisma.ReminderCreateInput) => {
   if (reminder === undefined) {
     return null;

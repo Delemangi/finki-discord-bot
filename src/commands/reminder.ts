@@ -15,18 +15,25 @@ const name = 'reminder';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription(commandDescriptions[name])
-  .addStringOption((option) =>
-    option.setName('description').setDescription('Опис').setRequired(true),
-  )
-  .addStringOption((option) =>
-    option
-      .setName('when')
-      .setDescription('Датум и/или време')
-      .setRequired(true),
+  .setDescription('Reminder')
+  .addSubcommand((command) =>
+    command
+      .setName('create')
+      .setDescription(commandDescriptions['reminder create'])
+      .addStringOption((option) =>
+        option.setName('description').setDescription('Опис').setRequired(true),
+      )
+      .addStringOption((option) =>
+        option
+          .setName('when')
+          .setDescription('Датум и/или време')
+          .setRequired(true),
+      ),
   );
 
-export const execute = async (interaction: ChatInputCommandInteraction) => {
+const handleReminderCreate = async (
+  interaction: ChatInputCommandInteraction,
+) => {
   const description = interaction.options.getString('description', true);
   const when = interaction.options.getString('when', true);
 
@@ -50,4 +57,18 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply(
     commandResponseFunctions.reminderCreated(time(date, 'F'), description),
   );
+};
+
+const reminderHandlers = {
+  create: handleReminderCreate,
+};
+
+export const execute = async (interaction: ChatInputCommandInteraction) => {
+  const subcommand = interaction.options.getSubcommand(true);
+
+  if (subcommand in reminderHandlers) {
+    await reminderHandlers[subcommand as keyof typeof reminderHandlers](
+      interaction,
+    );
+  }
 };

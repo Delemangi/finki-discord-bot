@@ -81,7 +81,7 @@ export const commandDescriptions = {
   'regulars add': 'Додади нов редовен член',
   'regulars recreate': 'Рекреирај го привремениот канал за редовни',
   'regulars remove': 'Отстрани редовен член',
-  reminder: 'Креирај потсетник',
+  'reminder create': 'Креирај потсетник',
   rules: 'Преземи правила на серверот',
   'script colors': 'Испрати ембед за избирање бои',
   'script courses': 'Испрати ембеди за избирање предмети',
