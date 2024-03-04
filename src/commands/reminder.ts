@@ -54,9 +54,15 @@ const handleReminderCreate = async (
     userId: interaction.user.id,
   });
 
-  await interaction.editReply(
-    commandResponseFunctions.reminderCreated(time(date, 'F'), description),
-  );
+  await interaction.editReply({
+    allowedMentions: {
+      parse: [],
+    },
+    content: commandResponseFunctions.reminderCreated(
+      time(date, 'F'),
+      description,
+    ),
+  });
 };
 
 const reminderHandlers = {
