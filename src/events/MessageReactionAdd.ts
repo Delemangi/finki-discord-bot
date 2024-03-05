@@ -1,16 +1,26 @@
-import { logErrorFunctions } from '../translations/logs.js';
-import { getConfigProperty } from '../utils/config.js';
-import { addExperience } from '../utils/experience.js';
-import { logger } from '../utils/logger.js';
-import { type ClientEvents, Events, type MessageReaction, type User } from 'discord.js';
+import {
+  type ClientEvents,
+  Events,
+  type MessageReaction,
+  type PartialMessageReaction,
+} from 'discord.js';
 
 export const name = Events.MessageReactionAdd;
 
-async function removeKromidReaction(messageReaction: MessageReaction, _user: User) {
-  if (messageReaction.message.author.id !== "206360333881704449") return;
-  if (messageReaction.emoji == "🧅") await messageReaction.remove();
-}
+const targetEmojis = ['🧅', 'onion', 'kromid'];
 
-export const execute = async (...[messageReaction, user]: ClientEvents[typeof name]) => {
-  await removeKromidReaction(messageReaction, user);
+const removeKromidReaction = async (
+  messageReaction: MessageReaction | PartialMessageReaction,
+) => {
+  const emojiName = messageReaction.emoji.name
+    ? messageReaction.emoji.name.toLowerCase()
+    : '';
+  if (messageReaction.message?.author?.id !== '206360333881704449') return;
+  if (!targetEmojis.includes(emojiName)) await messageReaction.remove();
+};
+
+export const execute = async (
+  ...[messageReaction]: ClientEvents[typeof name]
+) => {
+  await removeKromidReaction(messageReaction);
 };
