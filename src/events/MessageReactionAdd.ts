@@ -1,3 +1,4 @@
+import { getOnionsProperty } from '../utils/config.js';
 import {
   type ClientEvents,
   Events,
@@ -6,21 +7,33 @@ import {
 } from 'discord.js';
 
 export const name = Events.MessageReactionAdd;
+const emojis = ['🧅', 'onion', ':onion:'];
 
-const targetEmojis = ['🧅', 'onion', 'kromid'];
-
-const removeKromidReaction = async (
-  messageReaction: MessageReaction | PartialMessageReaction,
+const removeReaction = async (
+  reaction: MessageReaction | PartialMessageReaction,
 ) => {
-  const emojiName = messageReaction.emoji.name
-    ? messageReaction.emoji.name.toLowerCase()
-    : '';
-  if (messageReaction.message?.author?.id !== '206360333881704449') return;
-  if (!targetEmojis.includes(emojiName)) await messageReaction.remove();
+  const mode = await getOnionsProperty('mode');
+
+  if (mode !== 'remove') {
+    return;
+  }
+
+  const emojiName = reaction.emoji.name?.toLowerCase();
+  const authorId = reaction.message.author?.id;
+  const users = await getOnionsProperty('users');
+
+  if (
+    emojiName === undefined ||
+    authorId === undefined ||
+    !users.includes(authorId) ||
+    !emojis.includes(emojiName)
+  ) {
+    return;
+  }
+
+  await reaction.remove();
 };
 
-export const execute = async (
-  ...[messageReaction]: ClientEvents[typeof name]
-) => {
-  await removeKromidReaction(messageReaction);
+export const execute = async (...[reaction]: ClientEvents[typeof name]) => {
+  await removeReaction(reaction);
 };
