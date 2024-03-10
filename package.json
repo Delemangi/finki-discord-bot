@@ -8,7 +8,7 @@
     "async-lock": "^1.4.1",
     "chrono-node": "^2.7.4",
     "croner": "^8.0.1",
-    "discord-api-types": "^0.37.71",
+    "discord-api-types": "^0.37.73",
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
     "rimraf": "^5.0.5",
@@ -17,7 +17,7 @@
   },
   "description": "FINKI Discord Bot",
   "devDependencies": {
-    "@swc/core": "^1.4.2",
+    "@swc/core": "^1.4.6",
     "@swc/helpers": "^0.5.6",
     "@types/async-lock": "^1.4.2",
     "eslint": "^8.57.0",
@@ -26,7 +26,7 @@
     "nodemon": "^3.1.0",
     "prisma": "^5.10.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.2"
   },
   "engines": {
     "node": ">=18.0.0"
