@@ -27,6 +27,7 @@ export const ConfigSchema = z
     roles: z
       .object({
         admin: z.string().nullable(),
+        admins: z.string().nullable(),
         booster: z.string().nullable(),
         contributor: z.string().nullable(),
         council: z.string().nullable(),
