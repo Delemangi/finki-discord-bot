@@ -13,14 +13,14 @@ export const name = Events.MessageReactionAdd;
 const removeReaction = async (
   reaction: MessageReaction | PartialMessageReaction,
 ) => {
-  const onions = await getReactionsProperty('remove');
+  const emojis = await getReactionsProperty('remove');
   const authorId = reaction.message.author?.id;
 
   if (authorId === undefined) {
     return;
   }
 
-  const emoji = onions[authorId];
+  const emoji = emojis[authorId];
   const reactedEmoji = reaction.emoji.name?.toLowerCase();
 
   if (

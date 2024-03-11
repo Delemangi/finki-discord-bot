@@ -24,9 +24,9 @@ const crosspost = async (message: Message) => {
 };
 
 const addReaction = async (message: Message) => {
-  const onions = await getReactionsProperty('add');
+  const emojis = await getReactionsProperty('add');
   const authorId = message.author.id;
-  const emoji = onions[authorId];
+  const emoji = emojis[authorId];
 
   if (emoji === undefined) {
     return;
