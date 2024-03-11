@@ -1,5 +1,5 @@
 import { logErrorFunctions } from '../translations/logs.js';
-import { getConfigProperty, getOnionsProperty } from '../utils/config.js';
+import { getConfigProperty } from '../utils/config.js';
 import { addExperience } from '../utils/experience.js';
 import { logger } from '../utils/logger.js';
 import { type ClientEvents, Events, type Message } from 'discord.js';
@@ -24,16 +24,10 @@ const crosspost = async (message: Message) => {
 };
 
 const addReaction = async (message: Message) => {
-  const mode = await getOnionsProperty('mode');
+  const onions = await getConfigProperty('onions');
+  const authorId = message.author.id;
 
-  if (mode !== 'add') {
-    return;
-  }
-
-  const authorId = message.author?.id;
-  const users = await getOnionsProperty('users');
-
-  if (authorId === undefined || !users.includes(authorId)) {
+  if (onions[authorId] !== 'add') {
     return;
   }
 

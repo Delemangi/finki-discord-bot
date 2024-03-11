@@ -1,4 +1,4 @@
-import { getOnionsProperty } from '../utils/config.js';
+import { getConfigProperty } from '../utils/config.js';
 import {
   type ClientEvents,
   Events,
@@ -12,20 +12,14 @@ const emojis = ['🧅', 'onion', ':onion:'];
 const removeReaction = async (
   reaction: MessageReaction | PartialMessageReaction,
 ) => {
-  const mode = await getOnionsProperty('mode');
-
-  if (mode !== 'remove') {
-    return;
-  }
-
-  const emojiName = reaction.emoji.name?.toLowerCase();
+  const onions = await getConfigProperty('onions');
   const authorId = reaction.message.author?.id;
-  const users = await getOnionsProperty('users');
+  const emojiName = reaction.emoji.name?.toLowerCase();
 
   if (
     emojiName === undefined ||
     authorId === undefined ||
-    !users.includes(authorId) ||
+    onions[authorId] !== 'remove' ||
     !emojis.includes(emojiName)
   ) {
     return;

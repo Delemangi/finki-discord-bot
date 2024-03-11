@@ -12,10 +12,7 @@ export type BotConfig = {
   ephemeralReplyTime: number;
   guild: string;
   leveling: boolean;
-  onions: {
-    mode: OnionMode;
-    users: string[];
-  };
+  onions: Record<string, OnionMode>;
   roles: Record<Roles, string>;
   temporaryRegularsChannel: {
     cron: string;

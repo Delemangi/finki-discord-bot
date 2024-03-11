@@ -29,10 +29,7 @@ const defaultConfig: BotConfig = {
   ephemeralReplyTime: 5_000,
   guild: '810997107376914444',
   leveling: true,
-  onions: {
-    mode: 'none',
-    users: [],
-  },
+  onions: {},
   roles: {
     admin: '',
     admins: '',
@@ -94,12 +91,6 @@ export const setConfigProperty = async <T extends keyof BotConfig>(
 
 export const getRoleProperty = async <T extends Roles>(key: T) => {
   return config.roles?.[key] ?? defaultConfig.roles[key];
-};
-
-export const getOnionsProperty = async <T extends keyof BotConfig['onions']>(
-  key: T,
-) => {
-  return config.onions?.[key] ?? defaultConfig.onions[key];
 };
 
 export const getConfigKeys = () => {
