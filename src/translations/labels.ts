@@ -21,6 +21,7 @@ export const labels = {
   email: 'Електронска пошта',
   finki: 'ФИНКИ',
   floor: 'Кат',
+  girlies: 'Girlies',
   level: 'Ниво',
   link: 'Линк',
   links: 'Линкови',
