@@ -31,6 +31,7 @@ export const ConfigSchema = z
         contributor: z.string().nullable(),
         council: z.string().nullable(),
         fss: z.string().nullable(),
+        girlies: z.string().nullable(),
         moderator: z.string().nullable(),
         ombudsman: z.string().nullable(),
         regular: z.string().nullable(),

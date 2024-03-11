@@ -40,6 +40,7 @@ const defaultConfig: BotConfig = {
     contributor: '',
     council: '',
     fss: '',
+    girlies: '',
     moderator: '',
     ombudsman: '',
     regular: '',

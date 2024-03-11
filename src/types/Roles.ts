@@ -9,4 +9,5 @@ export type Roles =
   | 'regular'
   | 'veteran'
   | 'vip'
-  | 'admins';
+  | 'admins'
+  | 'girlies';
