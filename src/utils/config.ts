@@ -29,7 +29,10 @@ const defaultConfig: BotConfig = {
   ephemeralReplyTime: 5_000,
   guild: '810997107376914444',
   leveling: true,
-  onions: {},
+  reactions: {
+    add: {},
+    remove: {},
+  },
   roles: {
     admin: '',
     admins: '',
@@ -91,6 +94,12 @@ export const setConfigProperty = async <T extends keyof BotConfig>(
 
 export const getRoleProperty = async <T extends Roles>(key: T) => {
   return config.roles?.[key] ?? defaultConfig.roles[key];
+};
+
+export const getReactionsProperty = async <T extends 'add' | 'remove'>(
+  key: T,
+) => {
+  return config.reactions?.[key] ?? defaultConfig.reactions[key];
 };
 
 export const getConfigKeys = () => {

@@ -1,5 +1,5 @@
 import { logErrorFunctions } from '../translations/logs.js';
-import { getConfigProperty } from '../utils/config.js';
+import { getConfigProperty, getReactionsProperty } from '../utils/config.js';
 import { addExperience } from '../utils/experience.js';
 import { logger } from '../utils/logger.js';
 import { type ClientEvents, Events, type Message } from 'discord.js';
@@ -24,14 +24,19 @@ const crosspost = async (message: Message) => {
 };
 
 const addReaction = async (message: Message) => {
-  const onions = await getConfigProperty('onions');
+  const onions = await getReactionsProperty('add');
   const authorId = message.author.id;
+  const emoji = onions[authorId];
 
-  if (onions[authorId] !== 'add') {
+  if (emoji === undefined) {
     return;
   }
 
-  await message.react('🧅');
+  try {
+    await message.react(emoji);
+  } catch (error) {
+    logger.error(logErrorFunctions.addReactionError(error));
+  }
 };
 
 export const execute = async (...[message]: ClientEvents[typeof name]) => {

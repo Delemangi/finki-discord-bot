@@ -18,7 +18,12 @@ export const ConfigSchema = z
     ephemeralReplyTime: z.number(),
     guild: z.string(),
     leveling: z.boolean(),
-    onions: z.record(z.string(), z.enum(['none', 'add', 'remove'])),
+    reactions: z
+      .object({
+        add: z.record(z.string()),
+        remove: z.record(z.string()),
+      })
+      .strict(),
     roles: z
       .object({
         admin: z.string().nullable(),

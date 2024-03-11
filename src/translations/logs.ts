@@ -40,6 +40,8 @@ export const logMessageFunctions = {
 };
 
 export const logErrorFunctions = {
+  addReactionError: (error: unknown) => `Failed adding reaction\n${error}`,
+
   antoCreateError: (error: unknown) => `Failed creating Anto fact\n${error}`,
 
   antoDeleteError: (error: unknown) => `Failed deleting Anto fact\n${error}`,
@@ -137,6 +139,8 @@ export const logErrorFunctions = {
     `Failed fetching message URL for ${interactionId}\n${error}`,
 
   reminderLoadError: (error: unknown) => `Failed loading reminders\n${error}`,
+
+  removeReactionError: (error: unknown) => `Failed removing reaction\n${error}`,
 
   responseDeleteError: (messageId: string, error: unknown) =>
     `Failed deleting message ${messageId}\n${error}`,

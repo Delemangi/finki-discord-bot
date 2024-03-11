@@ -1,4 +1,6 @@
-import { getConfigProperty } from '../utils/config.js';
+import { logErrorFunctions } from '../translations/logs.js';
+import { getReactionsProperty } from '../utils/config.js';
+import { logger } from '../utils/logger.js';
 import {
   type ClientEvents,
   Events,
@@ -7,25 +9,33 @@ import {
 } from 'discord.js';
 
 export const name = Events.MessageReactionAdd;
-const emojis = ['🧅', 'onion', ':onion:'];
 
 const removeReaction = async (
   reaction: MessageReaction | PartialMessageReaction,
 ) => {
-  const onions = await getConfigProperty('onions');
+  const onions = await getReactionsProperty('remove');
   const authorId = reaction.message.author?.id;
-  const emojiName = reaction.emoji.name?.toLowerCase();
+
+  if (authorId === undefined) {
+    return;
+  }
+
+  const emoji = onions[authorId];
+  const reactedEmoji = reaction.emoji.name?.toLowerCase();
 
   if (
-    emojiName === undefined ||
-    authorId === undefined ||
-    onions[authorId] !== 'remove' ||
-    !emojis.includes(emojiName)
+    emoji === undefined ||
+    reactedEmoji === undefined ||
+    reactedEmoji !== emoji
   ) {
     return;
   }
 
-  await reaction.remove();
+  try {
+    await reaction.remove();
+  } catch (error) {
+    logger.error(logErrorFunctions.removeReactionError(error));
+  }
 };
 
 export const execute = async (...[reaction]: ClientEvents[typeof name]) => {

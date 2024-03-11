@@ -1,5 +1,4 @@
 import { type ChannelName } from './ChannelName.js';
-import { type OnionMode } from './OnionMode.js';
 import { type Roles } from './Roles.js';
 import { type ColorResolvable } from 'discord.js';
 
@@ -12,7 +11,10 @@ export type BotConfig = {
   ephemeralReplyTime: number;
   guild: string;
   leveling: boolean;
-  onions: Record<string, OnionMode>;
+  reactions: {
+    add: Record<string, string>;
+    remove: Record<string, string>;
+  };
   roles: Record<Roles, string>;
   temporaryRegularsChannel: {
     cron: string;
