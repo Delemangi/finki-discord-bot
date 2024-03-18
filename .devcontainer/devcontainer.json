@@ -1,10 +1,10 @@
 {
-  "dockerComposeFile": "../docker-compose.dev.yaml",
+  "dockerComposeFile": "./docker-compose.yaml",
   "forwardPorts": [
-    8080
+    5432
   ],
   "name": "finki-discord-bot",
-  "service": "bot",
+  "service": "container",
   "shutdownAction": "stopCompose",
   "workspaceFolder": "/app"
 }

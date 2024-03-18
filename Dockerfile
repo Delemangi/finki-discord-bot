@@ -2,10 +2,8 @@
 FROM --platform=${BUILDPLATFORM} node:20-alpine AS development
 WORKDIR /app
 
-RUN apk add --no-cache postgresql-client git openjdk17 nodejs
-
 COPY package.json package-lock.json ./
-RUN npm i --ignore-scripts
+RUN npm i --ignore-scripts && npm cache clean --force
 
 COPY prisma ./prisma
 RUN npm run generate
@@ -13,22 +11,16 @@ RUN npm run generate
 COPY . ./
 RUN npm run build
 
-CMD [ "npm", "run", "dev" ]
-
 # Production stage
 FROM --platform=${TARGETPLATFORM} node:20-alpine AS production
 WORKDIR /app
 
-RUN apk add --no-cache postgresql-client
-
-COPY package.json package-lock.json start.sh ./
+COPY package.json package-lock.json ./
 
 COPY --from=development /app/node_modules ./node_modules
-RUN npm prune --production
+RUN npm prune --production --no-optional && npm cache clean --force
 
-COPY prisma ./prisma
-RUN npm run generate
-
+COPY --from=development /app/prisma ./prisma
 COPY --from=development /app/dist ./dist
 
-CMD [ "sh", "./start.sh" ]
+CMD [ "sh", "-c", "npm run migrate && npm run start" ]
