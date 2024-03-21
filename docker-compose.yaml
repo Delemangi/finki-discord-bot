@@ -9,7 +9,8 @@ services:
     env_file:
       - .env
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     volumes:
       - ./config:/app/config
       - ./sessions:/app/sessions
@@ -24,8 +25,8 @@ services:
     volumes:
       - ./db:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-U", "postgres"]
-      interval: 30s
-      timeout: 60s
-      retries: 5
-      start_period: 80s
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 15s
+      timeout: 30s
+      retries: 3
+      start_period: 5s
