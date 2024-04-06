@@ -99,6 +99,10 @@ const commandPermissions: Record<
     permissions: [],
     roles: ['council'],
   },
+  Star: {
+    permissions: [],
+    roles: ['admin', 'moderator'],
+  },
   'vip add': {
     permissions: [],
     roles: ['council'],
