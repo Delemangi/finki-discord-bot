@@ -1,4 +1,5 @@
 import { commandErrors, commandResponses } from '../translations/commands.js';
+import { labels } from '../translations/labels.js';
 import { getConfigProperty } from '../utils/config.js';
 import { getMemberFromGuild } from '../utils/guild.js';
 import { getOrCreateWebhookByChannelId } from '../utils/webhooks.js';
@@ -36,7 +37,7 @@ export const execute = async (
 
   await webhook?.send({
     avatarURL: member.displayAvatarURL(),
-    content: message?.content ?? '',
+    content: `${message?.content}\n\n${labels.link}: ${message?.url}`,
     files: message?.attachments.map((attachment) => attachment.url) ?? [],
     username: member.displayName,
   });
