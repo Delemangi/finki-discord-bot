@@ -47,6 +47,7 @@ const defaultConfig: BotConfig = {
     veteran: '',
     vip: '',
   },
+  starboard: '',
   temporaryRegularsChannel: {
     cron: '20 4 * * *',
     name: '🚫︱лаб-13',

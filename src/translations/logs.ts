@@ -1,6 +1,7 @@
 import {
   type ButtonInteraction,
   type ChatInputCommandInteraction,
+  type MessageContextMenuCommandInteraction,
   type UserContextMenuCommandInteraction,
 } from 'discord.js';
 
@@ -10,6 +11,7 @@ export const logShortStrings = {
   chat: '[Chat]',
   dm: 'DM',
   guild: 'Guild',
+  message: '[Message]',
   pollStats: 'Poll Stats',
   user: '[User]',
 };
@@ -134,6 +136,18 @@ export const logErrorFunctions = {
   linksParseError: (error: unknown) => `Failed parsing links\n${error}`,
 
   loginFailed: (error: unknown) => `Failed logging in\n${error}`,
+
+  messageContextMenuInteractionDeferError: (
+    interaction: MessageContextMenuCommandInteraction,
+    error: unknown,
+  ) =>
+    `Failed deferring message context menu interaction ${interaction.commandName}\n${error}`,
+
+  messageContextMenuInteractionError: (
+    interaction: MessageContextMenuCommandInteraction,
+    error: unknown,
+  ) =>
+    `Failed handling message context menu interaction ${interaction.commandName}\n${error}`,
 
   messageUrlFetchError: (interactionId: string, error: unknown) =>
     `Failed fetching message URL for ${interactionId}\n${error}`,

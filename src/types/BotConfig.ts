@@ -16,6 +16,7 @@ export type BotConfig = {
     remove: Record<string, string>;
   };
   roles: Record<Roles, string>;
+  starboard: string;
   temporaryRegularsChannel: {
     cron: string;
     name: string;

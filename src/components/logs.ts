@@ -12,6 +12,7 @@ import {
   type ChatInputCommandInteraction,
   EmbedBuilder,
   inlineCode,
+  type MessageContextMenuCommandInteraction,
   type UserContextMenuCommandInteraction,
   userMention,
 } from 'discord.js';
@@ -83,6 +84,41 @@ export const getUserContextMenuCommandEmbed = async (
       {
         name: embedLabels.target,
         value: userMention(interaction.targetUser.id),
+      },
+    )
+    .setFooter({
+      text: interaction.id,
+    })
+    .setTimestamp();
+};
+
+export const getMessageContextMenuCommandEmbed = async (
+  interaction: MessageContextMenuCommandInteraction,
+) => {
+  return new EmbedBuilder()
+    .setColor(color)
+    .setTitle(embedLabels.messageContextMenuInteraction)
+    .setAuthor({
+      iconURL: interaction.user.displayAvatarURL(),
+      name: interaction.user.tag,
+      ...(await fetchMessageUrl(interaction)),
+    })
+    .addFields(
+      {
+        name: embedLabels.author,
+        value: userMention(interaction.user.id),
+      },
+      {
+        name: embedLabels.channel,
+        value: getChannelMention(interaction),
+      },
+      {
+        name: embedLabels.command,
+        value: inlineCode(interaction.commandName),
+      },
+      {
+        name: embedLabels.target,
+        value: inlineCode(interaction.targetId),
       },
     )
     .setFooter({

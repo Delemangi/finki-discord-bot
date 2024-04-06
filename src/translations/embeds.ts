@@ -52,6 +52,7 @@ export const embedLabels = {
   chatInputInteraction: 'Chat Input Command',
   command: 'Command',
   empty: 'Empty',
+  messageContextMenuInteraction: 'Message Context Menu Command',
   option: 'Option',
   pollStats: 'Poll Stats',
   target: 'Target',

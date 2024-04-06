@@ -1,6 +1,6 @@
 import { client } from './client.js';
 import { getConfigProperty } from './config.js';
-import { type Interaction } from 'discord.js';
+import { type Guild, type Interaction } from 'discord.js';
 
 export const getGuild = async (interaction?: Interaction) => {
   if (interaction?.guild !== null && interaction?.guild !== undefined) {
@@ -27,6 +27,16 @@ export const getMemberFromGuild = async (
 
   try {
     return await guild.members.fetch(userId);
+  } catch {
+    return null;
+  }
+};
+
+export const getChannelFromGuild = async (channelId: string, guild?: Guild) => {
+  const guildToUse = guild ?? (await getGuild());
+
+  try {
+    return (await guildToUse?.channels.fetch(channelId)) ?? null;
   } catch {
     return null;
   }

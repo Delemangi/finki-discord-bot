@@ -40,6 +40,7 @@ export const ConfigSchema = z
         vip: z.string().nullable(),
       })
       .strict(),
+    starboard: z.string().optional(),
     temporaryRegularsChannel: z
       .object({
         cron: z.string(),

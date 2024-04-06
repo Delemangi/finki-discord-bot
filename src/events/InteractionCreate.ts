@@ -2,6 +2,7 @@ import {
   handleAutocomplete,
   handleButton,
   handleChatInputCommand,
+  handleMessageContextMenuCommand,
   handleUserContextMenuCommand,
 } from '../interactions/handlers.js';
 import { logErrorFunctions } from '../translations/logs.js';
@@ -17,6 +18,8 @@ export const execute = async (...[interaction]: ClientEvents[typeof name]) => {
     await handleButton(interaction);
   } else if (interaction.isUserContextMenuCommand()) {
     await handleUserContextMenuCommand(interaction);
+  } else if (interaction.isMessageContextMenuCommand()) {
+    await handleMessageContextMenuCommand(interaction);
   } else if (interaction.isAutocomplete()) {
     await handleAutocomplete(interaction);
   } else {

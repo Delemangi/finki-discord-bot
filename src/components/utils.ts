@@ -11,6 +11,7 @@ import {
   type ChatInputCommandInteraction,
   inlineCode,
   type Interaction,
+  type MessageContextMenuCommandInteraction,
   roleMention,
   type UserContextMenuCommandInteraction,
 } from 'discord.js';
@@ -123,7 +124,10 @@ export const linkProfessors = (professors: string) => {
 };
 
 export const fetchMessageUrl = async (
-  interaction: ChatInputCommandInteraction | UserContextMenuCommandInteraction,
+  interaction:
+    | ChatInputCommandInteraction
+    | UserContextMenuCommandInteraction
+    | MessageContextMenuCommandInteraction,
 ) => {
   if (
     interaction.channel === null ||

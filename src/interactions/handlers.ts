@@ -2,6 +2,7 @@ import {
   getAutocompleteEmbed,
   getButtonEmbed,
   getChatInputCommandEmbed,
+  getMessageContextMenuCommandEmbed,
   getUserContextMenuCommandEmbed,
 } from '../components/logs.js';
 import { commandErrors } from '../translations/commands.js';
@@ -39,6 +40,7 @@ import {
   type AutocompleteInteraction,
   type ButtonInteraction,
   type ChatInputCommandInteraction,
+  type MessageContextMenuCommandInteraction,
   type UserContextMenuCommandInteraction,
 } from 'discord.js';
 
@@ -84,6 +86,7 @@ export const handleChatInputCommand = async (
 
   if (member === null) {
     await interaction.editReply(commandErrors.commandNoPermission);
+
     return;
   }
 
@@ -148,11 +151,88 @@ export const handleUserContextMenuCommand = async (
     return;
   }
 
+  const member = await getMemberFromGuild(interaction.user.id, interaction);
+
+  if (member === null) {
+    await interaction.editReply(commandErrors.commandNoPermission);
+
+    return;
+  }
+
+  if (!(await hasCommandPermission(member, interaction.commandName))) {
+    await interaction.editReply(commandErrors.commandNoPermission);
+
+    return;
+  }
+
   try {
     await command.execute(interaction);
   } catch (error) {
     logger.error(
       logErrorFunctions.userContextMenuInteractionError(interaction, error),
+    );
+  }
+};
+
+export const handleMessageContextMenuCommand = async (
+  interaction: MessageContextMenuCommandInteraction,
+) => {
+  try {
+    await interaction.deferReply();
+  } catch (error) {
+    logger.error(
+      logErrorFunctions.messageContextMenuInteractionDeferError(
+        interaction,
+        error,
+      ),
+    );
+    await interaction.reply(commandErrors.commandError);
+
+    return;
+  }
+
+  const command = await getCommand(interaction.commandName);
+
+  logger.info(
+    `${logShortStrings.message} ${interaction.user.tag}: ${
+      interaction.commandName
+    } [${
+      interaction.channel === null || interaction.channel.isDMBased()
+        ? logShortStrings.dm
+        : logShortStrings.guild
+    }]`,
+  );
+  await logEmbed(
+    await getMessageContextMenuCommandEmbed(interaction),
+    interaction,
+    'commands',
+  );
+
+  if (command === undefined) {
+    logger.warn(logErrorFunctions.commandNotFound(interaction.id));
+
+    return;
+  }
+
+  const member = await getMemberFromGuild(interaction.user.id, interaction);
+
+  if (member === null) {
+    await interaction.editReply(commandErrors.commandNoPermission);
+
+    return;
+  }
+
+  if (!(await hasCommandPermission(member, interaction.commandName))) {
+    await interaction.editReply(commandErrors.commandNoPermission);
+
+    return;
+  }
+
+  try {
+    await command.execute(interaction);
+  } catch (error) {
+    logger.error(
+      logErrorFunctions.messageContextMenuInteractionError(interaction, error),
     );
   }
 };
