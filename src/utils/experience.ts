@@ -5,7 +5,12 @@ import {
 } from '../data/Experience.js';
 import { experienceMessages } from '../translations/experience.js';
 import { getChannel } from './channels.js';
-import { getConfigProperty, getLevels, getRoleProperty } from './config.js';
+import {
+  getConfigProperty,
+  getExperienceMultiplier,
+  getLevels,
+  getRoleProperty,
+} from './config.js';
 import { COUNCIL_LEVEL, REGULAR_LEVEL } from './levels.js';
 import { isMemberBarred, isMemberInVip, isMemberLevel } from './members.js';
 import { EMOJI_REGEX, URL_REGEX } from './regex.js';
@@ -25,20 +30,25 @@ const countLinks = (message: string) => {
 const getExperienceFromMessage = async (message: Message) => {
   await message.fetch();
 
-  return BigInt(
-    Math.min(
-      50,
-      Math.floor(
-        1 +
-          2 * cleanMessage(message.cleanContent).length ** coefficient +
-          5 * countLinks(message.cleanContent) ** coefficient +
-          5 * message.attachments.size ** coefficient +
-          5 * message.mentions.users.size ** coefficient +
-          5 * message.mentions.roles.size ** coefficient +
-          5 * message.mentions.channels.size ** coefficient +
-          5 * message.stickers.size,
+  const multiplier = await getExperienceMultiplier(message.channel.id);
+
+  return (
+    BigInt(multiplier) *
+    BigInt(
+      Math.min(
+        50,
+        Math.floor(
+          1 +
+            2 * cleanMessage(message.cleanContent).length ** coefficient +
+            5 * countLinks(message.cleanContent) ** coefficient +
+            5 * message.attachments.size ** coefficient +
+            5 * message.mentions.users.size ** coefficient +
+            5 * message.mentions.roles.size ** coefficient +
+            5 * message.mentions.channels.size ** coefficient +
+            5 * message.stickers.size,
+        ),
       ),
-    ),
+    )
   );
 };
 

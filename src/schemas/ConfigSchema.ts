@@ -16,6 +16,7 @@ export const ConfigSchema = z
     crosspostChannels: z.array(z.string()),
     crossposting: z.boolean(),
     ephemeralReplyTime: z.number(),
+    experienceMultipliers: z.record(z.number()),
     guild: z.string(),
     leveling: z.boolean(),
     reactions: z

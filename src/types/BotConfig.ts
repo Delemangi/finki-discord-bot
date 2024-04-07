@@ -9,6 +9,7 @@ export type BotConfig = {
   crosspostChannels: string[];
   crossposting: boolean;
   ephemeralReplyTime: number;
+  experienceMultipliers: Record<string, number>;
   guild: string;
   leveling: boolean;
   reactions: {

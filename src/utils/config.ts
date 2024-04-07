@@ -27,6 +27,7 @@ const defaultConfig: BotConfig = {
   crosspostChannels: [],
   crossposting: true,
   ephemeralReplyTime: 5_000,
+  experienceMultipliers: {},
   guild: '810997107376914444',
   leveling: true,
   reactions: {
@@ -101,6 +102,10 @@ export const getReactionsProperty = async <T extends 'add' | 'remove'>(
   key: T,
 ) => {
   return config.reactions?.[key] ?? defaultConfig.reactions[key];
+};
+
+export const getExperienceMultiplier = async (channelId: string) => {
+  return config.experienceMultipliers?.[channelId] ?? 1;
 };
 
 export const getConfigKeys = () => {
