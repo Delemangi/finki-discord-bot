@@ -19,7 +19,9 @@ import { EMOJI_REGEX, URL_REGEX } from './regex.js';
 import AsyncLock from 'async-lock';
 import { type GuildMember, type Message } from 'discord.js';
 
-const coefficient = (1 + Math.sqrt(5)) / 2 - 1;
+// Golden ratio
+const experienceCoefficient = (1 + Math.sqrt(5)) / 2 - 1;
+const levelDelta = 800n;
 
 const cleanMessage = (message: string) => {
   return message.trim().replaceAll(EMOJI_REGEX, '$1').replaceAll(URL_REGEX, '');
@@ -42,12 +44,14 @@ const getExperienceFromMessage = async (message: Message) => {
           50,
           Math.floor(
             1 +
-              2 * cleanMessage(message.cleanContent).length ** coefficient +
-              5 * countLinks(message.cleanContent) ** coefficient +
-              5 * message.attachments.size ** coefficient +
-              5 * message.mentions.users.size ** coefficient +
-              5 * message.mentions.roles.size ** coefficient +
-              5 * message.mentions.channels.size ** coefficient +
+              2 *
+                cleanMessage(message.cleanContent).length **
+                  experienceCoefficient +
+              5 * countLinks(message.cleanContent) ** experienceCoefficient +
+              5 * message.attachments.size ** experienceCoefficient +
+              5 * message.mentions.users.size ** experienceCoefficient +
+              5 * message.mentions.roles.size ** experienceCoefficient +
+              5 * message.mentions.channels.size ** experienceCoefficient +
               5 * message.stickers.size,
           ),
         ),
@@ -61,12 +65,11 @@ const getExperienceFromMessage = async (message: Message) => {
 };
 
 export const getLevelFromExperience = (experience: bigint) => {
-  const delta = 800n;
   let level = 1n;
 
-  while (experience - delta * level >= 0) {
+  while (experience - levelDelta * level >= 0) {
     // eslint-disable-next-line no-param-reassign
-    experience -= delta * level;
+    experience -= levelDelta * level;
     level++;
   }
 
