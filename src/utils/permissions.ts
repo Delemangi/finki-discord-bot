@@ -100,8 +100,8 @@ const commandPermissions: Record<
     roles: ['council'],
   },
   Star: {
-    permissions: [],
-    roles: ['admin', 'moderator'],
+    permissions: [PermissionsBitField.Flags.ManageMessages],
+    roles: [],
   },
   'vip add': {
     permissions: [],
