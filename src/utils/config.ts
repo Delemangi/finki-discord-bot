@@ -114,10 +114,12 @@ export const getConfigKeys = () => {
 };
 
 export const getToken = () => {
+  // Already checked to exist on initialization
   return env['TOKEN'] as string;
 };
 
 export const getApplicationId = () => {
+  // Already checked to exist on initialization
   return env['APPLICATION_ID'] as string;
 };
 
