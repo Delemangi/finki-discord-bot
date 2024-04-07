@@ -149,6 +149,9 @@ export const logErrorFunctions = {
   ) =>
     `Failed handling message context menu interaction ${interaction.commandName}\n${error}`,
 
+  messageResolveError: (messageId: string, error: unknown) =>
+    `Failed resolving message ${messageId}\n${error}`,
+
   messageUrlFetchError: (interactionId: string, error: unknown) =>
     `Failed fetching message URL for ${interactionId}\n${error}`,
 
