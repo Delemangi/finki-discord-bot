@@ -90,8 +90,9 @@ export const setConfigProperty = async <T extends keyof BotConfig>(
   value: BotConfig[T],
 ) => {
   config[key] = value;
+  const newValue = await setConfig(config);
 
-  return (await setConfig(config))?.value;
+  return newValue?.value;
 };
 
 export const getRoleProperty = async <T extends Roles>(key: T) => {
