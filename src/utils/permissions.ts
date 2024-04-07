@@ -170,11 +170,13 @@ export const hasCommandPermission = async (
 };
 
 export const getCommandsWithPermission = async (member: GuildMember) => {
-  const commands = await Promise.all(
+  const permittedCommands = await Promise.all(
     Object.keys(commandDescriptions).map(
       async (command) => await hasCommandPermission(member, command),
     ),
   );
 
-  return Object.keys(commandDescriptions).filter((_, index) => commands[index]);
+  return Object.keys(commandDescriptions).filter(
+    (_, index) => permittedCommands[index],
+  );
 };
