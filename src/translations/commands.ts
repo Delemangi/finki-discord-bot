@@ -249,7 +249,9 @@ export const commandResponseFunctions = {
     `Серверот има ${memberCount ?? 'непознат број на'} членови.`,
 
   serverMembersStat: (memberCount: number, maxMembers: number | null) =>
-    `Членови: ${memberCount}${maxMembers === null ? '' : ` / ${maxMembers}`}`,
+    maxMembers === null
+      ? `Членови: ${memberCount}`
+      : `Членови: ${memberCount} / ${maxMembers}`,
 
   serverRolesStat: (roleCount: number) => `Улоги: ${roleCount} / 250`,
 
