@@ -48,8 +48,8 @@ const commandPermissions: Record<
     roles: ['admin', 'moderator', 'vip'],
   },
   message: {
-    permissions: [PermissionsBitField.Flags.Administrator],
-    roles: [],
+    permissions: [],
+    roles: ['admin'],
   },
   'poll delete': {
     permissions: [PermissionsBitField.Flags.Administrator],
