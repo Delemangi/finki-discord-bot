@@ -39,9 +39,17 @@ const commandPermissions: Record<
     permissions: [],
     roles: ['admin', 'moderator', 'fss'],
   },
+  members: {
+    permissions: [],
+    roles: ['admin', 'moderator', 'vip', 'regular'],
+  },
   'members barred': {
     permissions: [],
     roles: ['admin', 'moderator', 'vip'],
+  },
+  'members count': {
+    permissions: [],
+    roles: [],
   },
   'members invited': {
     permissions: [],
