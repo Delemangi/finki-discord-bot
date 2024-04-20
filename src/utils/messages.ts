@@ -59,9 +59,8 @@ export const safeReplyToInteraction = async (
   let reply = false;
 
   for (const output of splitMessage(message)) {
-    const nextReply = useCodeBlock
-      ? codeBlock(language, output.length === 0 ? labels.none : output)
-      : output;
+    const nextOutput = output.length === 0 ? labels.none : output;
+    const nextReply = useCodeBlock ? codeBlock(language, nextOutput) : output;
 
     if (reply) {
       await interaction.followUp({
