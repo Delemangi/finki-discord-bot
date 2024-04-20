@@ -1068,12 +1068,9 @@ export const handleVipButton = async (
     }
 
     const vipChannel = getChannel('vip');
-
-    if (vipChannel?.isTextBased()) {
-      await vipChannel.send(
-        specialStringFunctions.vipWelcome(interaction.user.id),
-      );
-    }
+    await vipChannel?.send(
+      specialStringFunctions.vipWelcome(interaction.user.id),
+    );
 
     await member.roles.add(vipRoleId);
 
