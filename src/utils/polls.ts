@@ -266,6 +266,7 @@ const decideSpecialPollByAdministratorVote = async (
   specialPoll: SpecialPoll,
 ) => {
   const member = await getMemberFromGuild(specialPoll.userId);
+  const adminVote = await getAdminVote(specialPoll.pollId);
 
   switch (specialPoll.type) {
     case 'vipRequest':
@@ -277,14 +278,11 @@ const decideSpecialPollByAdministratorVote = async (
         return;
       }
 
-      // eslint-disable-next-line no-case-declarations
-      const vote = await getAdminVote(specialPoll.pollId);
-
-      if (vote === null || vote.option.name !== labels.yes) {
+      if (adminVote === null || adminVote.option.name !== labels.yes) {
         return;
       }
 
-      poll.decision = vote.option.name;
+      poll.decision = adminVote.option.name;
       poll.done = true;
 
       await updatePoll(poll);
