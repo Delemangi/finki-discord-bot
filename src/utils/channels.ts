@@ -195,7 +195,7 @@ export const logEmbed = async (
 ) => {
   const channel = channels[type];
 
-  if (channel === undefined || !channel.isTextBased()) {
+  if (!channel?.isTextBased()) {
     return;
   }
 
