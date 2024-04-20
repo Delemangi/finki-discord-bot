@@ -41,7 +41,6 @@ import {
   specialStringFunctions,
   specialStrings,
 } from '../translations/special.js';
-import { type PollWithOptions } from '../types/PollWithOptions.js';
 import { deleteResponse, getChannel } from '../utils/channels.js';
 import { getConfigProperty, getRoleProperty } from '../utils/config.js';
 import { getGuild } from '../utils/guild.js';
@@ -923,9 +922,14 @@ export const handlePollButton = async (
 
   const decidedPoll = await getPollById(poll.id);
 
+  // Shouldn't ever happen, because we wouldn't have gotten here if the poll didn't exist
+  if (decidedPoll === null) {
+    return;
+  }
+
   const specialPoll = await getSpecialPollByPollId(poll.id);
-  const embed = await getPollEmbed(decidedPoll as PollWithOptions);
-  const components = getPollComponents(decidedPoll as PollWithOptions);
+  const embed = await getPollEmbed(decidedPoll);
+  const components = getPollComponents(decidedPoll);
 
   if (specialPoll !== null) {
     await interaction.message.edit({
@@ -934,10 +938,7 @@ export const handlePollButton = async (
     });
 
     const member = await guild.members.fetch(specialPoll.userId);
-    await handlePollButtonForSpecialVote(
-      decidedPoll as PollWithOptions,
-      member,
-    );
+    await handlePollButtonForSpecialVote(decidedPoll, member);
 
     return;
   }
