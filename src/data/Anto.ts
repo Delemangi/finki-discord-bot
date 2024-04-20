@@ -2,6 +2,7 @@ import { databaseErrorFunctions } from '../translations/database.js';
 import { logger } from '../utils/logger.js';
 import { database } from './database.js';
 import { type Prisma } from '@prisma/client';
+import { randomBytes } from 'node:crypto';
 
 export const createAnto = async (anto?: Prisma.AntoCreateInput) => {
   if (anto === undefined) {
@@ -40,7 +41,8 @@ export const deleteAnto = async (anto?: string) => {
 export const getRandomAnto = async () => {
   try {
     const count = await database.anto.count();
-    const skip = Math.floor(Math.random() * count);
+    const randomNumber = (randomBytes(1).readUInt8(0) / 255) * count;
+    const skip = Math.floor(randomNumber);
 
     return await database.anto.findFirst({
       skip,
