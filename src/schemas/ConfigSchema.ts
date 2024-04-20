@@ -30,6 +30,7 @@ export const ConfigSchema = z
         admin: z.string().nullable(),
         admins: z.string().nullable(),
         booster: z.string().nullable(),
+        boys: z.string().nullable(),
         contributor: z.string().nullable(),
         council: z.string().nullable(),
         fss: z.string().nullable(),

@@ -38,6 +38,7 @@ const defaultConfig: BotConfig = {
     admin: '',
     admins: '',
     booster: '',
+    boys: '',
     contributor: '',
     council: '',
     fss: '',

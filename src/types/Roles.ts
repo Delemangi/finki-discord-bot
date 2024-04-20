@@ -1,6 +1,7 @@
 export type Roles =
   | 'admin'
   | 'booster'
+  | 'boys'
   | 'contributor'
   | 'council'
   | 'fss'

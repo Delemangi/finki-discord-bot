@@ -58,6 +58,7 @@ export const commandDescriptions = {
   'manage rule-delete': 'Избриши правило',
   'manage rule-set': 'Додади или измени правило',
   'members barred': 'Преземи листа од забранети членови',
+  'members boys': 'Преземи листа од членови на Boys',
   'members count': 'Прикажи број на членови на серверот',
   'members girlies': 'Преземи листа од членови на Girlies',
   'members regulars': 'Преземи листа од редовните членови',

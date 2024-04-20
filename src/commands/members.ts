@@ -44,6 +44,9 @@ export const data = new SlashCommandBuilder()
       .setDescription(commandDescriptions['members girlies']),
   )
   .addSubcommand((command) =>
+    command.setName('boys').setDescription(commandDescriptions['members boys']),
+  )
+  .addSubcommand((command) =>
     command
       .setName('barred')
       .setDescription(commandDescriptions['members barred']),
@@ -182,6 +185,33 @@ const handleMembersGirlies = async (
   await safeReplyToInteraction(interaction, girliesMembersFormatted);
 };
 
+const handleMembersBoys = async (interaction: ChatInputCommandInteraction) => {
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
+    await interaction.editReply(commandErrors.guildFetchFailed);
+
+    return;
+  }
+
+  const boysRoleId = await getRoleProperty('boys');
+  const boysMemberIds = await getMembersByRoleIds(guild, [boysRoleId]);
+
+  const boysMembers = (
+    await Promise.all(
+      boysMemberIds.map(
+        async (id) => await getMemberFromGuild(id, interaction),
+      ),
+    )
+  ).filter(isNotNullish);
+  const boysMembersFormatted = formatUsers(
+    labels.boys,
+    boysMembers.map(({ user }) => user),
+  );
+
+  await safeReplyToInteraction(interaction, boysMembersFormatted);
+};
+
 const handleMembersBarred = async (
   interaction: ChatInputCommandInteraction,
 ) => {
@@ -224,6 +254,7 @@ const handleMembersBarred = async (
 
 const membersHandlers = {
   barred: handleMembersBarred,
+  boys: handleMembersBoys,
   count: handleMembersCount,
   girlies: handleMembersGirlies,
   regulars: handleMembersRegulars,
