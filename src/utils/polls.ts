@@ -49,17 +49,27 @@ export const createPollChoices = (choices: readonly string[]) => {
   }));
 };
 
-export const startPoll = async (
-  interaction: ChatInputCommandInteraction,
-  title: string,
-  description: string,
-  anonymous: boolean,
-  multiple: boolean,
-  open: boolean,
-  options: string[],
-  roles: string[],
-  threshold: number,
-) => {
+export const startPoll = async ({
+  interaction,
+  title,
+  description,
+  anonymous,
+  multiple,
+  open,
+  options,
+  roles,
+  threshold,
+}: {
+  anonymous: boolean;
+  description: string;
+  interaction: ChatInputCommandInteraction;
+  multiple: boolean;
+  open: boolean;
+  options: string[];
+  roles: string[];
+  threshold: number;
+  title: string;
+}) => {
   const poll: Prisma.PollCreateInput = {
     anonymous,
     channelId: interaction.channelId,

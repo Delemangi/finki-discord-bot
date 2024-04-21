@@ -231,17 +231,17 @@ const handlePollCreate = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startPoll(
-    interaction,
-    title,
-    description,
+  const pollId = await startPoll({
     anonymous,
+    description,
+    interaction,
     multiple,
     open,
     options,
     roles,
     threshold,
-  );
+    title,
+  });
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.pollCreationFailed);
