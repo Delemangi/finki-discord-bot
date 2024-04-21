@@ -164,9 +164,6 @@ export const logErrorFunctions = {
 
   scriptExecutionError: (error: unknown) => `Failed executing script\n${error}`,
 
-  specialPollLoadError: (error: unknown) =>
-    `Failed loading special polls\n${error}`,
-
   unknownInteractionError: (userId: string) =>
     `Unknown interaction from ${userId}`,
 
