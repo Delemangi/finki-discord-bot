@@ -1,6 +1,7 @@
 import { getPollById } from '../data/Poll.js';
 import { getSpecialPolls } from '../data/SpecialPoll.js';
 import { handlePollButtonForSpecialVote } from '../interactions/button.js';
+import { labels } from '../translations/labels.js';
 import { logMessageFunctions } from '../translations/logs.js';
 import { getMemberFromGuild } from './guild.js';
 import { logger } from './logger.js';
@@ -33,7 +34,7 @@ const handleSpecialPolls = async (specialPolls: SpecialPoll[]) => {
       logMessageFunctions.specialPollOverriden(
         specialPoll.type,
         specialPoll.userId,
-        newPoll.decision ?? 'unknown',
+        newPoll.decision ?? labels.unknown,
       ),
     );
   }
