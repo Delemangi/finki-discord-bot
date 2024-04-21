@@ -8,7 +8,8 @@ services:
     env_file:
       - .env
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     volumes:
       - ./config:/app/config
       - ./sessions:/app/sessions
