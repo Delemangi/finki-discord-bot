@@ -14,7 +14,7 @@ services:
     volumes:
       - ./config:/app/config
       - ./sessions:/app/sessions
-      - ./bot.log:/app/bot.log
+      - ./logs:/app/logs
 
   database:
     container_name: finki-database-dev

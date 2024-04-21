@@ -30,7 +30,7 @@ export const logger = createLogger({
       level: 'info',
     }),
     new transports.File({
-      filename: 'bot.log',
+      filename: 'logs/bot.log',
       format: format.combine(
         format.timestamp({
           format: 'YYYY-MM-DD HH:mm:ss',
