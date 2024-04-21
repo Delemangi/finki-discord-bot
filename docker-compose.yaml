@@ -2,8 +2,8 @@ name: finki-discord-bot-dev
 
 services:
   bot:
-    container_name: finki-bot
-    image: finki-discord-bot:latest
+    container_name: finki-bot-dev
+    image: finki-discord-bot-dev:latest
     build: .
     restart: unless-stopped
     env_file:
@@ -17,7 +17,7 @@ services:
       - ./bot.log:/app/bot.log
 
   database:
-    container_name: finki-database
+    container_name: finki-database-dev
     image: postgres:16
     restart: unless-stopped
     env_file:
