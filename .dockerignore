@@ -15,6 +15,7 @@ docker-compose*
 dist
 
 # Logs
+logs
 bot.log
 
 # Configuration
