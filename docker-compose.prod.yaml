@@ -1,15 +1,6 @@
 name: finki-discord-bot
 
 services:
-  database:
-    container_name: finki-database
-    image: postgres:16
-    restart: unless-stopped
-    env_file:
-      - .env
-    volumes:
-      - ./db:/var/lib/postgresql/data
-
   bot:
     container_name: finki-bot
     image: delemangi/finki-discord-bot:latest
@@ -22,3 +13,18 @@ services:
       - ./config:/app/config
       - ./sessions:/app/sessions
       - ./logs:/app/logs
+
+  database:
+    container_name: finki-database
+    image: postgres:16
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 15s
+      timeout: 30s
+      retries: 3
+      start_period: 5s
