@@ -13,7 +13,7 @@
     "dotenv": "^16.4.5",
     "prisma": "^5.12.1",
     "winston": "^3.13.0",
-    "zod": "^3.22.5"
+    "zod": "^3.23.1"
   },
   "description": "FINKI Discord Bot",
   "devDependencies": {
