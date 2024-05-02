@@ -10,34 +10,33 @@ on:
 
 jobs:
   eslint:
+    name: ESLint
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: 20
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm i
 
       - name: Run ESLint
-        id: eslint
         run: npm run lint
 
   sonarcloud:
+    name: SonarCloud
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: SonarCloud scan
+      - name: SonarCloud Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -45,10 +44,9 @@ jobs:
 
   docker:
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs:
       - eslint
-      - sonarcloud
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
     steps:
       - name: Set up QEMU
@@ -63,7 +61,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and Push
         uses: docker/build-push-action@v5
         with:
           push: true
