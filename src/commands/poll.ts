@@ -569,6 +569,7 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
     time: await getConfigProperty('buttonIdleTime'),
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   collector.on('collect', async (buttonInteraction) => {
     if (
       buttonInteraction.user.id !==
@@ -632,6 +633,7 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
     }
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   collector.on('end', async () => {
     try {
       await message.edit({
