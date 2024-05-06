@@ -14,8 +14,10 @@ export const attachEventListeners = async () => {
     );
 
     if (event?.once) {
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       client.once(event.name, event.execute);
     } else {
+      // eslint-disable-next-line @typescript-eslint/no-misused-promises
       client.on(event.name, event.execute);
     }
   }
