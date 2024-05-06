@@ -9,7 +9,7 @@
     "chrono-node": "^2.7.4",
     "croner": "^8.0.2",
     "discord-api-types": "^0.37.83",
-    "discord.js": "^14.14.1",
+    "discord.js": "^14.15.2",
     "dotenv": "^16.4.5",
     "prisma": "^5.13.0",
     "winston": "^3.13.0",
@@ -17,7 +17,7 @@
   },
   "description": "FINKI Discord Bot",
   "devDependencies": {
-    "@swc/core": "^1.5.2",
+    "@swc/core": "^1.5.3",
     "@swc/helpers": "^0.5.11",
     "@types/async-lock": "^1.4.2",
     "eslint": "^8.57.0",
