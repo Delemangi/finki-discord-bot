@@ -6,8 +6,10 @@ export const tagAndMentionUser = ({ tag, id }: PartialUser) =>
   `${inlineCode(tag)} (${userMention(id)})`;
 
 export const formatUsers = (label: string, users: PartialUser[]) =>
-  `# ${label}\n${
+  `# ${label} (${users.length})\n${
     users.length === 0
       ? labels.none
-      : users.map((user) => '- ' + tagAndMentionUser(user)).join('\n')
+      : users
+          .map((user, index) => `${index}. ` + tagAndMentionUser(user))
+          .join('\n')
   }`;
