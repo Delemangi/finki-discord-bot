@@ -8,6 +8,7 @@ export const labels = {
   assistants: 'Асистенти',
   author: 'Автор',
   barred: 'Забранети',
+  boosters: 'Бустери',
   boys: 'Boys',
   cabinet: 'Кабинет',
   capacity: 'Капацитет',
