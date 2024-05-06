@@ -526,7 +526,7 @@ export const getExperienceLeaderboardFirstPageEmbed = async (
       await Promise.all(
         experience.slice(0, perPage).map(async (exp, index) => ({
           name: '\u200B',
-          value: `${index + 1}. ${await getUsername(exp.userId)} (${userMention(
+          value: `${index + 1}. ${inlineCode(await getUsername(exp.userId))} (${userMention(
             exp.userId,
           )}): ${labels.level}: ${exp.level} | ${labels.points}: ${
             exp.experience
@@ -561,8 +561,8 @@ export const getExperienceLeaderboardNextPageEmbed = async (
           .slice(perPage * page, perPage * (page + 1))
           .map(async (exp, index) => ({
             name: '\u200B',
-            value: `${perPage * page + index + 1}. ${await getUsername(
-              exp.userId,
+            value: `${perPage * page + index + 1}. ${inlineCode(
+              await getUsername(exp.userId),
             )} (${userMention(exp.userId)}): ${labels.level}: ${exp.level} | ${
               labels.points
             }: ${exp.experience}`,
