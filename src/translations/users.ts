@@ -12,7 +12,7 @@ export const formatUsers = (label: string, users: PartialUser[]) => {
     users.length === 0
       ? labels.none
       : users
-          .map((user, index) => `${index}. ` + tagAndMentionUser(user))
+          .map((user, index) => `${index}. ${tagAndMentionUser(user)}`)
           .join('\n')
   }`;
 };
