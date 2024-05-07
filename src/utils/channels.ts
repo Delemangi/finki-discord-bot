@@ -49,7 +49,9 @@ export const initializeChannels = async () => {
   logger.info(logMessages.channelsInitialized);
 };
 
-export const getChannel = (type: ChannelName) => channels[type];
+export const getChannel = (type: ChannelName) => {
+  return channels[type];
+};
 
 const getNextChannelRecreationTime = async (locale = 'en-GB', offset = 1) => {
   const { cron } = await getConfigProperty('temporaryVIPChannel');
