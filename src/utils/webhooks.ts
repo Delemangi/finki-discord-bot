@@ -1,3 +1,4 @@
+import { labels } from '../translations/labels.js';
 import { getChannelFromGuild } from './guild.js';
 import { type Guild } from 'discord.js';
 
@@ -16,7 +17,7 @@ export const getOrCreateWebhookByChannelId = async (
 
   if (firstWebhook === undefined) {
     return await channel.createWebhook({
-      name: 'Starboard',
+      name: labels.starboard,
     });
   }
 

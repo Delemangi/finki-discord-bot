@@ -51,6 +51,7 @@ export const labels = {
   rightToVote: 'Право на глас',
   roles: 'Улоги',
   rules: 'Правила',
+  starboard: 'Starboard',
   timetable: 'Распоред',
   title: 'Звање',
   type: 'Тип',
