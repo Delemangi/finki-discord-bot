@@ -31,7 +31,7 @@ const countLinks = (message: string) => {
   return URL_REGEX.exec(message)?.length ?? 0;
 };
 
-const getExperienceFromMessage = async (message: Message) => {
+export const getExperienceFromMessage = async (message: Message) => {
   try {
     await message.fetch();
 
