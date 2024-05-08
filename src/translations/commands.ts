@@ -33,6 +33,7 @@ export const commandDescriptions = {
   'experience get': 'Преземи ниво и активност',
   'experience leaderboard': 'Преземи листа на членови според активност',
   'experience set': 'Измени поени за активност',
+  'experience test': 'Калкулирај поени за порака',
   faq: 'Преземи најчесто поставувано прашање',
   help: 'Преземи листа од сите достапни команди',
   home: 'Преземи линк до изворниот код',
@@ -137,7 +138,6 @@ export const commandResponses = {
   infoUpdated: 'Информативната порака е ажурирана.',
   linkDeleted: 'Го избришавте линкот.',
   messageCreated: 'Испративте порака.',
-  messageStarred: 'Пораката е обележана!',
   noBarred: 'Нема членови со забрана.',
   noReminders: 'Нема потсетници.',
   noVoters: 'Нема гласачи.',
@@ -194,6 +194,8 @@ export const commandResponseFunctions = {
     `Ги поставивте поените за активност на корисникот ${userMention(
       userId,
     )} на ${experience}.`,
+
+  messageStarred: (messageUrl: string) => `Пораката ${messageUrl} е обележана!`,
 
   multipleClassrooms: (classroom: string) =>
     `${bold(

@@ -1,4 +1,7 @@
-import { commandErrors, commandResponses } from '../translations/commands.js';
+import {
+  commandErrors,
+  commandResponseFunctions,
+} from '../translations/commands.js';
 import { labels } from '../translations/labels.js';
 import { getConfigProperty } from '../utils/config.js';
 import { getMemberFromGuild } from '../utils/guild.js';
@@ -42,5 +45,7 @@ export const execute = async (
     username: member.displayName,
   });
 
-  await interaction.editReply(commandResponses.messageStarred);
+  await interaction.editReply(
+    commandResponseFunctions.messageStarred(message?.url ?? labels.unknown),
+  );
 };
