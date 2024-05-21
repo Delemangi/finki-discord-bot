@@ -171,6 +171,8 @@ export const addExperience = async (message: Message) => {
         content: experienceMessages.levelUp(
           message.author.id,
           currentLevel.level,
+          level.toString() === REGULAR_LEVEL.toString() &&
+            !(await isMemberBarred(message.author.id)),
         ),
       });
     }
