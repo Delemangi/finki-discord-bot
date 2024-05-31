@@ -7,8 +7,8 @@ export const experienceMessages = {
       userId,
     )} достигна ниво ${COUNCIL_LEVEL} и стана член на Советот!`,
 
-  levelUp: (userId: string, level: number, isValidRegular: boolean | string) =>
+  levelUp: (userId: string, level: number, isRegular: boolean | string) =>
     `Корисникот ${userMention(userId)} достигна ниво ${level}.${
-      isValidRegular ? ' Корисникот е сега член на редовните корисници!' : ''
+      isRegular ? ' Корисникот е сега член на редовните корисници!' : ''
     }`,
 };
