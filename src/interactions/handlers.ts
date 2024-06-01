@@ -8,7 +8,11 @@ import {
 import { commandErrors } from '../translations/commands.js';
 import { logErrorFunctions, logShortStrings } from '../translations/logs.js';
 import { deleteResponse, logEmbed } from '../utils/channels.js';
-import { getCommand } from '../utils/commands.js';
+import {
+  getCommand,
+  isContextMenuCommand,
+  isSlashCommand,
+} from '../utils/commands.js';
 import { getMemberFromGuild } from '../utils/guild.js';
 import { logger } from '../utils/logger.js';
 import { hasCommandPermission } from '../utils/permissions.js';
@@ -75,7 +79,7 @@ export const handleChatInputCommand = async (
     'commands',
   );
 
-  if (command === undefined) {
+  if (command === undefined || !isSlashCommand(command)) {
     logger.warn(logErrorFunctions.commandNotFound(interaction.id));
     await interaction.editReply(commandErrors.commandNotFound);
 
@@ -89,6 +93,8 @@ export const handleChatInputCommand = async (
 
     return;
   }
+
+  await command.execute(interaction);
 
   const fullCommand = (
     interaction.commandName +
@@ -145,7 +151,7 @@ export const handleUserContextMenuCommand = async (
     'commands',
   );
 
-  if (command === undefined) {
+  if (command === undefined || !isContextMenuCommand(command)) {
     logger.warn(logErrorFunctions.commandNotFound(interaction.id));
 
     return;
@@ -208,7 +214,7 @@ export const handleMessageContextMenuCommand = async (
     'commands',
   );
 
-  if (command === undefined) {
+  if (command === undefined || !isContextMenuCommand(command)) {
     logger.warn(logErrorFunctions.commandNotFound(interaction.id));
 
     return;

@@ -1,9 +1,12 @@
 import { logErrorFunctions, logMessages } from '../translations/logs.js';
 import { type Command } from '../types/Command.js';
+import { type ContextMenuCommand } from '../types/ContextMenuCommand.js';
+import { type SlashCommand } from '../types/SlashCommand.js';
 import { client } from './client.js';
 import { getApplicationId, getToken } from './config.js';
 import { logger } from './logger.js';
 import {
+  ApplicationCommandType,
   type ChatInputCommandInteraction,
   Collection,
   REST,
@@ -30,12 +33,32 @@ const isCommandsEmpty = () => {
   return commands.entries().next().done;
 };
 
-export const getCommand = async (command: string) => {
+export const getCommand = async (commandName: string) => {
   if (isCommandsEmpty()) {
     await refreshCommands();
   }
 
-  return commands.get(command);
+  return commands.get(commandName);
+};
+
+export const isSlashCommand = (command: Command): command is SlashCommand => {
+  const commandData = command?.data.toJSON();
+
+  return (
+    commandData.type === undefined ||
+    commandData.type === ApplicationCommandType.ChatInput
+  );
+};
+
+export const isContextMenuCommand = (
+  command: Command,
+): command is ContextMenuCommand => {
+  const commandData = command?.data.toJSON();
+
+  return (
+    commandData?.type === ApplicationCommandType.Message ||
+    commandData?.type === ApplicationCommandType.User
+  );
 };
 
 export const getCommands = async () => {
