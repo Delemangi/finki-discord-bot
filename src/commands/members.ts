@@ -104,23 +104,9 @@ const handleMembersVip = async (interaction: ChatInputCommandInteraction) => {
     adminTeamMembers.map(({ user }) => user),
   );
 
-  const veteranRoleId = await getRoleProperty('veteran');
-  const veteranMemberIds = await getMembersByRoleIds(guild, [veteranRoleId]);
-  const veteranMembers = (
-    await Promise.all(
-      veteranMemberIds.map(
-        async (id) => await getMemberFromGuild(id, interaction),
-      ),
-    )
-  ).filter(isNotNullish);
-  const veteranMembersFormatted = formatUsers(
-    labels.veterans,
-    veteranMembers.map(({ user }) => user),
-  );
-
   await safeReplyToInteraction(
     interaction,
-    `${vipMembersFormatted}\n${adminTeamMembersFormatted}\n${veteranMembersFormatted}`,
+    `${vipMembersFormatted}\n${adminTeamMembersFormatted}`,
   );
 };
 
