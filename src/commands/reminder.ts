@@ -8,6 +8,7 @@ import {
 } from '../translations/commands.js';
 import { parseDate } from 'chrono-node';
 import {
+  channelMention,
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
   time,
@@ -93,9 +94,10 @@ const handleReminderList = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const remindersList = reminders
-    .map(
-      (reminder, index) =>
-        `${index}. ${time(reminder.timestamp, 'F')} - ${reminder.description}`,
+    .map((reminder, index) =>
+      reminder.channelId === null
+        ? `${index}. ${time(reminder.timestamp, 'F')} - ${reminder.description}`
+        : `${index}. ${time(reminder.timestamp, 'F')} - ${reminder.description} [${channelMention(reminder.channelId)}]`,
     )
     .join('\n');
 
