@@ -94,8 +94,6 @@ export const handleChatInputCommand = async (
     return;
   }
 
-  await command.execute(interaction);
-
   const fullCommand = (
     interaction.commandName +
     ' ' +
