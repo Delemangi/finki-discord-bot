@@ -112,6 +112,14 @@ export const data = new SlashCommandBuilder()
       .addUserOption((option) =>
         option.setName('user').setDescription('Корисник').setRequired(true),
       ),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName('show')
+      .setDescription(commandDescriptions['special show'])
+      .addStringOption((option) =>
+        option.setName('id').setDescription('Анкета').setRequired(true),
+      ),
   );
 
 const handleSpecialList = async (interaction: ChatInputCommandInteraction) => {
@@ -462,12 +470,47 @@ const handleSpecialUnbar = async (interaction: ChatInputCommandInteraction) => {
   });
 };
 
+const handleSpecialShow = async (interaction: ChatInputCommandInteraction) => {
+  const id = interaction.options.getString('id', true);
+  const specialPoll = await getSpecialPollById(id);
+  const poll = await getPollById(specialPoll?.pollId);
+
+  if (poll === null) {
+    await interaction.editReply(commandErrors.pollNotFound);
+
+    return;
+  }
+
+  const embed = await getPollEmbed(poll);
+  const components = getPollComponents(poll);
+
+  await interaction.editReply({
+    components,
+    embeds: [embed],
+    ...(specialPoll !== null && {
+      allowedMentions: {
+        parse: [],
+      },
+      content: roleMention(await getRoleProperty('council')),
+    }),
+  });
+
+  if (!poll.anonymous) {
+    const statsComponents = getPollStatsComponents(poll);
+    await interaction.channel?.send({
+      components: statsComponents,
+      content: commandResponseFunctions.pollStats(poll.title),
+    });
+  }
+};
+
 const specialHandlers = {
   bar: handleSpecialBar,
   delete: handleSpecialDelete,
   list: handleSpecialList,
   override: handleSpecialOverride,
   remaining: handleSpecialRemaining,
+  show: handleSpecialShow,
   unbar: handleSpecialUnbar,
 };
 
