@@ -17,6 +17,7 @@ import {
   getYearsComponents,
   getYearsEmbed,
 } from '../components/scripts.js';
+import { getTicketCreateComponents } from '../components/tickets.js';
 import { getCompanies } from '../data/Company.js';
 import { getInfoMessages } from '../data/InfoMessage.js';
 import { getRules } from '../data/Rule.js';
@@ -27,12 +28,15 @@ import {
 } from '../translations/commands.js';
 import { logErrorFunctions } from '../translations/logs.js';
 import { threadMessageFunctions } from '../translations/threads.js';
+import { ticketMessageFunctions } from '../translations/tickets.js';
 import { sendEmbed } from '../utils/channels.js';
 import { getCommands } from '../utils/commands.js';
 import {
   getApplicationId,
+  getConfigProperty,
   getCourses,
   getFromRoleConfig,
+  getRoleProperty,
   getToken,
 } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
@@ -41,7 +45,6 @@ import {
   type Channel,
   ChannelType,
   type ChatInputCommandInteraction,
-  type ForumChannel,
   type GuildBasedChannel,
   type GuildTextBasedChannel,
   PermissionFlagsBits,
@@ -180,6 +183,14 @@ export const data = new SlashCommandBuilder()
         option.setName('channel').setDescription('Канал').setRequired(true),
       ),
   )
+  .addSubcommand((command) =>
+    command
+      .setName('tickets')
+      .setDescription('Register commands')
+      .addChannelOption((option) =>
+        option.setName('channel').setDescription('Канал').setRequired(true),
+      ),
+  )
   .setDefaultMemberPermissions(permission);
 
 const handleScriptCourses = async (
@@ -191,6 +202,8 @@ const handleScriptCourses = async (
 
   if (!channel.isTextBased() || channel.isDMBased()) {
     await interaction.editReply(commandErrors.invalidChannel);
+
+    return;
   }
 
   for (const roleSet of roleSets.length === 0 ? '12345678' : roleSets) {
@@ -205,12 +218,7 @@ const handleScriptCourses = async (
     const embed = await getCoursesEmbed(roleSet, roles);
     const components = getCoursesComponents(roles);
     try {
-      await sendEmbed(
-        channel as GuildTextBasedChannel,
-        embed,
-        components,
-        Number(newlines),
-      );
+      await sendEmbed(channel, embed, components, Number(newlines));
       await interaction.editReply(commandResponses.scriptExecuted);
     } catch (error) {
       await interaction.editReply(commandErrors.scriptNotExecuted);
@@ -225,12 +233,7 @@ const handleScriptCourses = async (
     roleSets.length === 0 ? Array.from('12345678') : roleSets,
   );
   try {
-    await sendEmbed(
-      channel as GuildTextBasedChannel,
-      addEmbed,
-      addComponents,
-      Number(newlines),
-    );
+    await sendEmbed(channel, addEmbed, addComponents, Number(newlines));
     await interaction.editReply(commandResponses.scriptExecuted);
   } catch (error) {
     await interaction.editReply(commandErrors.scriptNotExecuted);
@@ -244,12 +247,7 @@ const handleScriptCourses = async (
     roleSets.length === 0 ? Array.from('12345678') : roleSets,
   );
   try {
-    await sendEmbed(
-      channel as GuildTextBasedChannel,
-      removeEmbed,
-      removeComponents,
-      Number(newlines),
-    );
+    await sendEmbed(channel, removeEmbed, removeComponents, Number(newlines));
     await interaction.editReply(commandResponses.scriptExecuted);
   } catch (error) {
     await interaction.editReply(commandErrors.scriptNotExecuted);
@@ -264,17 +262,14 @@ const handleScriptColors = async (interaction: ChatInputCommandInteraction) => {
 
   if (!channel.isTextBased() || channel.isDMBased()) {
     await interaction.editReply(commandErrors.invalidChannel);
+
+    return;
   }
 
   const embed = await getColorsEmbed(image);
   const components = getColorsComponents();
   try {
-    await sendEmbed(
-      channel as GuildTextBasedChannel,
-      embed,
-      components,
-      Number(newlines),
-    );
+    await sendEmbed(channel, embed, components, Number(newlines));
     await interaction.editReply(commandResponses.scriptExecuted);
   } catch (error) {
     await interaction.editReply(commandErrors.scriptNotExecuted);
@@ -290,6 +285,8 @@ const handleScriptNotifications = async (
 
   if (!channel.isTextBased() || channel.isDMBased()) {
     await interaction.editReply(commandErrors.invalidChannel);
+
+    return;
   }
 
   const embed = await getNotificationsEmbed();
@@ -316,17 +313,14 @@ const handleScriptPrograms = async (
 
   if (!channel.isTextBased() || channel.isDMBased()) {
     await interaction.editReply(commandErrors.invalidChannel);
+
+    return;
   }
 
   const embed = await getProgramsEmbed();
   const components = getProgramsComponents();
   try {
-    await sendEmbed(
-      channel as GuildTextBasedChannel,
-      embed,
-      components,
-      Number(newlines),
-    );
+    await sendEmbed(channel, embed, components, Number(newlines));
     await interaction.editReply(commandResponses.scriptExecuted);
   } catch (error) {
     await interaction.editReply(commandErrors.scriptNotExecuted);
@@ -384,6 +378,8 @@ const handleScriptRules = async (interaction: ChatInputCommandInteraction) => {
 
   if (!channel.isTextBased() || channel.isDMBased()) {
     await interaction.editReply(commandErrors.invalidChannel);
+
+    return;
   }
 
   const rules = await getRules();
@@ -396,7 +392,7 @@ const handleScriptRules = async (interaction: ChatInputCommandInteraction) => {
 
   const embed = await getRulesEmbed(rules);
   try {
-    await (channel as GuildTextBasedChannel).send({
+    await channel.send({
       embeds: [embed],
     });
     await interaction.editReply(commandResponses.scriptExecuted);
@@ -414,12 +410,14 @@ const handleScriptVip = async (interaction: ChatInputCommandInteraction) => {
 
   if (!channel.isTextBased() || channel.isDMBased()) {
     await interaction.editReply(commandErrors.invalidChannel);
+
+    return;
   }
 
   const embed = await getVipRequestEmbed();
   const components = getVipRequestComponents();
   try {
-    await (channel as GuildTextBasedChannel).send({
+    await channel.send({
       components,
       embeds: [embed],
     });
@@ -438,6 +436,8 @@ const handleScriptInfo = async (interaction: ChatInputCommandInteraction) => {
 
   if (!channel.isTextBased() || channel.isDMBased()) {
     await interaction.editReply(commandErrors.invalidChannel);
+
+    return;
   }
 
   const infoMessages = await getInfoMessages();
@@ -451,7 +451,7 @@ const handleScriptInfo = async (interaction: ChatInputCommandInteraction) => {
   for (const message of infoMessages) {
     if (message.type === InfoMessageType.IMAGE) {
       try {
-        await (channel as GuildTextBasedChannel).send({
+        await channel.send({
           files: [message.content],
         });
       } catch (error) {
@@ -462,7 +462,7 @@ const handleScriptInfo = async (interaction: ChatInputCommandInteraction) => {
       }
     } else if (message.type === InfoMessageType.TEXT) {
       try {
-        await (channel as GuildTextBasedChannel).send({
+        await channel.send({
           allowedMentions: {
             parse: [],
           },
@@ -480,27 +480,7 @@ const handleScriptInfo = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply(commandResponses.scriptExecuted);
 };
 
-const handleCoursesForum = async (interaction: ChatInputCommandInteraction) => {
-  const channel = interaction.options.getChannel(
-    'channel',
-    true,
-  ) as GuildBasedChannel;
-
-  if (channel.type !== ChannelType.GuildForum) {
-    await interaction.editReply(commandErrors.invalidChannel);
-  }
-
-  for (const course of getCourses()) {
-    await (channel as ForumChannel).threads.create({
-      message: {
-        content: threadMessageFunctions.courseThreadMessage(course),
-      },
-      name: course,
-    });
-  }
-};
-
-const handleCompaniesForum = async (
+const handleScriptCoursesForum = async (
   interaction: ChatInputCommandInteraction,
 ) => {
   const channel = interaction.options.getChannel(
@@ -510,6 +490,34 @@ const handleCompaniesForum = async (
 
   if (channel.type !== ChannelType.GuildForum) {
     await interaction.editReply(commandErrors.invalidChannel);
+
+    return;
+  }
+
+  for (const course of getCourses()) {
+    await channel.threads.create({
+      message: {
+        content: threadMessageFunctions.courseThreadMessage(course),
+      },
+      name: course,
+    });
+  }
+
+  await interaction.editReply(commandResponses.scriptExecuted);
+};
+
+const handleScriptCompaniesForum = async (
+  interaction: ChatInputCommandInteraction,
+) => {
+  const channel = interaction.options.getChannel(
+    'channel',
+    true,
+  ) as GuildBasedChannel;
+
+  if (channel.type !== ChannelType.GuildForum) {
+    await interaction.editReply(commandErrors.invalidChannel);
+
+    return;
   }
 
   const companies = await getCompanies();
@@ -521,25 +529,59 @@ const handleCompaniesForum = async (
   }
 
   for (const company of companies) {
-    await (channel as ForumChannel).threads.create({
+    await channel.threads.create({
       message: {
         content: threadMessageFunctions.companyThreadMessage(company.name),
       },
       name: company.name,
     });
   }
+
+  await interaction.editReply(commandResponses.scriptExecuted);
+};
+
+const handleScriptTickets = async (
+  interaction: ChatInputCommandInteraction,
+) => {
+  const channel = interaction.options.getChannel(
+    'channel',
+    true,
+  ) as GuildBasedChannel;
+
+  if (channel.type !== ChannelType.GuildText) {
+    await interaction.editReply(commandErrors.invalidChannel);
+
+    return;
+  }
+
+  const tickets = await getConfigProperty('tickets');
+
+  const components = getTicketCreateComponents(tickets);
+
+  await channel.send({
+    allowedMentions: {
+      parse: [],
+    },
+    components,
+    content: ticketMessageFunctions.createTicket(
+      await getRoleProperty('admin'),
+    ),
+  });
+
+  await interaction.editReply(commandResponses.scriptExecuted);
 };
 
 const listHandlers = {
   colors: handleScriptColors,
-  companiesforum: handleCompaniesForum,
+  companiesforum: handleScriptCompaniesForum,
   courses: handleScriptCourses,
-  coursesforum: handleCoursesForum,
+  coursesforum: handleScriptCoursesForum,
   info: handleScriptInfo,
   notifications: handleScriptNotifications,
   programs: handleScriptPrograms,
   register: handleScriptRegister,
   rules: handleScriptRules,
+  tickets: handleScriptTickets,
   vip: handleScriptVip,
   years: handleScriptYears,
 };

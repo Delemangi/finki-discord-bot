@@ -12,6 +12,7 @@ export const labels = {
   boys: 'Boys',
   cabinet: 'Кабинет',
   capacity: 'Капацитет',
+  close: 'Затвори',
   closed: 'Затворено',
   code: 'Код',
   color: 'Боја',

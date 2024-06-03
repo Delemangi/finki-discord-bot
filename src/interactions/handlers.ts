@@ -37,6 +37,8 @@ import {
   handleProgramButton,
   handleReminderDeleteButton,
   handleRemoveCoursesButton,
+  handleTicketClose,
+  handleTicketCreate,
   handleVipButton,
   handleYearButton,
 } from './button.js';
@@ -251,6 +253,8 @@ const buttonInteractionHandlers = {
   program: handleProgramButton,
   reminderDelete: handleReminderDeleteButton,
   removeCourses: handleRemoveCoursesButton,
+  ticketClose: handleTicketClose,
+  ticketCreate: handleTicketCreate,
   vip: handleVipButton,
   year: handleYearButton,
 };

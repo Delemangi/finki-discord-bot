@@ -1,1 +1,7 @@
-export type ChannelName = 'activity' | 'commands' | 'oath' | 'polls' | 'vip';
+export type ChannelName =
+  | 'activity'
+  | 'commands'
+  | 'oath'
+  | 'polls'
+  | 'tickets'
+  | 'vip';

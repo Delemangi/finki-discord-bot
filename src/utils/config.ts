@@ -22,6 +22,7 @@ const defaultConfig: BotConfig = {
     commands: '',
     oath: '',
     polls: '',
+    tickets: '',
     vip: '',
   },
   color: '#313183',
@@ -63,6 +64,7 @@ const defaultConfig: BotConfig = {
     parent: '1060626238760300685',
     position: 0,
   },
+  tickets: [],
   vipPause: false,
 };
 
@@ -109,6 +111,10 @@ export const getReactionsProperty = async <T extends 'add' | 'remove'>(
   key: T,
 ) => {
   return config.reactions?.[key] ?? defaultConfig.reactions[key];
+};
+
+export const getTicketProperty = async (key: string) => {
+  return config.tickets.find((ticket) => ticket.id === key) ?? null;
 };
 
 export const getExperienceMultiplier = async (channelId: string) => {

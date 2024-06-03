@@ -1,6 +1,6 @@
 /* eslint-disable id-length */
 
-export const emojis = {
+export const emojis: Record<string, string> = {
   '!': '❗',
   '#': '#️⃣',
   '*': '*️⃣',

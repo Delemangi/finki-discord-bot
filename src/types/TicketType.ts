@@ -1,5 +1,5 @@
 export type TicketType = {
-  description: string;
+  id: string;
   name: string;
-  role: string;
+  roles: string[];
 };

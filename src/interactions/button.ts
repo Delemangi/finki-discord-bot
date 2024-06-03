@@ -10,6 +10,7 @@ import {
   getVipConfirmComponents,
   getVipConfirmEmbed,
 } from '../components/scripts.js';
+import { getTicketCloseComponents } from '../components/tickets.js';
 import { createBar, deleteBar } from '../data/Bar.js';
 import { getPollById } from '../data/Poll.js';
 import { getPollOptionById } from '../data/PollOption.js';
@@ -41,8 +42,16 @@ import {
   specialStringFunctions,
   specialStrings,
 } from '../translations/special.js';
+import {
+  ticketMessageFunctions,
+  ticketMessages,
+} from '../translations/tickets.js';
 import { deleteResponse, getChannel } from '../utils/channels.js';
-import { getConfigProperty, getRoleProperty } from '../utils/config.js';
+import {
+  getConfigProperty,
+  getRoleProperty,
+  getTicketProperty,
+} from '../utils/config.js';
 import { getGuild } from '../utils/guild.js';
 import { COUNCIL_LEVEL, REGULAR_LEVEL } from '../utils/levels.js';
 import { logger } from '../utils/logger.js';
@@ -61,9 +70,11 @@ import {
 import { type Poll, type PollOption, type SpecialPoll } from '@prisma/client';
 import {
   type ButtonInteraction,
+  ChannelType,
   type GuildMember,
   type GuildMemberRoleManager,
   roleMention,
+  ThreadAutoArchiveDuration,
   userMention,
 } from 'discord.js';
 
@@ -1221,4 +1232,125 @@ export const handleReminderDeleteButton = async (
   await interaction.message.edit({
     components,
   });
+};
+
+export const handleTicketCreate = async (
+  interaction: ButtonInteraction,
+  args: string[],
+) => {
+  const guild = await getGuild(interaction);
+  const ticketType = args[0];
+
+  if (ticketType === undefined) {
+    await interaction.reply(commandErrors.invalidTicketType);
+
+    return;
+  }
+
+  const ticketMetadata = await getTicketProperty(ticketType);
+
+  if (ticketMetadata === null) {
+    await interaction.reply(commandErrors.invalidTicketType);
+
+    return;
+  }
+
+  if (guild === null) {
+    logger.warn(
+      logErrorFunctions.buttonInteractionOutsideGuildError(
+        interaction.customId,
+      ),
+    );
+
+    return;
+  }
+
+  const ticketsChannel = getChannel('tickets');
+
+  if (
+    ticketsChannel === null ||
+    ticketsChannel?.type !== ChannelType.GuildText
+  ) {
+    await interaction.reply(commandErrors.invalidChannel);
+
+    return;
+  }
+
+  const ticketChannel = await ticketsChannel.threads.create({
+    autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
+    invitable: false,
+    name: `${interaction.user.tag} - ${ticketMetadata.name}`,
+    type: ChannelType.PrivateThread,
+  });
+
+  const components = getTicketCloseComponents(ticketChannel.id);
+  await ticketChannel.send({
+    components,
+    content: ticketMessageFunctions.ticketCreated(interaction.user.id),
+  });
+  await ticketChannel.send(ticketMessages.sendMessage);
+
+  await interaction.reply({
+    content: ticketChannel.url,
+    ephemeral: true,
+  });
+
+  const collector = ticketChannel.createMessageCollector({
+    time: 15_000,
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  collector.once('collect', async () => {
+    await ticketChannel.send(
+      ticketMetadata.roles.map((role) => roleMention(role)).join(' '),
+    );
+
+    collector.stop();
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  collector.on('end', async (messages) => {
+    if (messages.size > 0) {
+      return;
+    }
+
+    await ticketChannel.delete();
+  });
+};
+
+export const handleTicketClose = async (
+  interaction: ButtonInteraction,
+  args: string[],
+) => {
+  const ticketId = args[0];
+
+  if (ticketId === undefined) {
+    await interaction.reply(commandErrors.invalidTicket);
+
+    return;
+  }
+
+  const ticketsChannel = getChannel('tickets');
+
+  if (
+    ticketsChannel === undefined ||
+    ticketsChannel.type !== ChannelType.GuildText
+  ) {
+    await interaction.reply(commandErrors.invalidTicket);
+
+    return;
+  }
+
+  const ticketChannel = ticketsChannel.threads.cache.get(ticketId);
+
+  if (ticketChannel === undefined) {
+    await interaction.reply(commandErrors.invalidTicket);
+
+    return;
+  }
+
+  await ticketChannel.setLocked(true);
+  await ticketChannel.setArchived(true);
+
+  await interaction.deferUpdate();
 };

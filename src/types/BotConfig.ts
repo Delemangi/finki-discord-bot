@@ -1,5 +1,6 @@
 import { type ChannelName } from './ChannelName.js';
 import { type Roles } from './Roles.js';
+import { type TicketType } from './TicketType.js';
 import { type ColorResolvable } from 'discord.js';
 
 export type BotConfig = {
@@ -30,5 +31,6 @@ export type BotConfig = {
     parent: string;
     position: number;
   };
+  tickets: TicketType[];
   vipPause: boolean;
 };

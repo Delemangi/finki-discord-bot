@@ -302,6 +302,8 @@ export const commandErrors = {
   invalidLink: 'Линкот е невалиден.',
   invalidLinks: 'Линковите се во невалиден формат.',
   invalidRoles: 'Улогите се невалидни.',
+  invalidTicket: 'Тикетот не е валиден.',
+  invalidTicketType: 'Дадениот тип на тикетот не е валиден.',
   inviteCreationFailed: 'Креирањето на пристапен линк беше неуспешно.',
   linkCreationFailed: 'Креирањето на линкот беше неуспешно.',
   linkNotFound: 'Линкот не постои.',
