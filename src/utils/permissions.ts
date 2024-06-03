@@ -111,6 +111,10 @@ const commandPermissions: Record<
     permissions: [PermissionsBitField.Flags.ManageMessages],
     roles: ['vip'],
   },
+  ticket: {
+    permissions: [],
+    roles: ['admin', 'moderator', 'fss', 'ombudsman'],
+  },
   'vip add': {
     permissions: [],
     roles: ['council'],
