@@ -264,11 +264,11 @@ export const getAdminVotes = async (pollId: string) => {
 
   await guild.members.fetch();
 
-  const adminVote = votes.filter((vote) =>
+  const adminVotes = votes.filter((vote) =>
     guild.members.cache.get(vote.userId)?.roles.cache.has(adminRoleId),
   );
 
-  return adminVote;
+  return adminVotes;
 };
 
 const decideSpecialPollByAdministratorVote = async (
