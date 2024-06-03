@@ -242,7 +242,7 @@ export const getPollThreshold = async (pollId: string) => {
   return threshold;
 };
 
-export const getAdminVote = async (pollId: string) => {
+export const getAdminVotes = async (pollId: string) => {
   const poll = await getPollById(pollId);
 
   if (poll === null) {
@@ -264,11 +264,11 @@ export const getAdminVote = async (pollId: string) => {
 
   await guild.members.fetch();
 
-  const adminVote = votes.find((vote) =>
+  const adminVote = votes.filter((vote) =>
     guild.members.cache.get(vote.userId)?.roles.cache.has(adminRoleId),
   );
 
-  return adminVote ?? null;
+  return adminVote;
 };
 
 const decideSpecialPollByAdministratorVote = async (
@@ -276,7 +276,7 @@ const decideSpecialPollByAdministratorVote = async (
   specialPoll: SpecialPoll,
 ) => {
   const member = await getMemberFromGuild(specialPoll.userId);
-  const adminVote = await getAdminVote(specialPoll.pollId);
+  const adminVotes = await getAdminVotes(specialPoll.pollId);
 
   switch (specialPoll.type) {
     case 'vipRequest':
@@ -288,11 +288,14 @@ const decideSpecialPollByAdministratorVote = async (
         return;
       }
 
-      if (adminVote === null || adminVote.option.name !== labels.yes) {
+      if (
+        adminVotes === null ||
+        adminVotes.some((vote) => vote.option.name !== labels.yes)
+      ) {
         return;
       }
 
-      poll.decision = adminVote.option.name;
+      poll.decision = adminVotes[0]?.option.name ?? labels.no;
       poll.done = true;
 
       await updatePoll(poll);
