@@ -25,7 +25,11 @@ import { labels } from '../translations/labels.js';
 import { logErrorFunctions } from '../translations/logs.js';
 import { formatUsers } from '../translations/users.js';
 import { deleteResponse } from '../utils/channels.js';
-import { getConfigProperty, getRoleProperty } from '../utils/config.js';
+import {
+  getChannelProperty,
+  getConfigProperty,
+  getRoleProperty,
+} from '../utils/config.js';
 import { getGuild, getMemberFromGuild } from '../utils/guild.js';
 import { logger } from '../utils/logger.js';
 import { isMemberAdmin, isMemberBarred } from '../utils/members.js';
@@ -344,6 +348,15 @@ const handleSpecialRemaining = async (
 
 const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser('user', true);
+  const pollsChannel = await getChannelProperty('polls');
+
+  if (interaction.channelId !== pollsChannel) {
+    await interaction.editReply({
+      content: commandErrors.invalidChannel,
+    });
+
+    return;
+  }
 
   if (user.bot) {
     await interaction.editReply(commandErrors.userBot);
@@ -400,6 +413,15 @@ const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
 
 const handleSpecialUnbar = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser('user', true);
+  const pollsChannel = await getChannelProperty('polls');
+
+  if (interaction.channelId !== pollsChannel) {
+    await interaction.editReply({
+      content: commandErrors.invalidChannel,
+    });
+
+    return;
+  }
 
   if (!(await isMemberBarred(user.id))) {
     await interaction.editReply(commandErrors.userNotBarred);

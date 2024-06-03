@@ -9,7 +9,7 @@ import {
   commandErrors,
   commandResponseFunctions,
 } from '../translations/commands.js';
-import { getRoleProperty } from '../utils/config.js';
+import { getChannelProperty, getRoleProperty } from '../utils/config.js';
 import { getMemberFromGuild } from '../utils/guild.js';
 import { ADMIN_LEVEL } from '../utils/levels.js';
 import {
@@ -56,6 +56,15 @@ export const data = new SlashCommandBuilder()
 const handleAdminAdd = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser('user', true);
   const member = await getMemberFromGuild(user.id, interaction);
+  const pollsChannel = await getChannelProperty('polls');
+
+  if (interaction.channelId !== pollsChannel) {
+    await interaction.editReply({
+      content: commandErrors.invalidChannel,
+    });
+
+    return;
+  }
 
   if (member === null) {
     await interaction.editReply(commandErrors.userNotMember);
@@ -123,6 +132,15 @@ const handleAdminAdd = async (interaction: ChatInputCommandInteraction) => {
 const handleAdminRemove = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser('user', true);
   const member = await getMemberFromGuild(user.id, interaction);
+  const pollsChannel = await getChannelProperty('polls');
+
+  if (interaction.channelId !== pollsChannel) {
+    await interaction.editReply({
+      content: commandErrors.invalidChannel,
+    });
+
+    return;
+  }
 
   if (member === null) {
     await interaction.editReply(commandErrors.userNotMember);

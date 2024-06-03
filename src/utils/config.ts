@@ -1,6 +1,7 @@
 import { getConfig, setConfig } from '../data/Config.js';
 import { configErrors } from '../translations/errors.js';
 import { type BotConfig } from '../types/BotConfig.js';
+import { type ChannelName } from '../types/ChannelName.js';
 import { type Classroom } from '../types/Classroom.js';
 import { type CourseInformation } from '../types/CourseInformation.js';
 import { type CourseParticipants } from '../types/CourseParticipants.js';
@@ -94,6 +95,10 @@ export const setConfigProperty = async <T extends keyof BotConfig>(
   const newValue = await setConfig(config);
 
   return newValue?.value;
+};
+
+export const getChannelProperty = async <T extends ChannelName>(key: T) => {
+  return config.channels[key] ?? defaultConfig.channels[key];
 };
 
 export const getRoleProperty = async <T extends Roles>(key: T) => {

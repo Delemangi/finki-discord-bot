@@ -9,7 +9,7 @@ import {
   commandErrors,
   commandResponseFunctions,
 } from '../translations/commands.js';
-import { getRoleProperty } from '../utils/config.js';
+import { getChannelProperty, getRoleProperty } from '../utils/config.js';
 import { getMemberFromGuild } from '../utils/guild.js';
 import {
   isMemberBarred,
@@ -53,6 +53,15 @@ export const data = new SlashCommandBuilder()
 
 const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser('user', true);
+  const pollsChannel = await getChannelProperty('polls');
+
+  if (interaction.channelId !== pollsChannel) {
+    await interaction.editReply({
+      content: commandErrors.invalidChannel,
+    });
+
+    return;
+  }
 
   if (user.bot) {
     await interaction.editReply(commandErrors.userBot);
@@ -123,6 +132,15 @@ const handleCouncilRemove = async (
   interaction: ChatInputCommandInteraction,
 ) => {
   const user = interaction.options.getUser('user', true);
+  const pollsChannel = await getChannelProperty('polls');
+
+  if (interaction.channelId !== pollsChannel) {
+    await interaction.editReply({
+      content: commandErrors.invalidChannel,
+    });
+
+    return;
+  }
 
   if (user.bot) {
     await interaction.editReply(commandErrors.userBot);
