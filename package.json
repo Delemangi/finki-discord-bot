@@ -6,7 +6,7 @@
   "dependencies": {
     "@prisma/client": "^5.14.0",
     "async-lock": "^1.4.1",
-    "chrono-node": "^2.7.4",
+    "chrono-node": "^2.7.6",
     "croner": "^8.0.2",
     "discord-api-types": "^0.37.86",
     "discord.js": "^14.15.2",
