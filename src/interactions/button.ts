@@ -1283,15 +1283,18 @@ export const handleTicketCreate = async (
     type: ChannelType.PrivateThread,
   });
 
+  await ticketChannel.send(
+    ticketMessageFunctions.ticketCreated(interaction.user.id),
+  );
+
   const components = getTicketCloseComponents(ticketChannel.id);
   await ticketChannel.send({
     components,
-    content: ticketMessageFunctions.ticketCreated(interaction.user.id),
+    content: ticketMessages.sendMessage,
   });
-  await ticketChannel.send(ticketMessages.sendMessage);
 
   await interaction.reply({
-    content: ticketChannel.url,
+    content: ticketMessageFunctions.ticketLink(ticketChannel.url),
     ephemeral: true,
   });
 
@@ -1302,7 +1305,9 @@ export const handleTicketCreate = async (
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   collector.once('collect', async () => {
     await ticketChannel.send(
-      ticketMetadata.roles.map((role) => roleMention(role)).join(' '),
+      ticketMessageFunctions.ticketStarted(
+        ticketMetadata.roles.map((role) => roleMention(role)).join(' '),
+      ),
     );
 
     collector.stop();
