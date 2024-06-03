@@ -24,8 +24,7 @@ const remindUser = async (reminder: Reminder) => {
     if (channel?.isTextBased()) {
       await channel.send({
         allowedMentions: {
-          roles: [],
-          users: [reminder.userId],
+          parse: ['users'],
         },
         content: `${userMention(reminder.userId)} ${labels.reminder}: ${
           reminder.description
