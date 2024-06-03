@@ -302,7 +302,7 @@ export const getSpecialPollListEmbed = async (
           .slice(pollsPerPage * page, pollsPerPage * (page + 1))
           .map(async (poll) => ({
             name: `${poll.type} (${await getUsername(poll.userId)})`,
-            value: poll.id,
+            value: `${poll.id}\n (Poll: ${poll.pollId})`,
           })),
       )),
     )

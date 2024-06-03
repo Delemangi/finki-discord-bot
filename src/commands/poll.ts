@@ -334,7 +334,13 @@ const handlePollStats = async (interaction: ChatInputCommandInteraction) => {
 
 const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
   const id = interaction.options.getString('id', true).trim();
-  const poll = await getPollById(id);
+  let poll = await getPollById(id);
+
+  if (poll === null) {
+    const special = await getSpecialPollByPollId(id);
+
+    poll = await getPollById(special?.pollId);
+  }
 
   if (poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
