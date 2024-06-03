@@ -262,10 +262,10 @@ export const getAdminVotes = async (pollId: string) => {
     return null;
   }
 
-  await guild.members.fetch();
+  const admins = await getMembersByRoleIds(guild, [adminRoleId]);
 
-  const adminVotes = votes.filter((vote) =>
-    guild.members.cache.get(vote.userId)?.roles.cache.has(adminRoleId),
+  const adminVotes = admins.map((adminId) =>
+    votes.find((vote) => vote.userId === adminId),
   );
 
   return adminVotes;
@@ -290,7 +290,7 @@ const decideSpecialPollByAdministratorVote = async (
 
       if (
         adminVotes === null ||
-        adminVotes.some((vote) => vote.option.name !== labels.yes)
+        adminVotes.some((vote) => vote?.option.name !== labels.yes)
       ) {
         return;
       }
