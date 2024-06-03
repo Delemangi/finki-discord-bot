@@ -26,10 +26,12 @@ import { commandMention } from '../utils/commands.js';
 import { getConfigProperty, getRoleProperty } from '../utils/config.js';
 import { getGuild } from '../utils/guild.js';
 import { logger } from '../utils/logger.js';
+import { isMemberAdmin } from '../utils/members.js';
 import { startPoll } from '../utils/polls.js';
 import {
   type ChatInputCommandInteraction,
   ComponentType,
+  type GuildMember,
   roleMention,
   SlashCommandBuilder,
 } from 'discord.js';
@@ -387,7 +389,11 @@ const handlePollAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (!poll.open && poll.userId !== interaction.user.id) {
+  if (
+    !poll.open &&
+    poll.userId !== interaction.user.id &&
+    !(await isMemberAdmin(interaction.member as GuildMember))
+  ) {
     await interaction.editReply(commandErrors.pollNoPermission);
 
     return;
@@ -443,7 +449,10 @@ const handlePollRemove = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (poll.userId !== interaction.user.id) {
+  if (
+    poll.userId !== interaction.user.id &&
+    !(await isMemberAdmin(interaction.member as GuildMember))
+  ) {
     await interaction.editReply(commandErrors.pollNoPermission);
 
     return;
@@ -493,7 +502,10 @@ const handlePollOpen = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (poll.userId !== interaction.user.id) {
+  if (
+    poll.userId !== interaction.user.id &&
+    !(await isMemberAdmin(interaction.member as GuildMember))
+  ) {
     await interaction.editReply(commandErrors.pollNoPermission);
 
     return;
@@ -521,7 +533,10 @@ const handlePollClose = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (poll.userId !== interaction.user.id) {
+  if (
+    poll.userId !== interaction.user.id &&
+    !(await isMemberAdmin(interaction.member as GuildMember))
+  ) {
     await interaction.editReply(commandErrors.pollNoPermission);
 
     return;
