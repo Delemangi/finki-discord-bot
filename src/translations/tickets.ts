@@ -1,7 +1,8 @@
 import { roleMention, userMention } from 'discord.js';
 
 export const ticketMessages = {
-  sendMessage: 'Напишете ја Вашата порака во следните 5 минути.',
+  sendMessage:
+    'Напишете ја Вашата порака во следните 5 минути. Во спротивно, тикетот ќе биде отфрлен.',
 };
 
 export const ticketMessageFunctions = {
