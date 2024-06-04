@@ -64,6 +64,7 @@ import { decidePoll, startSpecialPoll } from '../utils/polls.js';
 import { USER_ID_REGEX } from '../utils/regex.js';
 import {
   getCourseRolesBySemester,
+  getMembersByRoleIds,
   getRoleFromSet,
   getRoles,
 } from '../utils/roles.js';
@@ -1272,6 +1273,17 @@ export const handleTicketCreate = async (
     ticketsChannel?.type !== ChannelType.GuildText
   ) {
     await interaction.reply(commandErrors.invalidChannel);
+
+    return;
+  }
+
+  const ticketRoleMembers = await getMembersByRoleIds(
+    guild,
+    ticketMetadata.roles,
+  );
+
+  if (ticketRoleMembers.length === 0) {
+    await interaction.reply(commandErrors.noTicketMembers);
 
     return;
   }

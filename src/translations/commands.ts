@@ -314,6 +314,8 @@ export const commandErrors = {
   linksFetchFailed: 'Преземањето на линковите беше неуспешно.',
   memberNotFound: 'Членот не постои.',
   noAnto: 'Анто фактите не се креирани.',
+  noTicketMembers:
+    'Моментално не постојат членови до кои може да се испрати тикетот.',
   noTickets: 'Нема тикети.',
   oathNoPermission: 'Заклетвата не е ваша.',
   optionNotFound: 'Опцијата не постои.',
