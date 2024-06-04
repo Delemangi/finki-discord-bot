@@ -37,13 +37,22 @@ export const getChannelMention = (interaction: Interaction) => {
   return channelMention(interaction.channel.id);
 };
 
-export const getButtonCommand = (command?: string) => {
+export const getButtonCommand = (command: string) => {
   switch (command) {
-    case undefined:
-      return embedLabels.unknown;
-
     case 'pollStats':
       return embedLabels.pollStats;
+
+    case 'addCourses':
+      return embedLabels.addCourses;
+
+    case 'removeCourses':
+      return embedLabels.removeCourses;
+
+    case 'ticketCreate':
+      return embedLabels.ticketCreate;
+
+    case 'ticketClose':
+      return embedLabels.ticketClose;
 
     default:
       return command[0]?.toUpperCase() + command.slice(1);
@@ -92,7 +101,7 @@ export const getButtonInfo = (
     case 'addCourses':
     case 'removeCourses':
     case 'vip':
-    case 'ticketStart':
+    case 'ticketCreate':
     case 'ticketClose':
       return {
         name: getButtonCommand(command),

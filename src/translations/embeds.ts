@@ -45,6 +45,7 @@ export const embedMessageFunctions = {
 };
 
 export const embedLabels = {
+  addCourses: 'Add Courses',
   author: 'Author',
   autocompleteInteraction: 'Autocomplete Command',
   buttonInteraction: 'Button Command',
@@ -55,7 +56,10 @@ export const embedLabels = {
   messageContextMenuInteraction: 'Message Context Menu Command',
   option: 'Option',
   pollStats: 'Poll Stats',
+  removeCourses: 'Remove Courses',
   target: 'Target',
+  ticketClose: 'Ticket Close',
+  ticketCreate: 'Ticket Create',
   unknown: 'Unknown',
   userContextMenuInteraction: 'User Context Menu Command',
   value: 'Value',
