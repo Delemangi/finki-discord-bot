@@ -58,7 +58,7 @@ const handleReminderCreate = async (
     return;
   }
 
-  await createReminder({
+  const reminder = await createReminder({
     channelId: interaction.channelId,
     description,
     privateMessage:
@@ -66,6 +66,12 @@ const handleReminderCreate = async (
     timestamp: date,
     userId: interaction.user.id,
   });
+
+  if (reminder === null) {
+    await interaction.editReply(commandErrors.reminderCreateError);
+
+    return;
+  }
 
   await interaction.editReply({
     allowedMentions: {

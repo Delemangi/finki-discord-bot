@@ -328,6 +328,7 @@ export const commandErrors = {
   pollTooManyOptions: 'Анкетата има премногу опции.',
   pollVotesFetchFailed: 'Преземањето на гласовите беше неуспешно.',
   questionsFetchFailed: 'Преземањето на прашањата беше неуспешно.',
+  reminderCreateError: 'Креирањето на потсетникот беше неуспешно.',
   reminderNoPermission: 'Ова не е ваш потсетник.',
   remindersLoadError: 'Настана грешка при вчитување на потсетниците.',
   rulesFetchFailed: 'Преземањето на правилата беше неуспешно.',
