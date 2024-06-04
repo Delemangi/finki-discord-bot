@@ -1283,7 +1283,10 @@ export const handleTicketCreate = async (
   );
 
   if (ticketRoleMembers.length === 0) {
-    await interaction.reply(commandErrors.noTicketMembers);
+    await interaction.reply({
+      content: commandErrors.noTicketMembers,
+      ephemeral: true,
+    });
 
     return;
   }
