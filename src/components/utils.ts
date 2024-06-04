@@ -92,6 +92,8 @@ export const getButtonInfo = (
     case 'addCourses':
     case 'removeCourses':
     case 'vip':
+    case 'ticketStart':
+    case 'ticketClose':
       return {
         name: getButtonCommand(command),
         value:
