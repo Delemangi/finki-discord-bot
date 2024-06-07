@@ -17,5 +17,9 @@
   "files.eol": "\n",
   "typescript.format.insertSpaceAfterTypeAssertion": true,
   "typescript.suggest.autoImports": true,
-  "typescript.updateImportsOnFileMove.enabled": "always"
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "sonarlint.connectedMode.project": {
+    "connectionId": "delemangi",
+    "projectKey": "finki-discord-bot"
+  }
 }
