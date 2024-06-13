@@ -1314,7 +1314,7 @@ export const handleTicketCreate = async (
   });
 
   const collector = ticketChannel.createMessageCollector({
-    time: 300_000,
+    time: 1_800_000,
   });
 
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
