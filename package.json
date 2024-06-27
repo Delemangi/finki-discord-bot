@@ -11,7 +11,7 @@
     "discord-api-types": "^0.37.90",
     "discord.js": "^14.15.3",
     "dotenv": "^16.4.5",
-    "prisma": "^5.16.0",
+    "prisma": "^5.16.1",
     "winston": "^3.13.0",
     "zod": "^3.23.8"
   },
