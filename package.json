@@ -4,7 +4,7 @@
     "url": "https://github.com/Delemangi/finki-discord-bot/issues"
   },
   "dependencies": {
-    "@prisma/client": "^5.16.2",
+    "@prisma/client": "^5.17.0",
     "async-lock": "^1.4.1",
     "chrono-node": "^2.7.6",
     "croner": "^8.1.0",
