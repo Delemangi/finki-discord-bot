@@ -4,5 +4,5 @@ export type ProgramShorthand =
   | 'ki'
   | 'kn'
   | 'pit'
-  | 'siis'
-  | 'psp';
+  | 'psp'
+  | 'siis';

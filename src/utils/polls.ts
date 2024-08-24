@@ -50,15 +50,15 @@ export const createPollChoices = (choices: readonly string[]) => {
 };
 
 export const startPoll = async ({
-  interaction,
-  title,
-  description,
   anonymous,
+  description,
+  interaction,
   multiple,
   open,
   options,
   roles,
   threshold,
+  title,
 }: {
   anonymous: boolean;
   description: string;
@@ -108,28 +108,6 @@ export const startSpecialPoll = async (
   let description: string;
 
   switch (type) {
-    case 'vipRequest':
-    case 'vipAdd':
-      title = specialStringFunctions.vipAddTitle(vipUser.tag);
-      description = specialStringFunctions.vipAddDescription(partialUser);
-      break;
-
-    case 'vipRemove':
-      title = specialStringFunctions.vipRemoveTitle(vipUser.tag);
-      description = specialStringFunctions.vipRemoveDescription(partialUser);
-      break;
-
-    case 'councilAdd':
-      title = specialStringFunctions.councilAddTitle(vipUser.tag);
-      description = specialStringFunctions.councilAddDescription(partialUser);
-      break;
-
-    case 'councilRemove':
-      title = specialStringFunctions.councilRemoveTitle(vipUser.tag);
-      description =
-        specialStringFunctions.councilRemoveDescription(partialUser);
-      break;
-
     case 'adminAdd':
       title = specialStringFunctions.adminAddTitle(vipUser.tag);
       description = specialStringFunctions.adminAddDescription(partialUser);
@@ -145,9 +123,31 @@ export const startSpecialPoll = async (
       description = specialStringFunctions.barDescription(partialUser);
       break;
 
+    case 'councilAdd':
+      title = specialStringFunctions.councilAddTitle(vipUser.tag);
+      description = specialStringFunctions.councilAddDescription(partialUser);
+      break;
+
+    case 'councilRemove':
+      title = specialStringFunctions.councilRemoveTitle(vipUser.tag);
+      description =
+        specialStringFunctions.councilRemoveDescription(partialUser);
+      break;
+
     case 'unbar':
       title = specialStringFunctions.unbarTitle(vipUser.tag);
       description = specialStringFunctions.unbarDescription(partialUser);
+      break;
+
+    case 'vipAdd':
+    case 'vipRequest':
+      title = specialStringFunctions.vipAddTitle(vipUser.tag);
+      description = specialStringFunctions.vipAddDescription(partialUser);
+      break;
+
+    case 'vipRemove':
+      title = specialStringFunctions.vipRemoveTitle(vipUser.tag);
+      description = specialStringFunctions.vipRemoveDescription(partialUser);
       break;
 
     default:

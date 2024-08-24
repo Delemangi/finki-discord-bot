@@ -1,31 +1,31 @@
 name: finki-discord-bot
-
 services:
   bot:
-    container_name: finki-bot
-    image: delemangi/finki-discord-bot:latest
-    restart: unless-stopped
-    env_file:
-      - .env
+    container_name: bot
     depends_on:
       database:
         condition: service_healthy
+    env_file:
+      - .env
+    image: delemangi/finki-discord-bot:latest
+    restart: unless-stopped
     volumes:
       - ./config:/app/config
       - ./sessions:/app/sessions
       - ./logs:/app/logs
-
   database:
-    container_name: finki-database
-    image: postgres:16
-    restart: unless-stopped
+    container_name: db
     env_file:
       - .env
-    volumes:
-      - ./db:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
       interval: 15s
-      timeout: 30s
       retries: 3
       start_period: 5s
+      test:
+        - 'CMD-SHELL'
+        - 'pg_isready -U $$POSTGRES_USER'
+      timeout: 30s
+    image: postgres:16
+    restart: unless-stopped
+    volumes:
+      - ./db:/var/lib/postgresql/data

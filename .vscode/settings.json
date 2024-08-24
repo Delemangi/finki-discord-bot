@@ -1,6 +1,6 @@
 {
   "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
     "editor.tabSize": 2
   },
   "[prisma]": {
@@ -14,12 +14,13 @@
   "editor.insertSpaces": true,
   "eslint.format.enable": true,
   "eslint.lintTask.enable": true,
+  "eslint.useFlatConfig": true,
   "files.eol": "\n",
-  "typescript.format.insertSpaceAfterTypeAssertion": true,
-  "typescript.suggest.autoImports": true,
-  "typescript.updateImportsOnFileMove.enabled": "always",
   "sonarlint.connectedMode.project": {
     "connectionId": "delemangi",
     "projectKey": "finki-discord-bot"
-  }
+  },
+  "typescript.format.insertSpaceAfterTypeAssertion": true,
+  "typescript.suggest.autoImports": true,
+  "typescript.updateImportsOnFileMove.enabled": "always"
 }

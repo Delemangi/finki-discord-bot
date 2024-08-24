@@ -198,7 +198,3 @@ config
 db/
 migration/
 pgadmin/
-
-# Compiled output
-dist
-*.js

@@ -12,7 +12,6 @@ import { type RoleConfig } from '../types/RoleConfig.js';
 import { type Roles } from '../types/Roles.js';
 import { type Staff } from '../types/Staff.js';
 import { readFileSync } from 'node:fs';
-// eslint-disable-next-line n/prefer-global/process
 import { env } from 'node:process';
 
 const defaultConfig: BotConfig = {

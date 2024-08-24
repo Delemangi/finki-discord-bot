@@ -5,6 +5,6 @@ import {
 } from 'discord.js';
 
 export type SlashCommand = {
-  data: SlashCommandSubcommandsOnlyBuilder | SlashCommandOptionsOnlyBuilder;
+  data: SlashCommandOptionsOnlyBuilder | SlashCommandSubcommandsOnlyBuilder;
   execute: (interaction: ChatInputCommandInteraction) => Promise<void>;
 };

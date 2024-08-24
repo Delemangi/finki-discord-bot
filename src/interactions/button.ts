@@ -723,26 +723,6 @@ export const handlePollButtonForSpecialVote = async (
   }
 
   switch (type) {
-    case 'vipRequest':
-      await handlePollButtonForVipRequestVote(poll, specialPoll);
-      break;
-
-    case 'vipAdd':
-      await handlePollButtonForVipAddVote(poll, specialPoll);
-      break;
-
-    case 'vipRemove':
-      await handlePollButtonForVipRemoveVote(poll, specialPoll, member);
-      break;
-
-    case 'councilAdd':
-      await handlePollButtonForCouncilAddVote(poll, specialPoll, member);
-      break;
-
-    case 'councilRemove':
-      await handlePollButtonForCouncilRemoveVote(poll, specialPoll, member);
-      break;
-
     case 'adminAdd':
       await handlePollButtonForAdminAddVote(poll, specialPoll, member);
       break;
@@ -755,8 +735,28 @@ export const handlePollButtonForSpecialVote = async (
       await handlePollButtonForBarVote(poll, specialPoll, member);
       break;
 
+    case 'councilAdd':
+      await handlePollButtonForCouncilAddVote(poll, specialPoll, member);
+      break;
+
+    case 'councilRemove':
+      await handlePollButtonForCouncilRemoveVote(poll, specialPoll, member);
+      break;
+
     case 'unbar':
       await handlePollButtonForUnbarVote(poll, specialPoll);
+      break;
+
+    case 'vipAdd':
+      await handlePollButtonForVipAddVote(poll, specialPoll);
+      break;
+
+    case 'vipRemove':
+      await handlePollButtonForVipRemoveVote(poll, specialPoll, member);
+      break;
+
+    case 'vipRequest':
+      await handlePollButtonForVipRequestVote(poll, specialPoll);
       break;
 
     default:
@@ -1317,7 +1317,6 @@ export const handleTicketCreate = async (
     time: 1_800_000,
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   collector.once('collect', async () => {
     await ticketChannel.send(
       ticketMessageFunctions.ticketStarted(
@@ -1328,7 +1327,6 @@ export const handleTicketCreate = async (
     collector.stop();
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   collector.on('end', async (messages) => {
     if (messages.size > 0) {
       return;

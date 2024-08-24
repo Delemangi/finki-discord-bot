@@ -17,7 +17,7 @@ import {
 } from 'discord.js';
 
 export const truncateString = (
-  string: string | null | undefined,
+  string: null | string | undefined,
   length: number = 100,
 ) => {
   if (string === null || string === undefined) {
@@ -39,49 +39,52 @@ export const getChannelMention = (interaction: Interaction) => {
 
 export const getButtonCommand = (command: string) => {
   switch (command) {
-    case 'pollStats':
-      return embedLabels.pollStats;
-
     case 'addCourses':
       return embedLabels.addCourses;
+
+    case 'pollStats':
+      return embedLabels.pollStats;
 
     case 'removeCourses':
       return embedLabels.removeCourses;
 
-    case 'ticketCreate':
-      return embedLabels.ticketCreate;
-
     case 'ticketClose':
       return embedLabels.ticketClose;
+
+    case 'ticketCreate':
+      return embedLabels.ticketCreate;
 
     default:
       return command[0]?.toUpperCase() + command.slice(1);
   }
 };
 
-// eslint-disable-next-line complexity
 export const getButtonInfo = (
   interaction: ButtonInteraction,
   command: string,
   args: string[],
 ) => {
   switch (command) {
-    case 'course':
+    case 'addCourses':
+    case 'exp':
+    case 'help':
+    case 'poll':
+    case 'polls':
+    case 'pollStats':
+    case 'removeCourses':
+    case 'ticketClose':
+    case 'ticketCreate':
+    case 'vip':
       return {
         name: getButtonCommand(command),
         value:
-          interaction.guild && args[0]
-            ? roleMention(
-                getRoleFromSet(interaction.guild, 'courses', args[0])?.id ??
-                  embedLabels.unknown,
-              )
-            : embedLabels.unknown,
+          args[0] === undefined ? embedLabels.unknown : inlineCode(args[0]),
       };
 
-    case 'year':
-    case 'program':
-    case 'notification':
     case 'color':
+    case 'notification':
+    case 'program':
+    case 'year':
       return {
         name: getButtonCommand(command),
         value:
@@ -93,20 +96,16 @@ export const getButtonInfo = (
             : embedLabels.unknown,
       };
 
-    case 'help':
-    case 'exp':
-    case 'polls':
-    case 'poll':
-    case 'pollStats':
-    case 'addCourses':
-    case 'removeCourses':
-    case 'vip':
-    case 'ticketCreate':
-    case 'ticketClose':
+    case 'course':
       return {
         name: getButtonCommand(command),
         value:
-          args[0] === undefined ? embedLabels.unknown : inlineCode(args[0]),
+          interaction.guild && args[0]
+            ? roleMention(
+                getRoleFromSet(interaction.guild, 'courses', args[0])?.id ??
+                  embedLabels.unknown,
+              )
+            : embedLabels.unknown,
       };
 
     default:
@@ -137,8 +136,8 @@ export const linkProfessors = (professors: string) => {
 export const fetchMessageUrl = async (
   interaction:
     | ChatInputCommandInteraction
-    | UserContextMenuCommandInteraction
-    | MessageContextMenuCommandInteraction,
+    | MessageContextMenuCommandInteraction
+    | UserContextMenuCommandInteraction,
 ) => {
   if (
     interaction.channel === null ||

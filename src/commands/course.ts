@@ -118,7 +118,7 @@ export const data = new SlashCommandBuilder()
 
 const handleCourseParticipants = async (
   interaction: ChatInputCommandInteraction,
-  course: string | null,
+  course: null | string,
 ) => {
   const information = getParticipants().find(
     (participants) =>
@@ -139,7 +139,7 @@ const handleCourseParticipants = async (
 
 const handleCourseProfessors = async (
   interaction: ChatInputCommandInteraction,
-  course: string | null,
+  course: null | string,
 ) => {
   const information = getProfessors().find(
     (staff) => staff.course.toLowerCase() === course?.toLowerCase(),
@@ -159,7 +159,7 @@ const handleCourseProfessors = async (
 
 const handleCourseRole = async (
   interaction: ChatInputCommandInteraction,
-  courseRole: string | null,
+  courseRole: null | string,
 ) => {
   const guild = await getGuild(interaction);
 
@@ -201,7 +201,7 @@ const handleCourseRole = async (
 
 const handleCoursePrerequisite = async (
   interaction: ChatInputCommandInteraction,
-  course: string | null,
+  course: null | string,
 ) => {
   const information = getPrerequisites().find(
     (prerequisites) =>
@@ -222,7 +222,7 @@ const handleCoursePrerequisite = async (
 
 const handleCourseInfo = async (
   interaction: ChatInputCommandInteraction,
-  course: string | null,
+  course: null | string,
 ) => {
   const information = getInformation().find(
     (info) => info.course.toLowerCase() === course?.toLowerCase(),
@@ -242,7 +242,7 @@ const handleCourseInfo = async (
 
 const handleCourseSummary = async (
   interaction: ChatInputCommandInteraction,
-  course: string | null,
+  course: null | string,
 ) => {
   if (course === null) {
     await interaction.editReply(commandErrors.courseNotFound);
@@ -258,7 +258,7 @@ const handleCourseSummary = async (
 
 const handleCourseToggle = async (
   interaction: ChatInputCommandInteraction,
-  course: string | null,
+  course: null | string,
 ) => {
   const guild = await getGuild(interaction);
 

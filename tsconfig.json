@@ -23,11 +23,15 @@
     "outDir": "dist",
     "resolveJsonModule": true,
     "strict": true,
-    "target": "ESNext",
+    "target": "ESNext"
   },
+  "exclude": [
+    "eslint.config.js",
+    "dist"
+  ],
   "ts-node": {
-    "swc": true,
     "files": true,
+    "swc": true,
     "transpileOnly": true
   }
 }

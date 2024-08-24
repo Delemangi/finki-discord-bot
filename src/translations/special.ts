@@ -25,7 +25,7 @@ export const specialStringFunctions = {
       userId,
     )} е одобрен како член на Администрацијата.`,
 
-  adminAddDescription: ({ tag, id }: PartialUser) =>
+  adminAddDescription: ({ id, tag }: PartialUser) =>
     `Дали се согласувате корисникот ${tagAndMentionUser({
       id,
       tag,
@@ -41,7 +41,7 @@ export const specialStringFunctions = {
   adminRemoveAccepted: (userId: string) =>
     `# Корисникот ${userMention(userId)} е избркан од Администрацијата.`,
 
-  adminRemoveDescription: ({ tag, id }: PartialUser) =>
+  adminRemoveDescription: ({ id, tag }: PartialUser) =>
     `Дали се согласувате корисникот ${tagAndMentionUser({
       id,
       tag,
@@ -56,7 +56,7 @@ export const specialStringFunctions = {
   barAccepted: (userId: string) =>
     `# Корисникот ${userMention(userId)} е забранет.`,
 
-  barDescription: ({ tag, id }: PartialUser) =>
+  barDescription: ({ id, tag }: PartialUser) =>
     `Дали се согласувате корисникот ${tagAndMentionUser({
       id,
       tag,
@@ -70,7 +70,7 @@ export const specialStringFunctions = {
   councilAddAccepted: (userId: string) =>
     `# Корисникот ${userMention(userId)} е одобрен како член на Советот.`,
 
-  councilAddDescription: ({ tag, id }: PartialUser) =>
+  councilAddDescription: ({ id, tag }: PartialUser) =>
     `Дали се согласувате корисникот ${tagAndMentionUser({
       id,
       tag,
@@ -84,7 +84,7 @@ export const specialStringFunctions = {
   councilRemoveAccepted: (userId: string) =>
     `# Корисникот ${userMention(userId)} е избркан од Советот.`,
 
-  councilRemoveDescription: ({ tag, id }: PartialUser) =>
+  councilRemoveDescription: ({ id, tag }: PartialUser) =>
     `Дали се согласувате корисникот ${tagAndMentionUser({
       id,
       tag,
@@ -104,7 +104,7 @@ export const specialStringFunctions = {
   unbarAccepted: (userId: string) =>
     `# Забраната за корисникот ${userMention(userId)} е укината.`,
 
-  unbarDescription: ({ tag, id }: PartialUser) =>
+  unbarDescription: ({ id, tag }: PartialUser) =>
     `Дали се согласувате забраната за корисникот ${tagAndMentionUser({
       id,
       tag,
@@ -118,7 +118,7 @@ export const specialStringFunctions = {
   vipAddAccepted: (userId: string) =>
     `# Корисникот ${userMention(userId)} е одобрен како член на ВИП.`,
 
-  vipAddDescription: ({ tag, id }: PartialUser) =>
+  vipAddDescription: ({ id, tag }: PartialUser) =>
     `Дали се согласувате корисникот ${tagAndMentionUser({
       id,
       tag,
@@ -135,7 +135,7 @@ export const specialStringFunctions = {
   vipRemoveAccepted: (userId: string) =>
     `# Корисникот ${userMention(userId)} е избркан од ВИП.`,
 
-  vipRemoveDescription: ({ tag, id }: PartialUser) =>
+  vipRemoveDescription: ({ id, tag }: PartialUser) =>
     `Дали се согласувате корисникот ${tagAndMentionUser({
       id,
       tag,
