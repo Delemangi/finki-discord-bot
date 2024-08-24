@@ -10,7 +10,7 @@ on:
 
 jobs:
   eslint:
-    name: ESLint
+    name: TypeScript & ESLint
     runs-on: ubuntu-latest
 
     steps:
