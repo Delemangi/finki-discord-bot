@@ -52,6 +52,14 @@ export const data = new SlashCommandBuilder()
   );
 
 const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
+  if (!interaction.channel?.isSendable()) {
+    await interaction.editReply({
+      content: commandErrors.unsupportedChannelType,
+    });
+
+    return;
+  }
+
   const user = interaction.options.getUser('user', true);
   const pollsChannel = await getChannelProperty('polls');
 
@@ -113,16 +121,14 @@ const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
 
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
-  await interaction.channel?.send(
-    roleMention(await getRoleProperty('council')),
-  );
+  await interaction.channel.send(roleMention(await getRoleProperty('council')));
   await interaction.editReply({
     components,
     embeds: [embed],
   });
 
   const statsComponents = getPollStatsComponents(poll);
-  await interaction.channel?.send({
+  await interaction.channel.send({
     components: statsComponents,
     content: commandResponseFunctions.pollStats(poll.title),
   });
@@ -131,6 +137,14 @@ const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
 const handleCouncilRemove = async (
   interaction: ChatInputCommandInteraction,
 ) => {
+  if (!interaction.channel?.isSendable()) {
+    await interaction.editReply({
+      content: commandErrors.unsupportedChannelType,
+    });
+
+    return;
+  }
+
   const user = interaction.options.getUser('user', true);
   const pollsChannel = await getChannelProperty('polls');
 
@@ -185,16 +199,14 @@ const handleCouncilRemove = async (
 
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
-  await interaction.channel?.send(
-    roleMention(await getRoleProperty('council')),
-  );
+  await interaction.channel.send(roleMention(await getRoleProperty('council')));
   await interaction.editReply({
     components,
     embeds: [embed],
   });
 
   const statsComponents = getPollStatsComponents(poll);
-  await interaction.channel?.send({
+  await interaction.channel.send({
     components: statsComponents,
     content: commandResponseFunctions.pollStats(poll.title),
   });

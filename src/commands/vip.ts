@@ -58,6 +58,14 @@ export const data = new SlashCommandBuilder()
   );
 
 const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
+  if (!interaction.channel?.isSendable()) {
+    await interaction.editReply({
+      content: commandErrors.unsupportedChannelType,
+    });
+
+    return;
+  }
+
   const user = interaction.options.getUser('user', true);
   const pollsChannel = await getChannelProperty('polls');
 
@@ -127,22 +135,28 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
 
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
-  await interaction.channel?.send(
-    roleMention(await getRoleProperty('council')),
-  );
+  await interaction.channel.send(roleMention(await getRoleProperty('council')));
   await interaction.editReply({
     components,
     embeds: [embed],
   });
 
   const statsComponents = getPollStatsComponents(poll);
-  await interaction.channel?.send({
+  await interaction.channel.send({
     components: statsComponents,
     content: commandResponseFunctions.pollStats(poll.title),
   });
 };
 
 const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
+  if (!interaction.channel?.isSendable()) {
+    await interaction.editReply({
+      content: commandErrors.unsupportedChannelType,
+    });
+
+    return;
+  }
+
   const user = interaction.options.getUser('user', true);
   const pollsChannel = await getChannelProperty('polls');
 
@@ -198,16 +212,14 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
 
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
-  await interaction.channel?.send(
-    roleMention(await getRoleProperty('council')),
-  );
+  await interaction.channel.send(roleMention(await getRoleProperty('council')));
   await interaction.editReply({
     components,
     embeds: [embed],
   });
 
   const statsComponents = getPollStatsComponents(poll);
-  await interaction.channel?.send({
+  await interaction.channel.send({
     components: statsComponents,
     content: commandResponseFunctions.pollStats(poll.title),
   });

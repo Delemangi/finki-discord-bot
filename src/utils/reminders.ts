@@ -14,24 +14,28 @@ const remindUser = async (reminder: Reminder) => {
     if (user !== null) {
       await user.send(`${labels.reminder}: ${reminder.description}`);
     }
-  } else {
-    if (reminder.channelId === null) {
-      return;
-    }
 
-    const channel = await client.channels.fetch(reminder.channelId);
-
-    if (channel?.isTextBased()) {
-      await channel.send({
-        allowedMentions: {
-          parse: ['users'],
-        },
-        content: `${userMention(reminder.userId)} ${labels.reminder}: ${
-          reminder.description
-        }`,
-      });
-    }
+    return;
   }
+
+  if (reminder.channelId === null) {
+    return;
+  }
+
+  const channel = await client.channels.fetch(reminder.channelId);
+
+  if (!channel?.isSendable()) {
+    return;
+  }
+
+  await channel.send({
+    allowedMentions: {
+      parse: ['users'],
+    },
+    content: `${userMention(reminder.userId)} ${labels.reminder}: ${
+      reminder.description
+    }`,
+  });
 };
 
 export const remind = async () => {

@@ -335,6 +335,14 @@ const handlePollStats = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
+  if (!interaction.channel?.isSendable()) {
+    await interaction.editReply({
+      content: commandErrors.unsupportedChannelType,
+    });
+
+    return;
+  }
+
   const id = interaction.options.getString('id', true).trim();
   let poll = await getPollById(id);
 
@@ -367,7 +375,7 @@ const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
 
   if (!poll.anonymous) {
     const statsComponents = getPollStatsComponents(poll);
-    await interaction.channel?.send({
+    await interaction.channel.send({
       components: statsComponents,
       content: commandResponseFunctions.pollStats(poll.title),
     });
