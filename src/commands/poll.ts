@@ -601,7 +601,7 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
   collector.on('collect', async (buttonInteraction) => {
     if (
       buttonInteraction.user.id !==
-      buttonInteraction.message.interaction?.user.id
+      buttonInteraction.message.interactionMetadata?.user.id
     ) {
       const mess = await buttonInteraction.reply({
         content: commandErrors.buttonNoPermission,
