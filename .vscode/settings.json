@@ -22,5 +22,6 @@
   },
   "typescript.format.insertSpaceAfterTypeAssertion": true,
   "typescript.suggest.autoImports": true,
+  "typescript.tsdk": "node_modules\\typescript\\lib",
   "typescript.updateImportsOnFileMove.enabled": "always"
 }
