@@ -52,7 +52,7 @@ const handleTicketList = async (interaction: ChatInputCommandInteraction) => {
       !channel.locked,
   );
 
-  if (threads === undefined) {
+  if (threads === undefined || threads.size === 0) {
     await interaction.editReply(commandErrors.noTickets);
 
     return;
