@@ -86,7 +86,6 @@ The bot logs `info` and above messages in the console, and logs `debug` and abov
 Here is a list of features that are planned:
 
 - Moving away from configuration files as much as possible, and keeping everything in the database
-- Ticketing system
 - Web application for configuring the bot
 - Testing
 - More moderation and lockdown functionalities
