@@ -12,7 +12,7 @@ import {
 
 const name = 'ticket';
 const dateFormatter = Intl.DateTimeFormat('mk-MK', {
-  dateStyle: 'short',
+  dateStyle: 'long',
   timeStyle: 'short',
 });
 
