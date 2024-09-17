@@ -3,6 +3,7 @@ import {
   commandErrors,
   commandResponses,
 } from '../translations/commands.js';
+import { labels } from '../translations/labels.js';
 import { getChannelProperty } from '../utils/config.js';
 import {
   type ChatInputCommandInteraction,
@@ -10,6 +11,10 @@ import {
 } from 'discord.js';
 
 const name = 'ticket';
+const dateFormatter = Intl.DateTimeFormat('mk-MK', {
+  dateStyle: 'short',
+  timeStyle: 'short',
+});
 
 export const data = new SlashCommandBuilder()
   .setName(name)
@@ -58,7 +63,28 @@ const handleTicketList = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const threadLinks = threads.map((thread) => '- ' + thread.url).join('\n');
+  threads.sort((a, b) => {
+    if (!a.createdTimestamp || !b.createdTimestamp) {
+      return 0;
+    }
+
+    if (a.createdTimestamp < b.createdTimestamp) {
+      return -1;
+    }
+
+    if (a.createdTimestamp > b.createdTimestamp) {
+      return 1;
+    }
+
+    return 0;
+  });
+
+  const threadLinks = threads
+    .map(
+      (thread) =>
+        `- ${thread.url} (${thread.createdAt ? dateFormatter.format(thread.createdAt) : labels.none})`,
+    )
+    .join('\n');
 
   await interaction.editReply(threadLinks);
 };
