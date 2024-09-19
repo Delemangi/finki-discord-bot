@@ -68,6 +68,7 @@ import {
   getRoleFromSet,
   getRoles,
 } from '../utils/roles.js';
+import { closeTicket } from '../utils/tickets.js';
 import { type Poll, type PollOption, type SpecialPoll } from '@prisma/client';
 import {
   type ButtonInteraction,
@@ -1348,27 +1349,5 @@ export const handleTicketClose = async (
     return;
   }
 
-  const ticketsChannel = getChannel('tickets');
-
-  if (
-    ticketsChannel === undefined ||
-    ticketsChannel.type !== ChannelType.GuildText
-  ) {
-    await interaction.reply(commandErrors.invalidTicket);
-
-    return;
-  }
-
-  const ticketChannel = ticketsChannel.threads.cache.get(ticketId);
-
-  if (ticketChannel === undefined) {
-    await interaction.reply(commandErrors.invalidTicket);
-
-    return;
-  }
-
-  await ticketChannel.setLocked(true);
-  await ticketChannel.setArchived(true);
-
-  await interaction.deferUpdate();
+  await closeTicket(ticketId);
 };

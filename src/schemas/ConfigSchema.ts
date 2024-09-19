@@ -20,6 +20,7 @@ export const ConfigSchema = z
     experienceMultipliers: z.record(z.number()),
     guild: z.string(),
     leveling: z.boolean(),
+    maxTicketInactivityDays: z.number(),
     reactions: z
       .object({
         add: z.record(z.string()),

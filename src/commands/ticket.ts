@@ -5,6 +5,7 @@ import {
 } from '../translations/commands.js';
 import { labels } from '../translations/labels.js';
 import { getChannelProperty } from '../utils/config.js';
+import { getActiveTickets } from '../utils/tickets.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -47,23 +48,15 @@ const handleTicketClose = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handleTicketList = async (interaction: ChatInputCommandInteraction) => {
-  const ticketsChannel = await getChannelProperty('tickets');
+  const ticketThreads = await getActiveTickets(interaction);
 
-  const threads = interaction.guild?.channels.cache.filter(
-    (channel) =>
-      channel.isThread() &&
-      channel.parentId === ticketsChannel &&
-      !channel.archived &&
-      !channel.locked,
-  );
-
-  if (threads === undefined || threads.size === 0) {
+  if (ticketThreads === undefined || ticketThreads.size === 0) {
     await interaction.editReply(commandErrors.noTickets);
 
     return;
   }
 
-  threads.sort((a, b) => {
+  ticketThreads.sort((a, b) => {
     if (!a.createdTimestamp || !b.createdTimestamp) {
       return 0;
     }
@@ -79,7 +72,7 @@ const handleTicketList = async (interaction: ChatInputCommandInteraction) => {
     return 0;
   });
 
-  const threadLinks = threads
+  const threadLinks = ticketThreads
     .map(
       (thread) =>
         `- ${thread.url} (${thread.createdAt ? dateFormatter.format(thread.createdAt) : labels.none})`,

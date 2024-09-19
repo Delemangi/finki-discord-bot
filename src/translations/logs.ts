@@ -23,6 +23,8 @@ export const logMessages = {
 };
 
 export const logMessageFunctions = {
+  closedTicket: (ticketThreadId: string) => `Closed ticket ${ticketThreadId}`,
+
   loggedIn: (username: string | undefined) =>
     `Logged in as ${username ?? 'an unknown user'}`,
 

@@ -5,6 +5,7 @@ import { checkEnvironmentVariables, getToken } from './utils/config.js';
 import { attachEventListeners } from './utils/events.js';
 import { remind } from './utils/reminders.js';
 import { closeSpecialPolls } from './utils/special.js';
+import { closeInactiveTickets } from './utils/tickets.js';
 // eslint-disable-next-line import/no-unassigned-import
 import 'dotenv/config';
 
@@ -17,6 +18,7 @@ await attachEventListeners();
 
 void remind();
 void closeSpecialPolls();
+void closeInactiveTickets();
 
 // Login
 

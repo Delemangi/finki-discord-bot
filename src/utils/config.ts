@@ -31,6 +31,7 @@ const defaultConfig: BotConfig = {
   experienceMultipliers: {},
   guild: '810997107376914444',
   leveling: true,
+  maxTicketInactivityDays: 10,
   reactions: {
     add: {},
     remove: {},

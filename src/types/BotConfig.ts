@@ -13,6 +13,7 @@ export type BotConfig = {
   experienceMultipliers: Record<string, number>;
   guild: string;
   leveling: boolean;
+  maxTicketInactivityDays: number;
   reactions: {
     add: Record<string, string>;
     remove: Record<string, string>;
