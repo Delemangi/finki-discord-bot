@@ -17,6 +17,7 @@ This discord bot contains many features personalized for the above-mentioned Dis
 - Automation of the entire management of the server, allowing members to vote in new admins and such
 - Experience & leveling
 - Moderation
+- Ticketing system
 - Miscellaneous functionalities, such as reminders, sending embeds for rules, role assignments
 
 ## Installation
