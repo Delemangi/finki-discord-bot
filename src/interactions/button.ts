@@ -10,7 +10,6 @@ import {
   getVipConfirmComponents,
   getVipConfirmEmbed,
 } from '../components/scripts.js';
-import { getTicketCloseComponents } from '../components/tickets.js';
 import { createBar, deleteBar } from '../data/Bar.js';
 import { getPollById } from '../data/Poll.js';
 import { getPollOptionById } from '../data/PollOption.js';
@@ -42,10 +41,6 @@ import {
   specialStringFunctions,
   specialStrings,
 } from '../translations/special.js';
-import {
-  ticketMessageFunctions,
-  ticketMessages,
-} from '../translations/tickets.js';
 import { deleteResponse, getChannel } from '../utils/channels.js';
 import {
   getConfigProperty,
@@ -68,7 +63,7 @@ import {
   getRoleFromSet,
   getRoles,
 } from '../utils/roles.js';
-import { closeTicket } from '../utils/tickets.js';
+import { closeTicket, createTicket } from '../utils/tickets.js';
 import { type Poll, type PollOption, type SpecialPoll } from '@prisma/client';
 import {
   type ButtonInteraction,
@@ -76,7 +71,6 @@ import {
   type GuildMember,
   type GuildMemberRoleManager,
   roleMention,
-  ThreadAutoArchiveDuration,
   userMention,
 } from 'discord.js';
 
@@ -1236,7 +1230,7 @@ export const handleReminderDeleteButton = async (
   });
 };
 
-export const handleTicketCreate = async (
+export const handleTicketCreateButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
@@ -1292,52 +1286,10 @@ export const handleTicketCreate = async (
     return;
   }
 
-  const ticketChannel = await ticketsChannel.threads.create({
-    autoArchiveDuration: ThreadAutoArchiveDuration.OneWeek,
-    invitable: false,
-    name: `${interaction.user.tag} - ${ticketMetadata.name}`,
-    type: ChannelType.PrivateThread,
-  });
-
-  await ticketChannel.send(
-    ticketMessageFunctions.ticketCreated(interaction.user.id),
-  );
-
-  const components = getTicketCloseComponents(ticketChannel.id);
-  await ticketChannel.send({
-    components,
-    content: ticketMessages.sendMessage,
-  });
-
-  await interaction.reply({
-    content: ticketMessageFunctions.ticketLink(ticketChannel.url),
-    ephemeral: true,
-  });
-
-  const collector = ticketChannel.createMessageCollector({
-    time: 1_800_000,
-  });
-
-  collector.once('collect', async () => {
-    await ticketChannel.send(
-      ticketMessageFunctions.ticketStarted(
-        ticketMetadata.roles.map((role) => roleMention(role)).join(' '),
-      ),
-    );
-
-    collector.stop();
-  });
-
-  collector.on('end', async (messages) => {
-    if (messages.size > 0) {
-      return;
-    }
-
-    await ticketChannel.delete();
-  });
+  await createTicket(interaction, ticketMetadata);
 };
 
-export const handleTicketClose = async (
+export const handleTicketCloseButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {

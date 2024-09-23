@@ -9,12 +9,16 @@ import { closeInactiveTickets } from './utils/tickets.js';
 // eslint-disable-next-line import/no-unassigned-import
 import 'dotenv/config';
 
-// Initialization
+// Pre-initialization
 
 await checkEnvironmentVariables();
 
+// Post-initialization
+
 await registerCommands();
 await attachEventListeners();
+
+// Cron jobs
 
 void remind();
 void closeSpecialPolls();
