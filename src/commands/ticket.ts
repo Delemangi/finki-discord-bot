@@ -5,6 +5,7 @@ import {
 } from '../translations/commands.js';
 import { labels } from '../translations/labels.js';
 import { getChannelProperty } from '../utils/config.js';
+import { safeReplyToInteraction } from '../utils/messages.js';
 import { getActiveTickets } from '../utils/tickets.js';
 import {
   type ChatInputCommandInteraction,
@@ -79,7 +80,7 @@ const handleTicketList = async (interaction: ChatInputCommandInteraction) => {
     )
     .join('\n');
 
-  await interaction.editReply(threadLinks);
+  await safeReplyToInteraction(interaction, threadLinks);
 };
 
 const ticketHandlers = {
