@@ -11,6 +11,7 @@ import {
   commandResponseFunctions,
 } from '../translations/commands.js';
 import {
+  getCourses,
   getFromRoleConfig,
   getInformation,
   getParticipants,
@@ -244,7 +245,7 @@ const handleCourseSummary = async (
   interaction: ChatInputCommandInteraction,
   course: null | string,
 ) => {
-  if (course === null) {
+  if (course === null || !getCourses().includes(course)) {
     await interaction.editReply(commandErrors.courseNotFound);
 
     return;
