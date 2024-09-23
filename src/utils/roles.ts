@@ -51,7 +51,7 @@ export const refreshRoles = (guild: Guild, type: RoleSets) => {
       guild.roles.cache.find((ro) => ro.name === roleName),
     );
 
-    roleSets[type] = roleSet.filter((role) => role !== undefined) as Role[];
+    roleSets[type] = roleSet.filter((role) => role !== undefined);
   }
 };
 
