@@ -1,6 +1,7 @@
 import {
   type ButtonInteraction,
   type ChatInputCommandInteraction,
+  inlineCode,
   type MessageContextMenuCommandInteraction,
   type UserContextMenuCommandInteraction,
 } from 'discord.js';
@@ -181,3 +182,6 @@ export const logErrorFunctions = {
   ) =>
     `Failed handling user context menu interaction ${interaction.commandName}\n${error}`,
 };
+
+export const bootMessage = () =>
+  `Bot successfully started at ${inlineCode(new Date().toUTCString())}`;
