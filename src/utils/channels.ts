@@ -168,7 +168,7 @@ export const recreateRegularsTemporaryChannel = async () => {
   );
 };
 
-export const scheduleVipTemporaryChannel = async () => {
+export const resetTemporaryVipChannel = async () => {
   const { cron } = await getConfigProperty('temporaryVIPChannel');
 
   Cron(cron, recreateVipTemporaryChannel);
@@ -178,7 +178,7 @@ export const scheduleVipTemporaryChannel = async () => {
   );
 };
 
-export const scheduleRegularsTemporaryChannel = async () => {
+export const resetTemporaryRegularsChannel = async () => {
   const { cron } = await getConfigProperty('temporaryRegularsChannel');
 
   Cron(cron, recreateRegularsTemporaryChannel);

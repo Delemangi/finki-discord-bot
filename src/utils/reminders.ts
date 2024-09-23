@@ -38,7 +38,7 @@ const remindUser = async (reminder: Reminder) => {
   });
 };
 
-export const remind = async () => {
+export const sendReminders = async () => {
   while (true) {
     try {
       const reminders = await getReminders();
