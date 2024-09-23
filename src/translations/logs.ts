@@ -78,6 +78,9 @@ export const logErrorFunctions = {
   buttonInteractionRoleError: (customId: string) =>
     `Received button interaction ${customId} for a role that does not exist`,
 
+  channelFetchError: (channelId: string, error: unknown) =>
+    `Failed fetching channel ${channelId}\n${error}`,
+
   chatInputInteractionDeferError: (
     interaction: ChatInputCommandInteraction,
     error: unknown,
@@ -164,6 +167,9 @@ export const logErrorFunctions = {
 
   responseDeleteError: (messageId: string, error: unknown) =>
     `Failed deleting message ${messageId}\n${error}`,
+
+  roleFetchError: (roleId: string, error: unknown) =>
+    `Failed fetching role ${roleId}\n${error}`,
 
   scriptExecutionError: (error: unknown) => `Failed executing script\n${error}`,
 
