@@ -7,6 +7,7 @@ import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
 } from 'discord.js';
+import { access } from 'fs/promises';
 
 const name = 'session';
 
@@ -33,8 +34,18 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
+  const path = `./sessions/${information[1]}`;
+
+  try {
+    await access(path);
+  } catch {
+    await interaction.editReply(commandErrors.sessionNotFound);
+
+    return;
+  }
+
   await interaction.editReply({
     content: information[0],
-    files: [`./sessions/${information[1]}`],
+    files: [path],
   });
 };
