@@ -132,6 +132,7 @@ export const closeInactiveTickets = async () => {
     }
 
     for (const thread of ticketThreads.values()) {
+      await thread.messages.fetch();
       const lastMessage = thread.lastMessage;
 
       if (lastMessage === null) {
