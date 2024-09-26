@@ -1302,4 +1302,5 @@ export const handleTicketCloseButton = async (
   }
 
   await closeTicket(ticketId);
+  await interaction.deferUpdate();
 };
