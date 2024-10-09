@@ -5,6 +5,7 @@ import {
 } from '../translations/commands.js';
 import {
   type ChatInputCommandInteraction,
+  InteractionContextType,
   PermissionFlagsBits,
   SlashCommandBuilder,
 } from 'discord.js';
@@ -24,7 +25,7 @@ export const data = new SlashCommandBuilder()
       .setMaxValue(100)
       .setRequired(true),
   )
-  .setDMPermission(false)
+  .setContexts(InteractionContextType.Guild)
   .setDefaultMemberPermissions(permission);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {

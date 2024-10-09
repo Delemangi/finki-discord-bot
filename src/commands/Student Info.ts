@@ -3,6 +3,7 @@ import {
   ApplicationCommandType,
   ContextMenuCommandBuilder,
   type GuildMember,
+  InteractionContextType,
   type UserContextMenuCommandInteraction,
 } from 'discord.js';
 
@@ -12,7 +13,7 @@ export const data = new ContextMenuCommandBuilder()
   .setName(name)
   // @ts-expect-error discord-api-types issue
   .setType(ApplicationCommandType.User)
-  .setDMPermission(false);
+  .setContexts(InteractionContextType.Guild);
 
 export const execute = async (
   interaction: UserContextMenuCommandInteraction,

@@ -32,6 +32,7 @@ import {
   type ChatInputCommandInteraction,
   ComponentType,
   type GuildMember,
+  InteractionContextType,
   roleMention,
   SlashCommandBuilder,
 } from 'discord.js';
@@ -199,7 +200,7 @@ export const data = new SlashCommandBuilder()
         option.setName('id').setDescription('Анкета').setRequired(true),
       ),
   )
-  .setDMPermission(false);
+  .setContexts(InteractionContextType.Guild);
 
 const handlePollCreate = async (interaction: ChatInputCommandInteraction) => {
   const title = interaction.options.getString('title', true);

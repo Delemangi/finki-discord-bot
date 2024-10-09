@@ -6,6 +6,7 @@ import {
 import { getMemberFromGuild } from '../utils/guild.js';
 import {
   type ChatInputCommandInteraction,
+  InteractionContextType,
   SlashCommandBuilder,
 } from 'discord.js';
 
@@ -17,7 +18,7 @@ export const data = new SlashCommandBuilder()
   .addUserOption((option) =>
     option.setName('user').setDescription('Корисник').setRequired(false),
   )
-  .setDMPermission(false);
+  .setContexts(InteractionContextType.Guild);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser('user') ?? interaction.user;

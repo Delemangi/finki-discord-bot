@@ -9,6 +9,7 @@ import { getOrCreateWebhookByChannelId } from '../utils/webhooks.js';
 import {
   ApplicationCommandType,
   ContextMenuCommandBuilder,
+  InteractionContextType,
   type UserContextMenuCommandInteraction,
 } from 'discord.js';
 
@@ -18,7 +19,7 @@ export const data = new ContextMenuCommandBuilder()
   .setName(name)
   // @ts-expect-error discord-api-types issue
   .setType(ApplicationCommandType.Message)
-  .setDMPermission(false);
+  .setContexts(InteractionContextType.Guild);
 
 export const execute = async (
   interaction: UserContextMenuCommandInteraction,
