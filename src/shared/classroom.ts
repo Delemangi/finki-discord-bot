@@ -27,13 +27,15 @@ export const getCommonCommand = (
 
   execute: async (interaction: ChatInputCommandInteraction) => {
     const classroom = interaction.options.getString('classroom', true);
-    const [classroomName] = classroom.split(' ');
+    const charPos = classroom.indexOf('(');
+    const classroomName =
+      charPos === -1 ? classroom : classroom.slice(0, charPos).trim();
     const classrooms = getClassrooms().filter(
       (cl) =>
-        cl.classroom.toString().toLowerCase() === classroomName?.toLowerCase(),
+        cl.classroom.toString().toLowerCase() === classroomName.toLowerCase(),
     );
 
-    if (classrooms.length === 0 || classroomName === undefined) {
+    if (classrooms.length === 0) {
       await interaction.editReply({
         content: commandErrors.classroomNotFound,
       });
