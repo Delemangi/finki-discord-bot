@@ -18,7 +18,7 @@
   "description": "FINKI Discord Bot",
   "devDependencies": {
     "@swc/core": "^1.9.2",
-    "@swc/helpers": "^0.5.13",
+    "@swc/helpers": "^0.5.15",
     "@types/async-lock": "^1.4.2",
     "eslint": "^9.14.0",
     "eslint-config-canonical": "^44.3.4",
