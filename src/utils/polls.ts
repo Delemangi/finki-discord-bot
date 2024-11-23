@@ -279,8 +279,8 @@ const decideSpecialPollByAdministratorVote = async (
   const adminVotes = await getAdminVotes(specialPoll.pollId);
 
   switch (specialPoll.type) {
-    case 'vipRequest':
     case 'vipAdd':
+    case 'vipRequest':
       if (
         member === null ||
         !(await isMemberLevel(member, VIP_ADMIN_OVERRIDE_LEVEL))

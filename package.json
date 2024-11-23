@@ -26,15 +26,18 @@
     "nodemon": "^3.1.7",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
-    "typescript": "^5.7.2"
+    "typescript": "~5.7.0"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": "^20"
   },
   "homepage": "https://github.com/Delemangi/finki-discord-bot",
   "license": "MIT",
-  "main": "src/main.ts",
+  "main": "src/index.ts",
   "name": "finki-discord-bot",
+  "overrides": {
+    "@types/node": "^20"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/Delemangi/finki-discord-bot.git"
@@ -48,7 +51,7 @@
     "lint": "tsc --noEmit && eslint . --cache",
     "migrate": "prisma migrate dev --name a",
     "prepare": "husky",
-    "start": "node dist/main.js"
+    "start": "node dist/index.js"
   },
   "type": "module",
   "version": "4.0.0"

@@ -1,5 +1,5 @@
-import { Client } from 'discord.js';
 import { GatewayIntentBits } from 'discord-api-types/v10';
+import { Client } from 'discord.js';
 
 const intents = [
   GatewayIntentBits.Guilds,

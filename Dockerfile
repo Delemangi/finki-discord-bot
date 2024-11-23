@@ -1,5 +1,4 @@
-# Development stage
-FROM --platform=${BUILDPLATFORM} node:20-alpine AS development
+FROM --platform=${BUILDPLATFORM} node:20-alpine AS build
 WORKDIR /app
 
 COPY package.json package-lock.json ./
@@ -11,16 +10,15 @@ RUN npm run generate
 COPY . ./
 RUN npm run build
 
-# Production stage
-FROM --platform=${TARGETPLATFORM} node:20-alpine AS production
+FROM node:20-alpine
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 
-COPY --from=development /app/node_modules ./node_modules
+COPY --from=build /app/node_modules ./node_modules
 RUN npm prune --production --no-optional && npm cache clean --force
 
-COPY --from=development /app/prisma ./prisma
-COPY --from=development /app/dist ./dist
+COPY --from=build /app/prisma ./prisma
+COPY --from=build /app/dist ./dist
 
-CMD [ "sh", "-c", "npm run migrate && npm run start" ]
+CMD [ "sh", "-c", "npm run apply && npm run start" ]
