@@ -60,7 +60,7 @@ export const getChannel = (type: ChannelName) => {
 
 const getNextChannelRecreationTime = async (locale = 'en-GB', offset = 1) => {
   const { cron } = await getConfigProperty('temporaryVIPChannel');
-  const nextRun = Cron(cron).nextRuns(offset).at(-1);
+  const nextRun = new Cron(cron).nextRuns(offset).at(-1);
 
   return nextRun === null
     ? labels.unknown
@@ -176,7 +176,8 @@ export const recreateRegularsTemporaryChannel = async () => {
 export const resetTemporaryVipChannel = async () => {
   const { cron } = await getConfigProperty('temporaryVIPChannel');
 
-  Cron(cron, recreateVipTemporaryChannel);
+  // eslint-disable-next-line no-new
+  new Cron(cron, recreateVipTemporaryChannel);
 
   logger.info(
     logMessageFunctions.tempVipScheduled(await getNextChannelRecreationTime()),
@@ -186,7 +187,8 @@ export const resetTemporaryVipChannel = async () => {
 export const resetTemporaryRegularsChannel = async () => {
   const { cron } = await getConfigProperty('temporaryRegularsChannel');
 
-  Cron(cron, recreateRegularsTemporaryChannel);
+  // eslint-disable-next-line no-new
+  new Cron(cron, recreateRegularsTemporaryChannel);
 
   logger.info(
     logMessageFunctions.tempRegularsScheduled(

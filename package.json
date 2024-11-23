@@ -7,7 +7,7 @@
     "@prisma/client": "^5.22.0",
     "async-lock": "^1.4.1",
     "chrono-node": "^2.7.7",
-    "croner": "^8.1.2",
+    "croner": "^9.0.0",
     "discord.js": "^14.16.3",
     "discord-api-types": "^0.37.107",
     "dotenv": "^16.4.5",
