@@ -46,6 +46,12 @@ export const data = new SlashCommandBuilder()
           .setName('user')
           .setDescription('Предлог корисник за член на Советот')
           .setRequired(true),
+      )
+      .addBooleanOption((option) =>
+        option
+          .setName('notify')
+          .setDescription('Испрати нотификација')
+          .setRequired(false),
       ),
   )
   .addSubcommand((command) =>
@@ -57,6 +63,12 @@ export const data = new SlashCommandBuilder()
           .setName('user')
           .setDescription('Член на Советот')
           .setRequired(true),
+      )
+      .addBooleanOption((option) =>
+        option
+          .setName('notify')
+          .setDescription('Испрати нотификација')
+          .setRequired(false),
       ),
   )
   .addSubcommand((command) =>
@@ -75,6 +87,7 @@ const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const user = interaction.options.getUser('user', true);
+  const notify = interaction.options.getBoolean('notify') ?? true;
   const councilChannelId = await getChannelsProperty(Channel.Council);
 
   if (interaction.channelId !== councilChannelId) {
@@ -135,7 +148,7 @@ const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
 
   const councilRoleId = await getRolesProperty(Role.Council);
 
-  if (councilRoleId !== undefined) {
+  if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
   }
 
@@ -166,6 +179,7 @@ const handleCouncilRemove = async (
   }
 
   const user = interaction.options.getUser('user', true);
+  const notify = interaction.options.getBoolean('notify') ?? true;
   const councilChannelId = await getChannelsProperty(Channel.Council);
 
   if (interaction.channelId !== councilChannelId) {
@@ -219,7 +233,7 @@ const handleCouncilRemove = async (
 
   const councilRoleId = await getRolesProperty(Role.Council);
 
-  if (councilRoleId !== undefined) {
+  if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
   }
 

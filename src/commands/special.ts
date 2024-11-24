@@ -104,6 +104,12 @@ export const data = new SlashCommandBuilder()
       .setDescription(commandDescriptions['special bar'])
       .addUserOption((option) =>
         option.setName('user').setDescription('Корисник').setRequired(true),
+      )
+      .addBooleanOption((option) =>
+        option
+          .setName('notify')
+          .setDescription('Испрати нотификација')
+          .setRequired(false),
       ),
   )
   .addSubcommand((command) =>
@@ -112,6 +118,12 @@ export const data = new SlashCommandBuilder()
       .setDescription(commandDescriptions['special unbar'])
       .addUserOption((option) =>
         option.setName('user').setDescription('Корисник').setRequired(true),
+      )
+      .addBooleanOption((option) =>
+        option
+          .setName('notify')
+          .setDescription('Испрати нотификација')
+          .setRequired(false),
       ),
   )
   .addSubcommand((command) =>
@@ -120,6 +132,12 @@ export const data = new SlashCommandBuilder()
       .setDescription(commandDescriptions['special show'])
       .addStringOption((option) =>
         option.setName('id').setDescription('Анкета').setRequired(true),
+      )
+      .addBooleanOption((option) =>
+        option
+          .setName('notify')
+          .setDescription('Испрати нотификација')
+          .setRequired(false),
       ),
   );
 
@@ -364,6 +382,7 @@ const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const user = interaction.options.getUser('user', true);
+  const notify = interaction.options.getBoolean('notify') ?? true;
   const councilChannelId = await getChannelsProperty(Channel.Council);
 
   if (interaction.channelId !== councilChannelId) {
@@ -412,7 +431,7 @@ const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
 
   const councilRoleId = await getRolesProperty(Role.Council);
 
-  if (councilRoleId !== undefined) {
+  if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
   }
 
@@ -440,6 +459,7 @@ const handleSpecialUnbar = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const user = interaction.options.getUser('user', true);
+  const notify = interaction.options.getBoolean('notify') ?? true;
   const councilChannelId = await getChannelsProperty(Channel.Council);
 
   if (interaction.channelId !== councilChannelId) {
@@ -474,7 +494,7 @@ const handleSpecialUnbar = async (interaction: ChatInputCommandInteraction) => {
 
   const councilRoleId = await getRolesProperty(Role.Council);
 
-  if (councilRoleId !== undefined) {
+  if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
   }
 
@@ -502,6 +522,7 @@ const handleSpecialShow = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const id = interaction.options.getString('id', true);
+  const notify = interaction.options.getBoolean('notify') ?? true;
   const specialPoll = await getSpecialPollById(id);
   const poll = await getPollById(specialPoll?.pollId);
 
@@ -523,7 +544,10 @@ const handleSpecialShow = async (interaction: ChatInputCommandInteraction) => {
       allowedMentions: {
         parse: [],
       },
-      content: councilRoleId === undefined ? null : roleMention(councilRoleId),
+      content:
+        councilRoleId === undefined || !notify
+          ? null
+          : roleMention(councilRoleId),
     }),
   });
 

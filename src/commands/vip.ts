@@ -46,6 +46,12 @@ export const data = new SlashCommandBuilder()
           .setName('user')
           .setDescription('Предлог корисник за член на ВИП')
           .setRequired(true),
+      )
+      .addBooleanOption((option) =>
+        option
+          .setName('notify')
+          .setDescription('Испрати нотификација')
+          .setRequired(false),
       ),
   )
   .addSubcommand((command) =>
@@ -54,6 +60,12 @@ export const data = new SlashCommandBuilder()
       .setDescription(commandDescriptions['vip remove'])
       .addUserOption((option) =>
         option.setName('user').setDescription('Член на ВИП').setRequired(true),
+      )
+      .addBooleanOption((option) =>
+        option
+          .setName('notify')
+          .setDescription('Испрати нотификација')
+          .setRequired(false),
       ),
   )
   .addSubcommand((command) =>
@@ -72,6 +84,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const user = interaction.options.getUser('user', true);
+  const notify = interaction.options.getBoolean('notify') ?? true;
   const councilChannelId = await getChannelsProperty(Channel.Council);
 
   if (interaction.channelId !== councilChannelId) {
@@ -140,7 +153,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
 
   const councilRoleId = await getRolesProperty(Role.Council);
 
-  if (councilRoleId !== undefined) {
+  if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
   }
 
@@ -168,6 +181,7 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const user = interaction.options.getUser('user', true);
+  const notify = interaction.options.getBoolean('notify') ?? true;
   const councilChannelId = await getChannelsProperty(Channel.Council);
 
   if (interaction.channelId !== councilChannelId) {
@@ -222,7 +236,7 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
 
   const councilRoleId = await getRolesProperty(Role.Council);
 
-  if (councilRoleId !== undefined) {
+  if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
   }
 

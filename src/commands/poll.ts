@@ -131,6 +131,12 @@ export const data = new SlashCommandBuilder()
       .setDescription(commandDescriptions['poll show'])
       .addStringOption((option) =>
         option.setName('id').setDescription('Анкета').setRequired(true),
+      )
+      .addBooleanOption((option) =>
+        option
+          .setName('notify')
+          .setDescription('Испрати нотификација')
+          .setRequired(false),
       ),
   )
   .addSubcommand((command) =>
@@ -349,6 +355,7 @@ const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const id = interaction.options.getString('id', true).trim();
+  const notify = interaction.options.getBoolean('notify') ?? true;
   let poll = await getPollById(id);
 
   if (poll === null) {
@@ -376,7 +383,10 @@ const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
       allowedMentions: {
         parse: [],
       },
-      content: councilRoleId === undefined ? null : roleMention(councilRoleId),
+      content:
+        councilRoleId === undefined || !notify
+          ? null
+          : roleMention(councilRoleId),
     }),
   });
 
