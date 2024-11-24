@@ -75,9 +75,13 @@ const handleMembersVip = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const vipRoleId = await getRolesProperty(Role.VIP);
-  const vipMemberIds = await getMembersByRoleIds(
+  const adminRoleId = await getRolesProperty(Role.Administrators);
+  const moderatorRoleId = await getRolesProperty(Role.Moderators);
+
+  const vipMemberIds = await getMembersByRoleIdsExtended(
     guild,
     [vipRoleId].filter((value) => value !== undefined),
+    [adminRoleId, moderatorRoleId].filter((value) => value !== undefined),
   );
   const vipMembers = (
     await Promise.all(
@@ -89,8 +93,6 @@ const handleMembersVip = async (interaction: ChatInputCommandInteraction) => {
     vipMembers.map(({ user }) => user),
   );
 
-  const adminRoleId = await getRolesProperty(Role.Administrators);
-  const moderatorRoleId = await getRolesProperty(Role.Moderators);
   const adminTeamMemberIds = await getMembersByRoleIds(
     guild,
     [adminRoleId, moderatorRoleId].filter((value) => value !== undefined),
@@ -130,26 +132,26 @@ const handleMembersRegulars = async (
   const adminRoleId = await getRolesProperty(Role.Administrators);
   const veteranRoleId = await getRolesProperty(Role.Veterans);
 
-  const invitedMemberIds = await getMembersByRoleIdsExtended(
+  const regularsMembersIds = await getMembersByRoleIdsExtended(
     guild,
     [regularRoleId].filter((value) => value !== undefined),
     [vipRoleId, moderatorRoleId, adminRoleId, veteranRoleId].filter(
       (value) => value !== undefined,
     ),
   );
-  const invitedMembers = (
+  const regularsMembers = (
     await Promise.all(
-      invitedMemberIds.map(
+      regularsMembersIds.map(
         async (id) => await getMemberFromGuild(id, interaction),
       ),
     )
   ).filter((member) => member !== null);
-  const invitedMemberNames = formatUsers(
+  const regularsMemberNames = formatUsers(
     labels.regulars,
-    invitedMembers.map(({ user }) => user),
+    regularsMembers.map(({ user }) => user),
   );
 
-  await safeReplyToInteraction(interaction, invitedMemberNames);
+  await safeReplyToInteraction(interaction, regularsMemberNames);
 };
 
 const handleMembersGirlies = async (
