@@ -1,3 +1,4 @@
+import { type Role } from '../types/schemas/Role.js';
 import {
   bold,
   codeBlock,
@@ -367,4 +368,6 @@ export const commandErrorFunctions = {
     `Немате дозвола да гласате на анкетата. Потребна ви е барем една од улогите: ${roleIds
       .map((roleId) => roleMention(roleId))
       .join(', ')}`,
+
+  roleNotFound: (role: Role) => `Улогата ${role} не постои.`,
 };

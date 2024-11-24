@@ -174,6 +174,8 @@ export const logErrorFunctions = {
   roleFetchError: (roleId: string, error: unknown) =>
     `Failed fetching role ${roleId}\n${error}`,
 
+  roleNotFound: (role: string) => `Role ${role} not found`,
+
   scriptExecutionError: (error: unknown) => `Failed executing script\n${error}`,
 
   unknownInteractionError: (userId: string) =>
