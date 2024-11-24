@@ -66,6 +66,17 @@ export const getChannel = (type: Channel) => {
   return channels[type];
 };
 
+const getNextRunTime = (date?: Date, locale = 'en-GB') => {
+  if (date === undefined) {
+    return labels.unknown;
+  }
+
+  return new Intl.DateTimeFormat(locale, {
+    dateStyle: 'full',
+    timeStyle: 'long',
+  }).format(date);
+};
+
 const getNextChannelRecreationTime = async (
   channelType: TemporaryChannel,
   locale = 'en-GB',
@@ -79,12 +90,7 @@ const getNextChannelRecreationTime = async (
 
   const nextRun = new Cron(temporaryChannel.cron).nextRuns(offset).at(-1);
 
-  return nextRun === null
-    ? labels.unknown
-    : new Intl.DateTimeFormat(locale, {
-        dateStyle: 'full',
-        timeStyle: 'long',
-      }).format(nextRun);
+  return nextRun === null ? labels.unknown : getNextRunTime(nextRun, locale);
 };
 
 export const recreateVipTemporaryChannel = async () => {
@@ -198,12 +204,11 @@ export const resetTemporaryVipChannel = async () => {
     return;
   }
 
-  // eslint-disable-next-line no-new
-  new Cron(temporaryChannel.cron, recreateVipTemporaryChannel);
+  const cron = new Cron(temporaryChannel.cron, recreateVipTemporaryChannel);
 
   logger.info(
     logMessageFunctions.tempVipScheduled(
-      await getNextChannelRecreationTime(TemporaryChannel.VIP),
+      getNextRunTime(cron.nextRuns(1).at(-1), 'mk-MK'),
     ),
   );
 };
@@ -217,12 +222,14 @@ export const resetTemporaryRegularsChannel = async () => {
     return;
   }
 
-  // eslint-disable-next-line no-new
-  new Cron(temporaryChannel.cron, recreateRegularsTemporaryChannel);
+  const cron = new Cron(
+    temporaryChannel.cron,
+    recreateRegularsTemporaryChannel,
+  );
 
   logger.info(
     logMessageFunctions.tempRegularsScheduled(
-      await getNextChannelRecreationTime(TemporaryChannel.Regulars),
+      getNextRunTime(cron.nextRuns(1).at(-1), 'mk-MK'),
     ),
   );
 };
