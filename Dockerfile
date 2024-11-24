@@ -10,7 +10,7 @@ RUN npm run generate
 COPY . ./
 RUN npm run build
 
-FROM node:20-alpine
+FROM node:20-alpine AS final
 WORKDIR /app
 
 COPY package.json package-lock.json ./
