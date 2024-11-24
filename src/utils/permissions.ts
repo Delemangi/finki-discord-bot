@@ -125,15 +125,31 @@ const commandPermissions: Record<
   },
 };
 
+const getCommandKey = (command: string) => {
+  const topCommand = command.split(' ')[0];
+  const commandPermission = commandPermissions[command];
+
+  if (commandPermission !== undefined) {
+    return command;
+  }
+
+  if (topCommand === undefined) {
+    return null;
+  }
+
+  const topComandPermission = commandPermissions[topCommand];
+
+  if (topComandPermission !== undefined) {
+    return topCommand;
+  }
+
+  return null;
+};
+
 const getCommandPermission = async (
   command: string,
 ): Promise<[bigint[], Array<string | undefined>]> => {
-  const topCommand = command.split(' ')[0];
-  const key = commandPermissions[command]
-    ? command
-    : topCommand !== undefined && commandPermissions[topCommand] !== undefined
-      ? topCommand
-      : null;
+  const key = getCommandKey(command);
 
   if (key !== null) {
     const permissions = commandPermissions[key]?.permissions ?? [];
