@@ -23,6 +23,10 @@ const commandPermissions: Record<
     permissions: [],
     roles: [Role.Council],
   },
+  'council toggle': {
+    permissions: [],
+    roles: [Role.VIP],
+  },
   embed: {
     permissions: [],
     roles: [Role.Administrators],

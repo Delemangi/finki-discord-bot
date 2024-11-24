@@ -12,18 +12,22 @@ import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
+  commandResponses,
 } from '../translations/commands.js';
 import { Channel } from '../types/schemas/Channel.js';
 import { Role } from '../types/schemas/Role.js';
 import { getMemberFromGuild } from '../utils/guild.js';
+import { COUNCIL_LEVEL } from '../utils/levels.js';
 import {
   isMemberBarred,
   isMemberInCouncil,
   isMemberInVip,
+  isMemberLevel,
 } from '../utils/members.js';
 import { startSpecialPoll } from '../utils/polls.js';
 import {
   type ChatInputCommandInteraction,
+  type GuildMember,
   roleMention,
   SlashCommandBuilder,
 } from 'discord.js';
@@ -54,6 +58,11 @@ export const data = new SlashCommandBuilder()
           .setDescription('Член на Советот')
           .setRequired(true),
       ),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName('toggle')
+      .setDescription(commandDescriptions['council toggle']),
   );
 
 const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
@@ -228,9 +237,48 @@ const handleCouncilRemove = async (
   });
 };
 
+const handleCouncilToggle = async (
+  interaction: ChatInputCommandInteraction,
+) => {
+  const member = interaction.member as GuildMember | null;
+
+  if (member === null || !isMemberInVip(member)) {
+    await interaction.editReply(commandErrors.userNotVipMember);
+
+    return;
+  }
+
+  if (!isMemberLevel(member, COUNCIL_LEVEL, true)) {
+    await interaction.editReply(commandErrors.userNotCouncilMember);
+
+    return;
+  }
+
+  const councilRoleId = await getRolesProperty(Role.Council);
+
+  if (councilRoleId === undefined) {
+    await interaction.editReply(commandErrors.invalidRole);
+
+    return;
+  }
+
+  const isInCouncil = await isMemberInCouncil(member);
+
+  if (isInCouncil) {
+    await member.roles.remove(councilRoleId);
+    await interaction.editReply(commandResponses.councilRemoved);
+
+    return;
+  }
+
+  await member.roles.add(councilRoleId);
+  await interaction.editReply(commandResponses.councilAdded);
+};
+
 const councilHandlers = {
   add: handleCouncilAdd,
   remove: handleCouncilRemove,
+  toggle: handleCouncilToggle,
 };
 
 export const execute = async (
