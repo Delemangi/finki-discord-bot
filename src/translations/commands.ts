@@ -343,6 +343,7 @@ export const commandErrors = {
   sessionNotFound: 'Сесијата не постои.',
   specialPollsFetchFailed: 'Преземањето на специјалните анкети беше неуспешно.',
   staffNotFound: 'Професорот не постои.',
+  ticketingDisabled: 'Тикетите не се овозможени.',
   unsupportedChannelType: 'Типот на каналот не е поддржан.',
   userAdmin: 'Корисникот е администратор.',
   userBarred: 'Корисникот е забранет.',

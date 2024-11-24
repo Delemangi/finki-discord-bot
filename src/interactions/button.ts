@@ -13,6 +13,7 @@ import {
 import {
   getConfigProperty,
   getRolesProperty,
+  getTicketingProperty,
   getTicketProperty,
 } from '../configuration/main.js';
 import { createBar, deleteBar } from '../data/Bar.js';
@@ -1317,6 +1318,15 @@ export const handleTicketCreateButton = async (
 ) => {
   const guild = await getGuild(interaction);
   const ticketType = args[0];
+
+  const enabled = await getTicketingProperty('enabled');
+
+  if (!enabled) {
+    await interaction.reply({
+      content: commandErrors.ticketingDisabled,
+      ephemeral: true,
+    });
+  }
 
   if (ticketType === undefined) {
     await interaction.reply({
