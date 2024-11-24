@@ -127,7 +127,7 @@ const commandPermissions: Record<
 
 const getCommandPermission = async (
   command: string,
-): Promise<[bigint[], string[]]> => {
+): Promise<[bigint[], Array<string | undefined>]> => {
   const topCommand = command.split(' ')[0];
   const key = commandPermissions[command]
     ? command
@@ -143,7 +143,7 @@ const getCommandPermission = async (
       ) ?? [],
     );
 
-    return [permissions, roles.filter((role) => role !== undefined)];
+    return [permissions, roles];
   }
 
   return [[], []];
@@ -164,9 +164,14 @@ export const hasCommandPermission = async (
     return true;
   }
 
+  if (roles.every((role) => role === undefined)) {
+    return false;
+  }
+
   return (
     (permissions.length !== 0 && member.permissions.has(permissions)) ||
-    (roles.length !== 0 && member.roles.cache.hasAny(...roles))
+    (roles.length !== 0 &&
+      member.roles.cache.hasAny(...roles.filter((role) => role !== undefined)))
   );
 };
 
