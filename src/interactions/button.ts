@@ -1319,7 +1319,10 @@ export const handleTicketCreateButton = async (
   const ticketType = args[0];
 
   if (ticketType === undefined) {
-    await interaction.reply(commandErrors.invalidTicketType);
+    await interaction.reply({
+      content: commandErrors.invalidTicketType,
+      ephemeral: true,
+    });
 
     return;
   }
@@ -1327,7 +1330,10 @@ export const handleTicketCreateButton = async (
   const ticketMetadata = await getTicketProperty(ticketType);
 
   if (ticketMetadata === null) {
-    await interaction.reply(commandErrors.invalidTicketType);
+    await interaction.reply({
+      content: commandErrors.invalidTicketType,
+      ephemeral: true,
+    });
 
     return;
   }
@@ -1348,7 +1354,10 @@ export const handleTicketCreateButton = async (
     ticketsChannel === null ||
     ticketsChannel?.type !== ChannelType.GuildText
   ) {
-    await interaction.reply(commandErrors.invalidChannel);
+    await interaction.reply({
+      content: commandErrors.invalidChannel,
+      ephemeral: true,
+    });
 
     return;
   }
