@@ -5,6 +5,7 @@ COPY package.json package-lock.json ./
 RUN npm i --ignore-scripts && npm cache clean --force
 
 COPY prisma ./prisma
+RUN npm run generate
 
 COPY . ./
 RUN npm run build
