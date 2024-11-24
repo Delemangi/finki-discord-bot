@@ -135,7 +135,7 @@ const getCommandPermission = async (
       ? topCommand
       : null;
 
-  if (key) {
+  if (key !== null) {
     const permissions = commandPermissions[key]?.permissions ?? [];
     const roles = await Promise.all(
       commandPermissions[key]?.roles.map(
