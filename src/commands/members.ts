@@ -55,6 +55,11 @@ export const data = new SlashCommandBuilder()
     command
       .setName('boosters')
       .setDescription(commandDescriptions['members boosters']),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName('irregulars')
+      .setDescription(commandDescriptions['members irregulars']),
   );
 
 const handleMembersCount = async (interaction: ChatInputCommandInteraction) => {
@@ -127,6 +132,7 @@ const handleMembersRegulars = async (
   }
 
   const regularRoleId = await getRolesProperty(Role.Regulars);
+  const irregularRoleId = await getRolesProperty(Role.Irregulars);
   const vipRoleId = await getRolesProperty(Role.VIP);
   const moderatorRoleId = await getRolesProperty(Role.Moderators);
   const adminRoleId = await getRolesProperty(Role.Administrators);
@@ -135,9 +141,13 @@ const handleMembersRegulars = async (
   const regularsMembersIds = await getMembersByRoleIdsExtended(
     guild,
     [regularRoleId].filter((value) => value !== undefined),
-    [vipRoleId, moderatorRoleId, adminRoleId, veteranRoleId].filter(
-      (value) => value !== undefined,
-    ),
+    [
+      vipRoleId,
+      moderatorRoleId,
+      adminRoleId,
+      veteranRoleId,
+      irregularRoleId,
+    ].filter((value) => value !== undefined),
   );
   const regularsMembers = (
     await Promise.all(
@@ -288,12 +298,47 @@ const handleMembersBoosters = async (
   await safeReplyToInteraction(interaction, boosterMembersFormatted);
 };
 
+const handleMembersIrregulars = async (
+  interaction: ChatInputCommandInteraction,
+) => {
+  const guild = await getGuild(interaction);
+
+  if (guild === null) {
+    await interaction.editReply(commandErrors.guildFetchFailed);
+
+    return;
+  }
+
+  const irregularRoleId = await getRolesProperty(Role.Irregulars);
+  const vipRoleId = await getRolesProperty(Role.VIP);
+
+  const irregularsMembersIds = await getMembersByRoleIdsExtended(
+    guild,
+    [irregularRoleId].filter((value) => value !== undefined),
+    [vipRoleId].filter((value) => value !== undefined),
+  );
+  const irregularsMembers = (
+    await Promise.all(
+      irregularsMembersIds.map(
+        async (id) => await getMemberFromGuild(id, interaction),
+      ),
+    )
+  ).filter((member) => member !== null);
+  const irregularsMemberNames = formatUsers(
+    labels.regulars,
+    irregularsMembers.map(({ user }) => user),
+  );
+
+  await safeReplyToInteraction(interaction, irregularsMemberNames);
+};
+
 const membersHandlers = {
   barred: handleMembersBarred,
   boosters: handleMembersBoosters,
   boys: handleMembersBoys,
   count: handleMembersCount,
   girlies: handleMembersGirlies,
+  irregulars: handleMembersIrregulars,
   regulars: handleMembersRegulars,
   vip: handleMembersVip,
 };

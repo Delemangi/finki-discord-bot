@@ -64,6 +64,7 @@ export const commandDescriptions = {
   'members boys': 'Преземи листа од членови на Boys',
   'members count': 'Прикажи број на членови на серверот',
   'members girlies': 'Преземи листа од членови на Girlies',
+  'members irregulars': 'Преземи листа од вонредните членови',
   'members regulars': 'Преземи листа од редовните членови',
   'members vip': 'Преземи ги членовите на ВИП',
   message: 'Испрати порака',
