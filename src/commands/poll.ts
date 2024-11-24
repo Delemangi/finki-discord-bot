@@ -454,7 +454,7 @@ const handlePollAdd = async (interaction: ChatInputCommandInteraction) => {
 
   await interaction.editReply(
     commandResponses.pollOptionsAdded +
-      '. ' +
+      ' ' +
       commandResponseFunctions.seePollChanges(commandMention('poll show')),
   );
 };
