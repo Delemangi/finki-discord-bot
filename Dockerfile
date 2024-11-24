@@ -5,7 +5,6 @@ COPY package.json package-lock.json ./
 RUN npm i --ignore-scripts && npm cache clean --force
 
 COPY prisma ./prisma
-RUN npm run generate
 
 COPY . ./
 RUN npm run build
@@ -19,6 +18,8 @@ COPY --from=build /app/node_modules ./node_modules
 RUN npm prune --production --no-optional && npm cache clean --force
 
 COPY --from=build /app/prisma ./prisma
+RUN npm run generate
+
 COPY --from=build /app/dist ./dist
 
 CMD [ "sh", "-c", "npm run apply && npm run start" ]
