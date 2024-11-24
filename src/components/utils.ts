@@ -1,8 +1,7 @@
+import { getStaff } from '../configuration/files.js';
 import { embedLabels } from '../translations/embeds.js';
 import { labels } from '../translations/labels.js';
 import { logErrorFunctions } from '../translations/logs.js';
-import { type ProgramShorthand } from '../types/ProgramShorthand.js';
-import { getPrerequisites, getStaff } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
 import { getRoleFromSet } from '../utils/roles.js';
 import {
@@ -156,34 +155,6 @@ export const fetchMessageUrl = async (
 
     return null;
   }
-};
-
-export const transformCoursePrerequisites = (
-  program: ProgramShorthand,
-  semester: number,
-) => {
-  return getPrerequisites()
-    .filter((prerequisite) => prerequisite.semester === semester)
-    .filter(
-      (prerequisite) =>
-        prerequisite[program] === 'задолжителен' ||
-        prerequisite[program] === 'изборен' ||
-        prerequisite[program] === 'нема' ||
-        prerequisite[program] === 'задолжителен (изб.)',
-    )
-    .map((prerequisite) =>
-      prerequisite[program] === 'нема'
-        ? {
-            course: prerequisite.course,
-            prerequisite: labels.none,
-            type: 'изборен',
-          }
-        : {
-            course: prerequisite.course,
-            prerequisite: prerequisite.prerequisite,
-            type: prerequisite[program],
-          },
-    );
 };
 
 export const generatePollPercentageBar = (percentage: number) => {

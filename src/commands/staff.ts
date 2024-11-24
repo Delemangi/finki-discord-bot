@@ -1,9 +1,9 @@
 import { getStaffEmbed } from '../components/commands.js';
+import { getStaff } from '../configuration/files.js';
 import {
   commandDescriptions,
   commandErrors,
 } from '../translations/commands.js';
-import { getStaff } from '../utils/config.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,

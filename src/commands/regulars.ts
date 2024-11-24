@@ -1,15 +1,16 @@
+import { getRolesProperty } from '../configuration/main.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponses,
 } from '../translations/commands.js';
+import { Role } from '../types/schemas/Role.js';
 import { recreateRegularsTemporaryChannel } from '../utils/channels.js';
-import { getRoleProperty } from '../utils/config.js';
 import { getMemberFromGuild } from '../utils/guild.js';
 import {
   isMemberBarred,
+  isMemberInRegulars,
   isMemberInVip,
-  isMemberInvitedToVip,
 } from '../utils/members.js';
 import {
   type ChatInputCommandInteraction,
@@ -71,14 +72,17 @@ const handleRegularsAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (await isMemberInvitedToVip(member)) {
+  if (await isMemberInRegulars(member)) {
     await interaction.editReply(commandErrors.userRegular);
 
     return;
   }
 
-  const regularRole = await getRoleProperty('regular');
-  await member.roles.add(regularRole);
+  const regularRole = await getRolesProperty(Role.Regulars);
+
+  if (regularRole !== undefined) {
+    await member.roles.add(regularRole);
+  }
 
   await interaction.editReply(commandResponses.userGivenRegular);
 };
@@ -101,8 +105,11 @@ const handleRegularsRemove = async (
     return;
   }
 
-  const regularRole = await getRoleProperty('regular');
-  await member.roles.remove(regularRole);
+  const regularRole = await getRolesProperty(Role.Regulars);
+
+  if (regularRole !== undefined) {
+    await member.roles.remove(regularRole);
+  }
 
   await interaction.editReply(commandResponses.userRemovedRegular);
 };

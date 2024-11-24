@@ -5,6 +5,11 @@ import {
   getPollStatsComponents,
   getSpecialPollListEmbed,
 } from '../components/polls.js';
+import {
+  getChannelsProperty,
+  getIntervalsProperty,
+  getRolesProperty,
+} from '../configuration/main.js';
 import { deletePoll, getPollById, updatePoll } from '../data/Poll.js';
 import { getPollVotesByPollId } from '../data/PollVote.js';
 import {
@@ -24,12 +29,9 @@ import {
 import { labels } from '../translations/labels.js';
 import { logErrorFunctions } from '../translations/logs.js';
 import { formatUsers } from '../translations/users.js';
+import { Channel } from '../types/schemas/Channel.js';
+import { Role } from '../types/schemas/Role.js';
 import { deleteResponse } from '../utils/channels.js';
-import {
-  getChannelProperty,
-  getConfigProperty,
-  getRoleProperty,
-} from '../utils/config.js';
 import { getGuild, getMemberFromGuild } from '../utils/guild.js';
 import { logger } from '../utils/logger.js';
 import { isMemberAdmin, isMemberBarred } from '../utils/members.js';
@@ -43,7 +45,6 @@ import {
   startSpecialPoll,
 } from '../utils/polls.js';
 import { getMembersByRoleIds } from '../utils/roles.js';
-import { isNotNullish } from '../utils/utils.js';
 import {
   type ChatInputCommandInteraction,
   ComponentType,
@@ -143,9 +144,10 @@ const handleSpecialList = async (interaction: ChatInputCommandInteraction) => {
     components,
     embeds: [embed],
   });
+  const buttonIdle = await getIntervalsProperty('buttonIdle');
   const collector = message.createMessageComponentCollector({
     componentType: ComponentType.Button,
-    time: await getConfigProperty('buttonIdleTime'),
+    time: buttonIdle,
   });
 
   collector.on('collect', async (buttonInteraction) => {
@@ -343,7 +345,7 @@ const handleSpecialRemaining = async (
   const missingVoters = allVoters.filter((voter) => !voters.includes(voter));
   const missingVotersMembers = missingVoters
     .map((id) => guild.members.cache.get(id))
-    .filter(isNotNullish);
+    .filter((member) => member !== undefined);
   const missingVotersFormatted = formatUsers(
     labels.remaining,
     missingVotersMembers.map(({ user }) => user),
@@ -362,9 +364,9 @@ const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const user = interaction.options.getUser('user', true);
-  const pollsChannel = await getChannelProperty('polls');
+  const councilChannelId = await getChannelsProperty(Channel.Council);
 
-  if (interaction.channelId !== pollsChannel) {
+  if (interaction.channelId !== councilChannelId) {
     await interaction.editReply({
       content: commandErrors.invalidChannel,
     });
@@ -408,9 +410,14 @@ const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
+  const councilRoleId = await getRolesProperty(Role.Council);
+
+  if (councilRoleId !== undefined) {
+    await interaction.channel.send(roleMention(councilRoleId));
+  }
+
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
-  await interaction.channel.send(roleMention(await getRoleProperty('council')));
   await interaction.editReply({
     components,
     embeds: [embed],
@@ -433,9 +440,9 @@ const handleSpecialUnbar = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const user = interaction.options.getUser('user', true);
-  const pollsChannel = await getChannelProperty('polls');
+  const councilChannelId = await getChannelsProperty(Channel.Council);
 
-  if (interaction.channelId !== pollsChannel) {
+  if (interaction.channelId !== councilChannelId) {
     await interaction.editReply({
       content: commandErrors.invalidChannel,
     });
@@ -465,9 +472,14 @@ const handleSpecialUnbar = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
+  const councilRoleId = await getRolesProperty(Role.Council);
+
+  if (councilRoleId !== undefined) {
+    await interaction.channel.send(roleMention(councilRoleId));
+  }
+
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
-  await interaction.channel.send(roleMention(await getRoleProperty('council')));
   await interaction.editReply({
     components,
     embeds: [embed],
@@ -502,6 +514,8 @@ const handleSpecialShow = async (interaction: ChatInputCommandInteraction) => {
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
 
+  const councilRoleId = await getRolesProperty(Role.Council);
+
   await interaction.editReply({
     components,
     embeds: [embed],
@@ -509,7 +523,7 @@ const handleSpecialShow = async (interaction: ChatInputCommandInteraction) => {
       allowedMentions: {
         parse: [],
       },
-      content: roleMention(await getRoleProperty('council')),
+      content: councilRoleId === undefined ? null : roleMention(councilRoleId),
     }),
   });
 

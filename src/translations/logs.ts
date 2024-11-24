@@ -24,6 +24,9 @@ export const logMessages = {
 };
 
 export const logMessageFunctions = {
+  channelNotGuildTextBased: (channelId: string) =>
+    `Channel ${channelId} is not a guild text-based channel`,
+
   closedTicket: (ticketThreadId: string) => `Closed ticket ${ticketThreadId}`,
 
   loggedIn: (username: string | undefined) =>

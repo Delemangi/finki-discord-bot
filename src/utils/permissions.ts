@@ -1,6 +1,6 @@
+import { getRolesProperty } from '../configuration/main.js';
 import { commandDescriptions } from '../translations/commands.js';
-import { type Roles } from '../types/Roles.js';
-import { getRoleProperty } from './config.js';
+import { Role } from '../types/schemas/Role.js';
 import { isMemberAdministrator } from './members.js';
 import { type GuildMember, PermissionsBitField } from 'discord.js';
 
@@ -8,92 +8,84 @@ const commandPermissions: Record<
   string,
   {
     permissions: bigint[];
-    roles: Roles[];
+    roles: Role[];
   }
 > = {
   admin: {
     permissions: [],
-    roles: ['council'],
+    roles: [Role.Council],
   },
   config: {
-    permissions: [PermissionsBitField.Flags.Administrator],
-    roles: [],
+    permissions: [],
+    roles: [Role.Administrators],
   },
   council: {
     permissions: [],
-    roles: ['council'],
+    roles: [Role.Council],
   },
   embed: {
-    permissions: [PermissionsBitField.Flags.ManageMessages],
-    roles: [],
+    permissions: [],
+    roles: [Role.Administrators],
   },
   'experience add': {
     permissions: [],
-    roles: ['admin'],
+    roles: [Role.Administrators],
   },
   'experience set': {
     permissions: [],
-    roles: ['admin'],
+    roles: [Role.Administrators],
   },
   manage: {
     permissions: [],
-    roles: ['admin', 'moderator', 'fss'],
+    roles: [Role.Administrators, Role.Moderators],
   },
   members: {
     permissions: [],
-    roles: ['admin', 'moderator', 'vip', 'regular'],
-  },
-  'members barred': {
-    permissions: [],
-    roles: ['admin', 'moderator', 'vip'],
+    roles: [Role.Administrators, Role.Moderators, Role.Council, Role.VIP],
   },
   'members count': {
     permissions: [],
     roles: [],
   },
-  'members invited': {
-    permissions: [],
-    roles: ['admin', 'moderator', 'vip'],
-  },
   message: {
     permissions: [],
-    roles: ['admin'],
+    roles: [Role.Administrators],
   },
   'poll delete': {
-    permissions: [PermissionsBitField.Flags.Administrator],
-    roles: [],
+    permissions: [],
+    roles: [Role.Administrators],
   },
   purge: {
     permissions: [PermissionsBitField.Flags.ManageMessages],
     roles: [],
   },
   register: {
-    permissions: [PermissionsBitField.Flags.Administrator],
-    roles: [],
+    permissions: [],
+    roles: [Role.Administrators],
   },
   regulars: {
     permissions: [],
-    roles: ['admin', 'moderator'],
+    roles: [Role.Administrators, Role.Moderators],
   },
   'regulars recreate': {
     permissions: [],
-    roles: ['admin', 'moderator'],
+    roles: [Role.Administrators, Role.Moderators],
   },
   script: {
-    permissions: [PermissionsBitField.Flags.Administrator],
-    roles: [],
+    permissions: [],
+    roles: [Role.Administrators],
   },
   'special bar': {
     permissions: [],
-    roles: ['council'],
+    roles: [Role.Council],
   },
   'special delete': {
-    permissions: [PermissionsBitField.Flags.Administrator],
-    roles: [],
+    permissions: [],
+    roles: [Role.Administrators],
   },
   'special list': {
     permissions: [],
-    roles: ['admin', 'moderator', 'vip'],
+    roles: [Role.Administrators, Role.Moderators, Role.VIP],
   },
   'special override': {
     permissions: [PermissionsBitField.Flags.Administrator],
@@ -101,31 +93,31 @@ const commandPermissions: Record<
   },
   'special remaining': {
     permissions: [],
-    roles: ['council'],
+    roles: [Role.Council],
   },
   'special unbar': {
     permissions: [],
-    roles: ['council'],
+    roles: [Role.Council],
   },
   Star: {
     permissions: [PermissionsBitField.Flags.ManageMessages],
-    roles: ['vip'],
+    roles: [Role.VIP],
   },
   ticket: {
     permissions: [],
-    roles: ['admin', 'moderator', 'fss', 'ombudsman'],
+    roles: [Role.Administrators, Role.Moderators, Role.FSS, Role.Ombudsman],
   },
   'vip add': {
     permissions: [],
-    roles: ['council'],
+    roles: [Role.Council],
   },
   'vip recreate': {
     permissions: [],
-    roles: ['admin', 'moderator'],
+    roles: [Role.Administrators, Role.Moderators],
   },
   'vip remove': {
     permissions: [],
-    roles: ['council'],
+    roles: [Role.Council],
   },
 };
 
@@ -133,31 +125,24 @@ const getCommandPermission = async (
   command: string,
 ): Promise<[bigint[], string[]]> => {
   const topCommand = command.split(' ')[0];
+  const key = commandPermissions[command]
+    ? command
+    : topCommand !== undefined && commandPermissions[topCommand] !== undefined
+      ? topCommand
+      : null;
 
-  if (Object.keys(commandPermissions).includes(command)) {
-    return [
-      commandPermissions[command]?.permissions ?? [],
-      await Promise.all(
-        commandPermissions[command]?.roles.map(
-          async (role) => await getRoleProperty(role),
-        ) ?? [],
-      ),
-    ];
-  } else if (
-    topCommand !== undefined &&
-    Object.keys(commandPermissions).includes(topCommand)
-  ) {
-    return [
-      commandPermissions[topCommand]?.permissions ?? [],
-      await Promise.all(
-        commandPermissions[topCommand]?.roles.map(
-          async (role) => await getRoleProperty(role),
-        ) ?? [],
-      ),
-    ];
-  } else {
-    return [[], []];
+  if (key) {
+    const permissions = commandPermissions[key]?.permissions ?? [];
+    const roles = await Promise.all(
+      commandPermissions[key]?.roles.map(
+        async (role) => await getRolesProperty(role),
+      ) ?? [],
+    );
+
+    return [permissions, roles.filter((role) => role !== undefined)];
   }
+
+  return [[], []];
 };
 
 // Check whether the member has all the command permissions, or any of the roles

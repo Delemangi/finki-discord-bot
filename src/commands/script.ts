@@ -18,6 +18,9 @@ import {
   getYearsEmbed,
 } from '../components/scripts.js';
 import { getTicketCreateComponents } from '../components/tickets.js';
+import { getApplicationId, getToken } from '../configuration/environment.js';
+import { getCourses, getFromRoleConfig } from '../configuration/files.js';
+import { getTicketingProperty } from '../configuration/main.js';
 import { getCompanies } from '../data/Company.js';
 import { getInfoMessages } from '../data/InfoMessage.js';
 import { getRules } from '../data/Rule.js';
@@ -28,17 +31,9 @@ import {
 } from '../translations/commands.js';
 import { logErrorFunctions } from '../translations/logs.js';
 import { threadMessageFunctions } from '../translations/threads.js';
-import { ticketMessageFunctions } from '../translations/tickets.js';
+import { ticketMessages } from '../translations/tickets.js';
 import { sendEmbed } from '../utils/channels.js';
 import { getCommands } from '../utils/commands.js';
-import {
-  getApplicationId,
-  getConfigProperty,
-  getCourses,
-  getFromRoleConfig,
-  getRoleProperty,
-  getToken,
-} from '../utils/config.js';
 import { logger } from '../utils/logger.js';
 import { InfoMessageType } from '@prisma/client';
 import {
@@ -554,18 +549,16 @@ const handleScriptTickets = async (
     return;
   }
 
-  const tickets = await getConfigProperty('tickets');
+  const tickets = await getTicketingProperty('tickets');
 
-  const components = getTicketCreateComponents(tickets);
+  const components = getTicketCreateComponents(tickets ?? []);
 
   await channel.send({
     allowedMentions: {
       parse: [],
     },
     components,
-    content: ticketMessageFunctions.createTicket(
-      await getRoleProperty('admin'),
-    ),
+    content: ticketMessages.createTicket,
   });
 
   await interaction.editReply(commandResponses.scriptExecuted);

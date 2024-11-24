@@ -1,5 +1,5 @@
+import { getConfigProperty } from '../configuration/main.js';
 import { client } from './client.js';
-import { getConfigProperty } from './config.js';
 import { type Guild, type Interaction } from 'discord.js';
 
 export const getGuild = async (interaction?: Interaction) => {
@@ -10,6 +10,11 @@ export const getGuild = async (interaction?: Interaction) => {
   await client.guilds.fetch();
 
   const guildId = await getConfigProperty('guild');
+
+  if (guildId === undefined) {
+    return null;
+  }
+
   const guild = client.guilds.cache.get(guildId);
 
   return guild ?? null;

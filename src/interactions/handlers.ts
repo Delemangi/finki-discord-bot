@@ -7,6 +7,7 @@ import {
 } from '../components/logs.js';
 import { commandErrors } from '../translations/commands.js';
 import { logErrorFunctions, logShortStrings } from '../translations/logs.js';
+import { Channel } from '../types/schemas/Channel.js';
 import { deleteResponse, logEmbed } from '../utils/channels.js';
 import {
   getCommand,
@@ -78,7 +79,7 @@ export const handleChatInputCommand = async (
   await logEmbed(
     await getChatInputCommandEmbed(interaction),
     interaction,
-    'commands',
+    Channel.Logs,
   );
 
   if (command === undefined || !isSlashCommand(command)) {
@@ -148,7 +149,7 @@ export const handleUserContextMenuCommand = async (
   await logEmbed(
     await getUserContextMenuCommandEmbed(interaction),
     interaction,
-    'commands',
+    Channel.Logs,
   );
 
   if (command === undefined || !isContextMenuCommand(command)) {
@@ -211,7 +212,7 @@ export const handleMessageContextMenuCommand = async (
   await logEmbed(
     await getMessageContextMenuCommandEmbed(interaction),
     interaction,
-    'commands',
+    Channel.Logs,
   );
 
   if (command === undefined || !isContextMenuCommand(command)) {
@@ -276,7 +277,7 @@ export const handleButton = async (interaction: ButtonInteraction) => {
   await logEmbed(
     getButtonEmbed(interaction, command, args),
     interaction,
-    'commands',
+    Channel.Logs,
   );
 
   if (command === undefined) {
@@ -333,7 +334,7 @@ export const handleAutocomplete = async (
         : logShortStrings.guild
     }]`,
   );
-  await logEmbed(getAutocompleteEmbed(interaction), interaction, 'commands');
+  await logEmbed(getAutocompleteEmbed(interaction), interaction, Channel.Logs);
 
   if (Object.keys(autocompleteInteractionHandlers).includes(option.name)) {
     await autocompleteInteractionHandlers[

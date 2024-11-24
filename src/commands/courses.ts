@@ -1,17 +1,11 @@
-import {
-  getCoursesPrerequisiteEmbed,
-  getCoursesProgramEmbed,
-} from '../components/commands.js';
+import { getCoursesPrerequisiteEmbed } from '../components/commands.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
   commandResponses,
 } from '../translations/commands.js';
-import { programMapping } from '../translations/programs.js';
-import { type ProgramName } from '../types/ProgramName.js';
 import { getGuild } from '../utils/guild.js';
-import { createPollChoices } from '../utils/polls.js';
 import { getCourseRolesBySemester, getRoles } from '../utils/roles.js';
 import {
   type ChatInputCommandInteraction,
@@ -24,26 +18,6 @@ const name = 'courses';
 export const data = new SlashCommandBuilder()
   .setName(name)
   .setDescription('Get all...')
-  .addSubcommand((command) =>
-    command
-      .setName('program')
-      .setDescription(commandDescriptions['courses program'])
-      .addStringOption((option) =>
-        option
-          .setName('program')
-          .setDescription('Смер')
-          .setRequired(true)
-          .addChoices(...createPollChoices(Object.keys(programMapping))),
-      )
-      .addNumberOption((option) =>
-        option
-          .setName('semester')
-          .setDescription('Семестар')
-          .setRequired(true)
-          .setMinValue(1)
-          .setMaxValue(8),
-      ),
-  )
   .addSubcommand((command) =>
     command
       .setName('prerequisite')
@@ -82,18 +56,6 @@ export const data = new SlashCommandBuilder()
           .setMaxValue(8),
       ),
   );
-
-const handleCoursesProgram = async (
-  interaction: ChatInputCommandInteraction,
-) => {
-  const program = interaction.options.getString('program', true) as ProgramName;
-  const semester = interaction.options.getNumber('semester', true);
-
-  const embeds = await getCoursesProgramEmbed(program, semester);
-  await interaction.editReply({
-    embeds,
-  });
-};
 
 const handleCoursesPrerequisite = async (
   interaction: ChatInputCommandInteraction,
@@ -159,7 +121,6 @@ const handleCoursesRemove = async (
 const coursesHandlers = {
   add: handleCoursesAdd,
   prerequisite: handleCoursesPrerequisite,
-  program: handleCoursesProgram,
   remove: handleCoursesRemove,
 };
 

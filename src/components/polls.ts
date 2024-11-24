@@ -1,3 +1,4 @@
+import { getThemeColor } from '../configuration/main.js';
 import { getMostPopularOptionByPollId } from '../data/PollOption.js';
 import {
   getPollVotesByOptionId,
@@ -9,8 +10,7 @@ import {
 } from '../translations/embeds.js';
 import { labels } from '../translations/labels.js';
 import { paginationStringFunctions } from '../translations/pagination.js';
-import { type PollWithOptions } from '../types/PollWithOptions.js';
-import { getConfigProperty } from '../utils/config.js';
+import { type PollWithOptions } from '../types/interfaces/PollWithOptions.js';
 import { getUsername } from '../utils/members.js';
 import { getPollThreshold } from '../utils/polls.js';
 import { getMembersByRoleIds } from '../utils/roles.js';
@@ -33,7 +33,7 @@ export const getPollEmbed = async (poll: PollWithOptions) => {
   const votes = (await getPollVotesByPollId(poll.id))?.length ?? 0;
 
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setAuthor(
       poll.done
         ? {
@@ -144,7 +144,7 @@ export const getPollInfoEmbed = async (guild: Guild, poll: Poll) => {
   const turnout = `(${((votes / voters.length) * 100).toFixed(2)}%)`;
 
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(poll.title)
     .addFields(
       {
@@ -238,7 +238,7 @@ export const getPollListFirstPageEmbed = async (
   pollsPerPage: number = 8,
 ) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(labels.polls)
     .setDescription(embedMessageFunctions.allPolls(all))
     .addFields(
@@ -265,7 +265,7 @@ export const getPollListNextPageEmbed = async (
   pollsPerPage: number = 8,
 ) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(labels.polls)
     .setDescription(embedMessageFunctions.allPolls(all))
     .addFields(
@@ -293,7 +293,7 @@ export const getSpecialPollListEmbed = async (
   pollsPerPage: number = 8,
 ) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(labels.polls)
     .setDescription(embedMessages.allSpecialPolls)
     .addFields(

@@ -1,3 +1,11 @@
+import {
+  getFromRoleConfig,
+  getInformation,
+  getParticipants,
+  getPrerequisites,
+  getProfessors,
+} from '../configuration/files.js';
+import { getThemeColor } from '../configuration/main.js';
 import { aboutMessage, botName } from '../translations/about.js';
 import { commandDescriptions } from '../translations/commands.js';
 import {
@@ -6,27 +14,17 @@ import {
 } from '../translations/embeds.js';
 import { labels } from '../translations/labels.js';
 import { paginationStringFunctions } from '../translations/pagination.js';
-import { programMapping } from '../translations/programs.js';
-import { type Classroom } from '../types/Classroom.js';
-import { type CourseInformation } from '../types/CourseInformation.js';
-import { type CourseParticipants } from '../types/CourseParticipants.js';
-import { type CoursePrerequisites } from '../types/CoursePrerequisites.js';
-import { type CourseStaff } from '../types/CourseStaff.js';
-import { type ProgramName } from '../types/ProgramName.js';
-import { type QuestionWithLinks } from '../types/QuestionWithLinks.js';
-import { type Staff } from '../types/Staff.js';
-import { client } from '../utils/client.js';
+import { type QuestionWithLinks } from '../types/interfaces/QuestionWithLinks.js';
+import { type Classroom } from '../types/schemas/Classroom.js';
+import { type CourseInformation } from '../types/schemas/CourseInformation.js';
+import { type CourseParticipants } from '../types/schemas/CourseParticipants.js';
+import { type CoursePrerequisites } from '../types/schemas/CoursePrerequisites.js';
+import { type CourseStaff } from '../types/schemas/CourseStaff.js';
+import { type Staff } from '../types/schemas/Staff.js';
 import { commandMention } from '../utils/commands.js';
-import {
-  getConfigProperty,
-  getFromRoleConfig,
-  getInformation,
-  getParticipants,
-  getPrerequisites,
-  getProfessors,
-} from '../utils/config.js';
+import { getGuild } from '../utils/guild.js';
 import { getUsername } from '../utils/members.js';
-import { linkProfessors, transformCoursePrerequisites } from './utils.js';
+import { linkProfessors } from './utils.js';
 import { type Experience, type Link, type Question } from '@prisma/client';
 import {
   ActionRowBuilder,
@@ -42,7 +40,7 @@ import {
 
 export const getAboutEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(botName)
     .setDescription(
       aboutMessage(commandMention('help'), commandMention('list questions')),
@@ -52,7 +50,7 @@ export const getAboutEmbed = async () => {
 
 export const getClassroomEmbed = async (information: Classroom) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(`${information.classroom.toString()} (${information.location})`)
     .addFields(
       {
@@ -87,7 +85,7 @@ export const getCourseParticipantsEmbed = async (
   information: CourseParticipants,
 ) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(information.course)
     .setDescription(embedMessages.courseParticipantsInfo)
     .addFields(
@@ -104,7 +102,7 @@ export const getCourseParticipantsEmbed = async (
 
 export const getCourseProfessorsEmbed = async (information: CourseStaff) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(information.course)
     .addFields(
       {
@@ -125,7 +123,7 @@ export const getCoursePrerequisiteEmbed = async (
   information: CoursePrerequisites,
 ) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(information.course)
     .addFields({
       inline: true,
@@ -140,7 +138,7 @@ export const getCoursePrerequisiteEmbed = async (
 
 export const getCourseInfoEmbed = async (information: CourseInformation) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(information.course)
     .addFields(
       {
@@ -178,10 +176,10 @@ export const getCourseSummaryEmbed = async (course: string) => {
 
   return [
     new EmbedBuilder()
-      .setColor(await getConfigProperty('color'))
+      .setColor(getThemeColor())
       .setTitle(course)
       .setDescription(embedMessages.courseSummaryInfo),
-    new EmbedBuilder().setColor(await getConfigProperty('color')).addFields(
+    new EmbedBuilder().setColor(getThemeColor()).addFields(
       {
         name: labels.prerequisites,
         value:
@@ -208,7 +206,7 @@ export const getCourseSummaryEmbed = async (course: string) => {
         value: info === undefined ? labels.unknown : info.level.toString(),
       },
     ),
-    new EmbedBuilder().setColor(await getConfigProperty('color')).addFields(
+    new EmbedBuilder().setColor(getThemeColor()).addFields(
       {
         inline: true,
         name: labels.professors,
@@ -227,7 +225,7 @@ export const getCourseSummaryEmbed = async (course: string) => {
       },
     ),
     new EmbedBuilder()
-      .setColor(await getConfigProperty('color'))
+      .setColor(getThemeColor())
       .setDescription(embedMessages.courseParticipantsInfo)
       .addFields(
         ...Object.entries(participants ?? {})
@@ -241,104 +239,13 @@ export const getCourseSummaryEmbed = async (course: string) => {
   ];
 };
 
-export const getCoursesProgramEmbed = async (
-  program: ProgramName,
-  semester: number,
-) => {
-  const courses = transformCoursePrerequisites(
-    programMapping[program],
-    semester,
-  );
-  const elective = courses.filter((course) => course.type === 'изборен');
-  const mandatory = courses.filter(
-    (course) =>
-      course.type === 'задолжителен' || course.type === 'задолжителен (изб.)',
-  );
-
-  return [
-    new EmbedBuilder()
-      .setColor(await getConfigProperty('color'))
-      .setTitle(`Предмети за ${program}, семестар ${semester}`)
-      .setDescription('Предусловите за предметите се под истиот реден број.'),
-    new EmbedBuilder()
-      .setColor(await getConfigProperty('color'))
-      .setTitle('Задолжителни')
-      .setDescription(
-        mandatory.length === 0
-          ? labels.none
-          : mandatory
-              .map(
-                (course, index) =>
-                  `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
-                    course.course
-                  } ${
-                    course.type === 'задолжителен (изб.)'
-                      ? '(изборен за 3 год. студии)'
-                      : ''
-                  }`,
-              )
-              .join('\n'),
-      ),
-    new EmbedBuilder()
-      .setColor(await getConfigProperty('color'))
-      .setTitle('Задолжителни - предуслови')
-      .setDescription(
-        mandatory.length === 0
-          ? labels.none
-          : mandatory
-              .map(
-                (course, index) =>
-                  `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
-                    course.prerequisite === ''
-                      ? labels.none
-                      : course.prerequisite
-                  }`,
-              )
-              .join('\n'),
-      ),
-    new EmbedBuilder()
-      .setColor(await getConfigProperty('color'))
-      .setTitle('Изборни')
-      .setDescription(
-        elective.length === 0
-          ? labels.none
-          : elective
-              .map(
-                (course, index) =>
-                  `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
-                    course.course
-                  }`,
-              )
-              .join('\n'),
-      ),
-    new EmbedBuilder()
-      .setColor(await getConfigProperty('color'))
-      .setTitle('Изборни - предуслови')
-      .setDescription(
-        elective.length === 0
-          ? labels.none
-          : elective
-              .map(
-                (course, index) =>
-                  `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
-                    course.prerequisite === ''
-                      ? labels.none
-                      : course.prerequisite
-                  }`,
-              )
-              .join('\n'),
-      )
-      .setTimestamp(),
-  ];
-};
-
 export const getCoursesPrerequisiteEmbed = async (course: string) => {
   const courses = getPrerequisites().filter((prerequisite) =>
     prerequisite.prerequisite.toLowerCase().includes(course.toLowerCase()),
   );
 
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(`Предмети со предуслов ${course}`)
     .setDescription(
       courses.length === 0
@@ -357,7 +264,7 @@ export const getCoursesPrerequisiteEmbed = async (course: string) => {
 
 export const getStaffEmbed = async (information: Staff) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(`${information.name}`)
     .addFields(
       {
@@ -439,7 +346,7 @@ export const getStudentInfoEmbed = async (member: GuildMember) => {
     .join('\n');
 
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setAuthor({
       iconURL: member.user.displayAvatarURL(),
       name: member.user.tag,
@@ -487,11 +394,11 @@ export const getStudentInfoEmbed = async (member: GuildMember) => {
 };
 
 export const getExperienceEmbed = async (experience: Experience) => {
-  const guild = client.guilds.cache.get(await getConfigProperty('guild'));
+  const guild = await getGuild();
   const user = guild?.members.cache.get(experience.userId)?.user as User;
 
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setAuthor({
       iconURL: user.displayAvatarURL(),
       name: user.tag,
@@ -520,7 +427,7 @@ export const getExperienceLeaderboardFirstPageEmbed = async (
   const total = experience.length;
 
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(labels.activity)
     .addFields(
       await Promise.all(
@@ -553,7 +460,7 @@ export const getExperienceLeaderboardNextPageEmbed = async (
   const total = experience.length;
 
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(labels.activity)
     .addFields(
       await Promise.all(
@@ -583,7 +490,7 @@ export const getExperienceLeaderboardNextPageEmbed = async (
 
 export const getQuestionEmbed = async (question: Question) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(question.name)
     .setDescription(question.content)
     .setTimestamp();
@@ -628,7 +535,7 @@ export const getQuestionComponents = (question: QuestionWithLinks) => {
 
 export const getLinkEmbed = async (link: Link) => {
   const embed = new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(link.name)
     .setTimestamp();
 
@@ -652,7 +559,7 @@ export const getLinkComponents = (link: Link) => {
 
 export const getListQuestionsEmbed = async (questions: Question[]) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(labels.questions)
     .setDescription(
       `${embedMessageFunctions.allQuestions(
@@ -671,7 +578,7 @@ export const getListQuestionsEmbed = async (questions: Question[]) => {
 
 export const getListLinksEmbed = async (links: Link[]) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(labels.links)
     .setDescription(
       `${embedMessageFunctions.allLinks(commandMention('link'))}\n\n${links
@@ -692,7 +599,7 @@ export const getHelpEmbed = async (
   commandsPerPage: number = 8,
 ) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(labels.commands)
     .setDescription(embedMessages.allCommands)
     .addFields(

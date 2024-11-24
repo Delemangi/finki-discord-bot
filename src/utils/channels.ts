@@ -1,3 +1,9 @@
+import {
+  getConfigProperty,
+  getIntervalsProperty,
+  getRolesProperty,
+  getTemporaryChannelsProperty,
+} from '../configuration/main.js';
 import { labels } from '../translations/labels.js';
 import {
   logErrorFunctions,
@@ -5,9 +11,9 @@ import {
   logMessages,
 } from '../translations/logs.js';
 import { specialStringFunctions } from '../translations/special.js';
-import { type ChannelName } from '../types/ChannelName.js';
+import { type Channel, TemporaryChannel } from '../types/schemas/Channel.js';
+import { Role } from '../types/schemas/Role.js';
 import { client } from './client.js';
-import { getConfigProperty, getRoleProperty } from './config.js';
 import { getGuild } from './guild.js';
 import { logger } from './logger.js';
 import { Cron } from 'croner';
@@ -25,9 +31,8 @@ import {
 } from 'discord.js';
 import { setTimeout } from 'node:timers/promises';
 
-const channels: Partial<
-  Record<ChannelName, GuildTextBasedChannel | undefined>
-> = {};
+const channels: Partial<Record<Channel, GuildTextBasedChannel | undefined>> =
+  {};
 
 export const initializeChannels = async () => {
   const channelIds = await getConfigProperty('channels');
@@ -36,16 +41,19 @@ export const initializeChannels = async () => {
     return;
   }
 
-  for (const [channelName, channelId] of Object.entries(channelIds)) {
-    if (channelId === undefined || channelId === '') {
+  for (const [Channel, channelId] of Object.entries(channelIds)) {
+    if (channelId === undefined) {
       continue;
     }
 
     try {
       const channel = await client.channels.fetch(channelId);
-      channels[channelName as ChannelName] = (channel ?? undefined) as
-        | GuildTextBasedChannel
-        | undefined;
+      if (!channel?.isTextBased() || channel.isDMBased()) {
+        logger.warn(logMessageFunctions.channelNotGuildTextBased(channelId));
+        return;
+      }
+
+      channels[Channel as Channel] = channel;
     } catch (error) {
       logger.error(logErrorFunctions.channelFetchError(channelId, error));
     }
@@ -54,13 +62,22 @@ export const initializeChannels = async () => {
   logger.info(logMessages.channelsInitialized);
 };
 
-export const getChannel = (type: ChannelName) => {
+export const getChannel = (type: Channel) => {
   return channels[type];
 };
 
-const getNextChannelRecreationTime = async (locale = 'en-GB', offset = 1) => {
-  const { cron } = await getConfigProperty('temporaryVIPChannel');
-  const nextRun = new Cron(cron).nextRuns(offset).at(-1);
+const getNextChannelRecreationTime = async (
+  channelType: TemporaryChannel,
+  locale = 'en-GB',
+  offset = 1,
+) => {
+  const temporaryChannel = await getTemporaryChannelsProperty(channelType);
+
+  if (temporaryChannel === undefined) {
+    return labels.unknown;
+  }
+
+  const nextRun = new Cron(temporaryChannel.cron).nextRuns(offset).at(-1);
 
   return nextRun === null
     ? labels.unknown
@@ -72,83 +89,85 @@ const getNextChannelRecreationTime = async (locale = 'en-GB', offset = 1) => {
 
 export const recreateVipTemporaryChannel = async () => {
   const guild = await getGuild();
-  const { name, parent, position } = await getConfigProperty(
-    'temporaryVIPChannel',
+  const temporaryChannel = await getTemporaryChannelsProperty(
+    TemporaryChannel.VIP,
   );
 
+  if (temporaryChannel === undefined) {
+    return;
+  }
+
   const existingChannel = client.channels.cache.find(
-    (ch) => ch.type !== ChannelType.DM && ch.name === name,
+    (ch) => ch.type !== ChannelType.DM && ch.name === temporaryChannel.name,
   );
 
   if (existingChannel !== undefined) {
     await existingChannel.delete();
   }
 
-  const channel = await guild?.channels.create({
-    name,
+  await guild?.channels.create({
+    name: temporaryChannel.name,
     nsfw: true,
-    parent,
+    parent: temporaryChannel.parent ?? null,
     topic: specialStringFunctions.tempVipTopic(
-      await getNextChannelRecreationTime('mk-MK'),
+      await getNextChannelRecreationTime(TemporaryChannel.VIP, 'mk-MK'),
     ),
     type: ChannelType.GuildText,
   });
-  await channel?.setPosition(position, {
-    relative: true,
-  });
 
   logger.info(
-    logMessageFunctions.tempVipScheduled(await getNextChannelRecreationTime()),
+    logMessageFunctions.tempVipScheduled(
+      await getNextChannelRecreationTime(TemporaryChannel.VIP),
+    ),
   );
 };
 
 export const recreateRegularsTemporaryChannel = async () => {
   const guild = await getGuild();
-  const { name, parent, position } = await getConfigProperty(
-    'temporaryRegularsChannel',
+  const temporaryChannel = await getTemporaryChannelsProperty(
+    TemporaryChannel.Regulars,
   );
 
+  if (temporaryChannel === undefined) {
+    return;
+  }
+
   const existingChannel = client.channels.cache.find(
-    (ch) => ch.type !== ChannelType.DM && ch.name === name,
+    (ch) => ch.type !== ChannelType.DM && ch.name === temporaryChannel.name,
   );
 
   if (existingChannel !== undefined) {
     await existingChannel.delete();
   }
 
-  const channel = await guild?.channels.create({
-    name,
+  await guild?.channels.create({
+    name: temporaryChannel.name,
     nsfw: true,
-    parent,
+    parent: temporaryChannel.parent ?? null,
     permissionOverwrites: [
       {
         allow: [PermissionFlagsBits.ViewChannel],
-        id: await getRoleProperty('admin'),
+        id: (await getRolesProperty(Role.Administrators)) ?? '',
         type: OverwriteType.Role,
       },
       {
         allow: [PermissionFlagsBits.ViewChannel],
-        id: await getRoleProperty('moderator'),
+        id: (await getRolesProperty(Role.Moderators)) ?? '',
         type: OverwriteType.Role,
       },
       {
         allow: [PermissionFlagsBits.ViewChannel],
-        id: await getRoleProperty('veteran'),
+        id: (await getRolesProperty(Role.Veterans)) ?? '',
         type: OverwriteType.Role,
       },
       {
         allow: [PermissionFlagsBits.ViewChannel],
-        id: await getRoleProperty('vip'),
+        id: (await getRolesProperty(Role.VIP)) ?? '',
         type: OverwriteType.Role,
       },
       {
         allow: [PermissionFlagsBits.ViewChannel],
-        id: await getRoleProperty('booster'),
-        type: OverwriteType.Role,
-      },
-      {
-        allow: [PermissionFlagsBits.ViewChannel],
-        id: await getRoleProperty('regular'),
+        id: (await getRolesProperty(Role.Regulars)) ?? '',
         type: OverwriteType.Role,
       },
       {
@@ -158,41 +177,52 @@ export const recreateRegularsTemporaryChannel = async () => {
       },
     ],
     topic: specialStringFunctions.tempRegularsTopic(
-      await getNextChannelRecreationTime('mk-MK'),
+      await getNextChannelRecreationTime(TemporaryChannel.Regulars, 'mk-MK'),
     ),
     type: ChannelType.GuildText,
-  });
-  await channel?.setPosition(position, {
-    relative: true,
   });
 
   logger.info(
     logMessageFunctions.tempRegularsScheduled(
-      await getNextChannelRecreationTime(),
+      await getNextChannelRecreationTime(TemporaryChannel.Regulars),
     ),
   );
 };
 
 export const resetTemporaryVipChannel = async () => {
-  const { cron } = await getConfigProperty('temporaryVIPChannel');
+  const temporaryChannel = await getTemporaryChannelsProperty(
+    TemporaryChannel.VIP,
+  );
+
+  if (temporaryChannel === undefined) {
+    return;
+  }
 
   // eslint-disable-next-line no-new
-  new Cron(cron, recreateVipTemporaryChannel);
+  new Cron(temporaryChannel.cron, recreateVipTemporaryChannel);
 
   logger.info(
-    logMessageFunctions.tempVipScheduled(await getNextChannelRecreationTime()),
+    logMessageFunctions.tempVipScheduled(
+      await getNextChannelRecreationTime(TemporaryChannel.VIP),
+    ),
   );
 };
 
 export const resetTemporaryRegularsChannel = async () => {
-  const { cron } = await getConfigProperty('temporaryRegularsChannel');
+  const temporaryChannel = await getTemporaryChannelsProperty(
+    TemporaryChannel.Regulars,
+  );
+
+  if (temporaryChannel === undefined) {
+    return;
+  }
 
   // eslint-disable-next-line no-new
-  new Cron(cron, recreateRegularsTemporaryChannel);
+  new Cron(temporaryChannel.cron, recreateRegularsTemporaryChannel);
 
   logger.info(
     logMessageFunctions.tempRegularsScheduled(
-      await getNextChannelRecreationTime(),
+      await getNextChannelRecreationTime(TemporaryChannel.Regulars),
     ),
   );
 };
@@ -200,7 +230,7 @@ export const resetTemporaryRegularsChannel = async () => {
 export const logEmbed = async (
   embed: EmbedBuilder,
   interaction: Interaction,
-  type: ChannelName,
+  type: Channel,
 ) => {
   const channel = channels[type];
 
@@ -239,9 +269,9 @@ export const deleteResponse = async (
   message: InteractionResponse | Message,
   interval?: number,
 ) => {
-  const ephemeralReplyTime = await getConfigProperty('ephemeralReplyTime');
+  const ephemeralReplyInterval = await getIntervalsProperty('ephemeralReply');
 
-  await setTimeout(interval ?? ephemeralReplyTime);
+  await setTimeout(interval ?? ephemeralReplyInterval);
 
   try {
     await message.delete();

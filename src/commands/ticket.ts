@@ -1,10 +1,11 @@
+import { getChannelsProperty } from '../configuration/main.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponses,
 } from '../translations/commands.js';
 import { labels } from '../translations/labels.js';
-import { getChannelProperty } from '../utils/config.js';
+import { Channel } from '../types/schemas/Channel.js';
 import { safeReplyToInteraction } from '../utils/messages.js';
 import { getActiveTickets } from '../utils/tickets.js';
 import {
@@ -31,7 +32,7 @@ export const data = new SlashCommandBuilder()
   );
 
 const handleTicketClose = async (interaction: ChatInputCommandInteraction) => {
-  const ticketsChannel = await getChannelProperty('tickets');
+  const ticketsChannel = await getChannelsProperty(Channel.Tickets);
 
   if (
     !interaction.channel?.isThread() ||

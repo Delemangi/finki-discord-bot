@@ -1,4 +1,5 @@
 import { bootMessage, logMessageFunctions } from '../translations/logs.js';
+import { Channel } from '../types/schemas/Channel.js';
 import {
   getChannel,
   initializeChannels,
@@ -35,6 +36,6 @@ export const execute = async (...[client]: ClientEvents[typeof name]) => {
 
   logger.info(logMessageFunctions.loggedIn(bot.user?.tag));
 
-  const commandsChannel = getChannel('commands');
+  const commandsChannel = getChannel(Channel.Logs);
   commandsChannel?.send(bootMessage());
 };

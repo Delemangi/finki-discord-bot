@@ -1,10 +1,11 @@
+import { getFromRoleConfig } from '../configuration/files.js';
+import { getThemeColor } from '../configuration/main.js';
 import {
   embedMessageFunctions,
   embedMessages,
 } from '../translations/embeds.js';
 import { labels } from '../translations/labels.js';
 import { specialStrings } from '../translations/special.js';
-import { getConfigProperty, getFromRoleConfig } from '../utils/config.js';
 import { type Rule } from '@prisma/client';
 import {
   ActionRowBuilder,
@@ -17,7 +18,7 @@ import {
 
 export const getColorsEmbed = async (image: string) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(embedMessages.nameColor)
     .setDescription(embedMessages.chooseNameColor)
     .setFooter({
@@ -56,7 +57,7 @@ export const getColorsComponents = () => {
 
 export const getCoursesEmbed = async (roleSet: string, roles: string[]) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(`${roleSet.length > 1 ? '' : embedMessages.semester} ${roleSet}`)
     .setDescription(
       roles
@@ -102,7 +103,7 @@ export const getCoursesComponents = (roles: string[]) => {
 
 export const getCoursesAddEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(embedMessages.massCourseAdd)
     .setDescription(embedMessages.chooseSemesterMassCourseAdd)
     .setFooter({
@@ -152,7 +153,7 @@ export const getCoursesAddComponents = (roleSets: string[]) => {
 
 export const getCoursesRemoveEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(embedMessages.massCourseRemove)
     .setDescription(embedMessages.chooseSemesterMassCourseRemove)
     .setFooter({
@@ -202,7 +203,7 @@ export const getCoursesRemoveComponents = (roleSets: string[]) => {
 
 export const getNotificationsEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(embedMessages.notifications)
     .setDescription(embedMessages.chooseNotifications)
     .setFooter({
@@ -240,7 +241,7 @@ export const getNotificationsComponents = () => {
 
 export const getProgramsEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle('Смер')
     .setDescription(embedMessages.chooseProgram)
     .setFooter({
@@ -278,7 +279,7 @@ export const getProgramsComponents = () => {
 
 export const getYearsEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle('Година на студирање')
     .setDescription(embedMessages.chooseYear)
     .setFooter({
@@ -307,7 +308,7 @@ export const getYearsComponents = () => {
 
 export const getRulesEmbed = async (rules: Rule[]) => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(labels.rules)
     .setDescription(
       `${rules
@@ -323,7 +324,7 @@ export const getRulesEmbed = async (rules: Rule[]) => {
 
 export const getVipRequestEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(specialStrings.vipRequestTitle)
     .setDescription(specialStrings.vipRequestText);
 };
@@ -345,7 +346,7 @@ export const getVipRequestComponents = () => {
 
 export const getVipConfirmEmbed = async () => {
   return new EmbedBuilder()
-    .setColor(await getConfigProperty('color'))
+    .setColor(getThemeColor())
     .setTitle(specialStrings.vipAcceptedTitle)
     .setDescription(specialStrings.vipConfirm);
 };

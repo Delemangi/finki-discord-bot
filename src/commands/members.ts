@@ -1,3 +1,4 @@
+import { getRolesProperty } from '../configuration/main.js';
 import { getBars } from '../data/Bar.js';
 import {
   commandDescriptions,
@@ -7,14 +8,13 @@ import {
 } from '../translations/commands.js';
 import { labels } from '../translations/labels.js';
 import { formatUsers } from '../translations/users.js';
-import { getRoleProperty } from '../utils/config.js';
+import { Role } from '../types/schemas/Role.js';
 import { getGuild, getMemberFromGuild } from '../utils/guild.js';
 import { safeReplyToInteraction } from '../utils/messages.js';
 import {
   getMembersByRoleIds,
   getMembersByRoleIdsExtended,
 } from '../utils/roles.js';
-import { isNotNullish } from '../utils/utils.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
@@ -74,31 +74,34 @@ const handleMembersVip = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const vipRoleId = await getRoleProperty('vip');
-  const vipMemberIds = await getMembersByRoleIds(guild, [vipRoleId]);
+  const vipRoleId = await getRolesProperty(Role.VIP);
+  const vipMemberIds = await getMembersByRoleIds(
+    guild,
+    [vipRoleId].filter((value) => value !== undefined),
+  );
   const vipMembers = (
     await Promise.all(
       vipMemberIds.map(async (id) => await getMemberFromGuild(id, interaction)),
     )
-  ).filter(isNotNullish);
+  ).filter((member) => member !== null);
   const vipMembersFormatted = formatUsers(
     labels.vip,
     vipMembers.map(({ user }) => user),
   );
 
-  const adminRoleId = await getRoleProperty('admin');
-  const moderatorRoleId = await getRoleProperty('moderator');
-  const adminTeamMemberIds = await getMembersByRoleIds(guild, [
-    adminRoleId,
-    moderatorRoleId,
-  ]);
+  const adminRoleId = await getRolesProperty(Role.Administrators);
+  const moderatorRoleId = await getRolesProperty(Role.Moderators);
+  const adminTeamMemberIds = await getMembersByRoleIds(
+    guild,
+    [adminRoleId, moderatorRoleId].filter((value) => value !== undefined),
+  );
   const adminTeamMembers = (
     await Promise.all(
       adminTeamMemberIds.map(
         async (id) => await getMemberFromGuild(id, interaction),
       ),
     )
-  ).filter(isNotNullish);
+  ).filter((member) => member !== null);
   const adminTeamMembersFormatted = formatUsers(
     labels.administration,
     adminTeamMembers.map(({ user }) => user),
@@ -121,16 +124,18 @@ const handleMembersRegulars = async (
     return;
   }
 
-  const regularRoleId = await getRoleProperty('regular');
-  const vipRoleId = await getRoleProperty('vip');
-  const moderatorRoleId = await getRoleProperty('moderator');
-  const adminRoleId = await getRoleProperty('admin');
-  const veteranRoleId = await getRoleProperty('veteran');
+  const regularRoleId = await getRolesProperty(Role.Regulars);
+  const vipRoleId = await getRolesProperty(Role.VIP);
+  const moderatorRoleId = await getRolesProperty(Role.Moderators);
+  const adminRoleId = await getRolesProperty(Role.Administrators);
+  const veteranRoleId = await getRolesProperty(Role.Veterans);
 
   const invitedMemberIds = await getMembersByRoleIdsExtended(
     guild,
-    [regularRoleId],
-    [vipRoleId, moderatorRoleId, adminRoleId, veteranRoleId],
+    [regularRoleId].filter((value) => value !== undefined),
+    [vipRoleId, moderatorRoleId, adminRoleId, veteranRoleId].filter(
+      (value) => value !== undefined,
+    ),
   );
   const invitedMembers = (
     await Promise.all(
@@ -138,7 +143,7 @@ const handleMembersRegulars = async (
         async (id) => await getMemberFromGuild(id, interaction),
       ),
     )
-  ).filter(isNotNullish);
+  ).filter((member) => member !== null);
   const invitedMemberNames = formatUsers(
     labels.regulars,
     invitedMembers.map(({ user }) => user),
@@ -158,8 +163,11 @@ const handleMembersGirlies = async (
     return;
   }
 
-  const girliesRoleId = await getRoleProperty('girlies');
-  const girliesMemberIds = await getMembersByRoleIds(guild, [girliesRoleId]);
+  const girliesRoleId = await getRolesProperty(Role.Girlies);
+  const girliesMemberIds = await getMembersByRoleIds(
+    guild,
+    [girliesRoleId].filter((value) => value !== undefined),
+  );
 
   const girliesMembers = (
     await Promise.all(
@@ -167,7 +175,7 @@ const handleMembersGirlies = async (
         async (id) => await getMemberFromGuild(id, interaction),
       ),
     )
-  ).filter(isNotNullish);
+  ).filter((member) => member !== null);
   const girliesMembersFormatted = formatUsers(
     labels.girlies,
     girliesMembers.map(({ user }) => user),
@@ -185,8 +193,11 @@ const handleMembersBoys = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const boysRoleId = await getRoleProperty('boys');
-  const boysMemberIds = await getMembersByRoleIds(guild, [boysRoleId]);
+  const boysRoleId = await getRolesProperty(Role.Boys);
+  const boysMemberIds = await getMembersByRoleIds(
+    guild,
+    [boysRoleId].filter((value) => value !== undefined),
+  );
 
   const boysMembers = (
     await Promise.all(
@@ -194,7 +205,7 @@ const handleMembersBoys = async (interaction: ChatInputCommandInteraction) => {
         async (id) => await getMemberFromGuild(id, interaction),
       ),
     )
-  ).filter(isNotNullish);
+  ).filter((member) => member !== null);
   const boysMembersFormatted = formatUsers(
     labels.boys,
     boysMembers.map(({ user }) => user),
@@ -234,7 +245,7 @@ const handleMembersBarred = async (
         .map(({ userId }) => userId)
         .map(async (id) => await getMemberFromGuild(id, interaction)),
     )
-  ).filter(isNotNullish);
+  ).filter((member) => member !== null);
   const bannedMembersFormatted = formatUsers(
     labels.barred,
     barredMembers.map(({ user }) => user),
@@ -254,8 +265,11 @@ const handleMembersBoosters = async (
     return;
   }
 
-  const boosterRoleId = await getRoleProperty('booster');
-  const boosterMemberIds = await getMembersByRoleIds(guild, [boosterRoleId]);
+  const boosterRoleId = await getRolesProperty(Role.Boosters);
+  const boosterMemberIds = await getMembersByRoleIds(
+    guild,
+    [boosterRoleId].filter((value) => value !== undefined),
+  );
 
   const boosterMembers = (
     await Promise.all(
@@ -263,7 +277,7 @@ const handleMembersBoosters = async (
         async (id) => await getMemberFromGuild(id, interaction),
       ),
     )
-  ).filter(isNotNullish);
+  ).filter((member) => member !== null);
   const boosterMembersFormatted = formatUsers(
     labels.boosters,
     boosterMembers.map(({ user }) => user),

@@ -1,9 +1,9 @@
 import { emojis } from '../translations/emojis.js';
 import { labels } from '../translations/labels.js';
-import { type TicketType } from '../types/TicketType.js';
+import { type Ticket } from '../types/schemas/Ticket.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
-export const getTicketCreateComponents = (ticketTypes: TicketType[]) => {
+export const getTicketCreateComponents = (ticketTypes: Ticket[]) => {
   const components = [];
 
   for (let index1 = 0; index1 < ticketTypes.length; index1 += 5) {

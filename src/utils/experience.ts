@@ -1,3 +1,9 @@
+import { getLevels } from '../configuration/files.js';
+import {
+  getExperienceMultiplier,
+  getExperienceProperty,
+  getRolesProperty,
+} from '../configuration/main.js';
 import {
   createExperience,
   getExperienceByUserId,
@@ -5,13 +11,9 @@ import {
 } from '../data/Experience.js';
 import { experienceMessages } from '../translations/experience.js';
 import { logErrorFunctions } from '../translations/logs.js';
+import { Channel } from '../types/schemas/Channel.js';
+import { Role } from '../types/schemas/Role.js';
 import { getChannel } from './channels.js';
-import {
-  getConfigProperty,
-  getExperienceMultiplier,
-  getLevels,
-  getRoleProperty,
-} from './config.js';
 import { COUNCIL_LEVEL, REGULAR_LEVEL } from './levels.js';
 import { logger } from './logger.js';
 import { isMemberBarred, isMemberInVip, isMemberLevel } from './members.js';
@@ -91,7 +93,11 @@ const awardMember = async (member: GuildMember, level: number) => {
   }
 
   if (await isMemberLevel(member, REGULAR_LEVEL, false)) {
-    const regularRoleId = await getRoleProperty('regular');
+    const regularRoleId = await getRolesProperty(Role.Regulars);
+
+    if (regularRoleId === undefined) {
+      return;
+    }
 
     await member.roles.add(regularRoleId);
   }
@@ -100,10 +106,15 @@ const awardMember = async (member: GuildMember, level: number) => {
     (await isMemberInVip(member)) &&
     (await isMemberLevel(member, COUNCIL_LEVEL, false))
   ) {
-    const councilRoleId = await getRoleProperty('council');
+    const councilRoleId = await getRolesProperty(Role.Council);
+
+    if (councilRoleId === undefined) {
+      return;
+    }
+
     await member.roles.add(councilRoleId);
 
-    const vipChannel = getChannel('vip');
+    const vipChannel = getChannel(Channel.VIP);
     await vipChannel?.send({
       allowedMentions: {
         parse: [],
@@ -116,7 +127,7 @@ const awardMember = async (member: GuildMember, level: number) => {
 const lock = new AsyncLock();
 
 export const addExperience = async (message: Message) => {
-  if (!(await getConfigProperty('leveling'))) {
+  if (!(await getExperienceProperty('enabled'))) {
     return;
   }
 
@@ -163,7 +174,7 @@ export const addExperience = async (message: Message) => {
 
       await awardMember(message.member, level);
 
-      const channel = getChannel('activity');
+      const channel = getChannel(Channel.Activity);
       await channel?.send({
         allowedMentions: {
           parse: [],

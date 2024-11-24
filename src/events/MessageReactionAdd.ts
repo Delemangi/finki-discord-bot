@@ -1,5 +1,5 @@
+import { getReactionsProperty } from '../configuration/main.js';
 import { logErrorFunctions } from '../translations/logs.js';
-import { getReactionsProperty } from '../utils/config.js';
 import { logger } from '../utils/logger.js';
 import {
   type ClientEvents,
@@ -20,13 +20,13 @@ const removeReaction = async (
     return;
   }
 
-  const emoji = emojis[authorId];
+  const emojiReaction = emojis?.[authorId];
   const reactedEmoji = reaction.emoji.name?.toLowerCase();
 
   if (
-    emoji === undefined ||
+    emojiReaction === undefined ||
     reactedEmoji === undefined ||
-    reactedEmoji !== emoji
+    reactedEmoji !== emojiReaction
   ) {
     return;
   }

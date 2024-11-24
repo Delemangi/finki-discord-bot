@@ -1,7 +1,8 @@
+import { getRolesProperty } from '../configuration/main.js';
 import { getBarByUserId } from '../data/Bar.js';
 import { getExperienceByUserId } from '../data/Experience.js';
+import { Role } from '../types/schemas/Role.js';
 import { client } from './client.js';
-import { getRoleProperty } from './config.js';
 import { type GuildMember, PermissionsBitField } from 'discord.js';
 
 export const getUsername = async (userId: string) => {
@@ -19,29 +20,27 @@ export const isMemberInVip = async (member: GuildMember) => {
     return true;
   }
 
-  const vipRoleId = await getRoleProperty('vip');
-  const moderatorRoleId = await getRoleProperty('moderator');
-  const adminRoleId = await getRoleProperty('admin');
-  const veteranRoleId = await getRoleProperty('veteran');
+  const vipRoleId = await getRolesProperty(Role.VIP);
+  const moderatorRoleId = await getRolesProperty(Role.Moderators);
+  const adminRoleId = await getRolesProperty(Role.Administrators);
 
   return (
-    member.roles.cache.has(vipRoleId) ||
-    member.roles.cache.has(moderatorRoleId) ||
-    member.roles.cache.has(adminRoleId) ||
-    member.roles.cache.has(veteranRoleId)
+    (vipRoleId && member.roles.cache.has(vipRoleId)) ||
+    (moderatorRoleId && member.roles.cache.has(moderatorRoleId)) ||
+    (adminRoleId && member.roles.cache.has(adminRoleId))
   );
 };
 
 export const isMemberInCouncil = async (member: GuildMember) => {
-  const councilRoleId = await getRoleProperty('council');
+  const councilRoleId = await getRolesProperty(Role.Council);
 
-  return member.roles.cache.has(councilRoleId);
+  return councilRoleId && member.roles.cache.has(councilRoleId);
 };
 
-export const isMemberInvitedToVip = async (member: GuildMember) => {
-  const regularRoleId = await getRoleProperty('regular');
+export const isMemberInRegulars = async (member: GuildMember) => {
+  const regularRoleId = await getRolesProperty(Role.Regulars);
 
-  return member.roles.cache.has(regularRoleId);
+  return regularRoleId && member.roles.cache.has(regularRoleId);
 };
 
 export const isMemberAdmin = async (member: GuildMember) => {
@@ -49,12 +48,12 @@ export const isMemberAdmin = async (member: GuildMember) => {
     return true;
   }
 
-  const adminRoleId = await getRoleProperty('admin');
-  const moderatorRoleId = await getRoleProperty('moderator');
+  const adminRoleId = await getRolesProperty(Role.Administrators);
+  const moderatorRoleId = await getRolesProperty(Role.Moderators);
 
   return (
-    member.roles.cache.has(adminRoleId) ||
-    member.roles.cache.has(moderatorRoleId)
+    (adminRoleId && member.roles.cache.has(adminRoleId)) ||
+    (moderatorRoleId && member.roles.cache.has(moderatorRoleId))
   );
 };
 

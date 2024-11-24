@@ -1,8 +1,8 @@
+import { getSessions } from '../configuration/files.js';
 import {
   commandDescriptions,
   commandErrors,
 } from '../translations/commands.js';
-import { getSessions } from '../utils/config.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,

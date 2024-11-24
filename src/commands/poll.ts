@@ -7,6 +7,10 @@ import {
   getPollListNextPageEmbed,
   getPollStatsComponents,
 } from '../components/polls.js';
+import {
+  getIntervalsProperty,
+  getRolesProperty,
+} from '../configuration/main.js';
 import { deletePoll, getPollById, getPolls, updatePoll } from '../data/Poll.js';
 import {
   createPollOption,
@@ -21,9 +25,9 @@ import {
   commandResponses,
 } from '../translations/commands.js';
 import { logErrorFunctions } from '../translations/logs.js';
+import { Role } from '../types/schemas/Role.js';
 import { deleteResponse } from '../utils/channels.js';
 import { commandMention } from '../utils/commands.js';
-import { getConfigProperty, getRoleProperty } from '../utils/config.js';
 import { getGuild } from '../utils/guild.js';
 import { logger } from '../utils/logger.js';
 import { isMemberAdmin } from '../utils/members.js';
@@ -359,6 +363,8 @@ const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
+  const councilRoleId = await getRolesProperty(Role.Council);
+
   const specialPoll = await getSpecialPollByPollId(poll.id);
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
@@ -370,7 +376,7 @@ const handlePollShow = async (interaction: ChatInputCommandInteraction) => {
       allowedMentions: {
         parse: [],
       },
-      content: roleMention(await getRoleProperty('council')),
+      content: councilRoleId === undefined ? null : roleMention(councilRoleId),
     }),
   });
 
@@ -594,9 +600,10 @@ const handlePollList = async (interaction: ChatInputCommandInteraction) => {
     components,
     embeds: [embed],
   });
+  const buttonIdle = await getIntervalsProperty('buttonIdle');
   const collector = message.createMessageComponentCollector({
     componentType: ComponentType.Button,
-    time: await getConfigProperty('buttonIdleTime'),
+    time: buttonIdle,
   });
 
   collector.on('collect', async (buttonInteraction) => {

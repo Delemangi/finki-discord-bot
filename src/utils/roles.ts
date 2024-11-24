@@ -1,14 +1,14 @@
+import { getFromRoleConfig } from '../configuration/files.js';
+import { getConfigProperty } from '../configuration/main.js';
 import { logErrorFunctions, logMessages } from '../translations/logs.js';
-import { type Roles } from '../types/Roles.js';
-import { type RoleSets } from '../types/RoleSets.js';
-import { client } from './client.js';
-import { getConfigProperty, getFromRoleConfig } from './config.js';
+import { type RoleSets } from '../types/interfaces/RoleSets.js';
+import { type Role as RoleName } from '../types/schemas/Role.js';
+import { getGuild } from './guild.js';
 import { logger } from './logger.js';
-import { isNotNullish } from './utils.js';
-import { type Guild, type Role } from 'discord.js';
+import { type Role as DiscordRole, type Guild } from 'discord.js';
 
-const roles: Partial<Record<Roles, Role | undefined>> = {};
-const roleSets: Record<RoleSets, Role[]> = {
+const roles: Partial<Record<RoleName, DiscordRole | undefined>> = {};
+const roleSets: Record<RoleSets, DiscordRole[]> = {
   color: [],
   courses: [],
   notification: [],
@@ -18,20 +18,16 @@ const roleSets: Record<RoleSets, Role[]> = {
 
 export const initializeRoles = async () => {
   const roleIds = await getConfigProperty('roles');
-  const guild = client.guilds.cache.get(await getConfigProperty('guild'));
+  const guild = await getGuild();
 
-  if (roleIds === undefined || guild === undefined) {
+  if (roleIds === undefined || guild === null) {
     return;
   }
 
   for (const [roleName, roleId] of Object.entries(roleIds)) {
-    if (roleId === undefined || roleId === '') {
-      continue;
-    }
-
     try {
       const role = await guild.roles.fetch(roleId);
-      roles[roleName as Roles] = role ?? undefined;
+      roles[roleName as RoleName] = role ?? undefined;
     } catch (error) {
       logger.error(logErrorFunctions.roleFetchError(roleId, error));
     }
@@ -48,14 +44,14 @@ export const refreshRoles = (guild: Guild, type: RoleSets) => {
         : getFromRoleConfig(type);
 
     const roleSet = roleNames.map((roleName) =>
-      guild.roles.cache.find((ro) => ro.name === roleName),
+      guild.roles.cache.find((role) => role.name === roleName),
     );
 
     roleSets[type] = roleSet.filter((role) => role !== undefined);
   }
 };
 
-export const getRole = (type: Roles) => {
+export const getRole = (type: RoleName) => {
   return roles[type];
 };
 
@@ -103,7 +99,7 @@ export const getCourseRoleByCourseName = (guild: Guild, course: string) => {
 
 export const getMembersByRoles = async (
   guild: Guild,
-  rolesWithMembers: Role[],
+  rolesWithMembers: DiscordRole[],
 ) => {
   await guild.members.fetch();
   await guild.roles.fetch();
@@ -128,15 +124,15 @@ export const getMembersByRoleIds = async (
 ) => {
   const rolesList = roleIdsWithMembers
     .map((role) => guild.roles.cache.get(role))
-    .filter(isNotNullish);
+    .filter((role) => role !== undefined);
 
   return await getMembersByRoles(guild, rolesList);
 };
 
 export const getMembersByRolesExtended = async (
   guild: Guild,
-  rolesWithMembers: Role[],
-  rolesWithoutMembers: Role[],
+  rolesWithMembers: DiscordRole[],
+  rolesWithoutMembers: DiscordRole[],
 ) => {
   await guild.members.fetch();
   await guild.roles.fetch();
@@ -173,11 +169,11 @@ export const getMembersByRoleIdsExtended = async (
 ) => {
   const rolesWithMembers = roleIdsWithMembers
     .map((role) => guild.roles.cache.get(role))
-    .filter(isNotNullish);
+    .filter((role) => role !== undefined);
 
   const rolesWithoutMembers = roleIdsWithoutMembers
     .map((role) => guild.roles.cache.get(role))
-    .filter(isNotNullish);
+    .filter((role) => role !== undefined);
 
   return await getMembersByRolesExtended(
     guild,

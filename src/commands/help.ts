@@ -1,5 +1,6 @@
 import { getHelpEmbed } from '../components/commands.js';
 import { getPaginationComponents } from '../components/pagination.js';
+import { getIntervalsProperty } from '../configuration/main.js';
 import {
   commandDescriptions,
   commandErrors,
@@ -7,7 +8,6 @@ import {
 import { logErrorFunctions } from '../translations/logs.js';
 import { deleteResponse } from '../utils/channels.js';
 import { client } from '../utils/client.js';
-import { getConfigProperty } from '../utils/config.js';
 import { getGuild, getMemberFromGuild } from '../utils/guild.js';
 import { logger } from '../utils/logger.js';
 import { getCommandsWithPermission } from '../utils/permissions.js';
@@ -54,9 +54,10 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     components,
     embeds: [embed],
   });
+  const buttonIdle = await getIntervalsProperty('buttonIdle');
   const collector = message.createMessageComponentCollector({
     componentType: ComponentType.Button,
-    idle: await getConfigProperty('buttonIdleTime'),
+    idle: buttonIdle,
   });
 
   collector.on('collect', async (buttonInteraction) => {

@@ -1,9 +1,10 @@
+import { getChannelsProperty } from '../configuration/main.js';
 import {
   commandErrors,
   commandResponseFunctions,
 } from '../translations/commands.js';
 import { labels } from '../translations/labels.js';
-import { getConfigProperty } from '../utils/config.js';
+import { Channel } from '../types/schemas/Channel.js';
 import { getMemberFromGuild } from '../utils/guild.js';
 import { getOrCreateWebhookByChannelId } from '../utils/webhooks.js';
 import {
@@ -24,7 +25,14 @@ export const data = new ContextMenuCommandBuilder()
 export const execute = async (
   interaction: UserContextMenuCommandInteraction,
 ) => {
-  const webhooksChannel = await getConfigProperty('starboard');
+  const webhooksChannel = await getChannelsProperty(Channel.Starboard);
+
+  if (webhooksChannel === undefined) {
+    await interaction.editReply(commandErrors.invalidChannel);
+
+    return;
+  }
+
   const webhook = await getOrCreateWebhookByChannelId(webhooksChannel);
   const message = await interaction.channel?.messages.fetch(
     interaction.targetId,

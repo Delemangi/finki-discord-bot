@@ -25,7 +25,6 @@ export const commandDescriptions = {
   'course role': 'Преземи број на корисници во канал на предмет',
   'courses add': 'Земи улоги за многу предмети',
   'courses prerequisite': 'Преземи предмети според предуслов',
-  'courses program': 'Преземи предмети според смер',
   'courses remove': 'Отстрани улоги за многу предмети',
   'course summary': 'Преземи информации за предмет',
   'course toggle': 'Земи или отстрани улога за предмет',

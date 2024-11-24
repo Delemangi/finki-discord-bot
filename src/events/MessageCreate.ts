@@ -1,17 +1,22 @@
+import {
+  getCrosspostingProperty,
+  getReactionsProperty,
+} from '../configuration/main.js';
 import { logErrorFunctions } from '../translations/logs.js';
-import { getConfigProperty, getReactionsProperty } from '../utils/config.js';
 import { addExperience } from '../utils/experience.js';
 import { logger } from '../utils/logger.js';
 import { type ClientEvents, Events, type Message } from 'discord.js';
 
 export const name = Events.MessageCreate;
-const crosspostChannels = await getConfigProperty('crosspostChannels');
+
+const crosspostingChannels = await getCrosspostingProperty('channels');
+const crosspostingEnabled = await getCrosspostingProperty('enabled');
 
 const crosspost = async (message: Message) => {
   if (
-    !(await getConfigProperty('crossposting')) ||
-    crosspostChannels.length === 0 ||
-    !crosspostChannels.includes(message.channel.id)
+    !crosspostingEnabled ||
+    crosspostingChannels?.length === 0 ||
+    !crosspostingChannels?.includes(message.channel.id)
   ) {
     return;
   }
@@ -24,16 +29,16 @@ const crosspost = async (message: Message) => {
 };
 
 const addReaction = async (message: Message) => {
-  const emojis = await getReactionsProperty('add');
+  const reactions = await getReactionsProperty('add');
   const authorId = message.author.id;
-  const emoji = emojis[authorId];
+  const reaction = reactions?.[authorId];
 
-  if (emoji === undefined) {
+  if (reaction === undefined) {
     return;
   }
 
   try {
-    await message.react(emoji);
+    await message.react(reaction);
   } catch (error) {
     logger.error(logErrorFunctions.addReactionError(error));
   }

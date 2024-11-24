@@ -1,4 +1,4 @@
-import { type PartialUser } from '../types/PartialUser.js';
+import { type PartialUser } from '../types/interfaces/PartialUser.js';
 import { labels } from './labels.js';
 import { inlineCode, userMention } from 'discord.js';
 

@@ -1,14 +1,16 @@
-import { ConfigSchema } from '../schemas/ConfigSchema.js';
-import {
-  commandDescriptions,
-  commandErrorFunctions,
-} from '../translations/commands.js';
-import { type BotConfig } from '../types/BotConfig.js';
 import {
   getConfigKeys,
   getConfigProperty,
   setConfigProperty,
-} from '../utils/config.js';
+} from '../configuration/main.js';
+import {
+  commandDescriptions,
+  commandErrorFunctions,
+} from '../translations/commands.js';
+import {
+  BotConfigKeysSchema,
+  RequiredBotConfigSchema,
+} from '../types/schemas/BotConfig.js';
 import { createPollChoices } from '../utils/polls.js';
 import { refreshOnConfigChange } from '../utils/refresh.js';
 import {
@@ -57,7 +59,9 @@ export const data = new SlashCommandBuilder()
   .setDefaultMemberPermissions(permission);
 
 const handleConfigGet = async (interaction: ChatInputCommandInteraction) => {
-  const key = interaction.options.getString('key', true) as keyof BotConfig;
+  const key = BotConfigKeysSchema.parse(
+    interaction.options.getString('key', true),
+  );
   const value = await getConfigProperty(key);
 
   await interaction.editReply(
@@ -75,12 +79,14 @@ const handleConfigGet = async (interaction: ChatInputCommandInteraction) => {
 };
 
 const handleConfigSet = async (interaction: ChatInputCommandInteraction) => {
-  const key = interaction.options.getString('key', true) as keyof BotConfig;
+  const key = BotConfigKeysSchema.parse(
+    interaction.options.getString('key', true),
+  );
   let value;
 
   try {
     value = JSON.parse(interaction.options.getString('value', true));
-    ConfigSchema.shape[key].parse(value);
+    RequiredBotConfigSchema.shape[key].parse(value);
   } catch (error) {
     await interaction.editReply(
       commandErrorFunctions.invalidConfiguration(String(error)),
@@ -90,9 +96,18 @@ const handleConfigSet = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const newConfig = await setConfigProperty(key, value);
+
+  if (newConfig === null) {
+    await interaction.editReply(
+      commandErrorFunctions.invalidConfiguration(value),
+    );
+
+    return;
+  }
+
   const newProperty = JSON.stringify(
     {
-      // @ts-expect-error newConfig is not null
+      // @ts-expect-error not worth validating
       [key]: newConfig[key],
     },
     null,

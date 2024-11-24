@@ -3,13 +3,18 @@ import {
   getPollEmbed,
   getPollStatsComponents,
 } from '../components/polls.js';
+import {
+  getChannelsProperty,
+  getRolesProperty,
+} from '../configuration/main.js';
 import { getPollById } from '../data/Poll.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
 } from '../translations/commands.js';
-import { getChannelProperty, getRoleProperty } from '../utils/config.js';
+import { Channel } from '../types/schemas/Channel.js';
+import { Role } from '../types/schemas/Role.js';
 import { getMemberFromGuild } from '../utils/guild.js';
 import {
   isMemberBarred,
@@ -61,9 +66,9 @@ const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const user = interaction.options.getUser('user', true);
-  const pollsChannel = await getChannelProperty('polls');
+  const councilChannelId = await getChannelsProperty(Channel.Council);
 
-  if (interaction.channelId !== pollsChannel) {
+  if (interaction.channelId !== councilChannelId) {
     await interaction.editReply({
       content: commandErrors.invalidChannel,
     });
@@ -119,9 +124,15 @@ const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
+  const councilRoleId = await getRolesProperty(Role.Council);
+
+  if (councilRoleId !== undefined) {
+    await interaction.channel.send(roleMention(councilRoleId));
+  }
+
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
-  await interaction.channel.send(roleMention(await getRoleProperty('council')));
+
   await interaction.editReply({
     components,
     embeds: [embed],
@@ -146,9 +157,9 @@ const handleCouncilRemove = async (
   }
 
   const user = interaction.options.getUser('user', true);
-  const pollsChannel = await getChannelProperty('polls');
+  const councilChannelId = await getChannelsProperty(Channel.Council);
 
-  if (interaction.channelId !== pollsChannel) {
+  if (interaction.channelId !== councilChannelId) {
     await interaction.editReply({
       content: commandErrors.invalidChannel,
     });
@@ -197,9 +208,14 @@ const handleCouncilRemove = async (
     return;
   }
 
+  const councilRoleId = await getRolesProperty(Role.Council);
+
+  if (councilRoleId !== undefined) {
+    await interaction.channel.send(roleMention(councilRoleId));
+  }
+
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
-  await interaction.channel.send(roleMention(await getRoleProperty('council')));
   await interaction.editReply({
     components,
     embeds: [embed],

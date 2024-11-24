@@ -1,3 +1,4 @@
+import { getRolesProperty } from '../configuration/main.js';
 import { createPoll, getPollById, updatePoll } from '../data/Poll.js';
 import {
   countPollVotesByOptionId,
@@ -10,9 +11,9 @@ import {
 } from '../data/SpecialPoll.js';
 import { labels } from '../translations/labels.js';
 import { specialStringFunctions } from '../translations/special.js';
-import { type PollWithOptions } from '../types/PollWithOptions.js';
+import { type PollWithOptions } from '../types/interfaces/PollWithOptions.js';
+import { Role } from '../types/schemas/Role.js';
 import { client } from './client.js';
-import { getRoleProperty } from './config.js';
 import { getGuild, getMemberFromGuild } from './guild.js';
 import { VIP_ADMIN_OVERRIDE_LEVEL } from './levels.js';
 import { isMemberLevel } from './members.js';
@@ -107,6 +108,12 @@ export const startSpecialPoll = async (
   let title: string;
   let description: string;
 
+  const councilRoleId = await getRolesProperty(Role.Council);
+
+  if (councilRoleId === undefined) {
+    return null;
+  }
+
   switch (type) {
     case 'adminAdd':
       title = specialStringFunctions.adminAddTitle(vipUser.tag);
@@ -174,7 +181,7 @@ export const startSpecialPoll = async (
         },
       ],
     },
-    roles: [await getRoleProperty('council')],
+    roles: [councilRoleId],
     threshold,
     title,
     userId: client.user?.id ?? '',
@@ -255,10 +262,10 @@ export const getAdminVotes = async (pollId: string) => {
     return null;
   }
 
-  const adminRoleId = await getRoleProperty('admin');
+  const adminRoleId = await getRolesProperty(Role.Administrators);
   const votes = await getPollVotesByPollId(pollId);
 
-  if (votes === null) {
+  if (votes === null || adminRoleId === undefined) {
     return null;
   }
 

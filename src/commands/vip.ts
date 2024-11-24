@@ -3,6 +3,10 @@ import {
   getPollEmbed,
   getPollStatsComponents,
 } from '../components/polls.js';
+import {
+  getChannelsProperty,
+  getRolesProperty,
+} from '../configuration/main.js';
 import { getPollById } from '../data/Poll.js';
 import { getSpecialPollByUserAndType } from '../data/SpecialPoll.js';
 import {
@@ -11,14 +15,15 @@ import {
   commandResponseFunctions,
   commandResponses,
 } from '../translations/commands.js';
+import { Channel } from '../types/schemas/Channel.js';
+import { Role } from '../types/schemas/Role.js';
 import { recreateVipTemporaryChannel } from '../utils/channels.js';
-import { getChannelProperty, getRoleProperty } from '../utils/config.js';
 import { getMemberFromGuild } from '../utils/guild.js';
 import {
   isMemberAdmin,
   isMemberBarred,
+  isMemberInRegulars,
   isMemberInVip,
-  isMemberInvitedToVip,
 } from '../utils/members.js';
 import { startSpecialPoll } from '../utils/polls.js';
 import {
@@ -67,9 +72,9 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const user = interaction.options.getUser('user', true);
-  const pollsChannel = await getChannelProperty('polls');
+  const councilChannelId = await getChannelsProperty(Channel.Council);
 
-  if (interaction.channelId !== pollsChannel) {
+  if (interaction.channelId !== councilChannelId) {
     await interaction.editReply({
       content: commandErrors.invalidChannel,
     });
@@ -103,7 +108,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (!(await isMemberInvitedToVip(member))) {
+  if (!(await isMemberInRegulars(member))) {
     await interaction.editReply(commandErrors.userNotRegular);
 
     return;
@@ -133,9 +138,14 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
+  const councilRoleId = await getRolesProperty(Role.Council);
+
+  if (councilRoleId !== undefined) {
+    await interaction.channel.send(roleMention(councilRoleId));
+  }
+
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
-  await interaction.channel.send(roleMention(await getRoleProperty('council')));
   await interaction.editReply({
     components,
     embeds: [embed],
@@ -158,9 +168,9 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const user = interaction.options.getUser('user', true);
-  const pollsChannel = await getChannelProperty('polls');
+  const councilChannelId = await getChannelsProperty(Channel.Council);
 
-  if (interaction.channelId !== pollsChannel) {
+  if (interaction.channelId !== councilChannelId) {
     await interaction.editReply({
       content: commandErrors.invalidChannel,
     });
@@ -210,9 +220,14 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
+  const councilRoleId = await getRolesProperty(Role.Council);
+
+  if (councilRoleId !== undefined) {
+    await interaction.channel.send(roleMention(councilRoleId));
+  }
+
   const embed = await getPollEmbed(poll);
   const components = getPollComponents(poll);
-  await interaction.channel.send(roleMention(await getRoleProperty('council')));
   await interaction.editReply({
     components,
     embeds: [embed],

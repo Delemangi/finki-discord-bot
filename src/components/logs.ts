@@ -1,5 +1,5 @@
+import { getThemeColor } from '../configuration/main.js';
 import { embedLabels } from '../translations/embeds.js';
-import { getConfigProperty } from '../utils/config.js';
 import {
   fetchMessageUrl,
   getButtonCommand,
@@ -17,7 +17,7 @@ import {
   userMention,
 } from 'discord.js';
 
-const color = await getConfigProperty('color');
+const color = getThemeColor();
 
 export const getChatInputCommandEmbed = async (
   interaction: ChatInputCommandInteraction,

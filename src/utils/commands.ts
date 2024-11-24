@@ -1,9 +1,9 @@
+import { getApplicationId, getToken } from '../configuration/environment.js';
 import { logErrorFunctions, logMessages } from '../translations/logs.js';
-import { type Command } from '../types/Command.js';
-import { type ContextMenuCommand } from '../types/ContextMenuCommand.js';
-import { type SlashCommand } from '../types/SlashCommand.js';
+import { type Command } from '../types/interfaces/Command.js';
+import { type ContextMenuCommand } from '../types/interfaces/ContextMenuCommand.js';
+import { type SlashCommand } from '../types/interfaces/SlashCommand.js';
 import { client } from './client.js';
-import { getApplicationId, getToken } from './config.js';
 import { logger } from './logger.js';
 import {
   ApplicationCommandType,

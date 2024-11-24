@@ -6,18 +6,18 @@ import {
   getCourseSummaryEmbed,
 } from '../components/commands.js';
 import {
-  commandDescriptions,
-  commandErrors,
-  commandResponseFunctions,
-} from '../translations/commands.js';
-import {
   getCourses,
   getFromRoleConfig,
   getInformation,
   getParticipants,
   getPrerequisites,
   getProfessors,
-} from '../utils/config.js';
+} from '../configuration/files.js';
+import {
+  commandDescriptions,
+  commandErrors,
+  commandResponseFunctions,
+} from '../translations/commands.js';
 import { getGuild } from '../utils/guild.js';
 import { getCourseRoleByCourseName } from '../utils/roles.js';
 import {

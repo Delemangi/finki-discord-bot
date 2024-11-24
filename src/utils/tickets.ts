@@ -1,12 +1,18 @@
 import { getTicketCloseComponents } from '../components/tickets.js';
+import { DEFAULT_CONFIGURATION } from '../configuration/defaults.js';
+import {
+  getChannelsProperty,
+  getIntervalsProperty,
+  getTicketingProperty,
+} from '../configuration/main.js';
 import { logMessageFunctions } from '../translations/logs.js';
 import {
   ticketMessageFunctions,
   ticketMessages,
 } from '../translations/tickets.js';
-import { type TicketType } from '../types/TicketType.js';
+import { Channel } from '../types/schemas/Channel.js';
+import { type Ticket } from '../types/schemas/Ticket.js';
 import { getChannel } from './channels.js';
-import { getChannelProperty, getConfigProperty } from './config.js';
 import { getGuild } from './guild.js';
 import { logger } from './logger.js';
 import {
@@ -23,12 +29,12 @@ export const getActiveTickets = async (
   interaction?: ChatInputCommandInteraction,
 ) => {
   const guild = await getGuild(interaction);
-  const ticketsChannel = await getChannelProperty('tickets');
+  const ticketsChannelId = await getChannelsProperty(Channel.Tickets);
 
   const threads = guild?.channels.cache.filter(
     (channel): channel is AnyThreadChannel =>
       channel.isThread() &&
-      channel.parentId === ticketsChannel &&
+      channel.parentId === ticketsChannelId &&
       !channel.archived &&
       !channel.locked,
   );
@@ -38,9 +44,9 @@ export const getActiveTickets = async (
 
 export const createTicket = async (
   interaction: ButtonInteraction | ChatInputCommandInteraction,
-  ticketMetadata: TicketType,
+  ticketMetadata: Ticket,
 ) => {
-  const ticketsChannel = getChannel('tickets');
+  const ticketsChannel = getChannel(Channel.Tickets);
 
   if (
     ticketsChannel === undefined ||
@@ -95,7 +101,7 @@ export const createTicket = async (
 };
 
 export const closeTicket = async (ticketId: string) => {
-  const ticketsChannel = getChannel('tickets');
+  const ticketsChannel = getChannel(Channel.Tickets);
 
   if (
     ticketsChannel === undefined ||
@@ -118,16 +124,25 @@ export const closeTicket = async (ticketId: string) => {
 
 export const closeInactiveTickets = async () => {
   while (true) {
-    const maxTicketInactivityDays = await getConfigProperty(
-      'maxTicketInactivityDays',
+    const allowedInactivityDays = await getTicketingProperty(
+      'allowedInactivityDays',
     );
-    const maxTicketInactivityMilliseconds =
-      maxTicketInactivityDays * 86_400_000;
+    const ticketsCheckInterval = await getIntervalsProperty('ticketsCheck');
+
+    if (
+      allowedInactivityDays === undefined ||
+      ticketsCheckInterval === undefined
+    ) {
+      await setTimeout(DEFAULT_CONFIGURATION.intervals.ticketsCheck);
+      continue;
+    }
+
+    const maxTicketInactivityMilliseconds = allowedInactivityDays * 86_400_000;
 
     const ticketThreads = await getActiveTickets();
 
     if (ticketThreads === undefined || ticketThreads.size === 0) {
-      await setTimeout(900_000);
+      await setTimeout(ticketsCheckInterval);
       continue;
     }
 
@@ -149,6 +164,6 @@ export const closeInactiveTickets = async () => {
       }
     }
 
-    await setTimeout(900_000);
+    await setTimeout(ticketsCheckInterval);
   }
 };

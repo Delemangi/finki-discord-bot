@@ -10,6 +10,11 @@ import {
   getVipConfirmComponents,
   getVipConfirmEmbed,
 } from '../components/scripts.js';
+import {
+  getConfigProperty,
+  getRolesProperty,
+  getTicketProperty,
+} from '../configuration/main.js';
 import { createBar, deleteBar } from '../data/Bar.js';
 import { getPollById } from '../data/Poll.js';
 import { getPollOptionById } from '../data/PollOption.js';
@@ -41,12 +46,9 @@ import {
   specialStringFunctions,
   specialStrings,
 } from '../translations/special.js';
+import { Channel } from '../types/schemas/Channel.js';
+import { Role } from '../types/schemas/Role.js';
 import { deleteResponse, getChannel } from '../utils/channels.js';
-import {
-  getConfigProperty,
-  getRoleProperty,
-  getTicketProperty,
-} from '../utils/config.js';
 import { getGuild } from '../utils/guild.js';
 import { COUNCIL_LEVEL, REGULAR_LEVEL } from '../utils/levels.js';
 import { logger } from '../utils/logger.js';
@@ -469,8 +471,8 @@ const handlePollButtonForVipRequestVote = async (
   poll: Poll,
   specialPoll: SpecialPoll,
 ) => {
-  const vipChannel = getChannel('vip');
-  const oathChannel = getChannel('oath');
+  const vipChannel = getChannel(Channel.VIP);
+  const oathChannel = getChannel(Channel.Oath);
 
   if (poll.decision !== labels.yes) {
     const rejectComponents = getVipAcknowledgeComponents();
@@ -503,8 +505,8 @@ const handlePollButtonForVipAddVote = async (
   poll: Poll,
   specialPoll: SpecialPoll,
 ) => {
-  const vipChannel = getChannel('vip');
-  const oathChannel = getChannel('oath');
+  const vipChannel = getChannel(Channel.VIP);
+  const oathChannel = getChannel(Channel.Oath);
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
@@ -532,7 +534,7 @@ const handlePollButtonForVipRemoveVote = async (
   specialPoll: SpecialPoll,
   member: GuildMember,
 ) => {
-  const vipChannel = getChannel('vip');
+  const vipChannel = getChannel(Channel.VIP);
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
@@ -542,10 +544,16 @@ const handlePollButtonForVipRemoveVote = async (
     return;
   }
 
-  const vipRoleId = await getRoleProperty('vip');
-  const councilRoleId = await getRoleProperty('council');
-  await member.roles.remove(vipRoleId);
-  await member.roles.remove(councilRoleId);
+  const vipRoleId = await getRolesProperty(Role.VIP);
+  const councilRoleId = await getRolesProperty(Role.Council);
+
+  if (vipRoleId !== undefined) {
+    await member.roles.remove(vipRoleId);
+  }
+
+  if (councilRoleId !== undefined) {
+    await member.roles.remove(councilRoleId);
+  }
 
   await vipChannel?.send(
     specialStringFunctions.vipRemoveAccepted(specialPoll.userId),
@@ -557,7 +565,7 @@ const handlePollButtonForCouncilAddVote = async (
   specialPoll: SpecialPoll,
   member: GuildMember,
 ) => {
-  const vipChannel = getChannel('vip');
+  const vipChannel = getChannel(Channel.VIP);
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
@@ -567,8 +575,11 @@ const handlePollButtonForCouncilAddVote = async (
     return;
   }
 
-  const councilRole = await getRoleProperty('council');
-  await member.roles.add(councilRole);
+  const councilRoleId = await getRolesProperty(Role.Council);
+
+  if (councilRoleId !== undefined) {
+    await member.roles.add(councilRoleId);
+  }
 
   await vipChannel?.send(
     specialStringFunctions.councilAddAccepted(specialPoll.userId),
@@ -580,7 +591,7 @@ const handlePollButtonForCouncilRemoveVote = async (
   specialPoll: SpecialPoll,
   member: GuildMember,
 ) => {
-  const vipChannel = getChannel('vip');
+  const vipChannel = getChannel(Channel.VIP);
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
@@ -590,8 +601,11 @@ const handlePollButtonForCouncilRemoveVote = async (
     return;
   }
 
-  const councilRole = await getRoleProperty('council');
-  await member.roles.remove(councilRole);
+  const councilRole = await getRolesProperty(Role.Council);
+
+  if (councilRole !== undefined) {
+    await member.roles.remove(councilRole);
+  }
 
   await vipChannel?.send(
     specialStringFunctions.councilRemoveAccepted(specialPoll.userId),
@@ -603,7 +617,7 @@ const handlePollButtonForAdminAddVote = async (
   specialPoll: SpecialPoll,
   member: GuildMember,
 ) => {
-  const vipChannel = getChannel('vip');
+  const vipChannel = getChannel(Channel.VIP);
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
@@ -613,11 +627,16 @@ const handlePollButtonForAdminAddVote = async (
     return;
   }
 
-  const adminsRole = await getRoleProperty('admins');
-  const moderatorRole = await getRoleProperty('moderator');
+  const adminsRole = await getRolesProperty(Role.Administrators);
+  const moderatorRole = await getRolesProperty(Role.Moderators);
 
-  await member.roles.add(adminsRole);
-  await member.roles.add(moderatorRole);
+  if (adminsRole !== undefined) {
+    await member.roles.add(adminsRole);
+  }
+
+  if (moderatorRole !== undefined) {
+    await member.roles.add(moderatorRole);
+  }
 
   await vipChannel?.send(
     specialStringFunctions.adminAddAccepted(specialPoll.userId),
@@ -629,7 +648,7 @@ const handlePollButtonForAdminRemoveVote = async (
   specialPoll: SpecialPoll,
   member: GuildMember,
 ) => {
-  const vipChannel = getChannel('vip');
+  const vipChannel = getChannel(Channel.VIP);
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
@@ -639,11 +658,16 @@ const handlePollButtonForAdminRemoveVote = async (
     return;
   }
 
-  const adminsRole = await getRoleProperty('admins');
-  const moderatorRole = await getRoleProperty('moderator');
+  const adminsRole = await getRolesProperty(Role.Administrators);
+  const moderatorRole = await getRolesProperty(Role.Moderators);
 
-  await member.roles.remove(adminsRole);
-  await member.roles.remove(moderatorRole);
+  if (adminsRole !== undefined) {
+    await member.roles.remove(adminsRole);
+  }
+
+  if (moderatorRole !== undefined) {
+    await member.roles.remove(moderatorRole);
+  }
 
   await vipChannel?.send(
     specialStringFunctions.adminRemoveAccepted(specialPoll.userId),
@@ -655,7 +679,7 @@ const handlePollButtonForBarVote = async (
   specialPoll: SpecialPoll,
   member: GuildMember,
 ) => {
-  const vipChannel = getChannel('vip');
+  const vipChannel = getChannel(Channel.VIP);
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
@@ -669,12 +693,21 @@ const handlePollButtonForBarVote = async (
     userId: specialPoll.userId,
   });
 
-  const regularsRoleId = await getRoleProperty('regular');
-  const vipRoleId = await getRoleProperty('vip');
-  const councilRoleId = await getRoleProperty('council');
-  await member.roles.remove(regularsRoleId);
-  await member.roles.remove(vipRoleId);
-  await member.roles.remove(councilRoleId);
+  const regularsRoleId = await getRolesProperty(Role.Regulars);
+  const vipRoleId = await getRolesProperty(Role.VIP);
+  const councilRoleId = await getRolesProperty(Role.Council);
+
+  if (regularsRoleId !== undefined) {
+    await member.roles.remove(regularsRoleId);
+  }
+
+  if (vipRoleId !== undefined) {
+    await member.roles.remove(vipRoleId);
+  }
+
+  if (councilRoleId !== undefined) {
+    await member.roles.remove(councilRoleId);
+  }
 
   await vipChannel?.send(
     specialStringFunctions.barAccepted(specialPoll.userId),
@@ -685,7 +718,7 @@ const handlePollButtonForUnbarVote = async (
   poll: Poll,
   specialPoll: SpecialPoll,
 ) => {
-  const vipChannel = getChannel('vip');
+  const vipChannel = getChannel(Channel.VIP);
 
   if (poll.decision !== labels.yes) {
     await vipChannel?.send(
@@ -1037,8 +1070,8 @@ export const handleVipButton = async (
     return;
   }
 
-  const vipRoleId = await getRoleProperty('vip');
-  const councilRoleId = await getRoleProperty('council');
+  const vipRoleId = await getRolesProperty(Role.VIP);
+  const councilRoleId = await getRolesProperty(Role.Council);
 
   if (args[0] === 'acknowledge') {
     if (
@@ -1074,14 +1107,19 @@ export const handleVipButton = async (
       return;
     }
 
-    const vipChannel = getChannel('vip');
+    const vipChannel = getChannel(Channel.VIP);
     await vipChannel?.send(
       specialStringFunctions.vipWelcome(interaction.user.id),
     );
 
-    await member.roles.add(vipRoleId);
+    if (vipRoleId !== undefined) {
+      await member.roles.add(vipRoleId);
+    }
 
-    if (await isMemberLevel(member, COUNCIL_LEVEL)) {
+    if (
+      councilRoleId !== undefined &&
+      (await isMemberLevel(member, COUNCIL_LEVEL))
+    ) {
       await member.roles.add(councilRoleId);
     }
 
@@ -1096,7 +1134,7 @@ export const handleVipButton = async (
     return;
   }
 
-  if (await getConfigProperty('vipPause')) {
+  if (!(await getConfigProperty('oathEnabled'))) {
     const message = await interaction.reply({
       content: specialStrings.vipRequestPaused,
       ephemeral: true,
@@ -1156,15 +1194,18 @@ export const handleVipButton = async (
     return;
   }
 
-  const channel = getChannel('polls');
-
-  await channel?.send({
+  const councilChannel = getChannel(Channel.Council);
+  await councilChannel?.send({
     components: getPollComponents(pollWithOptions),
     embeds: [await getPollEmbed(pollWithOptions)],
   });
-  await channel?.send(roleMention(await getRoleProperty('council')));
+
+  if (councilRoleId !== undefined) {
+    await councilChannel?.send(roleMention(councilRoleId));
+  }
+
   const components = getPollStatsComponents(pollWithOptions);
-  await channel?.send({
+  await councilChannel?.send({
     components,
     content: commandResponseFunctions.pollStats(pollWithOptions.title),
   });
@@ -1261,13 +1302,22 @@ export const handleTicketCreateButton = async (
     return;
   }
 
-  const ticketsChannel = getChannel('tickets');
+  const ticketsChannel = getChannel(Channel.Tickets);
 
   if (
     ticketsChannel === null ||
     ticketsChannel?.type !== ChannelType.GuildText
   ) {
     await interaction.reply(commandErrors.invalidChannel);
+
+    return;
+  }
+
+  if (ticketMetadata?.roles === undefined) {
+    await interaction.reply({
+      content: commandErrors.noTicketMembers,
+      ephemeral: true,
+    });
 
     return;
   }

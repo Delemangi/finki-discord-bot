@@ -10,7 +10,6 @@
     "croner": "^9.0.0",
     "discord.js": "^14.16.3",
     "discord-api-types": "^0.37.107",
-    "dotenv": "^16.4.5",
     "prisma": "^5.22.0",
     "winston": "^3.17.0",
     "zod": "^3.23.8"
@@ -51,7 +50,8 @@
     "lint": "tsc --noEmit && eslint . --cache",
     "migrate": "prisma migrate dev --name a",
     "prepare": "husky",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "start:env": "node --env-file=.env dist/index.js"
   },
   "type": "module",
   "version": "1.0.0"

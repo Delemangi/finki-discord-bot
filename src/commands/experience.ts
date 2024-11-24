@@ -4,6 +4,7 @@ import {
   getExperienceLeaderboardNextPageEmbed,
 } from '../components/commands.js';
 import { getPaginationComponents } from '../components/pagination.js';
+import { getIntervalsProperty } from '../configuration/main.js';
 import {
   createExperience,
   getExperienceByUserId,
@@ -18,7 +19,6 @@ import {
 } from '../translations/commands.js';
 import { logErrorFunctions } from '../translations/logs.js';
 import { deleteResponse } from '../utils/channels.js';
-import { getConfigProperty } from '../utils/config.js';
 import { getLevelFromExperience } from '../utils/experience.js';
 import { logger } from '../utils/logger.js';
 import {
@@ -181,9 +181,10 @@ const handleExperienceLeaderboard = async (
     components,
     embeds: [embed],
   });
+  const buttonIdle = await getIntervalsProperty('buttonIdle');
   const collector = message.createMessageComponentCollector({
     componentType: ComponentType.Button,
-    idle: await getConfigProperty('buttonIdleTime'),
+    idle: buttonIdle,
   });
 
   collector.on('collect', async (buttonInteraction) => {
