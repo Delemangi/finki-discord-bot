@@ -54,6 +54,14 @@ const handleRegularsAdd = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser('user', true);
   const member = await getMemberFromGuild(user.id, interaction);
 
+  const regularRole = await getRolesProperty(Role.Regulars);
+
+  if (regularRole === undefined) {
+    await interaction.editReply(commandErrors.invalidRole);
+
+    return;
+  }
+
   if (member === null) {
     await interaction.editReply(commandErrors.userNotMember);
 
@@ -78,11 +86,7 @@ const handleRegularsAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const regularRole = await getRolesProperty(Role.Regulars);
-
-  if (regularRole !== undefined) {
-    await member.roles.add(regularRole);
-  }
+  await member.roles.add(regularRole);
 
   await interaction.editReply(commandResponses.userGivenRegular);
 };
@@ -92,6 +96,14 @@ const handleRegularsRemove = async (
 ) => {
   const user = interaction.options.getUser('user', true);
   const member = await getMemberFromGuild(user.id, interaction);
+
+  const regularRole = await getRolesProperty(Role.Regulars);
+
+  if (regularRole === undefined) {
+    await interaction.editReply(commandErrors.invalidRole);
+
+    return;
+  }
 
   if (member === null) {
     await interaction.editReply(commandErrors.userNotMember);
@@ -105,11 +117,7 @@ const handleRegularsRemove = async (
     return;
   }
 
-  const regularRole = await getRolesProperty(Role.Regulars);
-
-  if (regularRole !== undefined) {
-    await member.roles.remove(regularRole);
-  }
+  await member.roles.remove(regularRole);
 
   await interaction.editReply(commandResponses.userRemovedRegular);
 };
