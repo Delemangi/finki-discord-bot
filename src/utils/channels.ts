@@ -146,36 +146,30 @@ export const recreateRegularsTemporaryChannel = async () => {
     await existingChannel.delete();
   }
 
+  const administratorsRoleId = await getRolesProperty(Role.Administrators);
+  const moderatorsRoleId = await getRolesProperty(Role.Moderators);
+  const veteransRoleId = await getRolesProperty(Role.Veterans);
+  const vipRoleId = await getRolesProperty(Role.VIP);
+  const regularsRoleId = await getRolesProperty(Role.Regulars);
+
+  const rolesToAdd = [
+    administratorsRoleId,
+    moderatorsRoleId,
+    veteransRoleId,
+    vipRoleId,
+    regularsRoleId,
+  ].filter((role) => role !== undefined);
+
   await guild?.channels.create({
     name: temporaryChannel.name,
     nsfw: true,
     parent: temporaryChannel.parent ?? null,
     permissionOverwrites: [
-      {
+      ...rolesToAdd.map((role) => ({
         allow: [PermissionFlagsBits.ViewChannel],
-        id: (await getRolesProperty(Role.Administrators)) ?? '',
+        id: role,
         type: OverwriteType.Role,
-      },
-      {
-        allow: [PermissionFlagsBits.ViewChannel],
-        id: (await getRolesProperty(Role.Moderators)) ?? '',
-        type: OverwriteType.Role,
-      },
-      {
-        allow: [PermissionFlagsBits.ViewChannel],
-        id: (await getRolesProperty(Role.Veterans)) ?? '',
-        type: OverwriteType.Role,
-      },
-      {
-        allow: [PermissionFlagsBits.ViewChannel],
-        id: (await getRolesProperty(Role.VIP)) ?? '',
-        type: OverwriteType.Role,
-      },
-      {
-        allow: [PermissionFlagsBits.ViewChannel],
-        id: (await getRolesProperty(Role.Regulars)) ?? '',
-        type: OverwriteType.Role,
-      },
+      })),
       {
         deny: [PermissionFlagsBits.ViewChannel],
         id: guild?.roles.everyone.id,
