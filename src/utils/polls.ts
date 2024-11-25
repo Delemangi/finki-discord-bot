@@ -15,7 +15,7 @@ import { type PollWithOptions } from '../types/interfaces/PollWithOptions.js';
 import { Role } from '../types/schemas/Role.js';
 import { client } from './client.js';
 import { getGuild, getMemberFromGuild } from './guild.js';
-import { VIP_ADMIN_OVERRIDE_LEVEL } from './levels.js';
+import { ADMIN_OVERRIDE_LEVEL } from './levels.js';
 import { isMemberLevel } from './members.js';
 import { getMembersByRoleIds } from './roles.js';
 import { type Prisma, type SpecialPoll } from '@prisma/client';
@@ -284,25 +284,27 @@ const decideSpecialPollByAdministratorVote = async (
 ) => {
   const member = await getMemberFromGuild(specialPoll.userId);
   const adminVotes = await getAdminVotes(specialPoll.pollId);
+  const adminVoteOptions = new Set(
+    adminVotes?.map((vote) => vote?.option.name) ?? [],
+  );
 
   switch (specialPoll.type) {
+    case 'adminAdd':
+    case 'councilAdd':
     case 'vipAdd':
     case 'vipRequest':
       if (
         member === null ||
-        !(await isMemberLevel(member, VIP_ADMIN_OVERRIDE_LEVEL))
+        !(await isMemberLevel(member, ADMIN_OVERRIDE_LEVEL))
       ) {
         return;
       }
 
-      if (
-        adminVotes === null ||
-        adminVotes.some((vote) => vote?.option.name !== labels.yes)
-      ) {
+      if (adminVoteOptions.size !== 1 || adminVoteOptions.has(undefined)) {
         return;
       }
 
-      poll.decision = adminVotes[0]?.option.name ?? labels.no;
+      poll.decision = adminVoteOptions.values().next().value ?? labels.no;
       poll.done = true;
 
       await updatePoll(poll);
