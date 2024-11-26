@@ -39,6 +39,8 @@ export const commandDescriptions = {
   help: 'Преземи листа од сите достапни команди',
   home: 'Преземи линк до изворниот код',
   invite: 'Преземи пристапен линк за серверот',
+  'irregulars add': 'Предложи нов член на Вонредните',
+  'irregulars remove': 'Отстрани член од Вонредните',
   link: 'Преземи најчесто баран линк',
   'list links': 'Преземи листа од сите линкови',
   'list questions': 'Преземи листа од сите прашања',
@@ -99,7 +101,7 @@ export const commandDescriptions = {
   'script programs': 'Испрати ембед за избирање смерови',
   'script register': 'Регистрирај команди',
   'script rules': 'Испрати ги правилата на серверот',
-  'script vip': 'Испрати ембед за ВИП',
+  'script special': 'Испрати ембед за барања за специјални анкети',
   'script years': 'Испрати ембед за избирање години',
   session: 'Преземи распоред за испитна сесија или колоквиумска недела',
   'special bar': 'Предложи забрана на член',
@@ -277,6 +279,7 @@ export const commandResponseFunctions = {
 };
 
 export const commandErrors = {
+  alreadyIrregular: 'Веќе сте член на Вонредните.',
   alreadyVipMember: 'Веќе сте член на ВИП.',
   antoCreationFailed: 'Креирањето на Анто фактот беше неуспешно.',
   antoNotFound: 'Анто фактот не постои.',
@@ -349,10 +352,12 @@ export const commandErrors = {
   userBarred: 'Корисникот е забранет.',
   userBot: 'Корисникот е бот.',
   userCouncilMember: 'Корисникот е член на Советот.',
+  userIrregularMember: 'Корисникот е член на Вонредните.',
   userNotAdmin: 'Корисникот не е администратор.',
   userNotBarred: 'Корисникот не е забранет.',
   userNotCouncilMember: 'Корисникот не е член на Советот.',
   userNotFound: 'Корисникот не постои.',
+  userNotIrregular: 'Корисникот не е член на Вонредните.',
   userNotLevel: 'Корисникот е под потребното ниво.',
   userNotMember: 'Корисникот не е член на серверот.',
   userNotRegular: 'Корисникот не е член од редовните корисници.',

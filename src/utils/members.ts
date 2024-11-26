@@ -38,6 +38,14 @@ export const isMemberInCouncil = async (member: GuildMember) => {
   return councilRoleId !== undefined && member.roles.cache.has(councilRoleId);
 };
 
+export const isMemberInIrregulars = async (member: GuildMember) => {
+  const irregularRoleId = await getRolesProperty(Role.Irregulars);
+
+  return (
+    irregularRoleId !== undefined && member.roles.cache.has(irregularRoleId)
+  );
+};
+
 export const isMemberInRegulars = async (member: GuildMember) => {
   const regularRoleId = await getRolesProperty(Role.Regulars);
 

@@ -12,8 +12,8 @@ import {
   getProgramsComponents,
   getProgramsEmbed,
   getRulesEmbed,
-  getVipRequestComponents,
-  getVipRequestEmbed,
+  getSpecialRequestComponents,
+  getSpecialRequestEmbed,
   getYearsComponents,
   getYearsEmbed,
 } from '../components/scripts.js';
@@ -148,8 +148,8 @@ export const data = new SlashCommandBuilder()
   )
   .addSubcommand((command) =>
     command
-      .setName('vip')
-      .setDescription(commandDescriptions['script vip'])
+      .setName('special')
+      .setDescription(commandDescriptions['script special'])
       .addChannelOption((option) =>
         option.setName('channel').setDescription('Канал').setRequired(true),
       ),
@@ -397,7 +397,9 @@ const handleScriptRules = async (interaction: ChatInputCommandInteraction) => {
   }
 };
 
-const handleScriptVip = async (interaction: ChatInputCommandInteraction) => {
+const handleScriptSpecial = async (
+  interaction: ChatInputCommandInteraction,
+) => {
   const channel = interaction.options.getChannel(
     'channel',
     true,
@@ -409,8 +411,8 @@ const handleScriptVip = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embed = await getVipRequestEmbed();
-  const components = getVipRequestComponents();
+  const embed = await getSpecialRequestEmbed();
+  const components = getSpecialRequestComponents();
   try {
     await channel.send({
       components,
@@ -574,8 +576,8 @@ const listHandlers = {
   programs: handleScriptPrograms,
   register: handleScriptRegister,
   rules: handleScriptRules,
+  special: handleScriptSpecial,
   tickets: handleScriptTickets,
-  vip: handleScriptVip,
   years: handleScriptYears,
 };
 

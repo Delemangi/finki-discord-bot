@@ -13,16 +13,15 @@ import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-  commandResponses,
 } from '../translations/commands.js';
 import { Channel } from '../types/schemas/Channel.js';
 import { Role } from '../types/schemas/Role.js';
-import { recreateVipTemporaryChannel } from '../utils/channels.js';
 import { getMemberFromGuild } from '../utils/guild.js';
 import {
   isMemberAdmin,
   isMemberBarred,
   isMemberInIrregulars,
+  isMemberInRegulars,
   isMemberInVip,
 } from '../utils/members.js';
 import { startSpecialPoll } from '../utils/polls.js';
@@ -32,19 +31,19 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 
-const name = 'vip';
+const name = 'irregulars';
 
 export const data = new SlashCommandBuilder()
   .setName(name)
-  .setDescription('VIP')
+  .setDescription('Irregulars')
   .addSubcommand((command) =>
     command
       .setName('add')
-      .setDescription(commandDescriptions['vip add'])
+      .setDescription(commandDescriptions['irregulars add'])
       .addUserOption((option) =>
         option
           .setName('user')
-          .setDescription('Предлог корисник за член на ВИП')
+          .setDescription('Предлог корисник за член на Вонредните')
           .setRequired(true),
       )
       .addBooleanOption((option) =>
@@ -57,9 +56,12 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('remove')
-      .setDescription(commandDescriptions['vip remove'])
+      .setDescription(commandDescriptions['irregulars remove'])
       .addUserOption((option) =>
-        option.setName('user').setDescription('Член на ВИП').setRequired(true),
+        option
+          .setName('user')
+          .setDescription('Член на Вонредните')
+          .setRequired(true),
       )
       .addBooleanOption((option) =>
         option
@@ -67,14 +69,11 @@ export const data = new SlashCommandBuilder()
           .setDescription('Испрати нотификација')
           .setRequired(false),
       ),
-  )
-  .addSubcommand((command) =>
-    command
-      .setName('recreate')
-      .setDescription(commandDescriptions['vip recreate']),
   );
 
-const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
+const handleIrregularsAdd = async (
+  interaction: ChatInputCommandInteraction,
+) => {
   if (!interaction.channel?.isSendable()) {
     await interaction.editReply({
       content: commandErrors.unsupportedChannelType,
@@ -115,19 +114,22 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (await isMemberInVip(member)) {
-    await interaction.editReply(commandErrors.userVipMember);
+  if (await isMemberInIrregulars(member)) {
+    await interaction.editReply(commandErrors.userIrregularMember);
 
     return;
   }
 
-  if (!(await isMemberInIrregulars(member))) {
-    await interaction.editReply(commandErrors.userNotIrregular);
+  if (!(await isMemberInRegulars(member))) {
+    await interaction.editReply(commandErrors.userNotRegular);
 
     return;
   }
 
-  const existingPoll = await getSpecialPollByUserAndType(user.id, 'vipAdd');
+  const existingPoll = await getSpecialPollByUserAndType(
+    user.id,
+    'irregularsAdd',
+  );
 
   if (existingPoll !== null) {
     await interaction.editReply(commandErrors.userSpecialPending);
@@ -135,7 +137,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, 'vipAdd');
+  const pollId = await startSpecialPoll(interaction, user, 'irregularsAdd');
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.pollCreationFailed);
@@ -171,7 +173,9 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
   });
 };
 
-const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
+const handleIrregularsRemove = async (
+  interaction: ChatInputCommandInteraction,
+) => {
   if (!interaction.channel?.isSendable()) {
     await interaction.editReply({
       content: commandErrors.unsupportedChannelType,
@@ -212,13 +216,22 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (!(await isMemberInVip(member))) {
-    await interaction.editReply(commandErrors.userNotVipMember);
+  if (await isMemberInVip(member)) {
+    await interaction.editReply(commandErrors.userVipMember);
 
     return;
   }
 
-  const existingPoll = await getSpecialPollByUserAndType(user.id, 'vipRemove');
+  if (!(await isMemberInIrregulars(member))) {
+    await interaction.editReply(commandErrors.userNotIrregular);
+
+    return;
+  }
+
+  const existingPoll = await getSpecialPollByUserAndType(
+    user.id,
+    'irregularsRemove',
+  );
 
   if (existingPoll !== null) {
     await interaction.editReply(commandErrors.userSpecialPending);
@@ -226,7 +239,7 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, 'vipRemove');
+  const pollId = await startSpecialPoll(interaction, user, 'irregularsRemove');
 
   if (pollId === null) {
     await interaction.editReply(commandErrors.pollCreationFailed);
@@ -262,16 +275,9 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
   });
 };
 
-const handleVipRecreate = async (interaction: ChatInputCommandInteraction) => {
-  await recreateVipTemporaryChannel();
-
-  await interaction.editReply(commandResponses.temporaryChannelRecreated);
-};
-
-const vipHandlers = {
-  add: handleVipAdd,
-  recreate: handleVipRecreate,
-  remove: handleVipRemove,
+const irregularsHandlers = {
+  add: handleIrregularsAdd,
+  remove: handleIrregularsRemove,
 };
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
@@ -289,7 +295,9 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   const subcommand = interaction.options.getSubcommand();
 
-  if (subcommand in vipHandlers) {
-    await vipHandlers[subcommand as keyof typeof vipHandlers](interaction);
+  if (subcommand in irregularsHandlers) {
+    await irregularsHandlers[subcommand as keyof typeof irregularsHandlers](
+      interaction,
+    );
   }
 };

@@ -325,7 +325,7 @@ const handleMembersIrregulars = async (
     )
   ).filter((member) => member !== null);
   const irregularsMemberNames = formatUsers(
-    labels.regulars,
+    labels.irregulars,
     irregularsMembers.map(({ user }) => user),
   );
 

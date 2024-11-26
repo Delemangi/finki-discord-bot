@@ -41,6 +41,9 @@ export const specialPollTypes = [
   'adminRemove',
   'bar',
   'unbar',
+  'irregularsRequest',
+  'irregularsAdd',
+  'irregularsRemove',
 ] as const;
 
 export const createPollChoices = (choices: readonly string[]) => {
@@ -139,6 +142,19 @@ export const startSpecialPoll = async (
       title = specialStringFunctions.councilRemoveTitle(vipUser.tag);
       description =
         specialStringFunctions.councilRemoveDescription(partialUser);
+      break;
+
+    case 'irregularsAdd':
+    case 'irregularsRequest':
+      title = specialStringFunctions.irregularsAddTitle(vipUser.tag);
+      description =
+        specialStringFunctions.irregularsAddDescription(partialUser);
+      break;
+
+    case 'irregularsRemove':
+      title = specialStringFunctions.irregularsRemoveTitle(vipUser.tag);
+      description =
+        specialStringFunctions.irregularsRemoveDescription(partialUser);
       break;
 
     case 'unbar':
@@ -291,6 +307,7 @@ const decideSpecialPollByAdministratorVote = async (
   switch (specialPoll.type) {
     case 'adminAdd':
     case 'councilAdd':
+    case 'irregularsAdd':
     case 'vipAdd':
     case 'vipRequest':
       if (

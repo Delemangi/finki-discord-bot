@@ -3,20 +3,24 @@ import { tagAndMentionUser } from './users.js';
 import { userMention } from 'discord.js';
 
 export const specialStrings = {
-  vipAcceptButton: 'Прифаќам',
-  vipAcceptedTitle: 'Заклетва',
-  vipConfirm:
-    'Изјавувам дека функцијата „член на ВИП во официјалниот Дискорд сервер на студентите на ФИНКИ“ ќе ја вршам совесно и одговорно и ќе го почитувам Уставот, законите на Република Северна Македонија и правилата на официјалниот Discord сервер на студентите на ФИНКИ.',
-  vipRejected: 'Вашата молба беше одбиена.',
-  vipRequestActive: 'Вашата молба е активна.',
-  vipRequestButton: 'Да',
-  vipRequestFailed: 'Настана грешка при испраќање на вашата молба.',
-  vipRequestPaused: 'Молбите за влез во ВИП се моментално ставени во мирување.',
-  vipRequestSent: 'Вашата молба е испратена. Ќе бидете известени за одлуката.',
-  vipRequestText:
-    'Дали сакате да станете член на ВИП во серверот на студентите на ФИНКИ?',
-  vipRequestTitle: 'Членство во ВИП',
-  vipRequestUnderLevel: 'Не го исполнувате условот за ниво за аплицирање.',
+  accept: 'Прифаќам',
+  irregularsButton: 'Да, во Вонредните',
+  irregularsOath:
+    '### Изјавувам дека функцијата „член на Вонредните во официјалниот Дискорд сервер на студентите на ФИНКИ“ ќе ја вршам совесно и одговорно и ќе го почитувам Уставот, законите на Република Северна Македонија и правилата на официјалниот Discord сервер на студентите на ФИНКИ.',
+  oath: 'Заклетва',
+  requestActive: 'Вашата молба е активна.',
+  requestFailed: 'Настана грешка при испраќање на вашата молба.',
+  requestRejected: 'Вашата молба беше одбиена.',
+  requestSent:
+    'Вашата молба е испратена. Ќе бидете известени за одлуката за најкасно 24 часа.',
+  requestsPaused: 'Молбите се моментално ставени во мирување.',
+  requestText:
+    'Дали сакате да станете член на повисока заедница во серверот на студентите на ФИНКИ?',
+  requestTitle: 'Членство во повисоки заедници',
+  specialRequestUnderLevel: 'Не го исполнувате условот за ниво за аплицирање.',
+  vipButton: 'Да, во ВИП',
+  vipOath:
+    '### Изјавувам дека функцијата „член на ВИП во официјалниот Дискорд сервер на студентите на ФИНКИ“ ќе ја вршам совесно и одговорно и ќе го почитувам Уставот, законите на Република Северна Македонија и правилата на официјалниот Discord сервер на студентите на ФИНКИ.',
 };
 
 export const specialStringFunctions = {
@@ -94,6 +98,47 @@ export const specialStringFunctions = {
     `# Корисникот ${userMention(userId)} не е избркан од Советот.`,
 
   councilRemoveTitle: (userTag: string) => `Излез од Советот за ${userTag}`,
+
+  irregularsAddAccepted: (userId: string) =>
+    `# Корисникот ${userMention(userId)} е одобрен како член на Вонредните.`,
+
+  irregularsAddDescription: ({ id, tag }: PartialUser) =>
+    `Дали се согласувате корисникот ${tagAndMentionUser({
+      id,
+      tag,
+    })} да стане член на Вонредните?`,
+
+  irregularsAddRejected: (userId: string) =>
+    `# Корисникот ${userMention(userId)} не е одобрен како член на Вонредните.`,
+
+  irregularsAddRequestAccepted: (userId: string) =>
+    `# ${userMention(userId)} Советот донесе одлука да Ве покани во Вонредните.`,
+
+  irregularsAddTitle: (userTag: string) => `Влез во Вонредните за ${userTag}`,
+
+  irregularsRemoveAccepted: (userId: string) =>
+    `# Корисникот ${userMention(userId)} е избркан од Вонредните.`,
+
+  irregularsRemoveDescription: ({ id, tag }: PartialUser) =>
+    `Дали се согласувате корисникот ${tagAndMentionUser({
+      id,
+      tag,
+    })} да биде избркан од Вонредните?`,
+
+  irregularsRemoveRejected: (userId: string) =>
+    `# Корисникот ${userMention(userId)} не е избркан од Вонредните.`,
+
+  irregularsRemoveTitle: (userTag: string) =>
+    `Излез од Вонредните за ${userTag}`,
+
+  irregularsRequestAccepted: (userId: string) =>
+    `# ${userMention(userId)} Вашата молба за влез во Вонредните беше одобрена.`,
+
+  irregularsRequestRejected: (userId: string) =>
+    `# ${userMention(userId)} Вашата молба за влез во Вонредните не беше одобрена.`,
+
+  irregularsWelcome: (userId: string) =>
+    `# Добредојде во Вонредните, ${userMention(userId)}!`,
 
   tempRegularsTopic: (date: string) =>
     `Задните соби на редовните. Содржината се брише секој ден. Следно бришење е во ${date}.`,

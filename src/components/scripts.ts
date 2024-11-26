@@ -322,21 +322,25 @@ export const getRulesEmbed = async (rules: Rule[]) => {
     );
 };
 
-export const getVipRequestEmbed = async () => {
+export const getSpecialRequestEmbed = async () => {
   return new EmbedBuilder()
     .setColor(getThemeColor())
-    .setTitle(specialStrings.vipRequestTitle)
-    .setDescription(specialStrings.vipRequestText);
+    .setTitle(specialStrings.requestTitle)
+    .setDescription(specialStrings.requestText);
 };
 
-export const getVipRequestComponents = () => {
+export const getSpecialRequestComponents = () => {
   const components = [];
 
   const row = new ActionRowBuilder<ButtonBuilder>();
   row.addComponents(
     new ButtonBuilder()
+      .setCustomId('irregulars:request')
+      .setLabel(specialStrings.irregularsButton)
+      .setStyle(ButtonStyle.Secondary),
+    new ButtonBuilder()
       .setCustomId('vip:request')
-      .setLabel(specialStrings.vipRequestButton)
+      .setLabel(specialStrings.vipButton)
       .setStyle(ButtonStyle.Primary),
   );
   components.push(row);
@@ -347,8 +351,8 @@ export const getVipRequestComponents = () => {
 export const getVipConfirmEmbed = async () => {
   return new EmbedBuilder()
     .setColor(getThemeColor())
-    .setTitle(specialStrings.vipAcceptedTitle)
-    .setDescription(specialStrings.vipConfirm);
+    .setTitle(specialStrings.oath)
+    .setDescription(specialStrings.vipOath);
 };
 
 export const getVipConfirmComponents = () => {
@@ -358,7 +362,7 @@ export const getVipConfirmComponents = () => {
   row.addComponents(
     new ButtonBuilder()
       .setCustomId('vip:confirm')
-      .setLabel(specialStrings.vipAcceptButton)
+      .setLabel(specialStrings.accept)
       .setStyle(ButtonStyle.Success),
   );
   components.push(row);
@@ -373,7 +377,44 @@ export const getVipAcknowledgeComponents = () => {
   row.addComponents(
     new ButtonBuilder()
       .setCustomId('vip:acknowledge')
-      .setLabel(specialStrings.vipAcceptButton)
+      .setLabel(specialStrings.accept)
+      .setStyle(ButtonStyle.Success),
+  );
+  components.push(row);
+
+  return components;
+};
+
+export const getIrregularsConfirmEmbed = async () => {
+  return new EmbedBuilder()
+    .setColor(getThemeColor())
+    .setTitle(specialStrings.oath)
+    .setDescription(specialStrings.irregularsOath);
+};
+
+export const getIrregularsConfirmComponents = () => {
+  const components = [];
+
+  const row = new ActionRowBuilder<ButtonBuilder>();
+  row.addComponents(
+    new ButtonBuilder()
+      .setCustomId('irregulars:confirm')
+      .setLabel(specialStrings.accept)
+      .setStyle(ButtonStyle.Success),
+  );
+  components.push(row);
+
+  return components;
+};
+
+export const getIrregularsAcknowledgeComponents = () => {
+  const components = [];
+
+  const row = new ActionRowBuilder<ButtonBuilder>();
+  row.addComponents(
+    new ButtonBuilder()
+      .setCustomId('irregulars:acknowledge')
+      .setLabel(specialStrings.accept)
       .setStyle(ButtonStyle.Success),
   );
   components.push(row);

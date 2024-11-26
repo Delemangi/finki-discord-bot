@@ -25,6 +25,7 @@ export const labels = {
   finki: 'ФИНКИ',
   floor: 'Кат',
   girlies: 'Girlies',
+  irregulars: 'Вонредни',
   level: 'Ниво',
   link: 'Линк',
   links: 'Линкови',

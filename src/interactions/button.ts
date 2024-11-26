@@ -6,6 +6,9 @@ import {
 } from '../components/polls.js';
 import { getRemindersComponents } from '../components/reminders.js';
 import {
+  getIrregularsAcknowledgeComponents,
+  getIrregularsConfirmComponents,
+  getIrregularsConfirmEmbed,
   getVipAcknowledgeComponents,
   getVipConfirmComponents,
   getVipConfirmEmbed,
@@ -51,10 +54,12 @@ import { Channel } from '../types/schemas/Channel.js';
 import { Role } from '../types/schemas/Role.js';
 import { deleteResponse, getChannel } from '../utils/channels.js';
 import { getGuild } from '../utils/guild.js';
-import { COUNCIL_LEVEL, REGULAR_LEVEL } from '../utils/levels.js';
+import { COUNCIL_LEVEL, IRREGULARS_LEVEL, VIP_LEVEL } from '../utils/levels.js';
 import { logger } from '../utils/logger.js';
 import {
   isMemberBarred,
+  isMemberInIrregulars,
+  isMemberInRegulars,
   isMemberInVip,
   isMemberLevel,
 } from '../utils/members.js';
@@ -773,6 +778,105 @@ const handlePollButtonForUnbarVote = async (
   );
 };
 
+const handlePollButtonForIrregularsRequestVote = async (
+  poll: Poll,
+  specialPoll: SpecialPoll,
+) => {
+  const irregularsChannel = getChannel(Channel.Irregulars);
+  const oathChannel = getChannel(Channel.Oath);
+
+  if (poll.decision !== labels.yes) {
+    const rejectComponents = getIrregularsAcknowledgeComponents();
+    await oathChannel?.send({
+      components: rejectComponents,
+      content: specialStringFunctions.irregularsRequestRejected(
+        specialPoll.userId,
+      ),
+    });
+
+    await irregularsChannel?.send(
+      specialStringFunctions.irregularsAddRejected(specialPoll.userId),
+    );
+
+    return;
+  }
+
+  const confirmEmbed = await getIrregularsConfirmEmbed();
+  const confirmComponents = getIrregularsConfirmComponents();
+  await oathChannel?.send({
+    components: confirmComponents,
+    content: specialStringFunctions.irregularsRequestAccepted(
+      specialPoll.userId,
+    ),
+    embeds: [confirmEmbed],
+  });
+
+  await irregularsChannel?.send(
+    specialStringFunctions.irregularsAddAccepted(specialPoll.userId),
+  );
+};
+
+const handlePollButtonForIrregularsAddVote = async (
+  poll: Poll,
+  specialPoll: SpecialPoll,
+) => {
+  const irregularsChannel = getChannel(Channel.Irregulars);
+  const oathChannel = getChannel(Channel.Oath);
+
+  if (poll.decision !== labels.yes) {
+    await irregularsChannel?.send(
+      specialStringFunctions.irregularsAddRejected(specialPoll.userId),
+    );
+
+    return;
+  }
+
+  const confirmEmbed = await getIrregularsConfirmEmbed();
+  const confirmComponents = getIrregularsConfirmComponents();
+  await oathChannel?.send({
+    components: confirmComponents,
+    content: specialStringFunctions.irregularsAddRequestAccepted(
+      specialPoll.userId,
+    ),
+    embeds: [confirmEmbed],
+  });
+
+  await irregularsChannel?.send(
+    specialStringFunctions.irregularsAddAccepted(specialPoll.userId),
+  );
+};
+
+const handlePollButtonForIrregularsRemoveVote = async (
+  poll: Poll,
+  specialPoll: SpecialPoll,
+  member: GuildMember,
+) => {
+  const irregularsChannel = getChannel(Channel.Irregulars);
+
+  if (poll.decision !== labels.yes) {
+    await irregularsChannel?.send(
+      specialStringFunctions.irregularsRemoveRejected(specialPoll.userId),
+    );
+
+    return;
+  }
+
+  const irregularsRoleId = await getRolesProperty(Role.Irregulars);
+
+  if (irregularsRoleId === undefined) {
+    await irregularsChannel?.send(
+      commandErrorFunctions.roleNotFound(Role.Irregulars),
+    );
+    logger.warn(logErrorFunctions.roleNotFound(Role.Irregulars));
+  } else {
+    await member.roles.remove(irregularsRoleId);
+  }
+
+  await irregularsChannel?.send(
+    specialStringFunctions.irregularsRemoveAccepted(specialPoll.userId),
+  );
+};
+
 export const handlePollButtonForSpecialVote = async (
   poll: Poll,
   member: GuildMember,
@@ -807,6 +911,18 @@ export const handlePollButtonForSpecialVote = async (
 
     case 'councilRemove':
       await handlePollButtonForCouncilRemoveVote(poll, specialPoll, member);
+      break;
+
+    case 'irregularsAdd':
+      await handlePollButtonForIrregularsAddVote(poll, specialPoll);
+      break;
+
+    case 'irregularsRemove':
+      await handlePollButtonForIrregularsRemoveVote(poll, specialPoll, member);
+      break;
+
+    case 'irregularsRequest':
+      await handlePollButtonForIrregularsRequestVote(poll, specialPoll);
       break;
 
     case 'unbar':
@@ -1101,7 +1217,7 @@ export const handleVipButton = async (
 
   if (await isMemberBarred(interaction.user.id)) {
     await interaction.reply({
-      content: specialStrings.vipRejected,
+      content: specialStrings.requestRejected,
       ephemeral: true,
     });
 
@@ -1177,7 +1293,7 @@ export const handleVipButton = async (
 
   if (!(await getConfigProperty('oathEnabled'))) {
     const message = await interaction.reply({
-      content: specialStrings.vipRequestPaused,
+      content: specialStrings.requestsPaused,
       ephemeral: true,
     });
     void deleteResponse(message);
@@ -1185,9 +1301,9 @@ export const handleVipButton = async (
     return;
   }
 
-  if (!(await isMemberLevel(member, REGULAR_LEVEL))) {
+  if (!(await isMemberLevel(member, VIP_LEVEL, true))) {
     const message = await interaction.reply({
-      content: specialStrings.vipRequestUnderLevel,
+      content: specialStrings.specialRequestUnderLevel,
       ephemeral: true,
     });
     void deleteResponse(message);
@@ -1201,7 +1317,7 @@ export const handleVipButton = async (
   );
   if (existingPoll !== null) {
     const message = await interaction.reply({
-      content: specialStrings.vipRequestActive,
+      content: specialStrings.requestActive,
       ephemeral: true,
     });
     void deleteResponse(message);
@@ -1217,7 +1333,7 @@ export const handleVipButton = async (
 
   if (specialPollId === null) {
     await interaction.reply({
-      content: specialStrings.vipRequestFailed,
+      content: specialStrings.requestFailed,
       ephemeral: true,
     });
 
@@ -1228,7 +1344,7 @@ export const handleVipButton = async (
 
   if (pollWithOptions === null) {
     await interaction.reply({
-      content: specialStrings.vipRequestFailed,
+      content: specialStrings.requestFailed,
       ephemeral: true,
     });
 
@@ -1252,7 +1368,187 @@ export const handleVipButton = async (
   });
 
   await interaction.reply({
-    content: specialStrings.vipRequestSent,
+    content: specialStrings.requestSent,
+    ephemeral: true,
+  });
+};
+
+export const handleIrregularsButton = async (
+  interaction: ButtonInteraction,
+  args: string[],
+) => {
+  const member = interaction.member as GuildMember;
+
+  if (await isMemberInIrregulars(member)) {
+    await interaction.reply({
+      content: commandErrors.alreadyIrregular,
+      ephemeral: true,
+    });
+
+    return;
+  }
+
+  if (await isMemberBarred(interaction.user.id)) {
+    await interaction.reply({
+      content: specialStrings.requestRejected,
+      ephemeral: true,
+    });
+
+    return;
+  }
+
+  if (!(await isMemberInRegulars(member))) {
+    await interaction.reply({
+      content: specialStrings.requestRejected,
+      ephemeral: true,
+    });
+
+    return;
+  }
+
+  const irregularsRoleId = await getRolesProperty(Role.Irregulars);
+  const councilRoleId = await getRolesProperty(Role.Council);
+
+  if (args[0] === 'acknowledge') {
+    if (
+      interaction.user.id !==
+      USER_ID_REGEX.exec(interaction.message.content)?.[0]
+    ) {
+      const resp = await interaction.reply({
+        content: commandErrors.oathNoPermission,
+        ephemeral: true,
+      });
+      void deleteResponse(resp);
+
+      return;
+    }
+
+    await interaction.deferUpdate();
+    await interaction.message.delete();
+
+    return;
+  }
+
+  if (args[0] === 'confirm') {
+    if (
+      interaction.user.id !==
+      USER_ID_REGEX.exec(interaction.message.content)?.[0]
+    ) {
+      const resp = await interaction.reply({
+        content: commandErrors.oathNoPermission,
+        ephemeral: true,
+      });
+      void deleteResponse(resp);
+
+      return;
+    }
+
+    const irregularsChannel = getChannel(Channel.Irregulars);
+    await irregularsChannel?.send(
+      specialStringFunctions.irregularsWelcome(interaction.user.id),
+    );
+
+    if (irregularsRoleId === undefined) {
+      await irregularsChannel?.send(
+        commandErrorFunctions.roleNotFound(Role.Irregulars),
+      );
+      logger.warn(logErrorFunctions.roleNotFound(Role.Irregulars));
+    } else {
+      await member.roles.add(irregularsRoleId);
+    }
+
+    const message = await interaction.reply({
+      content: specialStringFunctions.irregularsWelcome(interaction.user.id),
+      ephemeral: true,
+    });
+    void deleteResponse(message);
+
+    await interaction.message.delete();
+
+    return;
+  }
+
+  if (!(await getConfigProperty('oathEnabled'))) {
+    const message = await interaction.reply({
+      content: specialStrings.requestsPaused,
+      ephemeral: true,
+    });
+    void deleteResponse(message);
+
+    return;
+  }
+
+  if (!(await isMemberLevel(member, IRREGULARS_LEVEL, true))) {
+    const message = await interaction.reply({
+      content: specialStrings.specialRequestUnderLevel,
+      ephemeral: true,
+    });
+    void deleteResponse(message);
+
+    return;
+  }
+
+  const existingPoll = await getSpecialPollByUserAndType(
+    interaction.user.id,
+    'irregularsRequest',
+  );
+
+  if (existingPoll !== null) {
+    const message = await interaction.reply({
+      content: specialStrings.requestActive,
+      ephemeral: true,
+    });
+    void deleteResponse(message);
+
+    return;
+  }
+
+  const specialPollId = await startSpecialPoll(
+    interaction,
+    interaction.user,
+    'irregularsRequest',
+  );
+
+  if (specialPollId === null) {
+    await interaction.reply({
+      content: specialStrings.requestFailed,
+      ephemeral: true,
+    });
+
+    return;
+  }
+
+  const pollWithOptions = await getPollById(specialPollId);
+
+  if (pollWithOptions === null) {
+    await interaction.reply({
+      content: specialStrings.requestFailed,
+      ephemeral: true,
+    });
+
+    return;
+  }
+
+  const councilChannel = getChannel(Channel.Council);
+
+  await councilChannel?.send({
+    components: getPollComponents(pollWithOptions),
+    embeds: [await getPollEmbed(pollWithOptions)],
+  });
+
+  if (councilRoleId !== undefined) {
+    await councilChannel?.send(roleMention(councilRoleId));
+  }
+
+  const components = getPollStatsComponents(pollWithOptions);
+
+  await councilChannel?.send({
+    components,
+    content: commandResponseFunctions.pollStats(pollWithOptions.title),
+  });
+
+  await interaction.reply({
+    content: specialStrings.requestSent,
     ephemeral: true,
   });
 };

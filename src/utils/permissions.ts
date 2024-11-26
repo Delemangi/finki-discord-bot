@@ -39,6 +39,14 @@ const commandPermissions: Record<
     permissions: [],
     roles: [Role.Administrators],
   },
+  'irregulars add': {
+    permissions: [],
+    roles: [Role.Council],
+  },
+  'irregulars remove': {
+    permissions: [],
+    roles: [Role.Council],
+  },
   manage: {
     permissions: [],
     roles: [Role.Administrators, Role.Moderators],
