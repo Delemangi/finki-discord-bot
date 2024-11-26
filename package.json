@@ -8,8 +8,8 @@
     "async-lock": "^1.4.1",
     "chrono-node": "^2.7.7",
     "croner": "^9.0.0",
-    "discord-api-types": "^0.37.108",
     "discord.js": "^14.16.3",
+    "discord-api-types": "^0.37.108",
     "prisma": "^5.22.0",
     "winston": "^3.17.0",
     "zod": "^3.23.8"
