@@ -117,6 +117,9 @@ const handleMembersVip = async (interaction: ChatInputCommandInteraction) => {
   await safeReplyToInteraction(
     interaction,
     `${vipMembersFormatted}\n${adminTeamMembersFormatted}`,
+    {
+      mentionUsers: false,
+    },
   );
 };
 
@@ -161,7 +164,9 @@ const handleMembersRegulars = async (
     regularsMembers.map(({ user }) => user),
   );
 
-  await safeReplyToInteraction(interaction, regularsMemberNames);
+  await safeReplyToInteraction(interaction, regularsMemberNames, {
+    mentionUsers: false,
+  });
 };
 
 const handleMembersGirlies = async (
@@ -193,7 +198,9 @@ const handleMembersGirlies = async (
     girliesMembers.map(({ user }) => user),
   );
 
-  await safeReplyToInteraction(interaction, girliesMembersFormatted);
+  await safeReplyToInteraction(interaction, girliesMembersFormatted, {
+    mentionUsers: false,
+  });
 };
 
 const handleMembersBoys = async (interaction: ChatInputCommandInteraction) => {
@@ -223,7 +230,9 @@ const handleMembersBoys = async (interaction: ChatInputCommandInteraction) => {
     boysMembers.map(({ user }) => user),
   );
 
-  await safeReplyToInteraction(interaction, boysMembersFormatted);
+  await safeReplyToInteraction(interaction, boysMembersFormatted, {
+    mentionUsers: false,
+  });
 };
 
 const handleMembersBarred = async (
@@ -263,7 +272,9 @@ const handleMembersBarred = async (
     barredMembers.map(({ user }) => user),
   );
 
-  await safeReplyToInteraction(interaction, bannedMembersFormatted);
+  await safeReplyToInteraction(interaction, bannedMembersFormatted, {
+    mentionUsers: false,
+  });
 };
 
 const handleMembersBoosters = async (
@@ -295,7 +306,9 @@ const handleMembersBoosters = async (
     boosterMembers.map(({ user }) => user),
   );
 
-  await safeReplyToInteraction(interaction, boosterMembersFormatted);
+  await safeReplyToInteraction(interaction, boosterMembersFormatted, {
+    mentionUsers: false,
+  });
 };
 
 const handleMembersIrregulars = async (
@@ -329,7 +342,9 @@ const handleMembersIrregulars = async (
     irregularsMembers.map(({ user }) => user),
   );
 
-  await safeReplyToInteraction(interaction, irregularsMemberNames);
+  await safeReplyToInteraction(interaction, irregularsMemberNames, {
+    mentionUsers: false,
+  });
 };
 
 const membersHandlers = {

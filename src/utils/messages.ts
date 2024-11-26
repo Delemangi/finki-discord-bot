@@ -72,9 +72,23 @@ export const safeReplyToInteraction = async (
         content: nextReply,
       });
     } else if (interaction.deferred) {
-      await interaction.editReply(nextReply);
+      await interaction.editReply({
+        ...(!mentionUsers && {
+          allowedMentions: {
+            users: [],
+          },
+        }),
+        content: nextReply,
+      });
     } else {
-      await interaction.reply(nextReply);
+      await interaction.reply({
+        ...(!mentionUsers && {
+          allowedMentions: {
+            users: [],
+          },
+        }),
+        content: nextReply,
+      });
     }
 
     reply = true;
