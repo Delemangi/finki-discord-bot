@@ -189,7 +189,7 @@ export const hasCommandPermission = async (
   }
 
   // If all roles are undefined, the command is restricted for safety
-  if (roles.every((role) => role === undefined)) {
+  if (roles.length > 0 && roles.every((role) => role === undefined)) {
     return false;
   }
 
