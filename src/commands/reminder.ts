@@ -6,6 +6,7 @@ import {
   commandResponseFunctions,
   commandResponses,
 } from '../translations/commands.js';
+import { safeReplyToInteraction } from '../utils/messages.js';
 import { parseDate } from 'chrono-node';
 import {
   channelMention,
@@ -107,6 +108,9 @@ const handleReminderList = async (interaction: ChatInputCommandInteraction) => {
     )
     .join('\n');
 
+  await safeReplyToInteraction(interaction, remindersList, {
+    mentionUsers: false,
+  });
   await interaction.editReply(remindersList);
 };
 
