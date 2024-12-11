@@ -12,7 +12,7 @@
     "discord-api-types": "^0.37.111",
     "prisma": "^6.0.1",
     "winston": "^3.17.0",
-    "zod": "^3.24.0"
+    "zod": "^3.24.1"
   },
   "description": "FINKI Discord Bot",
   "devDependencies": {
