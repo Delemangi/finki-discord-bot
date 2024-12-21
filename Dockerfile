@@ -2,7 +2,7 @@ FROM --platform=${BUILDPLATFORM} node:20-alpine AS build
 WORKDIR /app
 
 COPY package.json package-lock.json ./
-RUN npm i --ignore-scripts && npm cache clean --force
+RUN npm i --ignore-scripts
 
 COPY prisma ./prisma
 RUN npm run generate
@@ -13,13 +13,13 @@ RUN npm run build
 FROM node:20-alpine AS final
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+RUN apk add --no-cache openssl
 
-COPY --from=build /app/node_modules ./node_modules
-RUN npm prune --production --no-optional && npm cache clean --force
+COPY package.json package-lock.json ./
+RUN npm i --production --ignore-scripts
 
 COPY --from=build /app/prisma ./prisma
-RUN npm run generate
+RUN npm run generate && npm cache clean --force
 
 COPY --from=build /app/dist ./dist
 
