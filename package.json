@@ -8,7 +8,7 @@
     "async-lock": "^1.4.1",
     "chrono-node": "^2.7.7",
     "croner": "^9.0.0",
-    "discord.js": "^14.16.3",
+    "discord.js": "^14.17.2",
     "discord-api-types": "^0.37.115",
     "prisma": "^6.1.0",
     "winston": "^3.17.0",
@@ -25,18 +25,15 @@
     "nodemon": "^3.1.9",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
-    "typescript": "~5.7.0"
+    "typescript": "~5.7.2"
   },
   "engines": {
-    "node": "^20"
+    "node": ">=20"
   },
   "homepage": "https://github.com/Delemangi/finki-discord-bot",
   "license": "MIT",
   "main": "src/index.ts",
   "name": "finki-discord-bot",
-  "overrides": {
-    "@types/node": "^20"
-  },
   "repository": {
     "type": "git",
     "url": "https://github.com/Delemangi/finki-discord-bot.git"
