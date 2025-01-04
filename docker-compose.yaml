@@ -27,6 +27,8 @@ services:
         - 'pg_isready -U $$POSTGRES_USER'
       timeout: 30s
     image: postgres:16
+    ports:
+      - 5432:5432
     restart: unless-stopped
     volumes:
       - ./db:/var/lib/postgresql/data
