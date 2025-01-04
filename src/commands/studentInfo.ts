@@ -11,7 +11,6 @@ const name = 'Student Info';
 
 export const data = new ContextMenuCommandBuilder()
   .setName(name)
-  // @ts-expect-error discord-api-types issue
   .setType(ApplicationCommandType.User)
   .setContexts(InteractionContextType.Guild);
 

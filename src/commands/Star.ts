@@ -18,7 +18,6 @@ const name = 'Star';
 
 export const data = new ContextMenuCommandBuilder()
   .setName(name)
-  // @ts-expect-error discord-api-types issue
   .setType(ApplicationCommandType.Message)
   .setContexts(InteractionContextType.Guild);
 
