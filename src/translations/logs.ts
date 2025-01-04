@@ -29,6 +29,9 @@ export const logMessageFunctions = {
 
   closedTicket: (ticketThreadId: string) => `Closed ticket ${ticketThreadId}`,
 
+  configPropertyChanged: (property: string) =>
+    `Config property ${property} changed, refreshing...`,
+
   loggedIn: (username: string | undefined) =>
     `Bot is ready! Logged in as ${username ?? 'an unknown user'}`,
 

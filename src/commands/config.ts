@@ -12,7 +12,7 @@ import {
   commandErrorFunctions,
 } from '../translations/commands.js';
 import { createPollChoices } from '../utils/polls.js';
-import { refreshOnConfigChange } from '../utils/refresh.js';
+import { refreshOnConfigChange } from '../configuration/refresh.js';
 import {
   type ChatInputCommandInteraction,
   codeBlock,
