@@ -3,6 +3,7 @@ import {
   getConfigProperty,
   setConfigProperty,
 } from '../configuration/main.js';
+import { refreshOnConfigChange } from '../configuration/refresh.js';
 import {
   BotConfigKeysSchema,
   RequiredBotConfigSchema,
@@ -12,7 +13,6 @@ import {
   commandErrorFunctions,
 } from '../translations/commands.js';
 import { createPollChoices } from '../utils/polls.js';
-import { refreshOnConfigChange } from '../configuration/refresh.js';
 import {
   type ChatInputCommandInteraction,
   codeBlock,
