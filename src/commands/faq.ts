@@ -1,4 +1,4 @@
-import { getCommonCommand } from '../shared/faq.js';
+import { getCommonCommand } from '../shared/commands/faq.js';
 
 const { data, execute } = getCommonCommand('faq');
 

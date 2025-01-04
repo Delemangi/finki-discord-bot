@@ -1,11 +1,11 @@
-import { getClassroomEmbed } from '../components/commands.js';
-import { getClassrooms } from '../configuration/files.js';
-import { type Command } from '../lib/types/Command.js';
+import { getClassroomEmbed } from '../../components/commands.js';
+import { getClassrooms } from '../../configuration/files.js';
+import { type Command } from '../../lib/types/Command.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
-} from '../translations/commands.js';
+} from '../../translations/commands.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,

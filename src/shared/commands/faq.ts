@@ -1,12 +1,12 @@
 import {
   getQuestionComponents,
   getQuestionEmbed,
-} from '../components/commands.js';
-import { getNthQuestion, getQuestion } from '../data/Question.js';
+} from '../../components/commands.js';
+import { getNthQuestion, getQuestion } from '../../data/Question.js';
 import {
   commandDescriptions,
   commandErrors,
-} from '../translations/commands.js';
+} from '../../translations/commands.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,

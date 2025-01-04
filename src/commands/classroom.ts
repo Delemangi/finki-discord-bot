@@ -1,4 +1,4 @@
-import { getCommonCommand } from '../shared/classroom.js';
+import { getCommonCommand } from '../shared/commands/classroom.js';
 
 const { data, execute } = getCommonCommand('classroom');
 
