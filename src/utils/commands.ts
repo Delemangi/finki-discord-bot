@@ -56,8 +56,8 @@ export const isContextMenuCommand = (
   const commandData = command?.data.toJSON();
 
   return (
-    commandData?.type === ApplicationCommandType.Message ||
-    commandData?.type === ApplicationCommandType.User
+    commandData.type === ApplicationCommandType.Message ||
+    commandData.type === ApplicationCommandType.User
   );
 };
 
