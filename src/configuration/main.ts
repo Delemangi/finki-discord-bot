@@ -1,11 +1,11 @@
 import { getConfig, setConfig } from '../data/Config.js';
-import { configErrors } from '../translations/errors.js';
 import {
   type BotConfig,
   type BotConfigKeys,
   BotConfigSchema,
   type FullyRequiredBotConfig,
-} from '../types/schemas/BotConfig.js';
+} from '../lib/schemas/BotConfig.js';
+import { configErrors } from '../translations/errors.js';
 import { logger } from '../utils/logger.js';
 import { DEFAULT_CONFIGURATION } from './defaults.js';
 import { type ColorResolvable } from 'discord.js';

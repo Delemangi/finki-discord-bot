@@ -1,5 +1,5 @@
+import { type BotConfigKeys } from '../lib/schemas/BotConfig.js';
 import { logMessageFunctions } from '../translations/logs.js';
-import { type BotConfigKeys } from '../types/schemas/BotConfig.js';
 import { initializeChannels } from './channels.js';
 import { logger } from './logger.js';
 import { initializeRoles } from './roles.js';

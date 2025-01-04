@@ -4,13 +4,13 @@ import {
   setConfigProperty,
 } from '../configuration/main.js';
 import {
+  BotConfigKeysSchema,
+  RequiredBotConfigSchema,
+} from '../lib/schemas/BotConfig.js';
+import {
   commandDescriptions,
   commandErrorFunctions,
 } from '../translations/commands.js';
-import {
-  BotConfigKeysSchema,
-  RequiredBotConfigSchema,
-} from '../types/schemas/BotConfig.js';
 import { createPollChoices } from '../utils/polls.js';
 import { refreshOnConfigChange } from '../utils/refresh.js';
 import {

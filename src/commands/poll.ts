@@ -18,6 +18,7 @@ import {
   getMostPopularOptionByPollId,
 } from '../data/PollOption.js';
 import { getSpecialPollByPollId } from '../data/SpecialPoll.js';
+import { Role } from '../lib/schemas/Role.js';
 import {
   commandDescriptions,
   commandErrors,
@@ -25,7 +26,6 @@ import {
   commandResponses,
 } from '../translations/commands.js';
 import { logErrorFunctions } from '../translations/logs.js';
-import { Role } from '../types/schemas/Role.js';
 import { deleteResponse } from '../utils/channels.js';
 import { commandMention } from '../utils/commands.js';
 import { getGuild } from '../utils/guild.js';

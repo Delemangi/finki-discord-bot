@@ -9,10 +9,10 @@ import {
   getExperienceByUserId,
   updateExperience,
 } from '../data/Experience.js';
+import { Channel } from '../lib/schemas/Channel.js';
+import { Role } from '../lib/schemas/Role.js';
 import { experienceMessages } from '../translations/experience.js';
 import { logErrorFunctions } from '../translations/logs.js';
-import { Channel } from '../types/schemas/Channel.js';
-import { Role } from '../types/schemas/Role.js';
 import { getChannel } from './channels.js';
 import { COUNCIL_LEVEL, REGULAR_LEVEL } from './levels.js';
 import { logger } from './logger.js';

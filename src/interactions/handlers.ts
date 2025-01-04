@@ -5,9 +5,9 @@ import {
   getMessageContextMenuCommandEmbed,
   getUserContextMenuCommandEmbed,
 } from '../components/logs.js';
+import { Channel } from '../lib/schemas/Channel.js';
 import { commandErrors } from '../translations/commands.js';
 import { logErrorFunctions, logShortStrings } from '../translations/logs.js';
-import { Channel } from '../types/schemas/Channel.js';
 import { deleteResponse, logEmbed } from '../utils/channels.js';
 import {
   getCommand,

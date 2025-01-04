@@ -1,4 +1,4 @@
-import { type BotConfig } from '../types/schemas/BotConfig.js';
+import { type BotConfig } from '../lib/schemas/BotConfig.js';
 import { logger } from '../utils/logger.js';
 import { database } from './database.js';
 

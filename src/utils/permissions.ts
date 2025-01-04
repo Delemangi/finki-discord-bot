@@ -1,6 +1,6 @@
 import { getRolesProperty } from '../configuration/main.js';
+import { Role } from '../lib/schemas/Role.js';
 import { commandDescriptions } from '../translations/commands.js';
-import { Role } from '../types/schemas/Role.js';
 import { isMemberAdministrator } from './members.js';
 import { type GuildMember, PermissionsBitField } from 'discord.js';
 

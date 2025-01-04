@@ -20,6 +20,8 @@ import {
   getSpecialPolls,
 } from '../data/SpecialPoll.js';
 import { handlePollButtonForSpecialVote } from '../interactions/button.js';
+import { Channel } from '../lib/schemas/Channel.js';
+import { Role } from '../lib/schemas/Role.js';
 import {
   commandDescriptions,
   commandErrors,
@@ -29,8 +31,6 @@ import {
 import { labels } from '../translations/labels.js';
 import { logErrorFunctions } from '../translations/logs.js';
 import { formatUsers } from '../translations/users.js';
-import { Channel } from '../types/schemas/Channel.js';
-import { Role } from '../types/schemas/Role.js';
 import { deleteResponse } from '../utils/channels.js';
 import { getGuild, getMemberFromGuild } from '../utils/guild.js';
 import { logger } from '../utils/logger.js';

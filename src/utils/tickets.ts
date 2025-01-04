@@ -5,13 +5,13 @@ import {
   getIntervalsProperty,
   getTicketingProperty,
 } from '../configuration/main.js';
+import { Channel } from '../lib/schemas/Channel.js';
+import { type Ticket } from '../lib/schemas/Ticket.js';
 import { logMessageFunctions } from '../translations/logs.js';
 import {
   ticketMessageFunctions,
   ticketMessages,
 } from '../translations/tickets.js';
-import { Channel } from '../types/schemas/Channel.js';
-import { type Ticket } from '../types/schemas/Ticket.js';
 import { getChannel } from './channels.js';
 import { getGuild } from './guild.js';
 import { logger } from './logger.js';

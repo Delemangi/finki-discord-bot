@@ -4,6 +4,8 @@ import {
   getRolesProperty,
   getTemporaryChannelsProperty,
 } from '../configuration/main.js';
+import { type Channel, TemporaryChannel } from '../lib/schemas/Channel.js';
+import { Role } from '../lib/schemas/Role.js';
 import { labels } from '../translations/labels.js';
 import {
   logErrorFunctions,
@@ -11,8 +13,6 @@ import {
   logMessages,
 } from '../translations/logs.js';
 import { specialStringFunctions } from '../translations/special.js';
-import { type Channel, TemporaryChannel } from '../types/schemas/Channel.js';
-import { Role } from '../types/schemas/Role.js';
 import { client } from './client.js';
 import { getGuild } from './guild.js';
 import { logger } from './logger.js';

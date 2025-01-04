@@ -1,4 +1,4 @@
-import { type PartialUser } from '../types/interfaces/PartialUser.js';
+import { type PartialUser } from '../lib/types/PartialUser.js';
 import { tagAndMentionUser } from './users.js';
 import { userMention } from 'discord.js';
 

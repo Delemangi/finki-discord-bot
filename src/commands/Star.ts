@@ -1,10 +1,10 @@
 import { getChannelsProperty } from '../configuration/main.js';
+import { Channel } from '../lib/schemas/Channel.js';
 import {
   commandErrors,
   commandResponseFunctions,
 } from '../translations/commands.js';
 import { labels } from '../translations/labels.js';
-import { Channel } from '../types/schemas/Channel.js';
 import { getMemberFromGuild } from '../utils/guild.js';
 import { getOrCreateWebhookByChannelId } from '../utils/webhooks.js';
 import {

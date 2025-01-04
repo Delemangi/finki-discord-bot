@@ -1,14 +1,14 @@
-import { ClassroomSchema } from '../types/schemas/Classroom.js';
-import { CourseInformationSchema } from '../types/schemas/CourseInformation.js';
-import { CourseParticipantsSchema } from '../types/schemas/CourseParticipants.js';
-import { CoursePrerequisitesSchema } from '../types/schemas/CoursePrerequisites.js';
-import { CourseStaffSchema } from '../types/schemas/CourseStaff.js';
-import { LevelConfigSchema } from '../types/schemas/LevelConfig.js';
+import { ClassroomSchema } from '../lib/schemas/Classroom.js';
+import { CourseInformationSchema } from '../lib/schemas/CourseInformation.js';
+import { CourseParticipantsSchema } from '../lib/schemas/CourseParticipants.js';
+import { CoursePrerequisitesSchema } from '../lib/schemas/CoursePrerequisites.js';
+import { CourseStaffSchema } from '../lib/schemas/CourseStaff.js';
+import { LevelConfigSchema } from '../lib/schemas/LevelConfig.js';
 import {
   type RoleConfig,
   RoleConfigSchema,
-} from '../types/schemas/RoleConfig.js';
-import { StaffSchema } from '../types/schemas/Staff.js';
+} from '../lib/schemas/RoleConfig.js';
+import { StaffSchema } from '../lib/schemas/Staff.js';
 import { readFile } from 'node:fs/promises';
 import { z } from 'zod';
 

@@ -1,4 +1,4 @@
-import { type Role } from '../types/schemas/Role.js';
+import { type Role } from '../lib/schemas/Role.js';
 import {
   bold,
   codeBlock,

@@ -1,10 +1,10 @@
 import { getRolesProperty } from '../configuration/main.js';
+import { Role } from '../lib/schemas/Role.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponses,
 } from '../translations/commands.js';
-import { Role } from '../types/schemas/Role.js';
 import { recreateRegularsTemporaryChannel } from '../utils/channels.js';
 import { getMemberFromGuild } from '../utils/guild.js';
 import {

@@ -1,5 +1,5 @@
+import { Channel } from '../lib/schemas/Channel.js';
 import { bootMessage, logMessageFunctions } from '../translations/logs.js';
-import { Channel } from '../types/schemas/Channel.js';
 import {
   getChannel,
   initializeChannels,

@@ -9,10 +9,10 @@ import {
   createSpecialPoll,
   getSpecialPollByPollId,
 } from '../data/SpecialPoll.js';
+import { Role } from '../lib/schemas/Role.js';
+import { type PollWithOptions } from '../lib/types/PollWithOptions.js';
 import { labels } from '../translations/labels.js';
 import { specialStringFunctions } from '../translations/special.js';
-import { type PollWithOptions } from '../types/interfaces/PollWithOptions.js';
-import { Role } from '../types/schemas/Role.js';
 import { client } from './client.js';
 import { getGuild, getMemberFromGuild } from './guild.js';
 import { ADMIN_OVERRIDE_LEVEL } from './levels.js';

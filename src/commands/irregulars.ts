@@ -9,13 +9,13 @@ import {
 } from '../configuration/main.js';
 import { getPollById } from '../data/Poll.js';
 import { getSpecialPollByUserAndType } from '../data/SpecialPoll.js';
+import { Channel } from '../lib/schemas/Channel.js';
+import { Role } from '../lib/schemas/Role.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
 } from '../translations/commands.js';
-import { Channel } from '../types/schemas/Channel.js';
-import { Role } from '../types/schemas/Role.js';
 import { getMemberFromGuild } from '../utils/guild.js';
 import {
   isMemberAdmin,

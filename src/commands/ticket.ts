@@ -1,11 +1,11 @@
 import { getChannelsProperty } from '../configuration/main.js';
+import { Channel } from '../lib/schemas/Channel.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponses,
 } from '../translations/commands.js';
 import { labels } from '../translations/labels.js';
-import { Channel } from '../types/schemas/Channel.js';
 import { safeReplyToInteraction } from '../utils/messages.js';
 import { getActiveTickets } from '../utils/tickets.js';
 import {

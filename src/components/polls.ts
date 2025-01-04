@@ -4,13 +4,13 @@ import {
   getPollVotesByOptionId,
   getPollVotesByPollId,
 } from '../data/PollVote.js';
+import { type PollWithOptions } from '../lib/types/PollWithOptions.js';
 import {
   embedMessageFunctions,
   embedMessages,
 } from '../translations/embeds.js';
 import { labels } from '../translations/labels.js';
 import { paginationStringFunctions } from '../translations/pagination.js';
-import { type PollWithOptions } from '../types/interfaces/PollWithOptions.js';
 import { getUsername } from '../utils/members.js';
 import { getPollThreshold } from '../utils/polls.js';
 import { getMembersByRoleIds } from '../utils/roles.js';

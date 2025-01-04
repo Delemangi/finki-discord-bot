@@ -1,5 +1,5 @@
+import { type PollWithOptions } from '../lib/types/PollWithOptions.js';
 import { databaseErrorFunctions } from '../translations/database.js';
-import { type PollWithOptions } from '../types/interfaces/PollWithOptions.js';
 import { logger } from '../utils/logger.js';
 import { database } from './database.js';
 import { type Prisma } from '@prisma/client';

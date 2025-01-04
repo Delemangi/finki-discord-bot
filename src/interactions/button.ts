@@ -38,6 +38,8 @@ import {
   getSpecialPollByPollId,
   getSpecialPollByUserAndType,
 } from '../data/SpecialPoll.js';
+import { Channel } from '../lib/schemas/Channel.js';
+import { Role } from '../lib/schemas/Role.js';
 import {
   commandErrorFunctions,
   commandErrors,
@@ -50,8 +52,6 @@ import {
   specialStringFunctions,
   specialStrings,
 } from '../translations/special.js';
-import { Channel } from '../types/schemas/Channel.js';
-import { Role } from '../types/schemas/Role.js';
 import { deleteResponse, getChannel } from '../utils/channels.js';
 import { getGuild } from '../utils/guild.js';
 import { COUNCIL_LEVEL, IRREGULARS_LEVEL, VIP_LEVEL } from '../utils/levels.js';

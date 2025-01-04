@@ -1,5 +1,6 @@
 import { getRolesProperty } from '../configuration/main.js';
 import { getBars } from '../data/Bar.js';
+import { Role } from '../lib/schemas/Role.js';
 import {
   commandDescriptions,
   commandErrors,
@@ -8,7 +9,6 @@ import {
 } from '../translations/commands.js';
 import { labels } from '../translations/labels.js';
 import { formatUsers } from '../translations/users.js';
-import { Role } from '../types/schemas/Role.js';
 import { getGuild, getMemberFromGuild } from '../utils/guild.js';
 import { safeReplyToInteraction } from '../utils/messages.js';
 import {

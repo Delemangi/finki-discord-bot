@@ -1,7 +1,7 @@
 import {
   type BotConfig,
   type BotConfigKeys,
-} from '../types/schemas/BotConfig.js';
+} from '../lib/schemas/BotConfig.js';
 
 export const DEFAULT_CONFIGURATION = {
   channels: undefined,

@@ -6,6 +6,13 @@ import {
   getProfessors,
 } from '../configuration/files.js';
 import { getThemeColor } from '../configuration/main.js';
+import { type Classroom } from '../lib/schemas/Classroom.js';
+import { type CourseInformation } from '../lib/schemas/CourseInformation.js';
+import { type CourseParticipants } from '../lib/schemas/CourseParticipants.js';
+import { type CoursePrerequisites } from '../lib/schemas/CoursePrerequisites.js';
+import { type CourseStaff } from '../lib/schemas/CourseStaff.js';
+import { type Staff } from '../lib/schemas/Staff.js';
+import { type QuestionWithLinks } from '../lib/types/QuestionWithLinks.js';
 import { aboutMessage, botName } from '../translations/about.js';
 import { commandDescriptions } from '../translations/commands.js';
 import {
@@ -14,13 +21,6 @@ import {
 } from '../translations/embeds.js';
 import { labels } from '../translations/labels.js';
 import { paginationStringFunctions } from '../translations/pagination.js';
-import { type QuestionWithLinks } from '../types/interfaces/QuestionWithLinks.js';
-import { type Classroom } from '../types/schemas/Classroom.js';
-import { type CourseInformation } from '../types/schemas/CourseInformation.js';
-import { type CourseParticipants } from '../types/schemas/CourseParticipants.js';
-import { type CoursePrerequisites } from '../types/schemas/CoursePrerequisites.js';
-import { type CourseStaff } from '../types/schemas/CourseStaff.js';
-import { type Staff } from '../types/schemas/Staff.js';
 import { commandMention } from '../utils/commands.js';
 import { getGuild } from '../utils/guild.js';
 import { getUsername } from '../utils/members.js';
