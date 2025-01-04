@@ -1,8 +1,8 @@
+import { client } from '../client.js';
 import {
   commandDescriptions,
   commandResponseFunctions,
 } from '../translations/commands.js';
-import { client } from '../utils/client.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,

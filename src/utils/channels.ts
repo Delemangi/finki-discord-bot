@@ -1,3 +1,4 @@
+import { client } from '../client.js';
 import {
   getConfigProperty,
   getIntervalsProperty,
@@ -13,7 +14,6 @@ import {
   logMessages,
 } from '../translations/logs.js';
 import { specialStringFunctions } from '../translations/special.js';
-import { client } from './client.js';
 import { getGuild } from './guild.js';
 import { logger } from './logger.js';
 import { Cron } from 'croner';

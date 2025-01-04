@@ -1,8 +1,8 @@
+import { client } from '../client.js';
 import { getRolesProperty } from '../configuration/main.js';
 import { getBarByUserId } from '../data/Bar.js';
 import { getExperienceByUserId } from '../data/Experience.js';
 import { Role } from '../lib/schemas/Role.js';
-import { client } from './client.js';
 import { type GuildMember, PermissionsBitField } from 'discord.js';
 
 export const getUsername = async (userId: string) => {

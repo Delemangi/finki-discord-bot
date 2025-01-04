@@ -1,3 +1,4 @@
+import { client } from '../client.js';
 import { getRolesProperty } from '../configuration/main.js';
 import { createPoll, getPollById, updatePoll } from '../data/Poll.js';
 import {
@@ -13,7 +14,6 @@ import { Role } from '../lib/schemas/Role.js';
 import { type PollWithOptions } from '../lib/types/PollWithOptions.js';
 import { labels } from '../translations/labels.js';
 import { specialStringFunctions } from '../translations/special.js';
-import { client } from './client.js';
 import { getGuild, getMemberFromGuild } from './guild.js';
 import { ADMIN_OVERRIDE_LEVEL } from './levels.js';
 import { isMemberLevel } from './members.js';

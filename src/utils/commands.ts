@@ -1,9 +1,9 @@
+import { client } from '../client.js';
 import { getApplicationId, getToken } from '../configuration/environment.js';
 import { type Command } from '../lib/types/Command.js';
 import { type ContextMenuCommand } from '../lib/types/ContextMenuCommand.js';
 import { type SlashCommand } from '../lib/types/SlashCommand.js';
 import { logErrorFunctions, logMessages } from '../translations/logs.js';
-import { client } from './client.js';
 import { logger } from './logger.js';
 import {
   ApplicationCommandType,

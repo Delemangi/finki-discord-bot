@@ -1,7 +1,7 @@
+import { client } from '../client.js';
 import { deleteReminder, getReminders } from '../data/Reminder.js';
 import { labels } from '../translations/labels.js';
 import { logErrorFunctions } from '../translations/logs.js';
-import { client } from './client.js';
 import { logger } from './logger.js';
 import { type Reminder } from '@prisma/client';
 import { userMention } from 'discord.js';
