@@ -37,5 +37,5 @@ export const execute = async (...[client]: ClientEvents[typeof name]) => {
   logger.info(logMessageFunctions.loggedIn(bot.user?.tag));
 
   const commandsChannel = getChannel(Channel.Logs);
-  commandsChannel?.send(bootMessage());
+  commandsChannel?.send(bootMessage(new Date().toUTCString()));
 };

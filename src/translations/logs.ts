@@ -194,5 +194,5 @@ export const logErrorFunctions = {
     `Failed handling user context menu interaction ${interaction.commandName}\n${error}`,
 };
 
-export const bootMessage = () =>
-  `Bot successfully started at ${inlineCode(new Date().toUTCString())}`;
+export const bootMessage = (dateString: string) =>
+  `Bot successfully started at ${inlineCode(dateString)}`;
