@@ -37,7 +37,7 @@ services:
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD}
     image: dpage/pgadmin4:latest
     ports:
-      - '5050:80'
+      - 5050:80
     restart: unless-stopped
     user: '$UID:$GID'
     volumes:
