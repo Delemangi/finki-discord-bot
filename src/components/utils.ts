@@ -1,8 +1,8 @@
 import { getStaff } from '../configuration/files.js';
+import { logger } from '../logger.js';
 import { embedLabels } from '../translations/embeds.js';
 import { labels } from '../translations/labels.js';
 import { logErrorFunctions } from '../translations/logs.js';
-import { logger } from '../utils/logger.js';
 import { getRoleFromSet } from '../utils/roles.js';
 import {
   type ButtonInteraction,

@@ -1,6 +1,6 @@
 import { type QuestionWithLinks } from '../lib/types/QuestionWithLinks.js';
+import { logger } from '../logger.js';
 import { databaseErrorFunctions } from '../translations/database.js';
-import { logger } from '../utils/logger.js';
 import { database } from './database.js';
 import { type Prisma } from '@prisma/client';
 

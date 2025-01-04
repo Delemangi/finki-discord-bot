@@ -19,6 +19,7 @@ import {
 } from '../data/PollOption.js';
 import { getSpecialPollByPollId } from '../data/SpecialPoll.js';
 import { Role } from '../lib/schemas/Role.js';
+import { logger } from '../logger.js';
 import {
   commandDescriptions,
   commandErrors,
@@ -29,7 +30,6 @@ import { logErrorFunctions } from '../translations/logs.js';
 import { deleteResponse } from '../utils/channels.js';
 import { commandMention } from '../utils/commands.js';
 import { getGuild } from '../utils/guild.js';
-import { logger } from '../utils/logger.js';
 import { isMemberAdmin } from '../utils/members.js';
 import { startPoll } from '../utils/polls.js';
 import {

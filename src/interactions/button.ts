@@ -40,6 +40,7 @@ import {
 } from '../data/SpecialPoll.js';
 import { Channel } from '../lib/schemas/Channel.js';
 import { Role } from '../lib/schemas/Role.js';
+import { logger } from '../logger.js';
 import {
   commandErrorFunctions,
   commandErrors,
@@ -55,7 +56,6 @@ import {
 import { deleteResponse, getChannel } from '../utils/channels.js';
 import { getGuild } from '../utils/guild.js';
 import { COUNCIL_LEVEL, IRREGULARS_LEVEL, VIP_LEVEL } from '../utils/levels.js';
-import { logger } from '../utils/logger.js';
 import {
   isMemberBarred,
   isMemberInIrregulars,

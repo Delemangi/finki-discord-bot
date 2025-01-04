@@ -2,9 +2,9 @@ import { getFromRoleConfig } from '../configuration/files.js';
 import { getConfigProperty } from '../configuration/main.js';
 import { type Role as RoleName } from '../lib/schemas/Role.js';
 import { type RoleSets } from '../lib/types/RoleSets.js';
+import { logger } from '../logger.js';
 import { logErrorFunctions, logMessages } from '../translations/logs.js';
 import { getGuild } from './guild.js';
-import { logger } from './logger.js';
 import { type Role as DiscordRole, type Guild } from 'discord.js';
 
 const roles: Partial<Record<RoleName, DiscordRole | undefined>> = {};

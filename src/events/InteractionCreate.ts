@@ -5,8 +5,8 @@ import {
   handleMessageContextMenuCommand,
   handleUserContextMenuCommand,
 } from '../interactions/handlers.js';
+import { logger } from '../logger.js';
 import { logErrorFunctions } from '../translations/logs.js';
-import { logger } from '../utils/logger.js';
 import { type ClientEvents, Events } from 'discord.js';
 
 export const name = Events.InteractionCreate;

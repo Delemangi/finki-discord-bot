@@ -11,11 +11,11 @@ import {
 } from '../data/Experience.js';
 import { Channel } from '../lib/schemas/Channel.js';
 import { Role } from '../lib/schemas/Role.js';
+import { logger } from '../logger.js';
 import { experienceMessages } from '../translations/experience.js';
 import { logErrorFunctions } from '../translations/logs.js';
 import { getChannel } from './channels.js';
 import { COUNCIL_LEVEL, REGULAR_LEVEL } from './levels.js';
-import { logger } from './logger.js';
 import { isMemberBarred, isMemberInVip, isMemberLevel } from './members.js';
 import { EMOJI_REGEX, URL_REGEX } from './regex.js';
 import AsyncLock from 'async-lock';

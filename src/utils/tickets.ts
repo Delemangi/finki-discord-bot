@@ -7,6 +7,7 @@ import {
 } from '../configuration/main.js';
 import { Channel } from '../lib/schemas/Channel.js';
 import { type Ticket } from '../lib/schemas/Ticket.js';
+import { logger } from '../logger.js';
 import { logMessageFunctions } from '../translations/logs.js';
 import {
   ticketMessageFunctions,
@@ -14,7 +15,6 @@ import {
 } from '../translations/tickets.js';
 import { getChannel } from './channels.js';
 import { getGuild } from './guild.js';
-import { logger } from './logger.js';
 import {
   type AnyThreadChannel,
   type ButtonInteraction,

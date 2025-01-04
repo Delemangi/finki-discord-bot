@@ -1,6 +1,6 @@
 import { getReactionsProperty } from '../configuration/main.js';
+import { logger } from '../logger.js';
 import { logErrorFunctions } from '../translations/logs.js';
-import { logger } from '../utils/logger.js';
 import {
   type ClientEvents,
   Events,

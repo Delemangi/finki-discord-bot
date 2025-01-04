@@ -6,6 +6,7 @@ import {
   getUserContextMenuCommandEmbed,
 } from '../components/logs.js';
 import { Channel } from '../lib/schemas/Channel.js';
+import { logger } from '../logger.js';
 import { commandErrors } from '../translations/commands.js';
 import { logErrorFunctions, logShortStrings } from '../translations/logs.js';
 import { deleteResponse, logEmbed } from '../utils/channels.js';
@@ -15,7 +16,6 @@ import {
   isSlashCommand,
 } from '../utils/commands.js';
 import { getMemberFromGuild } from '../utils/guild.js';
-import { logger } from '../utils/logger.js';
 import { hasCommandPermission } from '../utils/permissions.js';
 import {
   handleClassroomAutocomplete,

@@ -1,4 +1,5 @@
 import { getApplicationId, getToken } from '../configuration/environment.js';
+import { logger } from '../logger.js';
 import {
   commandDescriptions,
   commandErrors,
@@ -6,7 +7,6 @@ import {
 } from '../translations/commands.js';
 import { logErrorFunctions } from '../translations/logs.js';
 import { getCommands } from '../utils/commands.js';
-import { logger } from '../utils/logger.js';
 import {
   type ChatInputCommandInteraction,
   PermissionFlagsBits,

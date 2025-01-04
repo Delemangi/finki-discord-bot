@@ -1,5 +1,6 @@
 import { client as bot } from '../client.js';
 import { Channel } from '../lib/schemas/Channel.js';
+import { logger } from '../logger.js';
 import { bootMessage, logMessageFunctions } from '../translations/logs.js';
 import {
   getChannel,
@@ -7,7 +8,6 @@ import {
   resetTemporaryRegularsChannel,
   resetTemporaryVipChannel,
 } from '../utils/channels.js';
-import { logger } from '../utils/logger.js';
 import { sendReminders } from '../utils/reminders.js';
 import { initializeRoles } from '../utils/roles.js';
 import { closeSpecialPolls } from '../utils/special.js';

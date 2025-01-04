@@ -5,8 +5,8 @@ import {
   BotConfigSchema,
   type FullyRequiredBotConfig,
 } from '../lib/schemas/BotConfig.js';
+import { logger } from '../logger.js';
 import { configErrors } from '../translations/errors.js';
-import { logger } from '../utils/logger.js';
 import { DEFAULT_CONFIGURATION } from './defaults.js';
 import { type ColorResolvable } from 'discord.js';
 

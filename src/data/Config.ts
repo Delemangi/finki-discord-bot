@@ -1,5 +1,5 @@
 import { type BotConfig } from '../lib/schemas/BotConfig.js';
-import { logger } from '../utils/logger.js';
+import { logger } from '../logger.js';
 import { database } from './database.js';
 
 export const getConfig = async () => {

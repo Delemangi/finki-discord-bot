@@ -2,9 +2,9 @@ import {
   getCrosspostingProperty,
   getReactionsProperty,
 } from '../configuration/main.js';
+import { logger } from '../logger.js';
 import { logErrorFunctions } from '../translations/logs.js';
 import { addExperience } from '../utils/experience.js';
-import { logger } from '../utils/logger.js';
 import { type ClientEvents, Events, type Message } from 'discord.js';
 
 export const name = Events.MessageCreate;

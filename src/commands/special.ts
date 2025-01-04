@@ -22,6 +22,7 @@ import {
 import { handlePollButtonForSpecialVote } from '../interactions/button.js';
 import { Channel } from '../lib/schemas/Channel.js';
 import { Role } from '../lib/schemas/Role.js';
+import { logger } from '../logger.js';
 import {
   commandDescriptions,
   commandErrors,
@@ -33,7 +34,6 @@ import { logErrorFunctions } from '../translations/logs.js';
 import { formatUsers } from '../translations/users.js';
 import { deleteResponse } from '../utils/channels.js';
 import { getGuild, getMemberFromGuild } from '../utils/guild.js';
-import { logger } from '../utils/logger.js';
 import { isMemberAdmin, isMemberBarred } from '../utils/members.js';
 import { safeReplyToInteraction } from '../utils/messages.js';
 import {

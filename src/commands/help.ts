@@ -2,6 +2,7 @@ import { client } from '../client.js';
 import { getHelpEmbed } from '../components/commands.js';
 import { getPaginationComponents } from '../components/pagination.js';
 import { getIntervalsProperty } from '../configuration/main.js';
+import { logger } from '../logger.js';
 import {
   commandDescriptions,
   commandErrors,
@@ -9,7 +10,6 @@ import {
 import { logErrorFunctions } from '../translations/logs.js';
 import { deleteResponse } from '../utils/channels.js';
 import { getGuild, getMemberFromGuild } from '../utils/guild.js';
-import { logger } from '../utils/logger.js';
 import { getCommandsWithPermission } from '../utils/permissions.js';
 import {
   type ChatInputCommandInteraction,

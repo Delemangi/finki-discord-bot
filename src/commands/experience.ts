@@ -12,6 +12,7 @@ import {
   getExperienceSorted,
   updateExperience,
 } from '../data/Experience.js';
+import { logger } from '../logger.js';
 import {
   commandDescriptions,
   commandErrors,
@@ -20,7 +21,6 @@ import {
 import { logErrorFunctions } from '../translations/logs.js';
 import { deleteResponse } from '../utils/channels.js';
 import { getLevelFromExperience } from '../utils/experience.js';
-import { logger } from '../utils/logger.js';
 import {
   type ChatInputCommandInteraction,
   ComponentType,

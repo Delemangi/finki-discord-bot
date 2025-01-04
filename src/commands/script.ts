@@ -24,6 +24,7 @@ import { getTicketingProperty } from '../configuration/main.js';
 import { getCompanies } from '../data/Company.js';
 import { getInfoMessages } from '../data/InfoMessage.js';
 import { getRules } from '../data/Rule.js';
+import { logger } from '../logger.js';
 import {
   commandDescriptions,
   commandErrors,
@@ -34,7 +35,6 @@ import { threadMessageFunctions } from '../translations/threads.js';
 import { ticketMessages } from '../translations/tickets.js';
 import { sendEmbed } from '../utils/channels.js';
 import { getCommands } from '../utils/commands.js';
-import { logger } from '../utils/logger.js';
 import { InfoMessageType } from '@prisma/client';
 import {
   type Channel,

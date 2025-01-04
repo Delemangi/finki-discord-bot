@@ -7,6 +7,7 @@ import {
 } from '../configuration/main.js';
 import { type Channel, TemporaryChannel } from '../lib/schemas/Channel.js';
 import { Role } from '../lib/schemas/Role.js';
+import { logger } from '../logger.js';
 import { labels } from '../translations/labels.js';
 import {
   logErrorFunctions,
@@ -15,7 +16,6 @@ import {
 } from '../translations/logs.js';
 import { specialStringFunctions } from '../translations/special.js';
 import { getGuild } from './guild.js';
-import { logger } from './logger.js';
 import { Cron } from 'croner';
 import {
   type ActionRowBuilder,

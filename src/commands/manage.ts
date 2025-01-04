@@ -31,6 +31,7 @@ import { createRule, deleteRule } from '../data/Rule.js';
 import { AntosSchema } from '../lib/schemas/Anto.js';
 import { CompaniesSchema } from '../lib/schemas/Company.js';
 import { LinksSchema } from '../lib/schemas/Link.js';
+import { logger } from '../logger.js';
 import {
   commandDescriptions,
   commandErrors,
@@ -38,7 +39,6 @@ import {
 } from '../translations/commands.js';
 import { labels } from '../translations/labels.js';
 import { logErrorFunctions } from '../translations/logs.js';
-import { logger } from '../utils/logger.js';
 import { LINK_REGEX } from '../utils/regex.js';
 import { InfoMessageType } from '@prisma/client';
 import {
