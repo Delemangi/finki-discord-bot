@@ -6,7 +6,7 @@ const intents = [
   GatewayIntentBits.GuildMessages,
   GatewayIntentBits.GuildMembers,
   GatewayIntentBits.GuildMessageReactions,
-  GatewayIntentBits.GuildEmojisAndStickers,
+  GatewayIntentBits.GuildExpressions,
 ];
 const presence = {
   activities: [
