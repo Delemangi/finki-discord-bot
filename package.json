@@ -20,7 +20,7 @@
     "@swc/helpers": "^0.5.15",
     "@types/async-lock": "^1.4.2",
     "eslint": "^9.18.0",
-    "eslint-config-canonical": "^44.3.37",
+    "eslint-config-canonical": "^44.3.39",
     "husky": "^9.1.7",
     "nodemon": "^3.1.9",
     "rimraf": "^6.0.1",
