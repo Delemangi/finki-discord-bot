@@ -9,7 +9,7 @@
     "chrono-node": "^2.7.8",
     "croner": "^9.0.0",
     "discord.js": "^14.17.3",
-    "discord-api-types": "^0.37.118",
+    "discord-api-types": "^0.37.119",
     "prisma": "^6.3.0",
     "winston": "^3.17.0",
     "zod": "^3.24.1"
