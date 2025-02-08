@@ -1,19 +1,13 @@
 import {
-  getPollComponents,
-  getPollEmbed,
-  getPollStatsComponents,
-} from '../components/polls.js';
-import {
   getChannelsProperty,
   getRolesProperty,
 } from '../configuration/main.js';
-import { getPollById } from '../data/Poll.js';
 import { Channel } from '../lib/schemas/Channel.js';
+import { PollType } from '../lib/schemas/PollType.js';
 import { Role } from '../lib/schemas/Role.js';
 import {
   commandDescriptions,
   commandErrors,
-  commandResponseFunctions,
 } from '../translations/commands.js';
 import { getMemberFromGuild } from '../utils/guild.js';
 import { ADMIN_LEVEL } from '../utils/levels.js';
@@ -23,7 +17,7 @@ import {
   isMemberInVip,
   isMemberLevel,
 } from '../utils/members.js';
-import { startSpecialPoll } from '../utils/polls.js';
+import { createPoll, isPollDuplicate } from '../utils/polls/main.js';
 import {
   type ChatInputCommandInteraction,
   roleMention,
@@ -122,40 +116,22 @@ const handleAdminAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, 'adminAdd', 0.67);
+  const isDuplicate = await isPollDuplicate(PollType.ADMIN_ADD, user.id);
 
-  if (pollId === null) {
+  if (isDuplicate) {
     await interaction.editReply(commandErrors.userSpecialPending);
 
     return;
   }
 
-  const poll = await getPollById(pollId);
-
-  if (poll === null) {
-    await interaction.editReply(commandErrors.pollNotFound);
-
-    return;
-  }
-
+  const poll = createPoll(PollType.ADMIN_ADD, user);
   const councilRoleId = await getRolesProperty(Role.Council);
 
   if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
   }
 
-  const embed = await getPollEmbed(poll);
-  const components = getPollComponents(poll);
-  await interaction.editReply({
-    components,
-    embeds: [embed],
-  });
-
-  const statsComponents = getPollStatsComponents(poll);
-  await interaction.channel.send({
-    components: statsComponents,
-    content: commandResponseFunctions.pollStats(poll.title),
-  });
+  await interaction.editReply(poll);
 };
 
 const handleAdminRemove = async (interaction: ChatInputCommandInteraction) => {
@@ -192,40 +168,22 @@ const handleAdminRemove = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, 'adminRemove', 0.67);
+  const isDuplicate = await isPollDuplicate(PollType.ADMIN_REMOVE, user.id);
 
-  if (pollId === null) {
+  if (isDuplicate) {
     await interaction.editReply(commandErrors.userSpecialPending);
 
     return;
   }
 
-  const poll = await getPollById(pollId);
-
-  if (poll === null) {
-    await interaction.editReply(commandErrors.pollNotFound);
-
-    return;
-  }
-
+  const poll = createPoll(PollType.ADMIN_REMOVE, user);
   const councilRoleId = await getRolesProperty(Role.Council);
 
   if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
   }
 
-  const embed = await getPollEmbed(poll);
-  const components = getPollComponents(poll);
-  await interaction.editReply({
-    components,
-    embeds: [embed],
-  });
-
-  const statsComponents = getPollStatsComponents(poll);
-  await interaction.channel.send({
-    components: statsComponents,
-    content: commandResponseFunctions.pollStats(poll.title),
-  });
+  await interaction.editReply(poll);
 };
 
 const adminHandlers = {

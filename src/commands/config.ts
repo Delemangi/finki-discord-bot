@@ -12,7 +12,7 @@ import {
   commandDescriptions,
   commandErrorFunctions,
 } from '../translations/commands.js';
-import { createPollChoices } from '../utils/polls.js';
+import { createCommandChoices } from '../utils/commands.js';
 import {
   type ChatInputCommandInteraction,
   codeBlock,
@@ -35,7 +35,7 @@ export const data = new SlashCommandBuilder()
           .setName('key')
           .setDescription('Клуч на конфигурација')
           .setRequired(true)
-          .addChoices(...createPollChoices(getConfigKeys())),
+          .addChoices(...createCommandChoices(getConfigKeys())),
       ),
   )
   .addSubcommand((subcommand) =>
@@ -47,7 +47,7 @@ export const data = new SlashCommandBuilder()
           .setName('key')
           .setDescription('Клуч на конфигурација')
           .setRequired(true)
-          .addChoices(...createPollChoices(getConfigKeys())),
+          .addChoices(...createCommandChoices(getConfigKeys())),
       )
       .addStringOption((option) =>
         option

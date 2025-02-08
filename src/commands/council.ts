@@ -1,19 +1,13 @@
 import {
-  getPollComponents,
-  getPollEmbed,
-  getPollStatsComponents,
-} from '../components/polls.js';
-import {
   getChannelsProperty,
   getRolesProperty,
 } from '../configuration/main.js';
-import { getPollById } from '../data/Poll.js';
 import { Channel } from '../lib/schemas/Channel.js';
+import { PollType } from '../lib/schemas/PollType.js';
 import { Role } from '../lib/schemas/Role.js';
 import {
   commandDescriptions,
   commandErrors,
-  commandResponseFunctions,
   commandResponses,
 } from '../translations/commands.js';
 import { getMemberFromGuild } from '../utils/guild.js';
@@ -24,7 +18,7 @@ import {
   isMemberInVip,
   isMemberLevel,
 } from '../utils/members.js';
-import { startSpecialPoll } from '../utils/polls.js';
+import { createPoll, isPollDuplicate } from '../utils/polls/main.js';
 import {
   type ChatInputCommandInteraction,
   type GuildMember,
@@ -130,41 +124,22 @@ const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, 'councilAdd', 0.67);
+  const isDuplicate = await isPollDuplicate(PollType.COUNCIL_ADD, user.id);
 
-  if (pollId === null) {
+  if (isDuplicate) {
     await interaction.editReply(commandErrors.userSpecialPending);
 
     return;
   }
 
-  const poll = await getPollById(pollId);
-
-  if (poll === null) {
-    await interaction.editReply(commandErrors.pollNotFound);
-
-    return;
-  }
-
+  const poll = createPoll(PollType.COUNCIL_ADD, user);
   const councilRoleId = await getRolesProperty(Role.Council);
 
   if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
   }
 
-  const embed = await getPollEmbed(poll);
-  const components = getPollComponents(poll);
-
-  await interaction.editReply({
-    components,
-    embeds: [embed],
-  });
-
-  const statsComponents = getPollStatsComponents(poll);
-  await interaction.channel.send({
-    components: statsComponents,
-    content: commandResponseFunctions.pollStats(poll.title),
-  });
+  await interaction.editReply(poll);
 };
 
 const handleCouncilRemove = async (
@@ -210,45 +185,22 @@ const handleCouncilRemove = async (
     return;
   }
 
-  const pollId = await startSpecialPoll(
-    interaction,
-    user,
-    'councilRemove',
-    0.67,
-  );
+  const isDuplicate = await isPollDuplicate(PollType.COUNCIL_REMOVE, user.id);
 
-  if (pollId === null) {
+  if (isDuplicate) {
     await interaction.editReply(commandErrors.userSpecialPending);
 
     return;
   }
 
-  const poll = await getPollById(pollId);
-
-  if (poll === null) {
-    await interaction.editReply(commandErrors.pollNotFound);
-
-    return;
-  }
-
+  const poll = createPoll(PollType.COUNCIL_REMOVE, user);
   const councilRoleId = await getRolesProperty(Role.Council);
 
   if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
   }
 
-  const embed = await getPollEmbed(poll);
-  const components = getPollComponents(poll);
-  await interaction.editReply({
-    components,
-    embeds: [embed],
-  });
-
-  const statsComponents = getPollStatsComponents(poll);
-  await interaction.channel.send({
-    components: statsComponents,
-    content: commandResponseFunctions.pollStats(poll.title),
-  });
+  await interaction.editReply(poll);
 };
 
 const handleCouncilToggle = async (

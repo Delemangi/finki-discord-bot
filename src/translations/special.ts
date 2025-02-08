@@ -1,6 +1,6 @@
 import { type PartialUser } from '../lib/types/PartialUser.js';
 import { tagAndMentionUser } from './users.js';
-import { userMention } from 'discord.js';
+import { inlineCode, userMention } from 'discord.js';
 
 export const specialStrings = {
   accept: 'Прифаќам',
@@ -29,84 +29,70 @@ export const specialStringFunctions = {
       userId,
     )} е одобрен како член на Администрацијата.`,
 
-  adminAddDescription: ({ id, tag }: PartialUser) =>
-    `Дали се согласувате корисникот ${tagAndMentionUser({
-      id,
-      tag,
-    })} да стане член на Администрацијата?`,
+  adminAddDescription: (userTag: string) =>
+    `Дали се согласувате корисникот ${inlineCode(userTag)} да стане член на Администрацијата?`,
 
   adminAddRejected: (userId: string) =>
     `# Корисникот ${userMention(
       userId,
     )} не е одобрен како член на Администрацијата.`,
 
-  adminAddTitle: (userTag: string) => `Влез во Администрација за ${userTag}`,
+  adminAddTitle: ({ id, tag }: PartialUser) =>
+    `Влез во Администрација за ${tagAndMentionUser({ id, tag })}`,
 
   adminRemoveAccepted: (userId: string) =>
     `# Корисникот ${userMention(userId)} е избркан од Администрацијата.`,
 
-  adminRemoveDescription: ({ id, tag }: PartialUser) =>
-    `Дали се согласувате корисникот ${tagAndMentionUser({
-      id,
-      tag,
-    })} да биде избркан од Администрацијата?`,
+  adminRemoveDescription: (userTag: string) =>
+    `Дали се согласувате корисникот ${inlineCode(userTag)} да биде избркан од Администрацијата?`,
 
   adminRemoveRejected: (userId: string) =>
     `# Корисникот ${userMention(userId)} не е избркан од Администрацијата.`,
 
-  adminRemoveTitle: (userTag: string) =>
-    `Излез од Администрација за ${userTag}`,
+  adminRemoveTitle: ({ id, tag }: PartialUser) =>
+    `Излез од Администрација за ${tagAndMentionUser({ id, tag })}`,
 
   barAccepted: (userId: string) =>
     `# Корисникот ${userMention(userId)} е забранет.`,
 
-  barDescription: ({ id, tag }: PartialUser) =>
-    `Дали се согласувате корисникот ${tagAndMentionUser({
-      id,
-      tag,
-    })} да добие забрана?`,
+  barDescription: (userTag: string) =>
+    `Дали се согласувате корисникот ${inlineCode(userTag)} да добие забрана?`,
 
   barRejected: (userId: string) =>
     `# Корисникот ${userMention(userId)} не е забранет.`,
 
-  barTitle: (userTag: string) => `Забрана за ${userTag}`,
+  barTitle: ({ id, tag }: PartialUser) =>
+    `Забрана за ${tagAndMentionUser({ id, tag })}`,
 
   councilAddAccepted: (userId: string) =>
     `# Корисникот ${userMention(userId)} е одобрен како член на Советот.`,
 
-  councilAddDescription: ({ id, tag }: PartialUser) =>
-    `Дали се согласувате корисникот ${tagAndMentionUser({
-      id,
-      tag,
-    })} да стане член на Советот?`,
+  councilAddDescription: (userTag: string) =>
+    `Дали се согласувате корисникот ${inlineCode(userTag)} да стане член на Советот?`,
 
   councilAddRejected: (userId: string) =>
     `# Корисникот ${userMention(userId)} не е одобрен како член на Советот.`,
 
-  councilAddTitle: (userTag: string) => `Влез во Советот за ${userTag}`,
+  councilAddTitle: ({ id, tag }: PartialUser) =>
+    `Влез во Советот за ${tagAndMentionUser({ id, tag })}`,
 
   councilRemoveAccepted: (userId: string) =>
     `# Корисникот ${userMention(userId)} е избркан од Советот.`,
 
-  councilRemoveDescription: ({ id, tag }: PartialUser) =>
-    `Дали се согласувате корисникот ${tagAndMentionUser({
-      id,
-      tag,
-    })} да биде избркан од Советот?`,
+  councilRemoveDescription: (userTag: string) =>
+    `Дали се согласувате корисникот ${inlineCode(userTag)} да биде избркан од Советот?`,
 
   councilRemoveRejected: (userId: string) =>
     `# Корисникот ${userMention(userId)} не е избркан од Советот.`,
 
-  councilRemoveTitle: (userTag: string) => `Излез од Советот за ${userTag}`,
+  councilRemoveTitle: ({ id, tag }: PartialUser) =>
+    `Излез од Советот за ${tagAndMentionUser({ id, tag })}`,
 
   irregularsAddAccepted: (userId: string) =>
     `# Корисникот ${userMention(userId)} е одобрен како член на Вонредните.`,
 
-  irregularsAddDescription: ({ id, tag }: PartialUser) =>
-    `Дали се согласувате корисникот ${tagAndMentionUser({
-      id,
-      tag,
-    })} да стане член на Вонредните?`,
+  irregularsAddDescription: (userTag: string) =>
+    `Дали се согласувате корисникот ${inlineCode(userTag)} да стане член на Вонредните?`,
 
   irregularsAddRejected: (userId: string) =>
     `# Корисникот ${userMention(userId)} не е одобрен како член на Вонредните.`,
@@ -114,22 +100,20 @@ export const specialStringFunctions = {
   irregularsAddRequestAccepted: (userId: string) =>
     `# ${userMention(userId)} Советот донесе одлука да Ве покани во Вонредните.`,
 
-  irregularsAddTitle: (userTag: string) => `Влез во Вонредните за ${userTag}`,
+  irregularsAddTitle: ({ id, tag }: PartialUser) =>
+    `Влез во Вонредните за ${tagAndMentionUser({ id, tag })}`,
 
   irregularsRemoveAccepted: (userId: string) =>
     `# Корисникот ${userMention(userId)} е избркан од Вонредните.`,
 
-  irregularsRemoveDescription: ({ id, tag }: PartialUser) =>
-    `Дали се согласувате корисникот ${tagAndMentionUser({
-      id,
-      tag,
-    })} да биде избркан од Вонредните?`,
+  irregularsRemoveDescription: (userTag: string) =>
+    `Дали се согласувате корисникот ${inlineCode(userTag)} да биде избркан од Вонредните?`,
 
   irregularsRemoveRejected: (userId: string) =>
     `# Корисникот ${userMention(userId)} не е избркан од Вонредните.`,
 
-  irregularsRemoveTitle: (userTag: string) =>
-    `Излез од Вонредните за ${userTag}`,
+  irregularsRemoveTitle: ({ id, tag }: PartialUser) =>
+    `Излез од Вонредните за ${tagAndMentionUser({ id, tag })}`,
 
   irregularsRequestAccepted: (userId: string) =>
     `# ${userMention(userId)} Вашата молба за влез во Вонредните беше одобрена.`,
@@ -149,25 +133,26 @@ export const specialStringFunctions = {
   unbarAccepted: (userId: string) =>
     `# Забраната за корисникот ${userMention(userId)} е укината.`,
 
-  unbarDescription: ({ id, tag }: PartialUser) =>
-    `Дали се согласувате забраната за корисникот ${tagAndMentionUser({
-      id,
-      tag,
-    })} да биде укината?`,
+  unbarDescription: (userTag: string) =>
+    `Дали се согласувате забраната за корисникот ${inlineCode(userTag)} да биде укината?`,
 
   unbarRejected: (userId: string) =>
     `# Забраната за корисникот ${userMention(userId)} не е укината.`,
 
-  unbarTitle: (userTag: string) => `Укинување забрана за ${userTag}`,
+  unbarTitle: ({ id, tag }: PartialUser) =>
+    `Укинување забрана за ${tagAndMentionUser({ id, tag })}`,
+
+  unknownPollDescription: (userTag: string) =>
+    `Гласање за корисникот ${inlineCode(userTag)} за непознат тип. Ова е најверојатно грешка.`,
+
+  unknownPollTitle: ({ id, tag }: PartialUser) =>
+    `Непознат тип на гласање за корисникот ${tagAndMentionUser({ id, tag })}`,
 
   vipAddAccepted: (userId: string) =>
     `# Корисникот ${userMention(userId)} е одобрен како член на ВИП.`,
 
-  vipAddDescription: ({ id, tag }: PartialUser) =>
-    `Дали се согласувате корисникот ${tagAndMentionUser({
-      id,
-      tag,
-    })} да стане член на ВИП?`,
+  vipAddDescription: (userTag: string) =>
+    `Дали се согласувате корисникот ${inlineCode(userTag)} да стане член на ВИП?`,
 
   vipAddRejected: (userId: string) =>
     `# Корисникот ${userMention(userId)} не е одобрен како член на ВИП.`,
@@ -175,21 +160,20 @@ export const specialStringFunctions = {
   vipAddRequestAccepted: (userId: string) =>
     `# ${userMention(userId)} Советот донесе одлука да Ве покани во ВИП.`,
 
-  vipAddTitle: (userTag: string) => `Влез во ВИП за ${userTag}`,
+  vipAddTitle: ({ id, tag }: PartialUser) =>
+    `Влез во ВИП за ${tagAndMentionUser({ id, tag })}`,
 
   vipRemoveAccepted: (userId: string) =>
     `# Корисникот ${userMention(userId)} е избркан од ВИП.`,
 
-  vipRemoveDescription: ({ id, tag }: PartialUser) =>
-    `Дали се согласувате корисникот ${tagAndMentionUser({
-      id,
-      tag,
-    })} да биде избркан од ВИП?`,
+  vipRemoveDescription: (userTag: string) =>
+    `Дали се согласувате корисникот ${inlineCode(userTag)} да биде избркан од ВИП?`,
 
   vipRemoveRejected: (userId: string) =>
     `# Корисникот ${userMention(userId)} не е избркан од ВИП.`,
 
-  vipRemoveTitle: (userTag: string) => `Излез од ВИП за ${userTag}`,
+  vipRemoveTitle: ({ id, tag }: PartialUser) =>
+    `Излез од ВИП за ${tagAndMentionUser({ id, tag })}`,
 
   vipRequestAccepted: (userId: string) =>
     `# ${userMention(userId)} Вашата молба за влез во ВИП беше одобрена.`,

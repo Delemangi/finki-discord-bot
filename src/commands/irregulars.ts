@@ -1,20 +1,13 @@
 import {
-  getPollComponents,
-  getPollEmbed,
-  getPollStatsComponents,
-} from '../components/polls.js';
-import {
   getChannelsProperty,
   getRolesProperty,
 } from '../configuration/main.js';
-import { getPollById } from '../data/Poll.js';
-import { getSpecialPollByUserAndType } from '../data/SpecialPoll.js';
 import { Channel } from '../lib/schemas/Channel.js';
+import { PollType } from '../lib/schemas/PollType.js';
 import { Role } from '../lib/schemas/Role.js';
 import {
   commandDescriptions,
   commandErrors,
-  commandResponseFunctions,
 } from '../translations/commands.js';
 import { getMemberFromGuild } from '../utils/guild.js';
 import {
@@ -24,7 +17,7 @@ import {
   isMemberInRegulars,
   isMemberInVip,
 } from '../utils/members.js';
-import { startSpecialPoll } from '../utils/polls.js';
+import { createPoll, isPollDuplicate } from '../utils/polls/main.js';
 import {
   type ChatInputCommandInteraction,
   roleMention,
@@ -126,51 +119,22 @@ const handleIrregularsAdd = async (
     return;
   }
 
-  const existingPoll = await getSpecialPollByUserAndType(
-    user.id,
-    'irregularsAdd',
-  );
+  const isDuplicate = await isPollDuplicate(PollType.IRREGULARS_ADD, user.id);
 
-  if (existingPoll !== null) {
+  if (isDuplicate) {
     await interaction.editReply(commandErrors.userSpecialPending);
 
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, 'irregularsAdd');
-
-  if (pollId === null) {
-    await interaction.editReply(commandErrors.pollCreationFailed);
-
-    return;
-  }
-
-  const poll = await getPollById(pollId);
-
-  if (poll === null) {
-    await interaction.editReply(commandErrors.pollNotFound);
-
-    return;
-  }
-
+  const poll = createPoll(PollType.IRREGULARS_ADD, user);
   const councilRoleId = await getRolesProperty(Role.Council);
 
   if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
   }
 
-  const embed = await getPollEmbed(poll);
-  const components = getPollComponents(poll);
-  await interaction.editReply({
-    components,
-    embeds: [embed],
-  });
-
-  const statsComponents = getPollStatsComponents(poll);
-  await interaction.channel.send({
-    components: statsComponents,
-    content: commandResponseFunctions.pollStats(poll.title),
-  });
+  await interaction.editReply(poll);
 };
 
 const handleIrregularsRemove = async (
@@ -228,51 +192,25 @@ const handleIrregularsRemove = async (
     return;
   }
 
-  const existingPoll = await getSpecialPollByUserAndType(
+  const isDuplicate = await isPollDuplicate(
+    PollType.IRREGULARS_REMOVE,
     user.id,
-    'irregularsRemove',
   );
 
-  if (existingPoll !== null) {
+  if (isDuplicate) {
     await interaction.editReply(commandErrors.userSpecialPending);
 
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, 'irregularsRemove');
-
-  if (pollId === null) {
-    await interaction.editReply(commandErrors.pollCreationFailed);
-
-    return;
-  }
-
-  const poll = await getPollById(pollId);
-
-  if (poll === null) {
-    await interaction.editReply(commandErrors.pollNotFound);
-
-    return;
-  }
-
+  const poll = createPoll(PollType.IRREGULARS_REMOVE, user);
   const councilRoleId = await getRolesProperty(Role.Council);
 
   if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
   }
 
-  const embed = await getPollEmbed(poll);
-  const components = getPollComponents(poll);
-  await interaction.editReply({
-    components,
-    embeds: [embed],
-  });
-
-  const statsComponents = getPollStatsComponents(poll);
-  await interaction.channel.send({
-    components: statsComponents,
-    content: commandResponseFunctions.pollStats(poll.title),
-  });
+  await interaction.editReply(poll);
 };
 
 const irregularsHandlers = {

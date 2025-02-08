@@ -114,3 +114,10 @@ export const registerCommands = async () => {
     logger.error(logErrorFunctions.commandsRegistrationError(error));
   }
 };
+
+export const createCommandChoices = (choices: readonly string[]) => {
+  return choices.map((choice) => ({
+    name: choice,
+    value: choice,
+  }));
+};

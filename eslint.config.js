@@ -9,7 +9,7 @@ export default [
   zod.recommended,
   {
     ...ts.recommended,
-    files: ['*.ts', '*.tsx'],
+    files: ['*.ts', '*.tsx', '!test/**/*', '!*.test.ts', '!*.spec.ts'],
   },
   {
     rules: {
@@ -18,5 +18,14 @@ export default [
   },
   {
     ignores: ['package-lock.json', 'dist/', 'config/', '.github/'],
+  },
+  {
+    ...ts.recommended,
+    files: ['test/**/*', '**.test.ts', '**.spec.ts'],
+    languageOptions: {
+      parserOptions: {
+        project: './tsconfig.test.json',
+      },
+    },
   },
 ];

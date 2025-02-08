@@ -1,44 +1,17 @@
-import {
-  getPollComponents,
-  getPollEmbed,
-  getPollInfoEmbed,
-  getPollStatsComponents,
-} from '../components/polls.js';
 import { getRemindersComponents } from '../components/reminders.js';
-import {
-  getIrregularsAcknowledgeComponents,
-  getIrregularsConfirmComponents,
-  getIrregularsConfirmEmbed,
-  getVipAcknowledgeComponents,
-  getVipConfirmComponents,
-  getVipConfirmEmbed,
-} from '../components/scripts.js';
 import {
   getConfigProperty,
   getRolesProperty,
   getTicketingProperty,
   getTicketProperty,
 } from '../configuration/main.js';
-import { createBar, deleteBar } from '../data/Bar.js';
-import { getPollById } from '../data/Poll.js';
-import { getPollOptionById } from '../data/PollOption.js';
-import {
-  createPollVote,
-  deletePollVote,
-  getPollVotesByOptionId,
-  getPollVotesByPollIdAndUserId,
-} from '../data/PollVote.js';
 import {
   deleteReminder,
   getReminderById,
   getRemindersByUserId,
 } from '../data/Reminder.js';
-import {
-  deleteSpecialPoll,
-  getSpecialPollByPollId,
-  getSpecialPollByUserAndType,
-} from '../data/SpecialPoll.js';
 import { Channel } from '../lib/schemas/Channel.js';
+import { PollType } from '../lib/schemas/PollType.js';
 import { Role } from '../lib/schemas/Role.js';
 import { logger } from '../logger.js';
 import {
@@ -47,7 +20,6 @@ import {
   commandResponseFunctions,
   commandResponses,
 } from '../translations/commands.js';
-import { labels } from '../translations/labels.js';
 import { logErrorFunctions } from '../translations/logs.js';
 import {
   specialStringFunctions,
@@ -63,7 +35,7 @@ import {
   isMemberInVip,
   isMemberLevel,
 } from '../utils/members.js';
-import { decidePoll, startSpecialPoll } from '../utils/polls.js';
+import { createPoll, isPollDuplicate } from '../utils/polls/main.js';
 import { USER_ID_REGEX } from '../utils/regex.js';
 import {
   getCourseRolesBySemester,
@@ -72,14 +44,12 @@ import {
   getRoles,
 } from '../utils/roles.js';
 import { closeTicket, createTicket } from '../utils/tickets.js';
-import { type Poll, type PollOption, type SpecialPoll } from '@prisma/client';
 import {
   type ButtonInteraction,
   ChannelType,
   type GuildMember,
   type GuildMemberRoleManager,
   roleMention,
-  userMention,
 } from 'discord.js';
 
 export const handleCourseButton = async (
@@ -473,756 +443,11 @@ export const handleRemoveCoursesButton = async (
   }
 };
 
-const handlePollButtonForVipRequestVote = async (
-  poll: Poll,
-  specialPoll: SpecialPoll,
-) => {
-  const vipChannel = getChannel(Channel.VIP);
-  const oathChannel = getChannel(Channel.Oath);
-
-  if (poll.decision !== labels.yes) {
-    const rejectComponents = getVipAcknowledgeComponents();
-    await oathChannel?.send({
-      components: rejectComponents,
-      content: specialStringFunctions.vipRequestRejected(specialPoll.userId),
-    });
-
-    await vipChannel?.send(
-      specialStringFunctions.vipAddRejected(specialPoll.userId),
-    );
-
-    return;
-  }
-
-  const confirmEmbed = await getVipConfirmEmbed();
-  const confirmComponents = getVipConfirmComponents();
-  await oathChannel?.send({
-    components: confirmComponents,
-    content: specialStringFunctions.vipRequestAccepted(specialPoll.userId),
-    embeds: [confirmEmbed],
-  });
-
-  await vipChannel?.send(
-    specialStringFunctions.vipAddAccepted(specialPoll.userId),
-  );
-};
-
-const handlePollButtonForVipAddVote = async (
-  poll: Poll,
-  specialPoll: SpecialPoll,
-) => {
-  const vipChannel = getChannel(Channel.VIP);
-  const oathChannel = getChannel(Channel.Oath);
-
-  if (poll.decision !== labels.yes) {
-    await vipChannel?.send(
-      specialStringFunctions.vipAddRejected(specialPoll.userId),
-    );
-
-    return;
-  }
-
-  const confirmEmbed = await getVipConfirmEmbed();
-  const confirmComponents = getVipConfirmComponents();
-  await oathChannel?.send({
-    components: confirmComponents,
-    content: specialStringFunctions.vipAddRequestAccepted(specialPoll.userId),
-    embeds: [confirmEmbed],
-  });
-
-  await vipChannel?.send(
-    specialStringFunctions.vipAddAccepted(specialPoll.userId),
-  );
-};
-
-const handlePollButtonForVipRemoveVote = async (
-  poll: Poll,
-  specialPoll: SpecialPoll,
-  member: GuildMember,
-) => {
-  const vipChannel = getChannel(Channel.VIP);
-
-  if (poll.decision !== labels.yes) {
-    await vipChannel?.send(
-      specialStringFunctions.vipRemoveRejected(specialPoll.userId),
-    );
-
-    return;
-  }
-
-  const vipRoleId = await getRolesProperty(Role.VIP);
-  const councilRoleId = await getRolesProperty(Role.Council);
-
-  if (vipRoleId === undefined) {
-    await vipChannel?.send(commandErrorFunctions.roleNotFound(Role.VIP));
-    logger.warn(logErrorFunctions.roleNotFound(Role.VIP));
-  } else {
-    await member.roles.remove(vipRoleId);
-  }
-
-  if (councilRoleId === undefined) {
-    await vipChannel?.send(commandErrorFunctions.roleNotFound(Role.Council));
-    logger.warn(logErrorFunctions.roleNotFound(Role.Council));
-  } else {
-    await member.roles.remove(councilRoleId);
-  }
-
-  await vipChannel?.send(
-    specialStringFunctions.vipRemoveAccepted(specialPoll.userId),
-  );
-};
-
-const handlePollButtonForCouncilAddVote = async (
-  poll: Poll,
-  specialPoll: SpecialPoll,
-  member: GuildMember,
-) => {
-  const vipChannel = getChannel(Channel.VIP);
-
-  if (poll.decision !== labels.yes) {
-    await vipChannel?.send(
-      specialStringFunctions.councilAddRejected(specialPoll.userId),
-    );
-
-    return;
-  }
-
-  const councilRoleId = await getRolesProperty(Role.Council);
-
-  if (councilRoleId === undefined) {
-    await vipChannel?.send(commandErrorFunctions.roleNotFound(Role.Council));
-    logger.warn(logErrorFunctions.roleNotFound(Role.Council));
-  } else {
-    await member.roles.add(councilRoleId);
-  }
-
-  await vipChannel?.send(
-    specialStringFunctions.councilAddAccepted(specialPoll.userId),
-  );
-};
-
-const handlePollButtonForCouncilRemoveVote = async (
-  poll: Poll,
-  specialPoll: SpecialPoll,
-  member: GuildMember,
-) => {
-  const vipChannel = getChannel(Channel.VIP);
-
-  if (poll.decision !== labels.yes) {
-    await vipChannel?.send(
-      specialStringFunctions.councilRemoveRejected(specialPoll.userId),
-    );
-
-    return;
-  }
-
-  const councilRoleId = await getRolesProperty(Role.Council);
-
-  if (councilRoleId === undefined) {
-    await vipChannel?.send(commandErrorFunctions.roleNotFound(Role.Council));
-    logger.warn(logErrorFunctions.roleNotFound(Role.Council));
-  } else {
-    await member.roles.remove(councilRoleId);
-  }
-
-  await vipChannel?.send(
-    specialStringFunctions.councilRemoveAccepted(specialPoll.userId),
-  );
-};
-
-const handlePollButtonForAdminAddVote = async (
-  poll: Poll,
-  specialPoll: SpecialPoll,
-  member: GuildMember,
-) => {
-  const vipChannel = getChannel(Channel.VIP);
-
-  if (poll.decision !== labels.yes) {
-    await vipChannel?.send(
-      specialStringFunctions.adminAddRejected(specialPoll.userId),
-    );
-
-    return;
-  }
-
-  const adminsRoleId = await getRolesProperty(Role.Administrators);
-  const moderatorRoleId = await getRolesProperty(Role.Moderators);
-
-  if (adminsRoleId === undefined) {
-    await vipChannel?.send(
-      commandErrorFunctions.roleNotFound(Role.Administrators),
-    );
-    logger.warn(logErrorFunctions.roleNotFound(Role.Administrators));
-  } else {
-    await member.roles.add(adminsRoleId);
-  }
-
-  if (moderatorRoleId === undefined) {
-    await vipChannel?.send(commandErrorFunctions.roleNotFound(Role.Moderators));
-    logger.warn(logErrorFunctions.roleNotFound(Role.Moderators));
-  } else {
-    await member.roles.add(moderatorRoleId);
-  }
-
-  await vipChannel?.send(
-    specialStringFunctions.adminAddAccepted(specialPoll.userId),
-  );
-};
-
-const handlePollButtonForAdminRemoveVote = async (
-  poll: Poll,
-  specialPoll: SpecialPoll,
-  member: GuildMember,
-) => {
-  const vipChannel = getChannel(Channel.VIP);
-
-  if (poll.decision !== labels.yes) {
-    await vipChannel?.send(
-      specialStringFunctions.adminRemoveRejected(specialPoll.userId),
-    );
-
-    return;
-  }
-
-  const adminsRoleId = await getRolesProperty(Role.Administrators);
-  const moderatorRoleId = await getRolesProperty(Role.Moderators);
-
-  if (adminsRoleId === undefined) {
-    await vipChannel?.send(
-      commandErrorFunctions.roleNotFound(Role.Administrators),
-    );
-    logger.warn(logErrorFunctions.roleNotFound(Role.Administrators));
-  } else {
-    await member.roles.remove(adminsRoleId);
-  }
-
-  if (moderatorRoleId === undefined) {
-    await vipChannel?.send(commandErrorFunctions.roleNotFound(Role.Moderators));
-    logger.warn(logErrorFunctions.roleNotFound(Role.Moderators));
-  } else {
-    await member.roles.remove(moderatorRoleId);
-  }
-
-  await vipChannel?.send(
-    specialStringFunctions.adminRemoveAccepted(specialPoll.userId),
-  );
-};
-
-const handlePollButtonForBarVote = async (
-  poll: Poll,
-  specialPoll: SpecialPoll,
-  member: GuildMember,
-) => {
-  const vipChannel = getChannel(Channel.VIP);
-
-  if (poll.decision !== labels.yes) {
-    await vipChannel?.send(
-      specialStringFunctions.barRejected(specialPoll.userId),
-    );
-
-    return;
-  }
-
-  await createBar({
-    userId: specialPoll.userId,
-  });
-
-  const regularsRoleId = await getRolesProperty(Role.Regulars);
-  const vipRoleId = await getRolesProperty(Role.VIP);
-  const councilRoleId = await getRolesProperty(Role.Council);
-
-  if (regularsRoleId === undefined) {
-    await vipChannel?.send(commandErrorFunctions.roleNotFound(Role.Regulars));
-    logger.warn(logErrorFunctions.roleNotFound(Role.Regulars));
-  } else {
-    await member.roles.remove(regularsRoleId);
-  }
-
-  if (vipRoleId === undefined) {
-    await vipChannel?.send(commandErrorFunctions.roleNotFound(Role.VIP));
-    logger.warn(logErrorFunctions.roleNotFound(Role.VIP));
-  } else {
-    await member.roles.remove(vipRoleId);
-  }
-
-  if (councilRoleId === undefined) {
-    await vipChannel?.send(commandErrorFunctions.roleNotFound(Role.Council));
-    logger.warn(logErrorFunctions.roleNotFound(Role.Council));
-  } else {
-    await member.roles.remove(councilRoleId);
-  }
-
-  await vipChannel?.send(
-    specialStringFunctions.barAccepted(specialPoll.userId),
-  );
-};
-
-const handlePollButtonForUnbarVote = async (
-  poll: Poll,
-  specialPoll: SpecialPoll,
-) => {
-  const vipChannel = getChannel(Channel.VIP);
-
-  if (poll.decision !== labels.yes) {
-    await vipChannel?.send(
-      specialStringFunctions.unbarRejected(specialPoll.userId),
-    );
-
-    return;
-  }
-
-  await deleteBar(specialPoll.userId);
-
-  await vipChannel?.send(
-    specialStringFunctions.unbarAccepted(specialPoll.userId),
-  );
-};
-
-const handlePollButtonForIrregularsRequestVote = async (
-  poll: Poll,
-  specialPoll: SpecialPoll,
-) => {
-  const irregularsChannel = getChannel(Channel.Irregulars);
-  const oathChannel = getChannel(Channel.Oath);
-
-  if (poll.decision !== labels.yes) {
-    const rejectComponents = getIrregularsAcknowledgeComponents();
-    await oathChannel?.send({
-      components: rejectComponents,
-      content: specialStringFunctions.irregularsRequestRejected(
-        specialPoll.userId,
-      ),
-    });
-
-    await irregularsChannel?.send(
-      specialStringFunctions.irregularsAddRejected(specialPoll.userId),
-    );
-
-    return;
-  }
-
-  const confirmEmbed = await getIrregularsConfirmEmbed();
-  const confirmComponents = getIrregularsConfirmComponents();
-  await oathChannel?.send({
-    components: confirmComponents,
-    content: specialStringFunctions.irregularsRequestAccepted(
-      specialPoll.userId,
-    ),
-    embeds: [confirmEmbed],
-  });
-
-  await irregularsChannel?.send(
-    specialStringFunctions.irregularsAddAccepted(specialPoll.userId),
-  );
-};
-
-const handlePollButtonForIrregularsAddVote = async (
-  poll: Poll,
-  specialPoll: SpecialPoll,
-) => {
-  const irregularsChannel = getChannel(Channel.Irregulars);
-  const oathChannel = getChannel(Channel.Oath);
-
-  if (poll.decision !== labels.yes) {
-    await irregularsChannel?.send(
-      specialStringFunctions.irregularsAddRejected(specialPoll.userId),
-    );
-
-    return;
-  }
-
-  const confirmEmbed = await getIrregularsConfirmEmbed();
-  const confirmComponents = getIrregularsConfirmComponents();
-  await oathChannel?.send({
-    components: confirmComponents,
-    content: specialStringFunctions.irregularsAddRequestAccepted(
-      specialPoll.userId,
-    ),
-    embeds: [confirmEmbed],
-  });
-
-  await irregularsChannel?.send(
-    specialStringFunctions.irregularsAddAccepted(specialPoll.userId),
-  );
-};
-
-const handlePollButtonForIrregularsRemoveVote = async (
-  poll: Poll,
-  specialPoll: SpecialPoll,
-  member: GuildMember,
-) => {
-  const irregularsChannel = getChannel(Channel.Irregulars);
-
-  if (poll.decision !== labels.yes) {
-    await irregularsChannel?.send(
-      specialStringFunctions.irregularsRemoveRejected(specialPoll.userId),
-    );
-
-    return;
-  }
-
-  const irregularsRoleId = await getRolesProperty(Role.Irregulars);
-
-  if (irregularsRoleId === undefined) {
-    await irregularsChannel?.send(
-      commandErrorFunctions.roleNotFound(Role.Irregulars),
-    );
-    logger.warn(logErrorFunctions.roleNotFound(Role.Irregulars));
-  } else {
-    await member.roles.remove(irregularsRoleId);
-  }
-
-  await irregularsChannel?.send(
-    specialStringFunctions.irregularsRemoveAccepted(specialPoll.userId),
-  );
-};
-
-export const handlePollButtonForSpecialVote = async (
-  poll: Poll,
-  member: GuildMember,
-) => {
-  if (!poll.done) {
-    return;
-  }
-
-  const specialPoll = await getSpecialPollByPollId(poll.id);
-  const type = specialPoll?.type;
-
-  if (specialPoll === null || type === undefined) {
-    return;
-  }
-
-  switch (type) {
-    case 'adminAdd':
-      await handlePollButtonForAdminAddVote(poll, specialPoll, member);
-      break;
-
-    case 'adminRemove':
-      await handlePollButtonForAdminRemoveVote(poll, specialPoll, member);
-      break;
-
-    case 'bar':
-      await handlePollButtonForBarVote(poll, specialPoll, member);
-      break;
-
-    case 'councilAdd':
-      await handlePollButtonForCouncilAddVote(poll, specialPoll, member);
-      break;
-
-    case 'councilRemove':
-      await handlePollButtonForCouncilRemoveVote(poll, specialPoll, member);
-      break;
-
-    case 'irregularsAdd':
-      await handlePollButtonForIrregularsAddVote(poll, specialPoll);
-      break;
-
-    case 'irregularsRemove':
-      await handlePollButtonForIrregularsRemoveVote(poll, specialPoll, member);
-      break;
-
-    case 'irregularsRequest':
-      await handlePollButtonForIrregularsRequestVote(poll, specialPoll);
-      break;
-
-    case 'unbar':
-      await handlePollButtonForUnbarVote(poll, specialPoll);
-      break;
-
-    case 'vipAdd':
-      await handlePollButtonForVipAddVote(poll, specialPoll);
-      break;
-
-    case 'vipRemove':
-      await handlePollButtonForVipRemoveVote(poll, specialPoll, member);
-      break;
-
-    case 'vipRequest':
-      await handlePollButtonForVipRequestVote(poll, specialPoll);
-      break;
-
-    default:
-      break;
-  }
-
-  await deleteSpecialPoll(specialPoll.id);
-};
-
-const handleVote = async (
-  interaction: ButtonInteraction,
-  poll: Poll,
-  optionId: string,
-  option: PollOption,
-) => {
-  const votes = await getPollVotesByPollIdAndUserId(
-    poll.id,
-    interaction.user.id,
-  );
-  let replyMessage;
-
-  if (votes === null) {
-    return;
-  }
-
-  if (poll.multiple) {
-    if (
-      votes.length === 0 ||
-      !votes.some((vote) => vote.option.id === optionId)
-    ) {
-      await createPollVote({
-        option: {
-          connect: {
-            id: optionId,
-          },
-        },
-        poll: {
-          connect: {
-            id: poll.id,
-          },
-        },
-        userId: interaction.user.id,
-      });
-      replyMessage = commandResponseFunctions.voteAdded(option.name);
-    } else {
-      await deletePollVote(
-        votes.find((vote) => vote.option.id === optionId)?.id,
-      );
-      replyMessage = commandResponses.voteRemoved;
-    }
-  } else {
-    const vote = votes[0] ?? null;
-
-    if (vote === null) {
-      await createPollVote({
-        option: {
-          connect: {
-            id: optionId,
-          },
-        },
-        poll: {
-          connect: {
-            id: poll.id,
-          },
-        },
-        userId: interaction.user.id,
-      });
-      replyMessage = commandResponseFunctions.voteAdded(option.name);
-    } else if (vote !== null && vote.option.id === optionId) {
-      await deletePollVote(vote.id);
-      replyMessage = commandResponses.voteRemoved;
-    } else {
-      await deletePollVote(vote.id);
-      await createPollVote({
-        option: {
-          connect: {
-            id: optionId,
-          },
-        },
-        poll: {
-          connect: {
-            id: poll.id,
-          },
-        },
-        userId: interaction.user.id,
-      });
-
-      replyMessage = commandResponseFunctions.voteAdded(option.name);
-    }
-  }
-
-  const message = await interaction.reply({
-    content: replyMessage,
-    ephemeral: true,
-  });
-  void deleteResponse(message);
-};
-
-export const handlePollButton = async (
-  interaction: ButtonInteraction,
-  args: string[],
-) => {
-  const guild = await getGuild(interaction);
-
-  if (guild === null) {
-    logger.warn(
-      logErrorFunctions.buttonInteractionOutsideGuildError(
-        interaction.customId,
-      ),
-    );
-
-    return;
-  }
-
-  const pollId = args[0]?.toString();
-  const optionId = args[1]?.toString();
-  const poll = await getPollById(pollId);
-  const option = optionId === 'info' ? null : await getPollOptionById(optionId);
-
-  if (optionId === 'info' && poll !== null) {
-    const infoEmbed = await getPollInfoEmbed(guild, poll);
-    await interaction.reply({
-      embeds: [infoEmbed],
-      ephemeral: true,
-    });
-
-    return;
-  }
-
-  if (
-    poll === null ||
-    option === null ||
-    pollId === undefined ||
-    optionId === undefined
-  ) {
-    const mess = await interaction.reply({
-      content: commandErrors.pollOrOptionNotFound,
-      ephemeral: true,
-    });
-    void deleteResponse(mess);
-
-    return;
-  }
-
-  if (poll.done) {
-    const pollEmbed = await getPollEmbed(poll);
-    const pollComponents = getPollComponents(poll);
-    await interaction.update({
-      components: pollComponents,
-      embeds: [pollEmbed],
-    });
-
-    return;
-  }
-
-  if (poll.roles.length !== 0) {
-    const roles = interaction.member?.roles as GuildMemberRoleManager;
-
-    if (!roles.cache.some((role) => poll.roles.includes(role.id))) {
-      const mess = await interaction.reply({
-        allowedMentions: {
-          parse: [],
-        },
-        content: commandErrorFunctions.pollNoVotePermission(poll.roles),
-        ephemeral: true,
-      });
-      void deleteResponse(mess);
-
-      return;
-    }
-  }
-
-  await handleVote(interaction, poll, optionId, option);
-  await decidePoll(poll.id);
-
-  const decidedPoll = await getPollById(poll.id);
-
-  // Shouldn't ever happen, because we wouldn't have gotten here if the poll didn't exist
-  if (decidedPoll === null) {
-    return;
-  }
-
-  const specialPoll = await getSpecialPollByPollId(poll.id);
-  const embed = await getPollEmbed(decidedPoll);
-  const components = getPollComponents(decidedPoll);
-
-  if (specialPoll !== null) {
-    await interaction.message.edit({
-      components,
-      embeds: [embed],
-    });
-
-    const member = await guild.members.fetch(specialPoll.userId);
-    await handlePollButtonForSpecialVote(decidedPoll, member);
-
-    return;
-  }
-
-  await interaction.message.edit({
-    components,
-    embeds: [embed],
-  });
-};
-
-export const handlePollStatsButton = async (
-  interaction: ButtonInteraction,
-  args: string[],
-) => {
-  const guild = await getGuild(interaction);
-
-  if (guild === null) {
-    logger.warn(
-      logErrorFunctions.buttonInteractionOutsideGuildError(
-        interaction.customId,
-      ),
-    );
-
-    return;
-  }
-
-  const pollId = args[0]?.toString();
-  const optionId = args[1]?.toString();
-  const poll = await getPollById(pollId);
-
-  if (poll === null || pollId === undefined || optionId === undefined) {
-    logger.warn(
-      logErrorFunctions.buttonInteractionPollOrOptionNotFoundError(
-        interaction.customId,
-      ),
-    );
-    await interaction.deferUpdate();
-
-    return;
-  }
-
-  const pollOption = await getPollOptionById(optionId);
-
-  if (pollOption === null) {
-    const mess = await interaction.reply({
-      content: commandErrors.optionNotFound,
-      ephemeral: true,
-    });
-    void deleteResponse(mess);
-
-    return;
-  }
-
-  const votes = (await getPollVotesByOptionId(pollOption.id)) ?? [];
-
-  await interaction.reply({
-    allowedMentions: {
-      parse: [],
-    },
-    content:
-      votes.length === 0
-        ? commandResponses.noVoters
-        : votes.map((vote) => userMention(vote.userId)).join(', '),
-    ephemeral: true,
-  });
-};
-
 export const handleVipButton = async (
   interaction: ButtonInteraction,
   args: string[],
 ) => {
   const member = interaction.member as GuildMember;
-
-  if (await isMemberInVip(member)) {
-    await interaction.reply({
-      content: commandErrors.alreadyVipMember,
-      ephemeral: true,
-    });
-
-    return;
-  }
-
-  if (await isMemberBarred(interaction.user.id)) {
-    await interaction.reply({
-      content: specialStrings.requestRejected,
-      ephemeral: true,
-    });
-
-    return;
-  }
 
   const vipRoleId = await getRolesProperty(Role.VIP);
   const councilRoleId = await getRolesProperty(Role.Council);
@@ -1301,6 +526,24 @@ export const handleVipButton = async (
     return;
   }
 
+  if (await isMemberInVip(member)) {
+    await interaction.reply({
+      content: commandErrors.alreadyVipMember,
+      ephemeral: true,
+    });
+
+    return;
+  }
+
+  if (await isMemberBarred(interaction.user.id)) {
+    await interaction.reply({
+      content: specialStrings.requestRejected,
+      ephemeral: true,
+    });
+
+    return;
+  }
+
   if (!(await isMemberLevel(member, VIP_LEVEL, true))) {
     const message = await interaction.reply({
       content: specialStrings.specialRequestUnderLevel,
@@ -1311,11 +554,12 @@ export const handleVipButton = async (
     return;
   }
 
-  const existingPoll = await getSpecialPollByUserAndType(
+  const isDuplicate = await isPollDuplicate(
+    PollType.VIP_REQUEST,
     interaction.user.id,
-    'vipRequest',
   );
-  if (existingPoll !== null) {
+
+  if (isDuplicate) {
     const message = await interaction.reply({
       content: specialStrings.requestActive,
       ephemeral: true,
@@ -1325,47 +569,14 @@ export const handleVipButton = async (
     return;
   }
 
-  const specialPollId = await startSpecialPoll(
-    interaction,
-    interaction.user,
-    'vipRequest',
-  );
-
-  if (specialPollId === null) {
-    await interaction.reply({
-      content: specialStrings.requestFailed,
-      ephemeral: true,
-    });
-
-    return;
-  }
-
-  const pollWithOptions = await getPollById(specialPollId);
-
-  if (pollWithOptions === null) {
-    await interaction.reply({
-      content: specialStrings.requestFailed,
-      ephemeral: true,
-    });
-
-    return;
-  }
+  const poll = createPoll(PollType.VIP_REQUEST, interaction.user);
 
   const councilChannel = getChannel(Channel.Council);
-  await councilChannel?.send({
-    components: getPollComponents(pollWithOptions),
-    embeds: [await getPollEmbed(pollWithOptions)],
-  });
+  await councilChannel?.send(poll);
 
   if (councilRoleId !== undefined) {
     await councilChannel?.send(roleMention(councilRoleId));
   }
-
-  const components = getPollStatsComponents(pollWithOptions);
-  await councilChannel?.send({
-    components,
-    content: commandResponseFunctions.pollStats(pollWithOptions.title),
-  });
 
   await interaction.reply({
     content: specialStrings.requestSent,
@@ -1488,12 +699,12 @@ export const handleIrregularsButton = async (
     return;
   }
 
-  const existingPoll = await getSpecialPollByUserAndType(
+  const isDuplicate = await isPollDuplicate(
+    PollType.IRREGULARS_REQUEST,
     interaction.user.id,
-    'irregularsRequest',
   );
 
-  if (existingPoll !== null) {
+  if (isDuplicate) {
     const message = await interaction.reply({
       content: specialStrings.requestActive,
       ephemeral: true,
@@ -1503,49 +714,14 @@ export const handleIrregularsButton = async (
     return;
   }
 
-  const specialPollId = await startSpecialPoll(
-    interaction,
-    interaction.user,
-    'irregularsRequest',
-  );
-
-  if (specialPollId === null) {
-    await interaction.reply({
-      content: specialStrings.requestFailed,
-      ephemeral: true,
-    });
-
-    return;
-  }
-
-  const pollWithOptions = await getPollById(specialPollId);
-
-  if (pollWithOptions === null) {
-    await interaction.reply({
-      content: specialStrings.requestFailed,
-      ephemeral: true,
-    });
-
-    return;
-  }
+  const poll = createPoll(PollType.IRREGULARS_REQUEST, interaction.user);
 
   const councilChannel = getChannel(Channel.Council);
-
-  await councilChannel?.send({
-    components: getPollComponents(pollWithOptions),
-    embeds: [await getPollEmbed(pollWithOptions)],
-  });
+  await councilChannel?.send(poll);
 
   if (councilRoleId !== undefined) {
     await councilChannel?.send(roleMention(councilRoleId));
   }
-
-  const components = getPollStatsComponents(pollWithOptions);
-
-  await councilChannel?.send({
-    components,
-    content: commandResponseFunctions.pollStats(pollWithOptions.title),
-  });
 
   await interaction.reply({
     content: specialStrings.requestSent,

@@ -8,9 +8,9 @@ import {
   resetTemporaryRegularsChannel,
   resetTemporaryVipChannel,
 } from '../utils/channels.js';
+import { initializePolls } from '../utils/polls/main.js';
 import { sendReminders } from '../utils/reminders.js';
 import { initializeRoles } from '../utils/roles.js';
-import { closeSpecialPolls } from '../utils/special.js';
 import { closeInactiveTickets } from '../utils/tickets.js';
 import { type ClientEvents, Events } from 'discord.js';
 
@@ -22,12 +22,12 @@ export const execute = async (...[client]: ClientEvents[typeof name]) => {
 
   await initializeChannels();
   await initializeRoles();
+  await initializePolls();
   await client.application?.commands.fetch();
 
   // Cron jobs
 
   void sendReminders();
-  void closeSpecialPolls();
   void closeInactiveTickets();
   void resetTemporaryVipChannel();
   void resetTemporaryRegularsChannel();

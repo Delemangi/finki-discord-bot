@@ -110,7 +110,6 @@ export const commandDescriptions = {
   'special override': 'Спроведи специјална анкета',
   'special remaining':
     'Прикажи листа од членови кои не гласале на специјална анкета',
-  'special show': 'Прикажи специјална анкета',
   'special unbar': 'Предложи укинување на забрана на корисник',
   staff: 'Преземи информации за професор',
   'statistics color': 'Прикажи статистика за улогите за бои',
@@ -324,6 +323,7 @@ export const commandErrors = {
   noTicketMembers:
     'Не се избрани членови до кои може да се испрати тикетот. Обидете се на друга категорија.',
   noTickets: 'Нема тикети.',
+  notImplemented: 'Оваа функционалност не е имплементирана.',
   oathNoPermission: 'Заклетвата не е ваша.',
   optionNotFound: 'Опцијата не постои.',
   pollAnonymous: 'Анкетата е анонимна.',

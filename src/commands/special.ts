@@ -1,55 +1,37 @@
-import { getPaginationComponents } from '../components/pagination.js';
-import {
-  getPollComponents,
-  getPollEmbed,
-  getPollStatsComponents,
-  getSpecialPollListEmbed,
-} from '../components/polls.js';
 import {
   getChannelsProperty,
-  getIntervalsProperty,
   getRolesProperty,
 } from '../configuration/main.js';
-import { deletePoll, getPollById, updatePoll } from '../data/Poll.js';
-import { getPollVotesByPollId } from '../data/PollVote.js';
-import {
-  deleteSpecialPoll,
-  getSpecialPollById,
-  getSpecialPollByPollId,
-  getSpecialPollByUserAndType,
-  getSpecialPolls,
-} from '../data/SpecialPoll.js';
-import { handlePollButtonForSpecialVote } from '../interactions/button.js';
 import { Channel } from '../lib/schemas/Channel.js';
+import { PollType } from '../lib/schemas/PollType.js';
 import { Role } from '../lib/schemas/Role.js';
-import { logger } from '../logger.js';
 import {
   commandDescriptions,
   commandErrors,
-  commandResponseFunctions,
   commandResponses,
 } from '../translations/commands.js';
 import { labels } from '../translations/labels.js';
-import { logErrorFunctions } from '../translations/logs.js';
+import { POLL_TYPE_LABELS } from '../translations/polls.js';
 import { formatUsers } from '../translations/users.js';
-import { deleteResponse } from '../utils/channels.js';
+import { getChannel } from '../utils/channels.js';
+import { createCommandChoices } from '../utils/commands.js';
 import { getGuild, getMemberFromGuild } from '../utils/guild.js';
 import { isMemberAdmin, isMemberBarred } from '../utils/members.js';
 import { safeReplyToInteraction } from '../utils/messages.js';
+import { POLL_TYPES } from '../utils/polls/constants.js';
 import {
-  abstainAllMissingVotes,
-  createPollChoices,
-  decidePoll,
-  specialPollOptions,
-  specialPollTypes,
-  startSpecialPoll,
-} from '../utils/polls.js';
+  createPoll,
+  getActivePolls,
+  getMissingVoters,
+  getPollInformation,
+  isPollDuplicate,
+} from '../utils/polls/main.js';
 import { getMembersByRoleIds } from '../utils/roles.js';
 import {
   type ChatInputCommandInteraction,
-  ComponentType,
   roleMention,
   SlashCommandBuilder,
+  userMention,
 } from 'discord.js';
 
 const name = 'special';
@@ -80,14 +62,14 @@ export const data = new SlashCommandBuilder()
           .setName('type')
           .setDescription('Тип на анкета')
           .setRequired(true)
-          .addChoices(...createPollChoices(specialPollTypes)),
+          .addChoices(...createCommandChoices(POLL_TYPES)),
       )
       .addStringOption((option) =>
         option
           .setName('decision')
           .setDescription('Одлука')
           .setRequired(false)
-          .addChoices(...createPollChoices(specialPollOptions)),
+          .addChoices(...createCommandChoices(POLL_TYPES)),
       ),
   )
   .addSubcommand((command) =>
@@ -125,150 +107,39 @@ export const data = new SlashCommandBuilder()
           .setDescription('Испрати нотификација')
           .setRequired(false),
       ),
-  )
-  .addSubcommand((command) =>
-    command
-      .setName('show')
-      .setDescription(commandDescriptions['special show'])
-      .addStringOption((option) =>
-        option.setName('id').setDescription('Анкета').setRequired(true),
-      )
-      .addBooleanOption((option) =>
-        option
-          .setName('notify')
-          .setDescription('Испрати нотификација')
-          .setRequired(false),
-      ),
   );
 
 const handleSpecialList = async (interaction: ChatInputCommandInteraction) => {
-  const specialPolls = await getSpecialPolls();
+  const polls = await getActivePolls();
+  const pollsInfo = polls.map((poll) =>
+    getPollInformation(poll.message.content),
+  );
 
-  if (specialPolls === null) {
-    await interaction.editReply(commandErrors.specialPollsFetchFailed);
+  const output = pollsInfo.map(({ pollType, userId }, index) => {
+    if (pollType === null || userId === null) {
+      return '';
+    }
 
-    return;
-  }
-
-  const pollsPerPage = 8;
-  const pages = Math.ceil(specialPolls.length / pollsPerPage);
-  const embed = await getSpecialPollListEmbed(specialPolls, 0, pollsPerPage);
-  const components = [
-    pages === 0 || pages === 1
-      ? getPaginationComponents('polls')
-      : getPaginationComponents('polls', 'start'),
-  ];
-  const message = await interaction.editReply({
-    components,
-    embeds: [embed],
-  });
-  const buttonIdle = await getIntervalsProperty('buttonIdle');
-  const collector = message.createMessageComponentCollector({
-    componentType: ComponentType.Button,
-    time: buttonIdle,
+    return `${index + 1}. ${POLL_TYPE_LABELS[pollType]} ${userMention(userId)}`;
   });
 
-  collector.on('collect', async (buttonInteraction) => {
-    if (
-      buttonInteraction.user.id !==
-      buttonInteraction.message.interactionMetadata?.user.id
-    ) {
-      const mess = await buttonInteraction.reply({
-        content: commandErrors.buttonNoPermission,
-        ephemeral: true,
-      });
-      void deleteResponse(mess);
-
-      return;
-    }
-
-    const id = buttonInteraction.customId.split(':')[1];
-
-    if (id === undefined) {
-      return;
-    }
-
-    let buttons;
-    let page =
-      Number(
-        buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.[0],
-      ) - 1;
-
-    if (id === 'first') {
-      page = 0;
-    } else if (id === 'last') {
-      page = pages - 1;
-    } else if (id === 'previous') {
-      page--;
-    } else if (id === 'next') {
-      page++;
-    }
-
-    if (page === 0 && (pages === 0 || pages === 1)) {
-      buttons = getPaginationComponents('polls');
-    } else if (page === 0) {
-      buttons = getPaginationComponents('polls', 'start');
-    } else if (page === pages - 1) {
-      buttons = getPaginationComponents('polls', 'end');
-    } else {
-      buttons = getPaginationComponents('polls', 'middle');
-    }
-
-    const nextEmbed = await getSpecialPollListEmbed(
-      specialPolls,
-      page,
-      pollsPerPage,
-    );
-
-    try {
-      await buttonInteraction.update({
-        components: [buttons],
-        embeds: [nextEmbed],
-      });
-    } catch (error) {
-      logger.error(
-        logErrorFunctions.interactionUpdateError(
-          buttonInteraction.customId,
-          error,
-        ),
-      );
-    }
-  });
-
-  collector.on('end', async () => {
-    try {
-      await message.edit({
-        components: [getPaginationComponents('polls')],
-      });
-    } catch (error) {
-      logger.error(logErrorFunctions.collectorEndError(name, error));
-    }
-  });
+  await safeReplyToInteraction(interaction, output.join('\n'));
 };
 
 const handleSpecialDelete = async (
   interaction: ChatInputCommandInteraction,
 ) => {
   const pollId = interaction.options.getString('poll', true);
+  const channel = getChannel(Channel.Council);
 
-  const specialPoll =
-    (await getSpecialPollByPollId(pollId)) ??
-    (await getSpecialPollById(pollId));
-
-  if (specialPoll === null) {
-    await interaction.editReply(commandErrors.pollNotFound);
+  if (channel === null) {
+    await interaction.editReply(commandErrors.invalidChannel);
 
     return;
   }
 
-  const deletedSpecialPoll = await deleteSpecialPoll(specialPoll.id);
-  const deletedPoll = await deletePoll(specialPoll.pollId);
-
-  if (deletedSpecialPoll === null || deletedPoll === null) {
-    await interaction.editReply(commandErrors.pollDeletionFailed);
-
-    return;
-  }
+  const message = await channel?.messages.fetch(pollId);
+  await message?.poll?.end();
 
   await interaction.editReply(commandResponses.pollDeleted);
 };
@@ -276,50 +147,52 @@ const handleSpecialDelete = async (
 const handleSpecialOverride = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const user = interaction.options.getUser('user', true);
-  const type = interaction.options.getString('type', true);
-  const decision = interaction.options.getString('decision');
+  // const user = interaction.options.getUser('user', true);
+  // const type = interaction.options.getString('type', true);
+  // const decision = interaction.options.getString('decision');
 
-  const specialPoll = await getSpecialPollByUserAndType(user.id, type);
-  const poll = await getPollById(specialPoll?.pollId);
+  // const specialPoll = await getSpecialPollByUserAndType(user.id, type);
+  // const poll = await getPollById(specialPoll?.pollId);
 
-  if (specialPoll === null || poll === null) {
-    await interaction.editReply(commandErrors.pollNotFound);
+  // if (specialPoll === null || poll === null) {
+  //   await interaction.editReply(commandErrors.pollNotFound);
 
-    return;
-  }
+  //   return;
+  // }
 
-  if (decision === null) {
-    await abstainAllMissingVotes(poll.id);
-    await decidePoll(poll.id);
-  } else {
-    poll.decision = decision;
-    poll.done = true;
+  // if (decision === null) {
+  //   await abstainAllMissingVotes(poll.id);
+  //   await decidePoll(poll.id);
+  // } else {
+  //   poll.decision = decision;
+  //   poll.done = true;
 
-    await updatePoll(poll);
-  }
+  //   await updatePoll(poll);
+  // }
 
-  const member = await getMemberFromGuild(specialPoll.userId, interaction);
+  // const member = await getMemberFromGuild(specialPoll.userId, interaction);
 
-  if (member === null) {
-    await interaction.editReply(commandErrors.userNotMember);
+  // if (member === null) {
+  //   await interaction.editReply(commandErrors.userNotMember);
 
-    return;
-  }
+  //   return;
+  // }
 
-  const newPoll = await getPollById(poll.id);
+  // const newPoll = await getPollById(poll.id);
 
-  if (newPoll === null) {
-    await interaction.editReply(commandErrors.pollNotFound);
+  // if (newPoll === null) {
+  //   await interaction.editReply(commandErrors.pollNotFound);
 
-    return;
-  }
+  //   return;
+  // }
 
-  await handlePollButtonForSpecialVote(newPoll, member);
+  // await handlePollButtonForSpecialVote(newPoll, member);
 
-  await interaction.editReply(
-    commandResponseFunctions.pollOverriden(newPoll.decision ?? labels.unknown),
-  );
+  // await interaction.editReply(
+  //   commandResponseFunctions.pollOverriden(newPoll.decision ?? labels.unknown),
+  // );
+
+  await interaction.editReply(commandErrors.notImplemented);
 };
 
 const handleSpecialRemaining = async (
@@ -334,32 +207,33 @@ const handleSpecialRemaining = async (
   }
 
   const pollId = interaction.options.getString('poll', true);
-  const poll = await getPollById(pollId);
+  const councilChannel = getChannel(Channel.Council);
 
-  if (poll === null) {
+  if (councilChannel === null) {
+    await interaction.editReply(commandErrors.invalidChannel);
+
+    return;
+  }
+
+  const message = await councilChannel?.messages.fetch(pollId);
+  const poll = message?.poll;
+
+  if (poll === undefined || poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
 
     return;
   }
 
-  const specialPoll = await getSpecialPollByPollId(pollId);
+  const councilRole = await getRolesProperty(Role.Council);
 
-  if (specialPoll === null) {
-    await interaction.editReply(commandErrors.pollNotFound);
-
-    return;
-  }
-
-  const votes = await getPollVotesByPollId(pollId);
-
-  if (votes === null) {
-    await interaction.editReply(commandErrors.pollVotesFetchFailed);
+  if (councilRole === undefined) {
+    await interaction.editReply(commandErrors.invalidRole);
 
     return;
   }
 
-  const voters = votes.map((vote) => vote.userId);
-  const allVoters = await getMembersByRoleIds(guild, poll.roles);
+  const voters = await getMissingVoters(poll);
+  const allVoters = await getMembersByRoleIds(guild, [councilRole]);
   const missingVoters = allVoters.filter((voter) => !voters.includes(voter));
   const missingVotersMembers = missingVoters
     .map((id) => guild.members.cache.get(id))
@@ -413,40 +287,22 @@ const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, 'bar');
+  const isDuplicate = await isPollDuplicate(PollType.BAR, user.id);
 
-  if (pollId === null) {
+  if (isDuplicate) {
     await interaction.editReply(commandErrors.userSpecialPending);
 
     return;
   }
 
-  const poll = await getPollById(pollId);
-
-  if (poll === null) {
-    await interaction.editReply(commandErrors.pollNotFound);
-
-    return;
-  }
-
+  const poll = createPoll(PollType.BAR, user);
   const councilRoleId = await getRolesProperty(Role.Council);
 
   if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
   }
 
-  const embed = await getPollEmbed(poll);
-  const components = getPollComponents(poll);
-  await interaction.editReply({
-    components,
-    embeds: [embed],
-  });
-
-  const statsComponents = getPollStatsComponents(poll);
-  await interaction.channel.send({
-    components: statsComponents,
-    content: commandResponseFunctions.pollStats(poll.title),
-  });
+  await interaction.editReply(poll);
 };
 
 const handleSpecialUnbar = async (interaction: ChatInputCommandInteraction) => {
@@ -476,88 +332,22 @@ const handleSpecialUnbar = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const pollId = await startSpecialPoll(interaction, user, 'unbar');
+  const isDuplicate = await isPollDuplicate(PollType.UNBAR, user.id);
 
-  if (pollId === null) {
+  if (isDuplicate) {
     await interaction.editReply(commandErrors.userSpecialPending);
 
     return;
   }
 
-  const poll = await getPollById(pollId);
-
-  if (poll === null) {
-    await interaction.editReply(commandErrors.pollNotFound);
-
-    return;
-  }
-
+  const poll = createPoll(PollType.UNBAR, user);
   const councilRoleId = await getRolesProperty(Role.Council);
 
   if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
   }
 
-  const embed = await getPollEmbed(poll);
-  const components = getPollComponents(poll);
-  await interaction.editReply({
-    components,
-    embeds: [embed],
-  });
-
-  const statsComponents = getPollStatsComponents(poll);
-  await interaction.channel.send({
-    components: statsComponents,
-    content: commandResponseFunctions.pollStats(poll.title),
-  });
-};
-
-const handleSpecialShow = async (interaction: ChatInputCommandInteraction) => {
-  if (!interaction.channel?.isSendable()) {
-    await interaction.editReply({
-      content: commandErrors.unsupportedChannelType,
-    });
-
-    return;
-  }
-
-  const id = interaction.options.getString('id', true);
-  const notify = interaction.options.getBoolean('notify') ?? true;
-  const specialPoll = await getSpecialPollById(id);
-  const poll = await getPollById(specialPoll?.pollId);
-
-  if (poll === null) {
-    await interaction.editReply(commandErrors.pollNotFound);
-
-    return;
-  }
-
-  const embed = await getPollEmbed(poll);
-  const components = getPollComponents(poll);
-
-  const councilRoleId = await getRolesProperty(Role.Council);
-
-  await interaction.editReply({
-    components,
-    embeds: [embed],
-    ...(specialPoll !== null && {
-      allowedMentions: {
-        parse: [],
-      },
-      content:
-        councilRoleId === undefined || !notify
-          ? null
-          : roleMention(councilRoleId),
-    }),
-  });
-
-  if (!poll.anonymous) {
-    const statsComponents = getPollStatsComponents(poll);
-    await interaction.channel.send({
-      components: statsComponents,
-      content: commandResponseFunctions.pollStats(poll.title),
-    });
-  }
+  await interaction.editReply(poll);
 };
 
 const specialHandlers = {
@@ -566,7 +356,6 @@ const specialHandlers = {
   list: handleSpecialList,
   override: handleSpecialOverride,
   remaining: handleSpecialRemaining,
-  show: handleSpecialShow,
   unbar: handleSpecialUnbar,
 };
 

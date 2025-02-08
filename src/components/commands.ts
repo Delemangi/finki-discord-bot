@@ -22,7 +22,6 @@ import {
 import { labels } from '../translations/labels.js';
 import { paginationStringFunctions } from '../translations/pagination.js';
 import { commandMention } from '../utils/commands.js';
-import { getGuild } from '../utils/guild.js';
 import { getUsername } from '../utils/members.js';
 import { linkProfessors } from './utils.js';
 import { type Experience, type Link, type Question } from '@prisma/client';
@@ -393,10 +392,10 @@ export const getStudentInfoEmbed = async (member: GuildMember) => {
     .setTimestamp();
 };
 
-export const getExperienceEmbed = async (experience: Experience) => {
-  const guild = await getGuild();
-  const user = guild?.members.cache.get(experience.userId)?.user as User;
-
+export const getExperienceEmbed = async (
+  experience: Experience,
+  user: User,
+) => {
   return new EmbedBuilder()
     .setColor(getThemeColor())
     .setAuthor({

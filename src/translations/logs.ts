@@ -20,6 +20,7 @@ export const logShortStrings = {
 export const logMessages = {
   channelsInitialized: 'Channels initialized',
   commandsRegistered: 'Commands registered',
+  pollsInitialized: 'Polls initialized',
   rolesInitialized: 'Roles initialized',
 };
 
@@ -149,6 +150,8 @@ export const logErrorFunctions = {
 
   loginFailed: (error: unknown) => `Failed logging in\n${error}`,
 
+  memberNotFound: (userId: string) => `Member for ${userId} not found`,
+
   messageContextMenuInteractionDeferError: (
     interaction: MessageContextMenuCommandInteraction,
     error: unknown,
@@ -166,6 +169,9 @@ export const logErrorFunctions = {
 
   messageUrlFetchError: (interactionId: string, error: unknown) =>
     `Failed fetching message URL for ${interactionId}\n${error}`,
+
+  pollNotExecutedError: (pollType: string, userId: string) =>
+    `Poll ${pollType} for ${userId} could not be executed`,
 
   reminderLoadError: (error: unknown) => `Failed loading reminders\n${error}`,
 
