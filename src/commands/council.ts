@@ -113,13 +113,13 @@ const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (!(await isMemberInVip(member))) {
+  if (!isMemberInVip(member)) {
     await interaction.editReply(commandErrors.userNotVipMember);
 
     return;
   }
 
-  if (await isMemberInCouncil(member)) {
+  if (isMemberInCouncil(member)) {
     await interaction.editReply(commandErrors.userCouncilMember);
 
     return;
@@ -180,7 +180,7 @@ const handleCouncilRemove = async (
     return;
   }
 
-  if (!(await isMemberInCouncil(member))) {
+  if (!isMemberInCouncil(member)) {
     await interaction.editReply(commandErrors.userNotCouncilMember);
 
     return;
@@ -209,7 +209,7 @@ const handleCouncilToggle = async (
 ) => {
   const member = interaction.member as GuildMember | null;
 
-  if (member === null || !(await isMemberInVip(member))) {
+  if (member === null || !isMemberInVip(member)) {
     await interaction.editReply(commandErrors.userNotVipMember);
 
     return;
@@ -229,7 +229,7 @@ const handleCouncilToggle = async (
     return;
   }
 
-  const isInCouncil = await isMemberInCouncil(member);
+  const isInCouncil = isMemberInCouncil(member);
 
   if (isInCouncil) {
     await member.roles.remove(councilRoleId);

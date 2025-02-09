@@ -37,7 +37,7 @@ export const getCommonCommand = (name: keyof typeof commandDescriptions) => ({
       return;
     }
 
-    const embed = await getQuestionEmbed(question);
+    const embed = getQuestionEmbed(question);
     const components = getQuestionComponents(question);
     await interaction.editReply({
       components,
