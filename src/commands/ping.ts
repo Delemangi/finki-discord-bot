@@ -1,12 +1,13 @@
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from 'discord.js';
+
 import { client } from '../client.js';
 import {
   commandDescriptions,
   commandResponseFunctions,
 } from '../translations/commands.js';
-import {
-  type ChatInputCommandInteraction,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'ping';
 

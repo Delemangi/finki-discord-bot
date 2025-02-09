@@ -1,7 +1,8 @@
+import { type Link, type Prisma } from '@prisma/client';
+
 import { logger } from '../logger.js';
 import { databaseErrorFunctions } from '../translations/database.js';
 import { database } from './database.js';
-import { type Link, type Prisma } from '@prisma/client';
 
 export const getLinks = async () => {
   try {

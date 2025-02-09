@@ -1,3 +1,8 @@
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from 'discord.js';
+
 import { getChannelsProperty } from '../configuration/main.js';
 import { Channel } from '../lib/schemas/Channel.js';
 import {
@@ -8,13 +13,9 @@ import {
 import { labels } from '../translations/labels.js';
 import { safeReplyToInteraction } from '../utils/messages.js';
 import { getActiveTickets } from '../utils/tickets.js';
-import {
-  type ChatInputCommandInteraction,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'ticket';
-const dateFormatter = Intl.DateTimeFormat('mk-MK', {
+const dateFormatter = new Intl.DateTimeFormat('mk-MK', {
   dateStyle: 'long',
   timeStyle: 'short',
 });
@@ -32,7 +33,7 @@ export const data = new SlashCommandBuilder()
   );
 
 const handleTicketClose = async (interaction: ChatInputCommandInteraction) => {
-  const ticketsChannel = await getChannelsProperty(Channel.Tickets);
+  const ticketsChannel = getChannelsProperty(Channel.Tickets);
 
   if (
     !interaction.channel?.isThread() ||

@@ -1,4 +1,9 @@
 import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from 'discord.js';
+
+import {
   getListLinksEmbed,
   getListQuestionsEmbed,
 } from '../components/commands.js';
@@ -8,10 +13,6 @@ import {
   commandDescriptions,
   commandErrors,
 } from '../translations/commands.js';
-import {
-  type ChatInputCommandInteraction,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'list';
 
@@ -40,7 +41,7 @@ const handleListQuestions = async (
     return;
   }
 
-  const embed = await getListQuestionsEmbed(questions);
+  const embed = getListQuestionsEmbed(questions);
   await interaction.editReply({
     embeds: [embed],
   });
@@ -57,7 +58,7 @@ const handleListLinks = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embed = await getListLinksEmbed(links);
+  const embed = getListLinksEmbed(links);
   await interaction.editReply({
     embeds: [embed],
   });

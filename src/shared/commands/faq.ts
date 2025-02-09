@@ -1,4 +1,9 @@
 import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from 'discord.js';
+
+import {
   getQuestionComponents,
   getQuestionEmbed,
 } from '../../components/commands.js';
@@ -7,10 +12,6 @@ import {
   commandDescriptions,
   commandErrors,
 } from '../../translations/commands.js';
-import {
-  type ChatInputCommandInteraction,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 export const getCommonCommand = (name: keyof typeof commandDescriptions) => ({
   data: new SlashCommandBuilder()

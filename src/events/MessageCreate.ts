@@ -1,3 +1,5 @@
+import { type ClientEvents, Events, type Message } from 'discord.js';
+
 import {
   getCrosspostingProperty,
   getReactionsProperty,
@@ -5,12 +7,11 @@ import {
 import { logger } from '../logger.js';
 import { logErrorFunctions } from '../translations/logs.js';
 import { addExperience } from '../utils/experience.js';
-import { type ClientEvents, Events, type Message } from 'discord.js';
 
 export const name = Events.MessageCreate;
 
-const crosspostingChannels = await getCrosspostingProperty('channels');
-const crosspostingEnabled = await getCrosspostingProperty('enabled');
+const crosspostingChannels = getCrosspostingProperty('channels');
+const crosspostingEnabled = getCrosspostingProperty('enabled');
 
 const crosspost = async (message: Message) => {
   if (
@@ -29,7 +30,7 @@ const crosspost = async (message: Message) => {
 };
 
 const addReaction = async (message: Message) => {
-  const reactions = await getReactionsProperty('add');
+  const reactions = getReactionsProperty('add');
   const authorId = message.author.id;
   const reaction = reactions?.[authorId];
 

@@ -1,3 +1,5 @@
+import { type AutocompleteInteraction } from 'discord.js';
+
 import {
   getClassrooms,
   getCourses,
@@ -13,7 +15,6 @@ import { logger } from '../logger.js';
 import { logErrorFunctions } from '../translations/logs.js';
 import { transformOptions } from '../utils/options.js';
 import { createOptions } from './utils.js';
-import { type AutocompleteInteraction } from 'discord.js';
 
 let transformedCourses: Array<[string, string]> | null = null;
 let transformedProfessors: Array<[string, string]> | null = null;

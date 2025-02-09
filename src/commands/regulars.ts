@@ -1,3 +1,8 @@
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from 'discord.js';
+
 import { getRolesProperty } from '../configuration/main.js';
 import { Role } from '../lib/schemas/Role.js';
 import {
@@ -12,10 +17,6 @@ import {
   isMemberInRegulars,
   isMemberInVip,
 } from '../utils/members.js';
-import {
-  type ChatInputCommandInteraction,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'regulars';
 
@@ -54,7 +55,7 @@ const handleRegularsAdd = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser('user', true);
   const member = await getMemberFromGuild(user.id, interaction);
 
-  const regularRole = await getRolesProperty(Role.Regulars);
+  const regularRole = getRolesProperty(Role.Regulars);
 
   if (regularRole === undefined) {
     await interaction.editReply(commandErrors.invalidRole);
@@ -74,13 +75,13 @@ const handleRegularsAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (await isMemberInVip(member)) {
+  if (isMemberInVip(member)) {
     await interaction.editReply(commandErrors.userVipMember);
 
     return;
   }
 
-  if (await isMemberInRegulars(member)) {
+  if (isMemberInRegulars(member)) {
     await interaction.editReply(commandErrors.userRegular);
 
     return;
@@ -97,7 +98,7 @@ const handleRegularsRemove = async (
   const user = interaction.options.getUser('user', true);
   const member = await getMemberFromGuild(user.id, interaction);
 
-  const regularRole = await getRolesProperty(Role.Regulars);
+  const regularRole = getRolesProperty(Role.Regulars);
 
   if (regularRole === undefined) {
     await interaction.editReply(commandErrors.invalidRole);
@@ -111,7 +112,7 @@ const handleRegularsRemove = async (
     return;
   }
 
-  if (await isMemberInVip(member)) {
+  if (isMemberInVip(member)) {
     await interaction.editReply(commandErrors.userVipMember);
 
     return;

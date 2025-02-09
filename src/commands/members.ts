@@ -1,3 +1,10 @@
+/* eslint-disable unicorn/no-await-expression-member */
+
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from 'discord.js';
+
 import { getRolesProperty } from '../configuration/main.js';
 import { getBars } from '../data/Bar.js';
 import { Role } from '../lib/schemas/Role.js';
@@ -15,10 +22,6 @@ import {
   getMembersByRoleIds,
   getMembersByRoleIdsExtended,
 } from '../utils/roles.js';
-import {
-  type ChatInputCommandInteraction,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'members';
 
@@ -79,9 +82,9 @@ const handleMembersVip = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const vipRoleId = await getRolesProperty(Role.VIP);
-  const adminRoleId = await getRolesProperty(Role.Administrators);
-  const moderatorRoleId = await getRolesProperty(Role.Moderators);
+  const vipRoleId = getRolesProperty(Role.VIP);
+  const adminRoleId = getRolesProperty(Role.Administrators);
+  const moderatorRoleId = getRolesProperty(Role.Moderators);
 
   const vipMemberIds = await getMembersByRoleIdsExtended(
     guild,
@@ -134,12 +137,12 @@ const handleMembersRegulars = async (
     return;
   }
 
-  const regularRoleId = await getRolesProperty(Role.Regulars);
-  const irregularRoleId = await getRolesProperty(Role.Irregulars);
-  const vipRoleId = await getRolesProperty(Role.VIP);
-  const moderatorRoleId = await getRolesProperty(Role.Moderators);
-  const adminRoleId = await getRolesProperty(Role.Administrators);
-  const veteranRoleId = await getRolesProperty(Role.Veterans);
+  const regularRoleId = getRolesProperty(Role.Regulars);
+  const irregularRoleId = getRolesProperty(Role.Irregulars);
+  const vipRoleId = getRolesProperty(Role.VIP);
+  const moderatorRoleId = getRolesProperty(Role.Moderators);
+  const adminRoleId = getRolesProperty(Role.Administrators);
+  const veteranRoleId = getRolesProperty(Role.Veterans);
 
   const regularsMembersIds = await getMembersByRoleIdsExtended(
     guild,
@@ -180,7 +183,7 @@ const handleMembersGirlies = async (
     return;
   }
 
-  const girliesRoleId = await getRolesProperty(Role.Girlies);
+  const girliesRoleId = getRolesProperty(Role.Girlies);
   const girliesMemberIds = await getMembersByRoleIds(
     guild,
     [girliesRoleId].filter((value) => value !== undefined),
@@ -212,7 +215,7 @@ const handleMembersBoys = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const boysRoleId = await getRolesProperty(Role.Boys);
+  const boysRoleId = getRolesProperty(Role.Boys);
   const boysMemberIds = await getMembersByRoleIds(
     guild,
     [boysRoleId].filter((value) => value !== undefined),
@@ -288,7 +291,7 @@ const handleMembersBoosters = async (
     return;
   }
 
-  const boosterRoleId = await getRolesProperty(Role.Boosters);
+  const boosterRoleId = getRolesProperty(Role.Boosters);
   const boosterMemberIds = await getMembersByRoleIds(
     guild,
     [boosterRoleId].filter((value) => value !== undefined),
@@ -322,8 +325,8 @@ const handleMembersIrregulars = async (
     return;
   }
 
-  const irregularRoleId = await getRolesProperty(Role.Irregulars);
-  const vipRoleId = await getRolesProperty(Role.VIP);
+  const irregularRoleId = getRolesProperty(Role.Irregulars);
+  const vipRoleId = getRolesProperty(Role.VIP);
 
   const irregularsMembersIds = await getMembersByRoleIdsExtended(
     guild,

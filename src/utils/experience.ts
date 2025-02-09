@@ -1,3 +1,6 @@
+import AsyncLock from 'async-lock';
+import { type GuildMember, type Message } from 'discord.js';
+
 import { getLevels } from '../configuration/files.js';
 import {
   getExperienceMultiplier,
@@ -18,26 +21,21 @@ import { getChannel } from './channels.js';
 import { COUNCIL_LEVEL, REGULAR_LEVEL } from './levels.js';
 import { isMemberBarred, isMemberInVip, isMemberLevel } from './members.js';
 import { EMOJI_REGEX, URL_REGEX } from './regex.js';
-import AsyncLock from 'async-lock';
-import { type GuildMember, type Message } from 'discord.js';
 
 // Golden ratio
 const EXPERIENCE_COEFFICIENT = (1 + Math.sqrt(5)) / 2 - 1;
 const LEVEL_DELTA = 800n;
 
-const cleanMessage = (message: string) => {
-  return message.trim().replaceAll(EMOJI_REGEX, '$1').replaceAll(URL_REGEX, '');
-};
+const cleanMessage = (message: string) =>
+  message.trim().replaceAll(EMOJI_REGEX, '$1').replaceAll(URL_REGEX, '');
 
-const countLinks = (message: string) => {
-  return URL_REGEX.exec(message)?.length ?? 0;
-};
+const countLinks = (message: string) => URL_REGEX.exec(message)?.length ?? 0;
 
 export const getExperienceFromMessage = async (message: Message) => {
   try {
     await message.fetch();
 
-    const multiplier = await getExperienceMultiplier(message.channel.id);
+    const multiplier = getExperienceMultiplier(message.channel.id);
 
     return (
       BigInt(multiplier) *
@@ -93,7 +91,7 @@ const awardMember = async (member: GuildMember, level: number) => {
   }
 
   if (await isMemberLevel(member, REGULAR_LEVEL, false)) {
-    const regularRoleId = await getRolesProperty(Role.Regulars);
+    const regularRoleId = getRolesProperty(Role.Regulars);
 
     if (regularRoleId === undefined) {
       return;
@@ -103,10 +101,10 @@ const awardMember = async (member: GuildMember, level: number) => {
   }
 
   if (
-    (await isMemberInVip(member)) &&
+    isMemberInVip(member) &&
     (await isMemberLevel(member, COUNCIL_LEVEL, false))
   ) {
-    const councilRoleId = await getRolesProperty(Role.Council);
+    const councilRoleId = getRolesProperty(Role.Council);
 
     if (councilRoleId === undefined) {
       return;
@@ -127,7 +125,7 @@ const awardMember = async (member: GuildMember, level: number) => {
 const lock = new AsyncLock();
 
 export const addExperience = async (message: Message) => {
-  if (!(await getExperienceProperty('enabled'))) {
+  if (!getExperienceProperty('enabled')) {
     return;
   }
 

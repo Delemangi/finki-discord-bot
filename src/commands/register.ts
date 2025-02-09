@@ -1,3 +1,11 @@
+import {
+  type ChatInputCommandInteraction,
+  PermissionFlagsBits,
+  REST,
+  Routes,
+  SlashCommandBuilder,
+} from 'discord.js';
+
 import { getApplicationId, getToken } from '../configuration/environment.js';
 import { logger } from '../logger.js';
 import {
@@ -7,13 +15,6 @@ import {
 } from '../translations/commands.js';
 import { logErrorFunctions } from '../translations/logs.js';
 import { getCommands } from '../utils/commands.js';
-import {
-  type ChatInputCommandInteraction,
-  PermissionFlagsBits,
-  REST,
-  Routes,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'register';
 const permission = PermissionFlagsBits.Administrator;

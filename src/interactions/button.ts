@@ -1,3 +1,11 @@
+import {
+  type ButtonInteraction,
+  ChannelType,
+  type GuildMember,
+  type GuildMemberRoleManager,
+  roleMention,
+} from 'discord.js';
+
 import { getRemindersComponents } from '../components/reminders.js';
 import {
   getConfigProperty,
@@ -44,13 +52,6 @@ import {
   getRoles,
 } from '../utils/roles.js';
 import { closeTicket, createTicket } from '../utils/tickets.js';
-import {
-  type ButtonInteraction,
-  ChannelType,
-  type GuildMember,
-  type GuildMemberRoleManager,
-  roleMention,
-} from 'discord.js';
 
 export const handleCourseButton = async (
   interaction: ButtonInteraction,
@@ -449,8 +450,8 @@ export const handleVipButton = async (
 ) => {
   const member = interaction.member as GuildMember;
 
-  const vipRoleId = await getRolesProperty(Role.VIP);
-  const councilRoleId = await getRolesProperty(Role.Council);
+  const vipRoleId = getRolesProperty(Role.VIP);
+  const councilRoleId = getRolesProperty(Role.Council);
 
   if (args[0] === 'acknowledge') {
     if (
@@ -516,7 +517,7 @@ export const handleVipButton = async (
     return;
   }
 
-  if (!(await getConfigProperty('oathEnabled'))) {
+  if (!getConfigProperty('oathEnabled')) {
     const message = await interaction.reply({
       content: specialStrings.requestsPaused,
       ephemeral: true,
@@ -526,7 +527,7 @@ export const handleVipButton = async (
     return;
   }
 
-  if (await isMemberInVip(member)) {
+  if (isMemberInVip(member)) {
     await interaction.reply({
       content: commandErrors.alreadyVipMember,
       ephemeral: true,
@@ -590,7 +591,7 @@ export const handleIrregularsButton = async (
 ) => {
   const member = interaction.member as GuildMember;
 
-  if (await isMemberInIrregulars(member)) {
+  if (isMemberInIrregulars(member)) {
     await interaction.reply({
       content: commandErrors.alreadyIrregular,
       ephemeral: true,
@@ -608,7 +609,7 @@ export const handleIrregularsButton = async (
     return;
   }
 
-  if (!(await isMemberInRegulars(member))) {
+  if (!isMemberInRegulars(member)) {
     await interaction.reply({
       content: specialStrings.requestRejected,
       ephemeral: true,
@@ -617,8 +618,8 @@ export const handleIrregularsButton = async (
     return;
   }
 
-  const irregularsRoleId = await getRolesProperty(Role.Irregulars);
-  const councilRoleId = await getRolesProperty(Role.Council);
+  const irregularsRoleId = getRolesProperty(Role.Irregulars);
+  const councilRoleId = getRolesProperty(Role.Council);
 
   if (args[0] === 'acknowledge') {
     if (
@@ -679,7 +680,7 @@ export const handleIrregularsButton = async (
     return;
   }
 
-  if (!(await getConfigProperty('oathEnabled'))) {
+  if (!getConfigProperty('oathEnabled')) {
     const message = await interaction.reply({
       content: specialStrings.requestsPaused,
       ephemeral: true,
@@ -757,7 +758,7 @@ export const handleReminderDeleteButton = async (
 
   if (reminder === null) {
     const newReminders = await getRemindersByUserId(authorId);
-    const newComponents = await getRemindersComponents(newReminders ?? []);
+    const newComponents = getRemindersComponents(newReminders ?? []);
 
     await interaction.message.edit({
       components: newComponents,
@@ -778,7 +779,7 @@ export const handleReminderDeleteButton = async (
   });
 
   const reminders = await getRemindersByUserId(interaction.user.id);
-  const components = await getRemindersComponents(reminders ?? []);
+  const components = getRemindersComponents(reminders ?? []);
   await interaction.message.edit({
     components,
   });
@@ -791,7 +792,7 @@ export const handleTicketCreateButton = async (
   const guild = await getGuild(interaction);
   const ticketType = args[0];
 
-  const enabled = await getTicketingProperty('enabled');
+  const enabled = getTicketingProperty('enabled');
 
   if (!enabled) {
     await interaction.reply({
@@ -809,9 +810,9 @@ export const handleTicketCreateButton = async (
     return;
   }
 
-  const ticketMetadata = await getTicketProperty(ticketType);
+  const ticketMetadata = getTicketProperty(ticketType);
 
-  if (ticketMetadata === null) {
+  if (ticketMetadata === undefined) {
     await interaction.reply({
       content: commandErrors.invalidTicketType,
       ephemeral: true,
@@ -833,8 +834,8 @@ export const handleTicketCreateButton = async (
   const ticketsChannel = getChannel(Channel.Tickets);
 
   if (
-    ticketsChannel === null ||
-    ticketsChannel?.type !== ChannelType.GuildText
+    ticketsChannel === undefined ||
+    ticketsChannel.type !== ChannelType.GuildText
   ) {
     await interaction.reply({
       content: commandErrors.invalidChannel,
@@ -844,7 +845,7 @@ export const handleTicketCreateButton = async (
     return;
   }
 
-  if (ticketMetadata?.roles === undefined) {
+  if (ticketMetadata.roles.length === 0) {
     await interaction.reply({
       content: commandErrors.noTicketMembers,
       ephemeral: true,

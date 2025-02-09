@@ -1,3 +1,5 @@
+import { type GuildMember, type Poll } from 'discord.js';
+
 import {
   getIrregularsAcknowledgeComponents,
   getIrregularsConfirmComponents,
@@ -19,7 +21,6 @@ import { specialStringFunctions } from '../../translations/special.js';
 import { getChannel } from '../channels.js';
 import { getMemberFromGuild } from '../guild.js';
 import { getPollInformation } from './main.js';
-import { type GuildMember, type Poll } from 'discord.js';
 
 const executeVipRequestPollAction = async (
   member: GuildMember,
@@ -42,7 +43,7 @@ const executeVipRequestPollAction = async (
     return;
   }
 
-  const confirmEmbed = await getVipConfirmEmbed();
+  const confirmEmbed = getVipConfirmEmbed();
   const confirmComponents = getVipConfirmComponents();
   await oathChannel?.send({
     components: confirmComponents,
@@ -68,7 +69,7 @@ const executeVipAddPollAction = async (
     return;
   }
 
-  const confirmEmbed = await getVipConfirmEmbed();
+  const confirmEmbed = getVipConfirmEmbed();
   const confirmComponents = getVipConfirmComponents();
   await oathChannel?.send({
     components: confirmComponents,
@@ -93,8 +94,8 @@ const executeVipRemovePollAction = async (
     return;
   }
 
-  const vipRoleId = await getRolesProperty(Role.VIP);
-  const councilRoleId = await getRolesProperty(Role.Council);
+  const vipRoleId = getRolesProperty(Role.VIP);
+  const councilRoleId = getRolesProperty(Role.Council);
 
   if (vipRoleId === undefined) {
     await vipChannel?.send(commandErrorFunctions.roleNotFound(Role.VIP));
@@ -129,7 +130,7 @@ const executeCouncilAddPollAction = async (
     return;
   }
 
-  const councilRoleId = await getRolesProperty(Role.Council);
+  const councilRoleId = getRolesProperty(Role.Council);
 
   if (councilRoleId === undefined) {
     await vipChannel?.send(commandErrorFunctions.roleNotFound(Role.Council));
@@ -157,13 +158,13 @@ const executeCouncilRemovePollAction = async (
     return;
   }
 
-  const councilRoleId = await getRolesProperty(Role.Council);
+  const councilRoleId = getRolesProperty(Role.Council);
 
   if (councilRoleId === undefined) {
     await vipChannel?.send(commandErrorFunctions.roleNotFound(Role.Council));
     logger.warn(logErrorFunctions.roleNotFound(Role.Council));
   } else {
-    await member?.roles.remove(councilRoleId);
+    await member.roles.remove(councilRoleId);
   }
 
   await vipChannel?.send(
@@ -185,8 +186,8 @@ const executeAdminAddPollAction = async (
     return;
   }
 
-  const adminsRoleId = await getRolesProperty(Role.Administrators);
-  const moderatorRoleId = await getRolesProperty(Role.Moderators);
+  const adminsRoleId = getRolesProperty(Role.Administrators);
+  const moderatorRoleId = getRolesProperty(Role.Moderators);
 
   if (adminsRoleId === undefined) {
     await vipChannel?.send(
@@ -223,8 +224,8 @@ const executeAdminRemovePollAction = async (
     return;
   }
 
-  const adminsRoleId = await getRolesProperty(Role.Administrators);
-  const moderatorRoleId = await getRolesProperty(Role.Moderators);
+  const adminsRoleId = getRolesProperty(Role.Administrators);
+  const moderatorRoleId = getRolesProperty(Role.Moderators);
 
   if (adminsRoleId === undefined) {
     await vipChannel?.send(
@@ -260,9 +261,9 @@ const executeBarPollAction = async (member: GuildMember, decision: string) => {
     userId: member.user.id,
   });
 
-  const regularsRoleId = await getRolesProperty(Role.Regulars);
-  const vipRoleId = await getRolesProperty(Role.VIP);
-  const councilRoleId = await getRolesProperty(Role.Council);
+  const regularsRoleId = getRolesProperty(Role.Regulars);
+  const vipRoleId = getRolesProperty(Role.VIP);
+  const councilRoleId = getRolesProperty(Role.Council);
 
   if (regularsRoleId === undefined) {
     await vipChannel?.send(commandErrorFunctions.roleNotFound(Role.Regulars));
@@ -328,7 +329,7 @@ const executeIrregularsRequestPollAction = async (
     return;
   }
 
-  const confirmEmbed = await getIrregularsConfirmEmbed();
+  const confirmEmbed = getIrregularsConfirmEmbed();
   const confirmComponents = getIrregularsConfirmComponents();
   await oathChannel?.send({
     components: confirmComponents,
@@ -356,7 +357,7 @@ const executeIrregularsAddPollAction = async (
     return;
   }
 
-  const confirmEmbed = await getIrregularsConfirmEmbed();
+  const confirmEmbed = getIrregularsConfirmEmbed();
   const confirmComponents = getIrregularsConfirmComponents();
   await oathChannel?.send({
     components: confirmComponents,
@@ -385,7 +386,7 @@ const executeIrregularsRemovePollAction = async (
     return;
   }
 
-  const irregularsRoleId = await getRolesProperty(Role.Irregulars);
+  const irregularsRoleId = getRolesProperty(Role.Irregulars);
 
   if (irregularsRoleId === undefined) {
     await irregularsChannel?.send(

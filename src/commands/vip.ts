@@ -1,4 +1,10 @@
 import {
+  type ChatInputCommandInteraction,
+  roleMention,
+  SlashCommandBuilder,
+} from 'discord.js';
+
+import {
   getChannelsProperty,
   getRolesProperty,
 } from '../configuration/main.js';
@@ -19,11 +25,6 @@ import {
   isMemberInVip,
 } from '../utils/members.js';
 import { createPoll, isPollDuplicate } from '../utils/polls/main.js';
-import {
-  type ChatInputCommandInteraction,
-  roleMention,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'vip';
 
@@ -78,7 +79,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
 
   const user = interaction.options.getUser('user', true);
   const notify = interaction.options.getBoolean('notify') ?? true;
-  const councilChannelId = await getChannelsProperty(Channel.Council);
+  const councilChannelId = getChannelsProperty(Channel.Council);
 
   if (interaction.channelId !== councilChannelId) {
     await interaction.editReply({
@@ -108,13 +109,13 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (await isMemberInVip(member)) {
+  if (isMemberInVip(member)) {
     await interaction.editReply(commandErrors.userVipMember);
 
     return;
   }
 
-  if (!(await isMemberInIrregulars(member))) {
+  if (!isMemberInIrregulars(member)) {
     await interaction.editReply(commandErrors.userNotIrregular);
 
     return;
@@ -129,7 +130,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const poll = createPoll(PollType.VIP_ADD, user);
-  const councilRoleId = await getRolesProperty(Role.Council);
+  const councilRoleId = getRolesProperty(Role.Council);
 
   if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
@@ -149,7 +150,7 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
 
   const user = interaction.options.getUser('user', true);
   const notify = interaction.options.getBoolean('notify') ?? true;
-  const councilChannelId = await getChannelsProperty(Channel.Council);
+  const councilChannelId = getChannelsProperty(Channel.Council);
 
   if (interaction.channelId !== councilChannelId) {
     await interaction.editReply({
@@ -173,13 +174,13 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (await isMemberAdmin(member)) {
+  if (isMemberAdmin(member)) {
     await interaction.editReply(commandErrors.userAdmin);
 
     return;
   }
 
-  if (!(await isMemberInVip(member))) {
+  if (!isMemberInVip(member)) {
     await interaction.editReply(commandErrors.userNotVipMember);
 
     return;
@@ -194,7 +195,7 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const poll = createPoll(PollType.VIP_REMOVE, user);
-  const councilRoleId = await getRolesProperty(Role.Council);
+  const councilRoleId = getRolesProperty(Role.Council);
 
   if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));

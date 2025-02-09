@@ -1,7 +1,8 @@
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+
 import { type Ticket } from '../lib/schemas/Ticket.js';
 import { emojis } from '../translations/emojis.js';
 import { labels } from '../translations/labels.js';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
 export const getTicketCreateComponents = (ticketTypes: Ticket[]) => {
   const components = [];

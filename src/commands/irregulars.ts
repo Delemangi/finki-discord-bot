@@ -1,4 +1,10 @@
 import {
+  type ChatInputCommandInteraction,
+  roleMention,
+  SlashCommandBuilder,
+} from 'discord.js';
+
+import {
   getChannelsProperty,
   getRolesProperty,
 } from '../configuration/main.js';
@@ -18,11 +24,6 @@ import {
   isMemberInVip,
 } from '../utils/members.js';
 import { createPoll, isPollDuplicate } from '../utils/polls/main.js';
-import {
-  type ChatInputCommandInteraction,
-  roleMention,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'irregulars';
 
@@ -77,7 +78,7 @@ const handleIrregularsAdd = async (
 
   const user = interaction.options.getUser('user', true);
   const notify = interaction.options.getBoolean('notify') ?? true;
-  const councilChannelId = await getChannelsProperty(Channel.Council);
+  const councilChannelId = getChannelsProperty(Channel.Council);
 
   if (interaction.channelId !== councilChannelId) {
     await interaction.editReply({
@@ -107,13 +108,13 @@ const handleIrregularsAdd = async (
     return;
   }
 
-  if (await isMemberInIrregulars(member)) {
+  if (isMemberInIrregulars(member)) {
     await interaction.editReply(commandErrors.userIrregularMember);
 
     return;
   }
 
-  if (!(await isMemberInRegulars(member))) {
+  if (!isMemberInRegulars(member)) {
     await interaction.editReply(commandErrors.userNotRegular);
 
     return;
@@ -128,7 +129,7 @@ const handleIrregularsAdd = async (
   }
 
   const poll = createPoll(PollType.IRREGULARS_ADD, user);
-  const councilRoleId = await getRolesProperty(Role.Council);
+  const councilRoleId = getRolesProperty(Role.Council);
 
   if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
@@ -150,7 +151,7 @@ const handleIrregularsRemove = async (
 
   const user = interaction.options.getUser('user', true);
   const notify = interaction.options.getBoolean('notify') ?? true;
-  const councilChannelId = await getChannelsProperty(Channel.Council);
+  const councilChannelId = getChannelsProperty(Channel.Council);
 
   if (interaction.channelId !== councilChannelId) {
     await interaction.editReply({
@@ -174,19 +175,19 @@ const handleIrregularsRemove = async (
     return;
   }
 
-  if (await isMemberAdmin(member)) {
+  if (isMemberAdmin(member)) {
     await interaction.editReply(commandErrors.userAdmin);
 
     return;
   }
 
-  if (await isMemberInVip(member)) {
+  if (isMemberInVip(member)) {
     await interaction.editReply(commandErrors.userVipMember);
 
     return;
   }
 
-  if (!(await isMemberInIrregulars(member))) {
+  if (!isMemberInIrregulars(member)) {
     await interaction.editReply(commandErrors.userNotIrregular);
 
     return;
@@ -204,7 +205,7 @@ const handleIrregularsRemove = async (
   }
 
   const poll = createPoll(PollType.IRREGULARS_REMOVE, user);
-  const councilRoleId = await getRolesProperty(Role.Council);
+  const councilRoleId = getRolesProperty(Role.Council);
 
   if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));

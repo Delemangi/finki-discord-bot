@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+
 import { createLogger, format, transports } from 'winston';
 
 export const logger = createLogger({

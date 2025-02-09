@@ -1,11 +1,3 @@
-import { getFromRoleConfig } from '../configuration/files.js';
-import { getThemeColor } from '../configuration/main.js';
-import {
-  embedMessageFunctions,
-  embedMessages,
-} from '../translations/embeds.js';
-import { labels } from '../translations/labels.js';
-import { specialStrings } from '../translations/special.js';
 import { type Rule } from '@prisma/client';
 import {
   ActionRowBuilder,
@@ -16,8 +8,17 @@ import {
   italic,
 } from 'discord.js';
 
-export const getColorsEmbed = async (image: string) => {
-  return new EmbedBuilder()
+import { getFromRoleConfig } from '../configuration/files.js';
+import { getThemeColor } from '../configuration/main.js';
+import {
+  embedMessageFunctions,
+  embedMessages,
+} from '../translations/embeds.js';
+import { labels } from '../translations/labels.js';
+import { specialStrings } from '../translations/special.js';
+
+export const getColorsEmbed = (image: string) =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(embedMessages.nameColor)
     .setDescription(embedMessages.chooseNameColor)
@@ -25,7 +26,6 @@ export const getColorsEmbed = async (image: string) => {
       text: embedMessages.onlyOneOption,
     })
     .setImage(image);
-};
 
 export const getColorsComponents = () => {
   const components = [];
@@ -55,8 +55,8 @@ export const getColorsComponents = () => {
   return components;
 };
 
-export const getCoursesEmbed = async (roleSet: string, roles: string[]) => {
-  return new EmbedBuilder()
+export const getCoursesEmbed = (roleSet: string, roles: string[]) =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(`${roleSet.length > 1 ? '' : embedMessages.semester} ${roleSet}`)
     .setDescription(
@@ -72,7 +72,6 @@ export const getCoursesEmbed = async (roleSet: string, roles: string[]) => {
     .setFooter({
       text: embedMessages.multipleOptions,
     });
-};
 
 export const getCoursesComponents = (roles: string[]) => {
   const components = [];
@@ -101,15 +100,14 @@ export const getCoursesComponents = (roles: string[]) => {
   return components;
 };
 
-export const getCoursesAddEmbed = async () => {
-  return new EmbedBuilder()
+export const getCoursesAddEmbed = () =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(embedMessages.massCourseAdd)
     .setDescription(embedMessages.chooseSemesterMassCourseAdd)
     .setFooter({
       text: embedMessages.multipleOptions,
     });
-};
 
 export const getCoursesAddComponents = (roleSets: string[]) => {
   const components = [];
@@ -151,15 +149,14 @@ export const getCoursesAddComponents = (roleSets: string[]) => {
   return components;
 };
 
-export const getCoursesRemoveEmbed = async () => {
-  return new EmbedBuilder()
+export const getCoursesRemoveEmbed = () =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(embedMessages.massCourseRemove)
     .setDescription(embedMessages.chooseSemesterMassCourseRemove)
     .setFooter({
       text: embedMessages.multipleOptions,
     });
-};
 
 export const getCoursesRemoveComponents = (roleSets: string[]) => {
   const components = [];
@@ -201,15 +198,14 @@ export const getCoursesRemoveComponents = (roleSets: string[]) => {
   return components;
 };
 
-export const getNotificationsEmbed = async () => {
-  return new EmbedBuilder()
+export const getNotificationsEmbed = () =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(embedMessages.notifications)
     .setDescription(embedMessages.chooseNotifications)
     .setFooter({
       text: embedMessages.multipleOptions,
     });
-};
 
 export const getNotificationsComponents = () => {
   const roles = getFromRoleConfig('notification');
@@ -239,15 +235,14 @@ export const getNotificationsComponents = () => {
   return components;
 };
 
-export const getProgramsEmbed = async () => {
-  return new EmbedBuilder()
+export const getProgramsEmbed = () =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle('Смер')
     .setDescription(embedMessages.chooseProgram)
     .setFooter({
       text: embedMessages.onlyOneOption,
     });
-};
 
 export const getProgramsComponents = () => {
   const roles = getFromRoleConfig('program');
@@ -277,15 +272,14 @@ export const getProgramsComponents = () => {
   return components;
 };
 
-export const getYearsEmbed = async () => {
-  return new EmbedBuilder()
+export const getYearsEmbed = () =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle('Година на студирање')
     .setDescription(embedMessages.chooseYear)
     .setFooter({
       text: embedMessages.onlyOneOption,
     });
-};
 
 export const getYearsComponents = () => {
   const roles = getFromRoleConfig('year');
@@ -306,8 +300,8 @@ export const getYearsComponents = () => {
   return components;
 };
 
-export const getRulesEmbed = async (rules: Rule[]) => {
-  return new EmbedBuilder()
+export const getRulesEmbed = (rules: Rule[]) =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(labels.rules)
     .setDescription(
@@ -320,14 +314,12 @@ export const getRulesEmbed = async (rules: Rule[]) => {
         )
         .join('\n\n')} \n\n ${italic(embedMessages.breakRules)}.`,
     );
-};
 
-export const getSpecialRequestEmbed = async () => {
-  return new EmbedBuilder()
+export const getSpecialRequestEmbed = () =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(specialStrings.requestTitle)
     .setDescription(specialStrings.requestText);
-};
 
 export const getSpecialRequestComponents = () => {
   const components = [];
@@ -348,12 +340,11 @@ export const getSpecialRequestComponents = () => {
   return components;
 };
 
-export const getVipConfirmEmbed = async () => {
-  return new EmbedBuilder()
+export const getVipConfirmEmbed = () =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(specialStrings.oath)
     .setDescription(specialStrings.vipOath);
-};
 
 export const getVipConfirmComponents = () => {
   const components = [];
@@ -385,12 +376,11 @@ export const getVipAcknowledgeComponents = () => {
   return components;
 };
 
-export const getIrregularsConfirmEmbed = async () => {
-  return new EmbedBuilder()
+export const getIrregularsConfirmEmbed = () =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(specialStrings.oath)
     .setDescription(specialStrings.irregularsOath);
-};
 
 export const getIrregularsConfirmComponents = () => {
   const components = [];

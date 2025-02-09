@@ -1,13 +1,14 @@
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from 'discord.js';
+
 import { getRulesEmbed } from '../components/scripts.js';
 import { getRules } from '../data/Rule.js';
 import {
   commandDescriptions,
   commandErrors,
 } from '../translations/commands.js';
-import {
-  type ChatInputCommandInteraction,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'rules';
 
@@ -24,7 +25,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embed = await getRulesEmbed(rules);
+  const embed = getRulesEmbed(rules);
   await interaction.editReply({
     embeds: [embed],
   });

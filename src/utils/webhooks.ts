@@ -1,6 +1,7 @@
+import { type Guild } from 'discord.js';
+
 import { labels } from '../translations/labels.js';
 import { getChannelFromGuild } from './guild.js';
-import { type Guild } from 'discord.js';
 
 export const getOrCreateWebhookByChannelId = async (
   channelId: string,

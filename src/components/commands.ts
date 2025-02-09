@@ -1,3 +1,16 @@
+import { type Experience, type Link, type Question } from '@prisma/client';
+import {
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  EmbedBuilder,
+  type GuildMember,
+  inlineCode,
+  roleMention,
+  type User,
+  userMention,
+} from 'discord.js';
+
 import {
   getFromRoleConfig,
   getInformation,
@@ -24,31 +37,18 @@ import { paginationStringFunctions } from '../translations/pagination.js';
 import { commandMention } from '../utils/commands.js';
 import { getUsername } from '../utils/members.js';
 import { linkProfessors } from './utils.js';
-import { type Experience, type Link, type Question } from '@prisma/client';
-import {
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
-  EmbedBuilder,
-  type GuildMember,
-  inlineCode,
-  roleMention,
-  type User,
-  userMention,
-} from 'discord.js';
 
-export const getAboutEmbed = async () => {
-  return new EmbedBuilder()
+export const getAboutEmbed = () =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(botName)
     .setDescription(
       aboutMessage(commandMention('help'), commandMention('list questions')),
     )
     .setTimestamp();
-};
 
-export const getClassroomEmbed = async (information: Classroom) => {
-  return new EmbedBuilder()
+export const getClassroomEmbed = (information: Classroom) =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(`${information.classroom.toString()} (${information.location})`)
     .addFields(
@@ -78,12 +78,9 @@ export const getClassroomEmbed = async (information: Classroom) => {
       },
     )
     .setTimestamp();
-};
 
-export const getCourseParticipantsEmbed = async (
-  information: CourseParticipants,
-) => {
-  return new EmbedBuilder()
+export const getCourseParticipantsEmbed = (information: CourseParticipants) =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(information.course)
     .setDescription(embedMessages.courseParticipantsInfo)
@@ -97,10 +94,9 @@ export const getCourseParticipantsEmbed = async (
         })),
     )
     .setTimestamp();
-};
 
-export const getCourseProfessorsEmbed = async (information: CourseStaff) => {
-  return new EmbedBuilder()
+export const getCourseProfessorsEmbed = (information: CourseStaff) =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(information.course)
     .addFields(
@@ -116,12 +112,9 @@ export const getCourseProfessorsEmbed = async (information: CourseStaff) => {
       },
     )
     .setTimestamp();
-};
 
-export const getCoursePrerequisiteEmbed = async (
-  information: CoursePrerequisites,
-) => {
-  return new EmbedBuilder()
+export const getCoursePrerequisiteEmbed = (information: CoursePrerequisites) =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(information.course)
     .addFields({
@@ -133,10 +126,9 @@ export const getCoursePrerequisiteEmbed = async (
           : information.prerequisite,
     })
     .setTimestamp();
-};
 
-export const getCourseInfoEmbed = async (information: CourseInformation) => {
-  return new EmbedBuilder()
+export const getCourseInfoEmbed = (information: CourseInformation) =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(information.course)
     .addFields(
@@ -157,20 +149,19 @@ export const getCourseInfoEmbed = async (information: CourseInformation) => {
       },
     )
     .setTimestamp();
-};
 
-export const getCourseSummaryEmbed = async (course: string) => {
+export const getCourseSummaryEmbed = (course: string) => {
   const info = getInformation().find(
-    (item) => item.course.toLowerCase() === course?.toLowerCase(),
+    (item) => item.course.toLowerCase() === course.toLowerCase(),
   );
   const prerequisite = getPrerequisites().find(
-    (item) => item.course.toLowerCase() === course?.toLowerCase(),
+    (item) => item.course.toLowerCase() === course.toLowerCase(),
   );
   const professors = getProfessors().find(
-    (item) => item.course.toLowerCase() === course?.toLowerCase(),
+    (item) => item.course.toLowerCase() === course.toLowerCase(),
   );
   const participants = getParticipants().find(
-    (item) => item.course.toLowerCase() === course?.toLowerCase(),
+    (item) => item.course.toLowerCase() === course.toLowerCase(),
   );
 
   return [
@@ -238,7 +229,7 @@ export const getCourseSummaryEmbed = async (course: string) => {
   ];
 };
 
-export const getCoursesPrerequisiteEmbed = async (course: string) => {
+export const getCoursesPrerequisiteEmbed = (course: string) => {
   const courses = getPrerequisites().filter((prerequisite) =>
     prerequisite.prerequisite.toLowerCase().includes(course.toLowerCase()),
   );
@@ -261,10 +252,10 @@ export const getCoursesPrerequisiteEmbed = async (course: string) => {
     .setTimestamp();
 };
 
-export const getStaffEmbed = async (information: Staff) => {
-  return new EmbedBuilder()
+export const getStaffEmbed = (information: Staff) =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
-    .setTitle(`${information.name}`)
+    .setTitle(information.name)
     .addFields(
       {
         inline: true,
@@ -314,9 +305,8 @@ export const getStaffEmbed = async (information: Staff) => {
       },
     )
     .setTimestamp();
-};
 
-export const getStudentInfoEmbed = async (member: GuildMember) => {
+export const getStudentInfoEmbed = (member: GuildMember) => {
   const yearRole = member.roles.cache.find((role) =>
     getFromRoleConfig('year').includes(role.name),
   );
@@ -392,11 +382,8 @@ export const getStudentInfoEmbed = async (member: GuildMember) => {
     .setTimestamp();
 };
 
-export const getExperienceEmbed = async (
-  experience: Experience,
-  user: User,
-) => {
-  return new EmbedBuilder()
+export const getExperienceEmbed = (experience: Experience, user: User) =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setAuthor({
       iconURL: user.displayAvatarURL(),
@@ -416,12 +403,11 @@ export const getExperienceEmbed = async (
       },
     )
     .setTimestamp();
-};
 
 export const getExperienceLeaderboardFirstPageEmbed = async (
   experience: Experience[],
   all: number,
-  perPage: number = 8,
+  perPage = 8,
 ) => {
   const total = experience.length;
 
@@ -454,7 +440,7 @@ export const getExperienceLeaderboardNextPageEmbed = async (
   experience: Experience[],
   page: number,
   all: number,
-  perPage: number = 8,
+  perPage = 8,
 ) => {
   const total = experience.length;
 
@@ -487,20 +473,15 @@ export const getExperienceLeaderboardNextPageEmbed = async (
 
 // Questions & links
 
-export const getQuestionEmbed = async (question: Question) => {
-  return new EmbedBuilder()
+export const getQuestionEmbed = (question: Question) =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(question.name)
     .setDescription(question.content)
     .setTimestamp();
-};
 
 export const getQuestionComponents = (question: QuestionWithLinks) => {
   const components = [];
-
-  if (question.links === undefined) {
-    return [];
-  }
 
   for (let index1 = 0; index1 < question.links.length; index1 += 5) {
     const row = new ActionRowBuilder<ButtonBuilder>();
@@ -532,32 +513,30 @@ export const getQuestionComponents = (question: QuestionWithLinks) => {
   return components;
 };
 
-export const getLinkEmbed = async (link: Link) => {
+export const getLinkEmbed = (link: Link) => {
   const embed = new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(link.name)
     .setTimestamp();
 
-  if (link.description !== undefined) {
+  if (link.description !== null) {
     embed.setDescription(link.description);
   }
 
   return embed;
 };
 
-export const getLinkComponents = (link: Link) => {
-  return [
-    new ActionRowBuilder<ButtonBuilder>().addComponents(
-      new ButtonBuilder()
-        .setURL(link.url.startsWith('http') ? link.url : `https://${link.url}`)
-        .setLabel(labels.link)
-        .setStyle(ButtonStyle.Link),
-    ),
-  ];
-};
+export const getLinkComponents = (link: Link) => [
+  new ActionRowBuilder<ButtonBuilder>().addComponents(
+    new ButtonBuilder()
+      .setURL(link.url.startsWith('http') ? link.url : `https://${link.url}`)
+      .setLabel(labels.link)
+      .setStyle(ButtonStyle.Link),
+  ),
+];
 
-export const getListQuestionsEmbed = async (questions: Question[]) => {
-  return new EmbedBuilder()
+export const getListQuestionsEmbed = (questions: Question[]) =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(labels.questions)
     .setDescription(
@@ -573,10 +552,9 @@ export const getListQuestionsEmbed = async (questions: Question[]) => {
         .join('\n')}`,
     )
     .setTimestamp();
-};
 
-export const getListLinksEmbed = async (links: Link[]) => {
-  return new EmbedBuilder()
+export const getListLinksEmbed = (links: Link[]) =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(labels.links)
     .setDescription(
@@ -590,14 +568,13 @@ export const getListLinksEmbed = async (links: Link[]) => {
         .join('\n')}`,
     )
     .setTimestamp();
-};
 
-export const getHelpEmbed = async (
+export const getHelpEmbed = (
   commands: string[],
   page: number,
-  commandsPerPage: number = 8,
-) => {
-  return new EmbedBuilder()
+  commandsPerPage = 8,
+) =>
+  new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(labels.commands)
     .setDescription(embedMessages.allCommands)
@@ -618,4 +595,3 @@ export const getHelpEmbed = async (
       ),
     })
     .setTimestamp();
-};

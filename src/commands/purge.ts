@@ -1,15 +1,16 @@
 import {
-  commandDescriptions,
-  commandErrors,
-  commandResponseFunctions,
-} from '../translations/commands.js';
-import {
   type ChatInputCommandInteraction,
   InteractionContextType,
   PermissionFlagsBits,
   SlashCommandBuilder,
 } from 'discord.js';
 import { setTimeout } from 'node:timers/promises';
+
+import {
+  commandDescriptions,
+  commandErrors,
+  commandResponseFunctions,
+} from '../translations/commands.js';
 
 const name = 'purge';
 const permission = PermissionFlagsBits.ManageMessages;
@@ -44,5 +45,5 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply(commandResponseFunctions.deletingMessages(count));
   await setTimeout(500);
   await interaction.deleteReply();
-  await interaction.channel?.bulkDelete(count);
+  await interaction.channel.bulkDelete(count);
 };

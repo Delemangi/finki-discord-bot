@@ -1,3 +1,18 @@
+import { Cron } from 'croner';
+import {
+  type ActionRowBuilder,
+  type ButtonBuilder,
+  ChannelType,
+  type EmbedBuilder,
+  type GuildTextBasedChannel,
+  type Interaction,
+  type InteractionResponse,
+  type Message,
+  OverwriteType,
+  PermissionFlagsBits,
+} from 'discord.js';
+import { setTimeout } from 'node:timers/promises';
+
 import { client } from '../client.js';
 import {
   getConfigProperty,
@@ -16,26 +31,12 @@ import {
 } from '../translations/logs.js';
 import { specialStringFunctions } from '../translations/special.js';
 import { getGuild } from './guild.js';
-import { Cron } from 'croner';
-import {
-  type ActionRowBuilder,
-  type ButtonBuilder,
-  ChannelType,
-  type EmbedBuilder,
-  type GuildTextBasedChannel,
-  type Interaction,
-  type InteractionResponse,
-  type Message,
-  OverwriteType,
-  PermissionFlagsBits,
-} from 'discord.js';
-import { setTimeout } from 'node:timers/promises';
 
 const channels: Partial<Record<Channel, GuildTextBasedChannel | undefined>> =
   {};
 
 export const initializeChannels = async () => {
-  const channelIds = await getConfigProperty('channels');
+  const channelIds = getConfigProperty('channels');
 
   if (channelIds === undefined) {
     return;
@@ -62,9 +63,7 @@ export const initializeChannels = async () => {
   logger.info(logMessages.channelsInitialized);
 };
 
-export const getChannel = (type: Channel) => {
-  return channels[type];
-};
+export const getChannel = (type: Channel) => channels[type];
 
 const getNextRunTime = (date?: Date, locale = 'en-GB') => {
   if (date === undefined) {
@@ -77,12 +76,12 @@ const getNextRunTime = (date?: Date, locale = 'en-GB') => {
   }).format(date);
 };
 
-const getNextChannelRecreationTime = async (
+const getNextChannelRecreationTime = (
   channelType: TemporaryChannel,
   locale = 'en-GB',
   offset = 1,
 ) => {
-  const temporaryChannel = await getTemporaryChannelsProperty(channelType);
+  const temporaryChannel = getTemporaryChannelsProperty(channelType);
 
   if (temporaryChannel === undefined) {
     return labels.unknown;
@@ -90,14 +89,14 @@ const getNextChannelRecreationTime = async (
 
   const nextRun = new Cron(temporaryChannel.cron).nextRuns(offset).at(-1);
 
-  return nextRun === null ? labels.unknown : getNextRunTime(nextRun, locale);
+  return nextRun === undefined
+    ? labels.unknown
+    : getNextRunTime(nextRun, locale);
 };
 
 export const recreateVipTemporaryChannel = async () => {
   const guild = await getGuild();
-  const temporaryChannel = await getTemporaryChannelsProperty(
-    TemporaryChannel.VIP,
-  );
+  const temporaryChannel = getTemporaryChannelsProperty(TemporaryChannel.VIP);
 
   if (temporaryChannel === undefined) {
     return;
@@ -116,21 +115,21 @@ export const recreateVipTemporaryChannel = async () => {
     nsfw: true,
     parent: temporaryChannel.parent ?? null,
     topic: specialStringFunctions.tempVipTopic(
-      await getNextChannelRecreationTime(TemporaryChannel.VIP, 'mk-MK'),
+      getNextChannelRecreationTime(TemporaryChannel.VIP, 'mk-MK'),
     ),
     type: ChannelType.GuildText,
   });
 
   logger.info(
     logMessageFunctions.tempVipScheduled(
-      await getNextChannelRecreationTime(TemporaryChannel.VIP),
+      getNextChannelRecreationTime(TemporaryChannel.VIP),
     ),
   );
 };
 
 export const recreateRegularsTemporaryChannel = async () => {
   const guild = await getGuild();
-  const temporaryChannel = await getTemporaryChannelsProperty(
+  const temporaryChannel = getTemporaryChannelsProperty(
     TemporaryChannel.Regulars,
   );
 
@@ -146,11 +145,11 @@ export const recreateRegularsTemporaryChannel = async () => {
     await existingChannel.delete();
   }
 
-  const administratorsRoleId = await getRolesProperty(Role.Administrators);
-  const moderatorsRoleId = await getRolesProperty(Role.Moderators);
-  const veteransRoleId = await getRolesProperty(Role.Veterans);
-  const vipRoleId = await getRolesProperty(Role.VIP);
-  const regularsRoleId = await getRolesProperty(Role.Regulars);
+  const administratorsRoleId = getRolesProperty(Role.Administrators);
+  const moderatorsRoleId = getRolesProperty(Role.Moderators);
+  const veteransRoleId = getRolesProperty(Role.Veterans);
+  const vipRoleId = getRolesProperty(Role.VIP);
+  const regularsRoleId = getRolesProperty(Role.Regulars);
 
   const rolesToAdd = [
     administratorsRoleId,
@@ -172,27 +171,25 @@ export const recreateRegularsTemporaryChannel = async () => {
       })),
       {
         deny: [PermissionFlagsBits.ViewChannel],
-        id: guild?.roles.everyone.id,
+        id: guild.roles.everyone.id,
         type: OverwriteType.Role,
       },
     ],
     topic: specialStringFunctions.tempRegularsTopic(
-      await getNextChannelRecreationTime(TemporaryChannel.Regulars, 'mk-MK'),
+      getNextChannelRecreationTime(TemporaryChannel.Regulars, 'mk-MK'),
     ),
     type: ChannelType.GuildText,
   });
 
   logger.info(
     logMessageFunctions.tempRegularsScheduled(
-      await getNextChannelRecreationTime(TemporaryChannel.Regulars),
+      getNextChannelRecreationTime(TemporaryChannel.Regulars),
     ),
   );
 };
 
-export const resetTemporaryVipChannel = async () => {
-  const temporaryChannel = await getTemporaryChannelsProperty(
-    TemporaryChannel.VIP,
-  );
+export const resetTemporaryVipChannel = () => {
+  const temporaryChannel = getTemporaryChannelsProperty(TemporaryChannel.VIP);
 
   if (temporaryChannel === undefined) {
     return;
@@ -207,8 +204,8 @@ export const resetTemporaryVipChannel = async () => {
   );
 };
 
-export const resetTemporaryRegularsChannel = async () => {
-  const temporaryChannel = await getTemporaryChannelsProperty(
+export const resetTemporaryRegularsChannel = () => {
+  const temporaryChannel = getTemporaryChannelsProperty(
     TemporaryChannel.Regulars,
   );
 
@@ -253,8 +250,8 @@ export const sendEmbed = async (
   embed: EmbedBuilder,
   components: Array<ActionRowBuilder<ButtonBuilder>>,
   newlines?: number,
-) => {
-  return newlines === undefined || Number.isNaN(newlines)
+) =>
+  newlines === undefined || Number.isNaN(newlines)
     ? await channel.send({
         components,
         embeds: [embed],
@@ -264,13 +261,12 @@ export const sendEmbed = async (
         content: '_ _\n'.repeat(newlines),
         embeds: [embed],
       });
-};
 
 export const deleteResponse = async (
   message: InteractionResponse | Message,
   interval?: number,
 ) => {
-  const ephemeralReplyInterval = await getIntervalsProperty('ephemeralReply');
+  const ephemeralReplyInterval = getIntervalsProperty('ephemeralReply');
 
   await setTimeout(interval ?? ephemeralReplyInterval);
 

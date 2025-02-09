@@ -1,3 +1,6 @@
+import { readFile } from 'node:fs/promises';
+import { z } from 'zod';
+
 import { ClassroomSchema } from '../lib/schemas/Classroom.js';
 import { CourseInformationSchema } from '../lib/schemas/CourseInformation.js';
 import { CourseParticipantsSchema } from '../lib/schemas/CourseParticipants.js';
@@ -9,8 +12,6 @@ import {
   RoleConfigSchema,
 } from '../lib/schemas/RoleConfig.js';
 import { StaffSchema } from '../lib/schemas/Staff.js';
-import { readFile } from 'node:fs/promises';
-import { z } from 'zod';
 
 const options = {
   encoding: 'utf8',
@@ -111,42 +112,23 @@ const [
   staffDataPromise,
 ]);
 
-export const getClassrooms = () => {
-  return classrooms;
-};
+export const getClassrooms = () => classrooms;
 
-export const getCourses = () => {
-  return courses;
-};
+export const getCourses = () => courses;
 
-export const getInformation = () => {
-  return information;
-};
+export const getInformation = () => information;
 
-export const getLevels = () => {
-  return levels;
-};
+export const getLevels = () => levels;
 
-export const getParticipants = () => {
-  return participants;
-};
+export const getParticipants = () => participants;
 
-export const getProfessors = () => {
-  return professors;
-};
+export const getProfessors = () => professors;
 
-export const getPrerequisites = () => {
-  return prerequisites;
-};
+export const getPrerequisites = () => prerequisites;
 
-export const getFromRoleConfig = <T extends keyof RoleConfig>(key: T) => {
-  return roles[key];
-};
+export const getFromRoleConfig = <T extends keyof RoleConfig>(key: T) =>
+  roles[key];
 
-export const getSessions = () => {
-  return sessions;
-};
+export const getSessions = () => sessions;
 
-export const getStaff = () => {
-  return staff;
-};
+export const getStaff = () => staff;

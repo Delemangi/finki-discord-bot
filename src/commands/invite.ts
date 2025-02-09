@@ -1,13 +1,13 @@
 import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from 'discord.js';
+
+import {
   commandDescriptions,
   commandErrors,
 } from '../translations/commands.js';
 import { getGuild } from '../utils/guild.js';
-import {
-  type ChatInputCommandInteraction,
-  SlashCommandBuilder,
-  type TextChannel,
-} from 'discord.js';
 
 const name = 'invite';
 
@@ -26,15 +26,12 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   const vanityCode = guild.vanityURLCode;
 
-  if (vanityCode === null || vanityCode === undefined) {
-    const invite = await guild.invites.create(
-      guild.rulesChannel as TextChannel,
-      {
-        maxAge: 0,
-        maxUses: 0,
-        unique: true,
-      },
-    );
+  if (vanityCode === null) {
+    const invite = await guild.rulesChannel?.createInvite({
+      maxAge: 0,
+      maxUses: 0,
+      unique: true,
+    });
 
     if (invite === undefined) {
       await interaction.editReply(commandErrors.inviteCreationFailed);

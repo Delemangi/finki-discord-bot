@@ -1,5 +1,6 @@
-import { COUNCIL_LEVEL } from '../utils/levels.js';
 import { userMention } from 'discord.js';
+
+import { COUNCIL_LEVEL } from '../utils/levels.js';
 
 export const experienceMessages = {
   council: (userId: string) =>

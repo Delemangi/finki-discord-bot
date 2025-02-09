@@ -1,11 +1,3 @@
-import { getThemeColor } from '../configuration/main.js';
-import { embedLabels } from '../translations/embeds.js';
-import {
-  fetchMessageUrl,
-  getButtonCommand,
-  getButtonInfo,
-  getChannelMention,
-} from './utils.js';
 import {
   type AutocompleteInteraction,
   type ButtonInteraction,
@@ -17,13 +9,20 @@ import {
   userMention,
 } from 'discord.js';
 
-const color = getThemeColor();
+import { getThemeColor } from '../configuration/main.js';
+import { embedLabels } from '../translations/embeds.js';
+import {
+  fetchMessageUrl,
+  getButtonCommand,
+  getButtonInfo,
+  getChannelMention,
+} from './utils.js';
 
 export const getChatInputCommandEmbed = async (
   interaction: ChatInputCommandInteraction,
-) => {
-  return new EmbedBuilder()
-    .setColor(color)
+) =>
+  new EmbedBuilder()
+    .setColor(getThemeColor())
     .setTitle(embedLabels.chatInputInteraction)
     .setAuthor({
       iconURL: interaction.user.displayAvatarURL(),
@@ -55,13 +54,12 @@ export const getChatInputCommandEmbed = async (
       text: interaction.id,
     })
     .setTimestamp();
-};
 
 export const getUserContextMenuCommandEmbed = async (
   interaction: UserContextMenuCommandInteraction,
-) => {
-  return new EmbedBuilder()
-    .setColor(color)
+) =>
+  new EmbedBuilder()
+    .setColor(getThemeColor())
     .setTitle(embedLabels.userContextMenuInteraction)
     .setAuthor({
       iconURL: interaction.user.displayAvatarURL(),
@@ -90,13 +88,12 @@ export const getUserContextMenuCommandEmbed = async (
       text: interaction.id,
     })
     .setTimestamp();
-};
 
 export const getMessageContextMenuCommandEmbed = async (
   interaction: MessageContextMenuCommandInteraction,
-) => {
-  return new EmbedBuilder()
-    .setColor(color)
+) =>
+  new EmbedBuilder()
+    .setColor(getThemeColor())
     .setTitle(embedLabels.messageContextMenuInteraction)
     .setAuthor({
       iconURL: interaction.user.displayAvatarURL(),
@@ -125,15 +122,14 @@ export const getMessageContextMenuCommandEmbed = async (
       text: interaction.id,
     })
     .setTimestamp();
-};
 
 export const getButtonEmbed = (
   interaction: ButtonInteraction,
-  command: string = 'unknown',
+  command = 'unknown',
   args: string[] = [],
-) => {
-  return new EmbedBuilder()
-    .setColor(color)
+) =>
+  new EmbedBuilder()
+    .setColor(getThemeColor())
     .setTitle(embedLabels.buttonInteraction)
     .setAuthor({
       iconURL: interaction.user.displayAvatarURL(),
@@ -164,13 +160,12 @@ export const getButtonEmbed = (
       text: interaction.id,
     })
     .setTimestamp();
-};
 
 export const getAutocompleteEmbed = (interaction: AutocompleteInteraction) => {
   const focused = interaction.options.getFocused(true);
 
   return new EmbedBuilder()
-    .setColor(color)
+    .setColor(getThemeColor())
     .setTitle(embedLabels.autocompleteInteraction)
     .setAuthor({
       iconURL: interaction.user.displayAvatarURL(),

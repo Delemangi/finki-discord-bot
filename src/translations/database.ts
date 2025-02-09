@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+
 export const databaseErrorFunctions = {
   addExperienceByUserIdError: (error: unknown) =>
     `Failed adding experience by user ID\n${error}`,

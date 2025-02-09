@@ -1,4 +1,3 @@
-import { type Role } from '../lib/schemas/Role.js';
 import {
   bold,
   codeBlock,
@@ -7,6 +6,8 @@ import {
   roleMention,
   userMention,
 } from 'discord.js';
+
+import { type Role } from '../lib/schemas/Role.js';
 
 export const commandDescriptions = {
   about: 'За Discord ботот',
@@ -30,7 +31,6 @@ export const commandDescriptions = {
   'courses remove': 'Отстрани улоги за многу предмети',
   'course summary': 'Преземи информации за предмет',
   'course toggle': 'Земи или отстрани улога за предмет',
-  embed: 'Креирај ембед',
   'experience add': 'Додади поени за активност',
   'experience get': 'Преземи ниво и активност',
   'experience leaderboard': 'Преземи листа на членови според активност',

@@ -1,7 +1,8 @@
+import { type InfoMessage, type Prisma } from '@prisma/client';
+
 import { logger } from '../logger.js';
 import { databaseErrorFunctions } from '../translations/database.js';
 import { database } from './database.js';
-import { type InfoMessage, type Prisma } from '@prisma/client';
 
 export const createInfoMessage = async (
   message?: Prisma.InfoMessageCreateInput,

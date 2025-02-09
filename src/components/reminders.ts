@@ -1,8 +1,9 @@
-import { truncateString } from './utils.js';
 import { type Reminder } from '@prisma/client';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
-export const getRemindersComponents = async (reminders: Reminder[]) => {
+import { truncateString } from './utils.js';
+
+export const getRemindersComponents = (reminders: Reminder[]) => {
   const components = [];
 
   for (let index1 = 0; index1 < reminders.length; index1 += 5) {

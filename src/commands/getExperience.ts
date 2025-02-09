@@ -1,10 +1,11 @@
-import { commandErrors } from '../translations/commands.js';
-import { getExperienceFromMessage } from '../utils/experience.js';
 import {
   ApplicationCommandType,
   ContextMenuCommandBuilder,
   type UserContextMenuCommandInteraction,
 } from 'discord.js';
+
+import { commandErrors } from '../translations/commands.js';
+import { getExperienceFromMessage } from '../utils/experience.js';
 
 const name = 'Get Experience';
 

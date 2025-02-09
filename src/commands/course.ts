@@ -1,4 +1,11 @@
 import {
+  type ChatInputCommandInteraction,
+  type GuildMember,
+  roleMention,
+  SlashCommandBuilder,
+} from 'discord.js';
+
+import {
   getCourseInfoEmbed,
   getCourseParticipantsEmbed,
   getCoursePrerequisiteEmbed,
@@ -20,12 +27,6 @@ import {
 } from '../translations/commands.js';
 import { getGuild } from '../utils/guild.js';
 import { getCourseRoleByCourseName } from '../utils/roles.js';
-import {
-  type ChatInputCommandInteraction,
-  type GuildMember,
-  roleMention,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'course';
 
@@ -132,7 +133,7 @@ const handleCourseParticipants = async (
     return;
   }
 
-  const embed = await getCourseParticipantsEmbed(information);
+  const embed = getCourseParticipantsEmbed(information);
   await interaction.editReply({
     embeds: [embed],
   });
@@ -152,7 +153,7 @@ const handleCourseProfessors = async (
     return;
   }
 
-  const embed = await getCourseProfessorsEmbed(information);
+  const embed = getCourseProfessorsEmbed(information);
   await interaction.editReply({
     embeds: [embed],
   });
@@ -215,7 +216,7 @@ const handleCoursePrerequisite = async (
     return;
   }
 
-  const embed = await getCoursePrerequisiteEmbed(information);
+  const embed = getCoursePrerequisiteEmbed(information);
   await interaction.editReply({
     embeds: [embed],
   });
@@ -235,7 +236,7 @@ const handleCourseInfo = async (
     return;
   }
 
-  const embed = await getCourseInfoEmbed(information);
+  const embed = getCourseInfoEmbed(information);
   await interaction.editReply({
     embeds: [embed],
   });
@@ -251,7 +252,7 @@ const handleCourseSummary = async (
     return;
   }
 
-  const embeds = await getCourseSummaryEmbed(course);
+  const embeds = getCourseSummaryEmbed(course);
   await interaction.editReply({
     embeds,
   });

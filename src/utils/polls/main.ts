@@ -1,3 +1,10 @@
+import {
+  type InteractionEditReplyOptions,
+  type Poll,
+  PollLayoutType,
+  type User,
+} from 'discord.js';
+
 import { getRolesProperty } from '../../configuration/main.js';
 import { Channel } from '../../lib/schemas/Channel.js';
 import { PollType, PollTypeSchema } from '../../lib/schemas/PollType.js';
@@ -14,12 +21,6 @@ import { isMemberLevel } from '../members.js';
 import { POLL_IDENTIFIER_REGEX } from '../regex.js';
 import { getMembersByRoleIds } from '../roles.js';
 import { executePollAction } from './actions.js';
-import {
-  type InteractionEditReplyOptions,
-  type Poll,
-  PollLayoutType,
-  type User,
-} from 'discord.js';
 
 export const initializePolls = async () => {
   const councilChannel = getChannel(Channel.Council);
@@ -36,9 +37,7 @@ export const initializePolls = async () => {
 const getPollIdentifier = (
   pollType: PollType,
   userId: string,
-): `[${PollType}-${string}]` => {
-  return `[${pollType}-${userId}]`;
-};
+): `[${PollType}-${string}]` => `[${pollType}-${userId}]`;
 
 const getPollTypeThreshold = (pollType: PollType) => {
   switch (pollType) {
@@ -53,7 +52,7 @@ const getPollTypeThreshold = (pollType: PollType) => {
 };
 
 export const getPollInformation = (pollText: string) => {
-  const results = pollText.match(POLL_IDENTIFIER_REGEX);
+  const results = POLL_IDENTIFIER_REGEX.exec(pollText);
 
   if (results === null) {
     return {
@@ -250,8 +249,7 @@ const getPollThreshold = async (
     return null;
   }
 
-  const threshold =
-    (totalVoters.length - (abstentions ?? 0)) * pollTypeThreshold;
+  const threshold = (totalVoters.length - abstentions) * pollTypeThreshold;
 
   const normalizedThreshold = Number.isInteger(threshold)
     ? threshold + 1
@@ -267,7 +265,7 @@ export const getAdminVotes = async (poll: Poll) => {
     return null;
   }
 
-  const adminRoleId = await getRolesProperty(Role.Administrators);
+  const adminRoleId = getRolesProperty(Role.Administrators);
 
   if (adminRoleId === undefined) {
     return null;
@@ -339,7 +337,7 @@ const getPollSpecialDecision = async (poll: Poll) => {
 };
 
 export const getPollDecision = async (poll: Poll, pollExpired: boolean) => {
-  const councilRoleId = await getRolesProperty(Role.Council);
+  const councilRoleId = getRolesProperty(Role.Council);
 
   if (councilRoleId === undefined) {
     return null;
@@ -354,7 +352,7 @@ export const getPollDecision = async (poll: Poll, pollExpired: boolean) => {
   const decision = poll.answers.find((answer) => answer.voteCount >= threshold);
 
   if (
-    decision === undefined ||
+    decision?.text === undefined ||
     decision.text === null ||
     decision.text === labels.abstain
   ) {

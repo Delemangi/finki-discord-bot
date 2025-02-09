@@ -1,3 +1,16 @@
+import { InfoMessageType } from '@prisma/client';
+import {
+  type Channel,
+  ChannelType,
+  type ChatInputCommandInteraction,
+  type GuildBasedChannel,
+  type GuildTextBasedChannel,
+  PermissionFlagsBits,
+  REST,
+  Routes,
+  SlashCommandBuilder,
+} from 'discord.js';
+
 import {
   getColorsComponents,
   getColorsEmbed,
@@ -35,18 +48,6 @@ import { threadMessageFunctions } from '../translations/threads.js';
 import { ticketMessages } from '../translations/tickets.js';
 import { sendEmbed } from '../utils/channels.js';
 import { getCommands } from '../utils/commands.js';
-import { InfoMessageType } from '@prisma/client';
-import {
-  type Channel,
-  ChannelType,
-  type ChatInputCommandInteraction,
-  type GuildBasedChannel,
-  type GuildTextBasedChannel,
-  PermissionFlagsBits,
-  REST,
-  Routes,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'script';
 const permission = PermissionFlagsBits.Administrator;
@@ -210,7 +211,7 @@ const handleScriptCourses = async (
       return;
     }
 
-    const embed = await getCoursesEmbed(roleSet, roles);
+    const embed = getCoursesEmbed(roleSet, roles);
     const components = getCoursesComponents(roles);
     try {
       await sendEmbed(channel, embed, components, Number(newlines));
@@ -223,7 +224,7 @@ const handleScriptCourses = async (
     }
   }
 
-  const addEmbed = await getCoursesAddEmbed();
+  const addEmbed = getCoursesAddEmbed();
   const addComponents = getCoursesAddComponents(
     roleSets.length === 0 ? Array.from('12345678') : roleSets,
   );
@@ -237,7 +238,7 @@ const handleScriptCourses = async (
     return;
   }
 
-  const removeEmbed = await getCoursesRemoveEmbed();
+  const removeEmbed = getCoursesRemoveEmbed();
   const removeComponents = getCoursesRemoveComponents(
     roleSets.length === 0 ? Array.from('12345678') : roleSets,
   );
@@ -261,7 +262,7 @@ const handleScriptColors = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embed = await getColorsEmbed(image);
+  const embed = getColorsEmbed(image);
   const components = getColorsComponents();
   try {
     await sendEmbed(channel, embed, components, Number(newlines));
@@ -284,7 +285,7 @@ const handleScriptNotifications = async (
     return;
   }
 
-  const embed = await getNotificationsEmbed();
+  const embed = getNotificationsEmbed();
   const components = getNotificationsComponents();
   try {
     await sendEmbed(
@@ -312,7 +313,7 @@ const handleScriptPrograms = async (
     return;
   }
 
-  const embed = await getProgramsEmbed();
+  const embed = getProgramsEmbed();
   const components = getProgramsComponents();
   try {
     await sendEmbed(channel, embed, components, Number(newlines));
@@ -331,7 +332,7 @@ const handleScriptYears = async (interaction: ChatInputCommandInteraction) => {
     await interaction.editReply(commandErrors.invalidChannel);
   }
 
-  const embed = await getYearsEmbed();
+  const embed = getYearsEmbed();
   const components = getYearsComponents();
   try {
     await sendEmbed(
@@ -385,7 +386,7 @@ const handleScriptRules = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embed = await getRulesEmbed(rules);
+  const embed = getRulesEmbed(rules);
   try {
     await channel.send({
       embeds: [embed],
@@ -411,7 +412,7 @@ const handleScriptSpecial = async (
     return;
   }
 
-  const embed = await getSpecialRequestEmbed();
+  const embed = getSpecialRequestEmbed();
   const components = getSpecialRequestComponents();
   try {
     await channel.send({
@@ -457,13 +458,13 @@ const handleScriptInfo = async (interaction: ChatInputCommandInteraction) => {
 
         return;
       }
-    } else if (message.type === InfoMessageType.TEXT) {
+    } else {
       try {
         await channel.send({
           allowedMentions: {
             parse: [],
           },
-          content: message.content.replaceAll('\\n', '\n'),
+          content: message.content.replaceAll(String.raw`\n`, '\n'),
         });
       } catch (error) {
         await interaction.editReply(commandErrors.scriptNotExecuted);
@@ -551,7 +552,7 @@ const handleScriptTickets = async (
     return;
   }
 
-  const tickets = await getTicketingProperty('tickets');
+  const tickets = getTicketingProperty('tickets');
 
   const components = getTicketCreateComponents(tickets ?? []);
 

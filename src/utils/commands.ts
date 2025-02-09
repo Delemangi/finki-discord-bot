@@ -1,10 +1,3 @@
-import { client } from '../client.js';
-import { getApplicationId, getToken } from '../configuration/environment.js';
-import { type Command } from '../lib/types/Command.js';
-import { type ContextMenuCommand } from '../lib/types/ContextMenuCommand.js';
-import { type SlashCommand } from '../lib/types/SlashCommand.js';
-import { logger } from '../logger.js';
-import { logErrorFunctions, logMessages } from '../translations/logs.js';
 import {
   ApplicationCommandType,
   type ChatInputCommandInteraction,
@@ -13,6 +6,16 @@ import {
   Routes,
 } from 'discord.js';
 import { readdirSync } from 'node:fs';
+
+import { client } from '../client.js';
+import { getApplicationId, getToken } from '../configuration/environment.js';
+import {
+  type Command,
+  type ContextMenuCommand,
+  type SlashCommand,
+} from '../lib/types/Command.js';
+import { logger } from '../logger.js';
+import { logErrorFunctions, logMessages } from '../translations/logs.js';
 
 const commands = new Collection<string, Command>();
 
@@ -24,14 +27,15 @@ const refreshCommands = async () => {
   commands.clear();
 
   for (const file of commandFiles) {
+    // TODO: Find a way to validate this
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const command: Command = await import(`../commands/${file}`);
+
     commands.set(command.data.name, command);
   }
 };
 
-const isCommandsEmpty = () => {
-  return commands.entries().next().done;
-};
+const isCommandsEmpty = () => commands.entries().next().done;
 
 export const getCommand = async (commandName: string) => {
   if (isCommandsEmpty()) {
@@ -42,7 +46,7 @@ export const getCommand = async (commandName: string) => {
 };
 
 export const isSlashCommand = (command: Command): command is SlashCommand => {
-  const commandData = command?.data.toJSON();
+  const commandData = command.data.toJSON();
 
   return (
     commandData.type === undefined ||
@@ -53,7 +57,7 @@ export const isSlashCommand = (command: Command): command is SlashCommand => {
 export const isContextMenuCommand = (
   command: Command,
 ): command is ContextMenuCommand => {
-  const commandData = command?.data.toJSON();
+  const commandData = command.data.toJSON();
 
   return (
     commandData.type === ApplicationCommandType.Message ||
@@ -115,9 +119,8 @@ export const registerCommands = async () => {
   }
 };
 
-export const createCommandChoices = (choices: readonly string[]) => {
-  return choices.map((choice) => ({
+export const createCommandChoices = (choices: readonly string[]) =>
+  choices.map((choice) => ({
     name: choice,
     value: choice,
   }));
-};

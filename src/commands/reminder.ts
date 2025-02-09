@@ -1,3 +1,11 @@
+import { parseDate } from 'chrono-node';
+import {
+  channelMention,
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder,
+  time,
+} from 'discord.js';
+
 import { getRemindersComponents } from '../components/reminders.js';
 import { createReminder, getRemindersByUserId } from '../data/Reminder.js';
 import {
@@ -7,13 +15,6 @@ import {
   commandResponses,
 } from '../translations/commands.js';
 import { safeReplyToInteraction } from '../utils/messages.js';
-import { parseDate } from 'chrono-node';
-import {
-  channelMention,
-  type ChatInputCommandInteraction,
-  SlashCommandBuilder,
-  time,
-} from 'discord.js';
 
 const name = 'reminder';
 
@@ -53,7 +54,7 @@ const handleReminderCreate = async (
 
   const date = parseDate(when);
 
-  if (date === null || date === undefined) {
+  if (date === null) {
     await interaction.editReply(commandErrors.invalidDateTime);
 
     return;
@@ -131,7 +132,7 @@ const handleReminderDelete = async (
     return;
   }
 
-  const components = await getRemindersComponents(reminders);
+  const components = getRemindersComponents(reminders);
   await interaction.editReply({
     components,
     content: commandResponses.chooseRemindersToDelete,

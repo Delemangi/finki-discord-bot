@@ -1,4 +1,11 @@
 import {
+  type ChatInputCommandInteraction,
+  roleMention,
+  SlashCommandBuilder,
+  userMention,
+} from 'discord.js';
+
+import {
   getChannelsProperty,
   getRolesProperty,
 } from '../configuration/main.js';
@@ -27,12 +34,6 @@ import {
   isPollDuplicate,
 } from '../utils/polls/main.js';
 import { getMembersByRoleIds } from '../utils/roles.js';
-import {
-  type ChatInputCommandInteraction,
-  roleMention,
-  SlashCommandBuilder,
-  userMention,
-} from 'discord.js';
 
 const name = 'special';
 
@@ -132,14 +133,14 @@ const handleSpecialDelete = async (
   const pollId = interaction.options.getString('poll', true);
   const channel = getChannel(Channel.Council);
 
-  if (channel === null) {
+  if (channel === undefined) {
     await interaction.editReply(commandErrors.invalidChannel);
 
     return;
   }
 
-  const message = await channel?.messages.fetch(pollId);
-  await message?.poll?.end();
+  const message = await channel.messages.fetch(pollId);
+  await message.poll?.end();
 
   await interaction.editReply(commandResponses.pollDeleted);
 };
@@ -147,6 +148,7 @@ const handleSpecialDelete = async (
 const handleSpecialOverride = async (
   interaction: ChatInputCommandInteraction,
 ) => {
+  // TODO: Implement this handler
   // const user = interaction.options.getUser('user', true);
   // const type = interaction.options.getString('type', true);
   // const decision = interaction.options.getString('decision');
@@ -209,22 +211,22 @@ const handleSpecialRemaining = async (
   const pollId = interaction.options.getString('poll', true);
   const councilChannel = getChannel(Channel.Council);
 
-  if (councilChannel === null) {
+  if (councilChannel === undefined) {
     await interaction.editReply(commandErrors.invalidChannel);
 
     return;
   }
 
-  const message = await councilChannel?.messages.fetch(pollId);
-  const poll = message?.poll;
+  const message = await councilChannel.messages.fetch(pollId);
+  const poll = message.poll;
 
-  if (poll === undefined || poll === null) {
+  if (poll === null) {
     await interaction.editReply(commandErrors.pollNotFound);
 
     return;
   }
 
-  const councilRole = await getRolesProperty(Role.Council);
+  const councilRole = getRolesProperty(Role.Council);
 
   if (councilRole === undefined) {
     await interaction.editReply(commandErrors.invalidRole);
@@ -257,7 +259,7 @@ const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
 
   const user = interaction.options.getUser('user', true);
   const notify = interaction.options.getBoolean('notify') ?? true;
-  const councilChannelId = await getChannelsProperty(Channel.Council);
+  const councilChannelId = getChannelsProperty(Channel.Council);
 
   if (interaction.channelId !== councilChannelId) {
     await interaction.editReply({
@@ -281,7 +283,7 @@ const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (await isMemberAdmin(member)) {
+  if (isMemberAdmin(member)) {
     await interaction.editReply(commandErrors.userAdmin);
 
     return;
@@ -296,7 +298,7 @@ const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const poll = createPoll(PollType.BAR, user);
-  const councilRoleId = await getRolesProperty(Role.Council);
+  const councilRoleId = getRolesProperty(Role.Council);
 
   if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
@@ -316,7 +318,7 @@ const handleSpecialUnbar = async (interaction: ChatInputCommandInteraction) => {
 
   const user = interaction.options.getUser('user', true);
   const notify = interaction.options.getBoolean('notify') ?? true;
-  const councilChannelId = await getChannelsProperty(Channel.Council);
+  const councilChannelId = getChannelsProperty(Channel.Council);
 
   if (interaction.channelId !== councilChannelId) {
     await interaction.editReply({
@@ -341,7 +343,7 @@ const handleSpecialUnbar = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const poll = createPoll(PollType.UNBAR, user);
-  const councilRoleId = await getRolesProperty(Role.Council);
+  const councilRoleId = getRolesProperty(Role.Council);
 
   if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));

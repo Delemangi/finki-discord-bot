@@ -1,5 +1,14 @@
+import {
+  type AnyThreadChannel,
+  type ButtonInteraction,
+  ChannelType,
+  type ChatInputCommandInteraction,
+  roleMention,
+  ThreadAutoArchiveDuration,
+} from 'discord.js';
+import { setTimeout } from 'node:timers/promises';
+
 import { getTicketCloseComponents } from '../components/tickets.js';
-import { DEFAULT_CONFIGURATION } from '../configuration/defaults.js';
 import {
   getChannelsProperty,
   getIntervalsProperty,
@@ -15,21 +24,12 @@ import {
 } from '../translations/tickets.js';
 import { getChannel } from './channels.js';
 import { getGuild } from './guild.js';
-import {
-  type AnyThreadChannel,
-  type ButtonInteraction,
-  ChannelType,
-  type ChatInputCommandInteraction,
-  roleMention,
-  ThreadAutoArchiveDuration,
-} from 'discord.js';
-import { setTimeout } from 'node:timers/promises';
 
 export const getActiveTickets = async (
   interaction?: ChatInputCommandInteraction,
 ) => {
   const guild = await getGuild(interaction);
-  const ticketsChannelId = await getChannelsProperty(Channel.Tickets);
+  const ticketsChannelId = getChannelsProperty(Channel.Tickets);
 
   const threads = guild?.channels.cache.filter(
     (channel): channel is AnyThreadChannel =>
@@ -81,6 +81,7 @@ export const createTicket = async (
     time: 1_800_000,
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   collector.once('collect', async () => {
     await ticketChannel.send(
       ticketMessageFunctions.ticketStarted(
@@ -91,6 +92,7 @@ export const createTicket = async (
     collector.stop();
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   collector.on('end', async (messages) => {
     if (messages.size > 0) {
       return;
@@ -124,18 +126,8 @@ export const closeTicket = async (ticketId: string) => {
 
 export const closeInactiveTickets = async () => {
   while (true) {
-    const allowedInactivityDays = await getTicketingProperty(
-      'allowedInactivityDays',
-    );
-    const ticketsCheckInterval = await getIntervalsProperty('ticketsCheck');
-
-    if (
-      allowedInactivityDays === undefined ||
-      ticketsCheckInterval === undefined
-    ) {
-      await setTimeout(DEFAULT_CONFIGURATION.intervals.ticketsCheck);
-      continue;
-    }
+    const allowedInactivityDays = getTicketingProperty('allowedInactivityDays');
+    const ticketsCheckInterval = getIntervalsProperty('ticketsCheck');
 
     const maxTicketInactivityMilliseconds = allowedInactivityDays * 86_400_000;
 

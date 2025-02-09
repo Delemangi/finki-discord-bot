@@ -1,13 +1,14 @@
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from 'discord.js';
+import { access } from 'node:fs/promises';
+
 import { getSessions } from '../configuration/files.js';
 import {
   commandDescriptions,
   commandErrors,
 } from '../translations/commands.js';
-import {
-  type ChatInputCommandInteraction,
-  SlashCommandBuilder,
-} from 'discord.js';
-import { access } from 'fs/promises';
 
 const name = 'session';
 

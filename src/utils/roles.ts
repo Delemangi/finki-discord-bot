@@ -1,3 +1,5 @@
+import { type Role as DiscordRole, type Guild } from 'discord.js';
+
 import { getFromRoleConfig } from '../configuration/files.js';
 import { getConfigProperty } from '../configuration/main.js';
 import { type Role as RoleName } from '../lib/schemas/Role.js';
@@ -5,7 +7,6 @@ import { type RoleSets } from '../lib/types/RoleSets.js';
 import { logger } from '../logger.js';
 import { logErrorFunctions, logMessages } from '../translations/logs.js';
 import { getGuild } from './guild.js';
-import { type Role as DiscordRole, type Guild } from 'discord.js';
 
 const roles: Partial<Record<RoleName, DiscordRole | undefined>> = {};
 const roleSets: Record<RoleSets, DiscordRole[]> = {
@@ -17,7 +18,7 @@ const roleSets: Record<RoleSets, DiscordRole[]> = {
 };
 
 export const initializeRoles = async () => {
-  const roleIds = await getConfigProperty('roles');
+  const roleIds = getConfigProperty('roles');
   const guild = await getGuild();
 
   if (roleIds === undefined || guild === null) {
@@ -51,9 +52,7 @@ export const refreshRoles = (guild: Guild, type: RoleSets) => {
   }
 };
 
-export const getRole = (type: RoleName) => {
-  return roles[type];
-};
+export const getRole = (type: RoleName) => roles[type];
 
 export const getRoleFromSet = (guild: Guild, type: RoleSets, role: string) => {
   if (roleSets[type].length === 0) {
@@ -108,7 +107,7 @@ export const getMembersByRoles = async (
 
   const uniqueMembers = new Set<string>();
   for (const iterator of members) {
-    const ids = Array.from(iterator ?? []);
+    const ids = Array.from(iterator);
 
     for (const id of ids) {
       uniqueMembers.add(id);

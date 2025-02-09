@@ -1,6 +1,9 @@
-import { configErrors } from '../translations/errors.js';
+/* eslint-disable n/prefer-global/process */
+
 import { env } from 'node:process';
 import { z } from 'zod';
+
+import { configErrors } from '../translations/errors.js';
 
 export const getToken = () => {
   try {

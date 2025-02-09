@@ -1,6 +1,7 @@
+import { inlineCode, userMention } from 'discord.js';
+
 import { type PartialUser } from '../lib/types/PartialUser.js';
 import { tagAndMentionUser } from './users.js';
-import { inlineCode, userMention } from 'discord.js';
 
 export const specialStrings = {
   accept: 'Прифаќам',

@@ -1,12 +1,13 @@
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from 'discord.js';
+
 import { getRandomAnto } from '../data/Anto.js';
 import {
   commandDescriptions,
   commandErrors,
 } from '../translations/commands.js';
-import {
-  type ChatInputCommandInteraction,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'anto';
 

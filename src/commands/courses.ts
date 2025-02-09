@@ -1,3 +1,9 @@
+import {
+  type ChatInputCommandInteraction,
+  type GuildMember,
+  SlashCommandBuilder,
+} from 'discord.js';
+
 import { getCoursesPrerequisiteEmbed } from '../components/commands.js';
 import {
   commandDescriptions,
@@ -7,11 +13,6 @@ import {
 } from '../translations/commands.js';
 import { getGuild } from '../utils/guild.js';
 import { getCourseRolesBySemester, getRoles } from '../utils/roles.js';
-import {
-  type ChatInputCommandInteraction,
-  type GuildMember,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'courses';
 
@@ -62,7 +63,7 @@ const handleCoursesPrerequisite = async (
 ) => {
   const course = interaction.options.getString('course', true);
 
-  const embed = await getCoursesPrerequisiteEmbed(course);
+  const embed = getCoursesPrerequisiteEmbed(course);
   await interaction.editReply({
     embeds: [embed],
   });

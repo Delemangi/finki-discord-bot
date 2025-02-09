@@ -1,14 +1,15 @@
 import {
-  commandDescriptions,
-  commandErrors,
-  commandResponses,
-} from '../translations/commands.js';
-import {
   type ChatInputCommandInteraction,
   type GuildBasedChannel,
   PermissionFlagsBits,
   SlashCommandBuilder,
 } from 'discord.js';
+
+import {
+  commandDescriptions,
+  commandErrors,
+  commandResponses,
+} from '../translations/commands.js';
 
 const name = 'message';
 const permission = PermissionFlagsBits.Administrator;

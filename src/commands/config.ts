@@ -1,4 +1,11 @@
 import {
+  type ChatInputCommandInteraction,
+  codeBlock,
+  PermissionFlagsBits,
+  SlashCommandBuilder,
+} from 'discord.js';
+
+import {
   getConfigKeys,
   getConfigProperty,
   setConfigProperty,
@@ -6,6 +13,7 @@ import {
 import { refreshOnConfigChange } from '../configuration/refresh.js';
 import {
   BotConfigKeysSchema,
+  BotConfigSchema,
   RequiredBotConfigSchema,
 } from '../lib/schemas/BotConfig.js';
 import {
@@ -13,12 +21,6 @@ import {
   commandErrorFunctions,
 } from '../translations/commands.js';
 import { createCommandChoices } from '../utils/commands.js';
-import {
-  type ChatInputCommandInteraction,
-  codeBlock,
-  PermissionFlagsBits,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'config';
 const permission = PermissionFlagsBits.ManageMessages;
@@ -62,7 +64,7 @@ const handleConfigGet = async (interaction: ChatInputCommandInteraction) => {
   const key = BotConfigKeysSchema.parse(
     interaction.options.getString('key', true),
   );
-  const value = await getConfigProperty(key);
+  const value = getConfigProperty(key);
 
   await interaction.editReply(
     codeBlock(
@@ -82,24 +84,35 @@ const handleConfigSet = async (interaction: ChatInputCommandInteraction) => {
   const key = BotConfigKeysSchema.parse(
     interaction.options.getString('key', true),
   );
-  let value;
+  const rawValue = interaction.options.getString('value', true);
+  let jsonValue: unknown;
 
   try {
-    value = JSON.parse(interaction.options.getString('value', true));
-    RequiredBotConfigSchema.shape[key].parse(value);
-  } catch (error) {
+    jsonValue = JSON.parse(rawValue);
+  } catch {
     await interaction.editReply(
-      commandErrorFunctions.invalidConfiguration(String(error)),
+      commandErrorFunctions.invalidConfiguration(rawValue),
     );
 
     return;
   }
 
-  const newConfig = await setConfigProperty(key, value);
+  const parsedValue = RequiredBotConfigSchema.shape[key].safeParse(jsonValue);
 
-  if (newConfig === null) {
+  if (!parsedValue.success) {
     await interaction.editReply(
-      commandErrorFunctions.invalidConfiguration(value),
+      commandErrorFunctions.invalidConfiguration(rawValue),
+    );
+
+    return;
+  }
+
+  const rawNewConfig = await setConfigProperty(key, parsedValue.data);
+  const newConfig = BotConfigSchema.safeParse(rawNewConfig);
+
+  if (!newConfig.success) {
+    await interaction.editReply(
+      commandErrorFunctions.invalidConfiguration(rawValue),
     );
 
     return;
@@ -107,8 +120,7 @@ const handleConfigSet = async (interaction: ChatInputCommandInteraction) => {
 
   const newProperty = JSON.stringify(
     {
-      // @ts-expect-error not worth validating
-      [key]: newConfig[key],
+      [key]: newConfig.data?.[key],
     },
     null,
     2,

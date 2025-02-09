@@ -1,3 +1,9 @@
+import {
+  type ChatInputCommandInteraction,
+  ComponentType,
+  SlashCommandBuilder,
+} from 'discord.js';
+
 import { client } from '../client.js';
 import { getHelpEmbed } from '../components/commands.js';
 import { getPaginationComponents } from '../components/pagination.js';
@@ -11,11 +17,6 @@ import { logErrorFunctions } from '../translations/logs.js';
 import { deleteResponse } from '../utils/channels.js';
 import { getGuild, getMemberFromGuild } from '../utils/guild.js';
 import { getCommandsWithPermission } from '../utils/permissions.js';
-import {
-  type ChatInputCommandInteraction,
-  ComponentType,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'help';
 
@@ -41,10 +42,10 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   await client.application?.commands.fetch();
 
-  const commands = await getCommandsWithPermission(member);
+  const commands = getCommandsWithPermission(member);
   const commandsPerPage = 8;
   const pages = Math.ceil(commands.length / commandsPerPage);
-  const embed = await getHelpEmbed(commands, 0, commandsPerPage);
+  const embed = getHelpEmbed(commands, 0, commandsPerPage);
   const components = [
     pages === 0 || pages === 1
       ? getPaginationComponents('help')
@@ -54,12 +55,13 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     components,
     embeds: [embed],
   });
-  const buttonIdle = await getIntervalsProperty('buttonIdle');
+  const buttonIdle = getIntervalsProperty('buttonIdle');
   const collector = message.createMessageComponentCollector({
     componentType: ComponentType.Button,
     idle: buttonIdle,
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   collector.on('collect', async (buttonInteraction) => {
     if (
       buttonInteraction.user.id !==
@@ -86,14 +88,26 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
         buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.[0],
       ) - 1;
 
-    if (id === 'first') {
-      page = 0;
-    } else if (id === 'last') {
-      page = pages - 1;
-    } else if (id === 'previous') {
-      page--;
-    } else if (id === 'next') {
-      page++;
+    switch (id) {
+      case 'first':
+        page = 0;
+        break;
+
+      case 'last':
+        page = pages - 1;
+        break;
+
+      case 'next':
+        page++;
+        break;
+
+      case 'previous':
+        page--;
+        break;
+
+      default:
+        page = 0;
+        break;
     }
 
     if (page === 0 && (pages === 0 || pages === 1)) {
@@ -106,7 +120,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
       buttons = getPaginationComponents('help', 'middle');
     }
 
-    const nextEmbed = await getHelpEmbed(commands, page, commandsPerPage);
+    const nextEmbed = getHelpEmbed(commands, page, commandsPerPage);
 
     try {
       await buttonInteraction.update({
@@ -123,6 +137,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     }
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   collector.on('end', async () => {
     try {
       await interaction.editReply({

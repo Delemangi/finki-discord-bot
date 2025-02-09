@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+
 import {
   type ButtonInteraction,
   type ChatInputCommandInteraction,

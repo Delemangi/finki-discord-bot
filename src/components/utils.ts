@@ -1,9 +1,3 @@
-import { getStaff } from '../configuration/files.js';
-import { logger } from '../logger.js';
-import { embedLabels } from '../translations/embeds.js';
-import { labels } from '../translations/labels.js';
-import { logErrorFunctions } from '../translations/logs.js';
-import { getRoleFromSet } from '../utils/roles.js';
 import {
   type ButtonInteraction,
   channelMention,
@@ -15,16 +9,23 @@ import {
   type UserContextMenuCommandInteraction,
 } from 'discord.js';
 
+import { getStaff } from '../configuration/files.js';
+import { logger } from '../logger.js';
+import { embedLabels } from '../translations/embeds.js';
+import { labels } from '../translations/labels.js';
+import { logErrorFunctions } from '../translations/logs.js';
+import { getRoleFromSet } from '../utils/roles.js';
+
 export const truncateString = (
   string: null | string | undefined,
-  length: number = 100,
+  length = 100,
 ) => {
   if (string === null || string === undefined) {
     return '';
   }
 
   return string.length > length
-    ? string.slice(0, Math.max(0, length - 3)) + '...'
+    ? `${string.slice(0, Math.max(0, length - 3))}...`
     : string;
 };
 
@@ -54,7 +55,7 @@ export const getButtonCommand = (command: string) => {
       return embedLabels.ticketCreate;
 
     default:
-      return command[0]?.toUpperCase() + command.slice(1);
+      return command.slice(0, 1).toUpperCase() + command.slice(1);
   }
 };
 
@@ -147,8 +148,10 @@ export const fetchMessageUrl = async (
   }
 
   try {
+    const { url } = await interaction.fetchReply();
+
     return {
-      url: (await interaction.fetchReply()).url,
+      url,
     };
   } catch (error) {
     logger.warn(logErrorFunctions.messageUrlFetchError(interaction.id, error));

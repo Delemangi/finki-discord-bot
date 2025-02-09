@@ -1,5 +1,3 @@
-/* eslint-disable id-length */
-
 export const emojis: Record<string, string> = {
   '0': '0️⃣',
   '1': '1️⃣',

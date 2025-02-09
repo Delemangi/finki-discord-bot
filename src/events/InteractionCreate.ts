@@ -1,3 +1,5 @@
+import { type ClientEvents, Events } from 'discord.js';
+
 import {
   handleAutocomplete,
   handleButton,
@@ -7,7 +9,6 @@ import {
 } from '../interactions/handlers.js';
 import { logger } from '../logger.js';
 import { logErrorFunctions } from '../translations/logs.js';
-import { type ClientEvents, Events } from 'discord.js';
 
 export const name = Events.InteractionCreate;
 

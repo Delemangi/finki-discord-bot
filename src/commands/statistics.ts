@@ -1,4 +1,10 @@
 import {
+  type ChatInputCommandInteraction,
+  roleMention,
+  SlashCommandBuilder,
+} from 'discord.js';
+
+import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
@@ -10,11 +16,6 @@ import {
 import { getGuild } from '../utils/guild.js';
 import { safeReplyToInteraction } from '../utils/messages.js';
 import { getRoles } from '../utils/roles.js';
-import {
-  type ChatInputCommandInteraction,
-  roleMention,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'statistics';
 
@@ -83,65 +84,41 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
     await safeReplyToInteraction(interaction, output.join('\n'));
   } else {
-    const output = [];
     const boostLevel = guild.premiumTier;
 
-    output.push(
+    await guild.channels.fetch();
+    await guild.roles.fetch();
+    await guild.emojis.fetch();
+    await guild.stickers.fetch();
+    await guild.invites.fetch();
+
+    const output = [
       commandResponseFunctions.serverMembersStat(
         guild.memberCount,
         guild.maximumMembers,
       ),
-    );
-
-    output.push(
       commandResponseFunctions.serverBoostStat(
         guild.premiumSubscriptionCount ?? 0,
       ),
-    );
-
-    output.push(
       commandResponseFunctions.serverBoostLevelStat(guild.premiumTier),
-    );
-
-    await guild.channels.fetch();
-    output.push(
       commandResponseFunctions.serverChannelsStat(
         guild.channels.cache.filter((channel) => !channel.isThread()).size,
       ),
-    );
-
-    await guild.roles.fetch();
-    output.push(
       commandResponseFunctions.serverRolesStat(guild.roles.cache.size),
-    );
-
-    await guild.emojis.fetch();
-    output.push(
       commandResponseFunctions.serverEmojiStat(
         guild.emojis.cache.filter((emoji) => !emoji.animated).size,
         getMaxEmojisByBoostLevel(boostLevel),
       ),
-    );
-
-    output.push(
       commandResponseFunctions.serverAnimatedEmojiStat(
         guild.emojis.cache.filter((emoji) => emoji.animated).size,
         getMaxEmojisByBoostLevel(boostLevel),
       ),
-    );
-
-    await guild.stickers.fetch();
-    output.push(
       commandResponseFunctions.serverStickersStat(
         guild.stickers.cache.size,
         getMaxStickersByBoostLevel(boostLevel),
       ),
-    );
-
-    await guild.invites.fetch();
-    output.push(
       commandResponseFunctions.serverInvitesStat(guild.invites.cache.size),
-    );
+    ];
 
     await interaction.editReply(output.join('\n'));
   }

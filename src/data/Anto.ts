@@ -1,8 +1,9 @@
+import { type Prisma } from '@prisma/client';
+import { randomBytes } from 'node:crypto';
+
 import { logger } from '../logger.js';
 import { databaseErrorFunctions } from '../translations/database.js';
 import { database } from './database.js';
-import { type Prisma } from '@prisma/client';
-import { randomBytes } from 'node:crypto';
 
 export const createAnto = async (anto?: Prisma.AntoCreateInput) => {
   if (anto === undefined) {

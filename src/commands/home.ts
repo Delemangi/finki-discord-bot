@@ -1,8 +1,9 @@
-import { commandDescriptions } from '../translations/commands.js';
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
 } from 'discord.js';
+
+import { commandDescriptions } from '../translations/commands.js';
 
 const name = 'home';
 

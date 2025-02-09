@@ -1,4 +1,10 @@
 import {
+  type ChatInputCommandInteraction,
+  ComponentType,
+  SlashCommandBuilder,
+} from 'discord.js';
+
+import {
   getExperienceEmbed,
   getExperienceLeaderboardFirstPageEmbed,
   getExperienceLeaderboardNextPageEmbed,
@@ -21,11 +27,6 @@ import {
 import { logErrorFunctions } from '../translations/logs.js';
 import { deleteResponse } from '../utils/channels.js';
 import { getLevelFromExperience } from '../utils/experience.js';
-import {
-  type ChatInputCommandInteraction,
-  ComponentType,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'experience';
 
@@ -94,7 +95,7 @@ const handleExperienceGet = async (
     return;
   }
 
-  const embed = await getExperienceEmbed(experience, user);
+  const embed = getExperienceEmbed(experience, user);
   await interaction.editReply({
     embeds: [embed],
   });
@@ -181,12 +182,14 @@ const handleExperienceLeaderboard = async (
     components,
     embeds: [embed],
   });
-  const buttonIdle = await getIntervalsProperty('buttonIdle');
+  const buttonIdle = getIntervalsProperty('buttonIdle');
   const collector = message.createMessageComponentCollector({
     componentType: ComponentType.Button,
     idle: buttonIdle,
   });
 
+  // TODO: Remove collectors in favor of regular button handlers
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   collector.on('collect', async (buttonInteraction) => {
     if (
       buttonInteraction.user.id !==
@@ -213,14 +216,26 @@ const handleExperienceLeaderboard = async (
         buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.[0],
       ) - 1;
 
-    if (id === 'first') {
-      page = 0;
-    } else if (id === 'last') {
-      page = pages - 1;
-    } else if (id === 'previous') {
-      page--;
-    } else if (id === 'next') {
-      page++;
+    switch (id) {
+      case 'first':
+        page = 0;
+        break;
+
+      case 'last':
+        page = pages - 1;
+        break;
+
+      case 'next':
+        page++;
+        break;
+
+      case 'previous':
+        page--;
+        break;
+
+      default:
+        page = 0;
+        break;
     }
 
     if (page === 0 && (pages === 0 || pages === 1)) {
@@ -254,6 +269,7 @@ const handleExperienceLeaderboard = async (
     }
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   collector.on('end', async () => {
     try {
       await interaction.editReply({

@@ -1,5 +1,6 @@
-import { labels } from '../translations/labels.js';
 import { type ChatInputCommandInteraction, codeBlock } from 'discord.js';
+
+import { labels } from '../translations/labels.js';
 
 export const splitMessage = function* (message: string) {
   if (message === '') {

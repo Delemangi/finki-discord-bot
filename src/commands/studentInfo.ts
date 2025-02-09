@@ -1,4 +1,3 @@
-import { getStudentInfoEmbed } from '../components/commands.js';
 import {
   ApplicationCommandType,
   ContextMenuCommandBuilder,
@@ -6,6 +5,8 @@ import {
   InteractionContextType,
   type UserContextMenuCommandInteraction,
 } from 'discord.js';
+
+import { getStudentInfoEmbed } from '../components/commands.js';
 
 const name = 'Student Info';
 
@@ -17,9 +18,7 @@ export const data = new ContextMenuCommandBuilder()
 export const execute = async (
   interaction: UserContextMenuCommandInteraction,
 ) => {
-  const embed = await getStudentInfoEmbed(
-    interaction.targetMember as GuildMember,
-  );
+  const embed = getStudentInfoEmbed(interaction.targetMember as GuildMember);
   await interaction.editReply({
     embeds: [embed],
   });

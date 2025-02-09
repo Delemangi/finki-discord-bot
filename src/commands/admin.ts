@@ -1,4 +1,10 @@
 import {
+  type ChatInputCommandInteraction,
+  roleMention,
+  SlashCommandBuilder,
+} from 'discord.js';
+
+import {
   getChannelsProperty,
   getRolesProperty,
 } from '../configuration/main.js';
@@ -18,11 +24,6 @@ import {
   isMemberLevel,
 } from '../utils/members.js';
 import { createPoll, isPollDuplicate } from '../utils/polls/main.js';
-import {
-  type ChatInputCommandInteraction,
-  roleMention,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'admin';
 
@@ -76,7 +77,7 @@ const handleAdminAdd = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser('user', true);
   const notify = interaction.options.getBoolean('notify') ?? true;
   const member = await getMemberFromGuild(user.id, interaction);
-  const councilChannelId = await getChannelsProperty(Channel.Council);
+  const councilChannelId = getChannelsProperty(Channel.Council);
 
   if (interaction.channelId !== councilChannelId) {
     await interaction.editReply({
@@ -98,7 +99,7 @@ const handleAdminAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (!(await isMemberInVip(member))) {
+  if (!isMemberInVip(member)) {
     await interaction.editReply(commandErrors.userNotVipMember);
 
     return;
@@ -110,7 +111,7 @@ const handleAdminAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (await isMemberAdmin(member)) {
+  if (isMemberAdmin(member)) {
     await interaction.editReply(commandErrors.userAdmin);
 
     return;
@@ -125,7 +126,7 @@ const handleAdminAdd = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const poll = createPoll(PollType.ADMIN_ADD, user);
-  const councilRoleId = await getRolesProperty(Role.Council);
+  const councilRoleId = getRolesProperty(Role.Council);
 
   if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
@@ -146,7 +147,7 @@ const handleAdminRemove = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser('user', true);
   const notify = interaction.options.getBoolean('notify') ?? true;
   const member = await getMemberFromGuild(user.id, interaction);
-  const councilChannelId = await getChannelsProperty(Channel.Council);
+  const councilChannelId = getChannelsProperty(Channel.Council);
 
   if (interaction.channelId !== councilChannelId) {
     await interaction.editReply({
@@ -162,7 +163,7 @@ const handleAdminRemove = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  if (!(await isMemberAdmin(member))) {
+  if (!isMemberAdmin(member)) {
     await interaction.editReply(commandErrors.userNotAdmin);
 
     return;
@@ -177,7 +178,7 @@ const handleAdminRemove = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const poll = createPoll(PollType.ADMIN_REMOVE, user);
-  const councilRoleId = await getRolesProperty(Role.Council);
+  const councilRoleId = getRolesProperty(Role.Council);
 
   if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));

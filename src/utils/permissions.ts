@@ -1,8 +1,9 @@
+import { type GuildMember, PermissionsBitField } from 'discord.js';
+
 import { getRolesProperty } from '../configuration/main.js';
 import { Role } from '../lib/schemas/Role.js';
 import { commandDescriptions } from '../translations/commands.js';
 import { isMemberAdministrator } from './members.js';
-import { type GuildMember, PermissionsBitField } from 'discord.js';
 
 const commandPermissions: Record<
   string,
@@ -26,10 +27,6 @@ const commandPermissions: Record<
   'council toggle': {
     permissions: [],
     roles: [Role.VIP],
-  },
-  embed: {
-    permissions: [],
-    roles: [Role.Administrators],
   },
   'experience add': {
     permissions: [],
@@ -154,18 +151,16 @@ const getCommandKey = (command: string) => {
   return null;
 };
 
-const getCommandPermission = async (
+const getCommandPermission = (
   command: string,
-): Promise<[bigint[], Array<string | undefined>]> => {
+): [bigint[], Array<string | undefined>] => {
   const key = getCommandKey(command);
 
   if (key !== null) {
     const permissions = commandPermissions[key]?.permissions ?? [];
-    const roles = await Promise.all(
-      commandPermissions[key]?.roles.map(
-        async (role) => await getRolesProperty(role),
-      ) ?? [],
-    );
+    const roles =
+      commandPermissions[key]?.roles.map((role) => getRolesProperty(role)) ??
+      [];
 
     return [permissions, roles];
   }
@@ -174,15 +169,12 @@ const getCommandPermission = async (
 };
 
 // Check whether the member has all the command permissions, or any of the roles
-export const hasCommandPermission = async (
-  member: GuildMember,
-  command: string,
-) => {
-  if (await isMemberAdministrator(member)) {
+export const hasCommandPermission = (member: GuildMember, command: string) => {
+  if (isMemberAdministrator(member)) {
     return true;
   }
 
-  const [permissions, roles] = await getCommandPermission(command);
+  const [permissions, roles] = getCommandPermission(command);
 
   if (permissions.length === 0 && roles.length === 0) {
     return true;
@@ -195,17 +187,15 @@ export const hasCommandPermission = async (
 
   // Check if the member has the required permissions or roles
   return (
-    (permissions.length !== 0 && member.permissions.has(permissions)) ||
-    (roles.length !== 0 &&
+    (permissions.length > 0 && member.permissions.has(permissions)) ||
+    (roles.length > 0 &&
       member.roles.cache.hasAny(...roles.filter((role) => role !== undefined)))
   );
 };
 
-export const getCommandsWithPermission = async (member: GuildMember) => {
-  const permittedCommands = await Promise.all(
-    Object.keys(commandDescriptions).map(
-      async (command) => await hasCommandPermission(member, command),
-    ),
+export const getCommandsWithPermission = (member: GuildMember) => {
+  const permittedCommands = Object.keys(commandDescriptions).map((command) =>
+    hasCommandPermission(member, command),
   );
 
   return Object.keys(commandDescriptions).filter(

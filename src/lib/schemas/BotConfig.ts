@@ -1,7 +1,8 @@
+import { z } from 'zod';
+
 import { ChannelSchema, TemporaryChannelSchema } from './Channel.js';
 import { RoleSchema } from './Role.js';
 import { TicketSchema } from './Ticket.js';
-import { z } from 'zod';
 
 const TemporaryChannelConfigSchema = z
   .object({

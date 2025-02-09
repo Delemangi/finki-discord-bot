@@ -1,3 +1,8 @@
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from 'discord.js';
+
 import { getClassroomEmbed } from '../../components/commands.js';
 import { getClassrooms } from '../../configuration/files.js';
 import { type Command } from '../../lib/types/Command.js';
@@ -6,10 +11,6 @@ import {
   commandErrors,
   commandResponseFunctions,
 } from '../../translations/commands.js';
-import {
-  type ChatInputCommandInteraction,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 export const getCommonCommand = (
   name: keyof typeof commandDescriptions,
@@ -43,9 +44,7 @@ export const getCommonCommand = (
       return;
     }
 
-    const embeds = await Promise.all(
-      classrooms.map(async (cl) => await getClassroomEmbed(cl)),
-    );
+    const embeds = classrooms.map((cl) => getClassroomEmbed(cl));
     await interaction.editReply({
       embeds,
       ...(embeds.length > 1

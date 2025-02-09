@@ -1,13 +1,14 @@
+import {
+  type ChatInputCommandInteraction,
+  SlashCommandBuilder,
+} from 'discord.js';
+
 import { getStaffEmbed } from '../components/commands.js';
 import { getStaff } from '../configuration/files.js';
 import {
   commandDescriptions,
   commandErrors,
 } from '../translations/commands.js';
-import {
-  type ChatInputCommandInteraction,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'staff';
 
@@ -34,7 +35,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embed = await getStaffEmbed(information);
+  const embed = getStaffEmbed(information);
   await interaction.editReply({
     embeds: [embed],
   });

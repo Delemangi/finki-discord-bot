@@ -1,14 +1,15 @@
+import {
+  type ChatInputCommandInteraction,
+  InteractionContextType,
+  SlashCommandBuilder,
+} from 'discord.js';
+
 import { getStudentInfoEmbed } from '../components/commands.js';
 import {
   commandDescriptions,
   commandErrors,
 } from '../translations/commands.js';
 import { getMemberFromGuild } from '../utils/guild.js';
-import {
-  type ChatInputCommandInteraction,
-  InteractionContextType,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'profile';
 
@@ -30,7 +31,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embed = await getStudentInfoEmbed(member);
+  const embed = getStudentInfoEmbed(member);
   await interaction.editReply({
     embeds: [embed],
   });

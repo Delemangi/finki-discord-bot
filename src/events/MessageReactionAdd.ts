@@ -1,6 +1,3 @@
-import { getReactionsProperty } from '../configuration/main.js';
-import { logger } from '../logger.js';
-import { logErrorFunctions } from '../translations/logs.js';
 import {
   type ClientEvents,
   Events,
@@ -8,12 +5,16 @@ import {
   type PartialMessageReaction,
 } from 'discord.js';
 
+import { getReactionsProperty } from '../configuration/main.js';
+import { logger } from '../logger.js';
+import { logErrorFunctions } from '../translations/logs.js';
+
 export const name = Events.MessageReactionAdd;
 
 const removeReaction = async (
   reaction: MessageReaction | PartialMessageReaction,
 ) => {
-  const emojis = await getReactionsProperty('remove');
+  const emojis = getReactionsProperty('remove');
   const authorId = reaction.message.author?.id;
 
   if (authorId === undefined) {

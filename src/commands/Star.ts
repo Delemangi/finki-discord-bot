@@ -1,3 +1,10 @@
+import {
+  ApplicationCommandType,
+  ContextMenuCommandBuilder,
+  InteractionContextType,
+  type UserContextMenuCommandInteraction,
+} from 'discord.js';
+
 import { getChannelsProperty } from '../configuration/main.js';
 import { Channel } from '../lib/schemas/Channel.js';
 import {
@@ -7,12 +14,6 @@ import {
 import { labels } from '../translations/labels.js';
 import { getMemberFromGuild } from '../utils/guild.js';
 import { getOrCreateWebhookByChannelId } from '../utils/webhooks.js';
-import {
-  ApplicationCommandType,
-  ContextMenuCommandBuilder,
-  InteractionContextType,
-  type UserContextMenuCommandInteraction,
-} from 'discord.js';
 
 const name = 'Star';
 
@@ -24,7 +25,7 @@ export const data = new ContextMenuCommandBuilder()
 export const execute = async (
   interaction: UserContextMenuCommandInteraction,
 ) => {
-  const webhooksChannel = await getChannelsProperty(Channel.Starboard);
+  const webhooksChannel = getChannelsProperty(Channel.Starboard);
 
   if (webhooksChannel === undefined) {
     await interaction.editReply(commandErrors.invalidChannel);

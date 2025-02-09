@@ -1,5 +1,6 @@
-import { type PaginationPosition } from '../lib/types/PaginationPosition.js';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
+
+import { type PaginationPosition } from '../lib/types/PaginationPosition.js';
 
 export const getPaginationComponents = (
   name: string,

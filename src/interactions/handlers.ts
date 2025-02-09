@@ -1,4 +1,12 @@
 import {
+  type AutocompleteInteraction,
+  type ButtonInteraction,
+  type ChatInputCommandInteraction,
+  type MessageContextMenuCommandInteraction,
+  type UserContextMenuCommandInteraction,
+} from 'discord.js';
+
+import {
   getAutocompleteEmbed,
   getButtonEmbed,
   getChatInputCommandEmbed,
@@ -42,15 +50,8 @@ import {
   handleVipButton,
   handleYearButton,
 } from './button.js';
-import {
-  type AutocompleteInteraction,
-  type ButtonInteraction,
-  type ChatInputCommandInteraction,
-  type MessageContextMenuCommandInteraction,
-  type UserContextMenuCommandInteraction,
-} from 'discord.js';
 
-const ignoredButtons = ['help', 'polls', 'exp'];
+const ignoredButtons = new Set(['exp', 'help', 'polls']);
 
 export const handleChatInputCommand = async (
   interaction: ChatInputCommandInteraction,
@@ -69,7 +70,7 @@ export const handleChatInputCommand = async (
   const command = await getCommand(interaction.commandName);
 
   logger.info(
-    `${logShortStrings.chat} ${interaction.user.tag}: ${interaction} [${
+    `${logShortStrings.chat} ${interaction.user.tag}: ${interaction.toString()} [${
       interaction.channel === null || interaction.channel.isDMBased()
         ? logShortStrings.dm
         : logShortStrings.guild
@@ -96,13 +97,11 @@ export const handleChatInputCommand = async (
     return;
   }
 
-  const fullCommand = (
-    interaction.commandName +
-    ' ' +
-    (interaction.options.getSubcommand(false) ?? '')
-  ).trim();
+  const fullCommand = `${interaction.commandName} ${
+    interaction.options.getSubcommand(false) ?? ''
+  }`.trim();
 
-  if (!(await hasCommandPermission(member, fullCommand))) {
+  if (!hasCommandPermission(member, fullCommand)) {
     await interaction.editReply(commandErrors.commandNoPermission);
 
     return;
@@ -165,7 +164,7 @@ export const handleUserContextMenuCommand = async (
     return;
   }
 
-  if (!(await hasCommandPermission(member, interaction.commandName))) {
+  if (!hasCommandPermission(member, interaction.commandName)) {
     await interaction.editReply(commandErrors.commandNoPermission);
 
     return;
@@ -228,7 +227,7 @@ export const handleMessageContextMenuCommand = async (
     return;
   }
 
-  if (!(await hasCommandPermission(member, interaction.commandName))) {
+  if (!hasCommandPermission(member, interaction.commandName)) {
     await interaction.editReply(commandErrors.commandNoPermission);
 
     return;
@@ -258,7 +257,7 @@ const buttonInteractionHandlers = {
   year: handleYearButton,
 };
 
-const ephemeralResponseButtons = ['addCourses', 'removeCourses'];
+const ephemeralResponseButtons = new Set(['addCourses', 'removeCourses']);
 
 export const handleButton = async (interaction: ButtonInteraction) => {
   const [command, ...args] = interaction.customId.split(':');
@@ -284,7 +283,7 @@ export const handleButton = async (interaction: ButtonInteraction) => {
     return;
   }
 
-  if (ephemeralResponseButtons.includes(command)) {
+  if (ephemeralResponseButtons.has(command)) {
     try {
       const mess = await interaction.deferReply({
         ephemeral: true,
@@ -301,7 +300,7 @@ export const handleButton = async (interaction: ButtonInteraction) => {
     await buttonInteractionHandlers[
       command as keyof typeof buttonInteractionHandlers
     ](interaction, args);
-  } else if (ignoredButtons.includes(command)) {
+  } else if (ignoredButtons.has(command)) {
     // Do nothing
   } else {
     logger.warn(logErrorFunctions.commandNotFound(interaction.id));

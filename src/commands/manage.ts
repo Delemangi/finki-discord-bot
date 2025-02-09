@@ -1,3 +1,10 @@
+import { InfoMessageType } from '@prisma/client';
+import {
+  type ChatInputCommandInteraction,
+  codeBlock,
+  SlashCommandBuilder,
+} from 'discord.js';
+
 import {
   getLinkComponents,
   getLinkEmbed,
@@ -40,12 +47,6 @@ import {
 import { labels } from '../translations/labels.js';
 import { logErrorFunctions } from '../translations/logs.js';
 import { LINK_REGEX } from '../utils/regex.js';
-import { InfoMessageType } from '@prisma/client';
-import {
-  type ChatInputCommandInteraction,
-  codeBlock,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'manage';
 
@@ -285,36 +286,31 @@ const handleManageQuestionSet = async (
   const keyword = interaction.options.getString('question', true);
   const answer = interaction.options
     .getString('answer', true)
-    .replaceAll('\\n', '\n');
-  const links = interaction.options.getString('links');
+    .replaceAll(String.raw`\n`, '\n');
+  const links = interaction.options.getString('links') ?? '{}';
   const question = await getQuestion(keyword);
-  let parsedLinks;
 
-  if (links !== null) {
-    try {
-      parsedLinks = LinksSchema.parse(JSON.parse(links));
-    } catch {
-      await interaction.editReply(commandErrors.invalidLinks);
+  const { data: parsedLinks, error: parseError } = LinksSchema.safeParse(
+    JSON.parse(links),
+  );
 
-      return;
-    }
+  if (parseError !== undefined) {
+    await interaction.editReply(commandErrors.invalidLinks);
+
+    return;
   }
 
   if (question === null) {
     const newQuestion = {
       content: answer,
-      ...(links !== null && {
-        links: {
-          createMany: {
-            data: Object.entries(parsedLinks as Record<string, string>).map(
-              ([linkName, linkUrl]) => ({
-                name: linkName,
-                url: linkUrl,
-              }),
-            ),
-          },
+      links: {
+        createMany: {
+          data: Object.entries(parsedLinks).map(([linkName, linkUrl]) => ({
+            name: linkName,
+            url: linkUrl,
+          })),
         },
-      }),
+      },
       name: keyword,
       userId: interaction.user.id,
     };
@@ -328,7 +324,7 @@ const handleManageQuestionSet = async (
     }
 
     try {
-      const questionEmbed = await getQuestionEmbed(createdQuestion);
+      const questionEmbed = getQuestionEmbed(createdQuestion);
       const questionComponents = getQuestionComponents(createdQuestion);
       await interaction.editReply({
         components: questionComponents,
@@ -345,27 +341,14 @@ const handleManageQuestionSet = async (
   question.content = answer;
   await updateQuestion(question);
 
-  if (links !== null) {
-    try {
-      LinksSchema.parse(JSON.parse(links));
-    } catch (error) {
-      logger.error(logErrorFunctions.linksParseError(error));
-      await interaction.editReply(commandErrors.invalidLinks);
-
-      return;
-    }
-
-    await deleteQuestionLinksByQuestionId(question.id);
-    await createQuestionLinks(
-      Object.entries(parsedLinks as Record<string, string>).map(
-        ([linkName, linkUrl]) => ({
-          name: linkName,
-          questionId: question.id,
-          url: linkUrl,
-        }),
-      ),
-    );
-  }
+  await deleteQuestionLinksByQuestionId(question.id);
+  await createQuestionLinks(
+    Object.entries(parsedLinks).map(([linkName, linkUrl]) => ({
+      name: linkName,
+      questionId: question.id,
+      url: linkUrl,
+    })),
+  );
 
   const updatedQuestion = await getQuestion(keyword);
 
@@ -376,7 +359,7 @@ const handleManageQuestionSet = async (
   }
 
   try {
-    const embed = await getQuestionEmbed(updatedQuestion);
+    const embed = getQuestionEmbed(updatedQuestion);
     const components = getQuestionComponents(updatedQuestion);
     await interaction.editReply({
       components,
@@ -417,29 +400,26 @@ const handleManageQuestionContent = async (
   }
 
   await interaction.editReply(
-    'Име:' +
-      codeBlock(question.name) +
-      '\nОдговор:' +
-      codeBlock(question.content.replaceAll('\n', '\\n')) +
-      '\nЛинкови:' +
-      codeBlock(
-        JSON.stringify(
-          question.links
-            .map(({ name: linkName, url }) => ({
-              [linkName]: url,
-            }))
-            // eslint-disable-next-line unicorn/no-array-reduce
-            .reduce<Record<string, string>>(
-              (accumulator, currentValue) => ({
-                ...accumulator,
-                ...currentValue,
-              }),
-              {},
-            ),
-          null,
-          2,
-        ),
+    `Име:${codeBlock(question.name)}\nОдговор:${codeBlock(
+      question.content.replaceAll('\n', String.raw`\n`),
+    )}\nЛинкови:${codeBlock(
+      JSON.stringify(
+        question.links
+          .map(({ name: linkName, url }) => ({
+            [linkName]: url,
+          }))
+          // eslint-disable-next-line unicorn/no-array-reduce
+          .reduce<Record<string, string>>(
+            (accumulator, currentValue) => ({
+              ...accumulator,
+              ...currentValue,
+            }),
+            {},
+          ),
+        null,
+        2,
       ),
+    )}`,
   );
 };
 
@@ -449,7 +429,7 @@ const handleManageLinkSet = async (
   const keyword = interaction.options.getString('link', true);
   const description = interaction.options
     .getString('description')
-    ?.replaceAll('\\n', '\n');
+    ?.replaceAll(String.raw`\n`, '\n');
   const url = interaction.options.getString('url', true);
   const link = await getLink(keyword);
 
@@ -475,7 +455,7 @@ const handleManageLinkSet = async (
     }
 
     try {
-      const linkEmbed = await getLinkEmbed(createdLink);
+      const linkEmbed = getLinkEmbed(createdLink);
       const linkComponents = getLinkComponents(createdLink);
       await interaction.editReply({
         components: linkComponents,
@@ -505,7 +485,7 @@ const handleManageLinkSet = async (
   }
 
   try {
-    const embed = await getLinkEmbed(updatedLink);
+    const embed = getLinkEmbed(updatedLink);
     const components = getLinkComponents(updatedLink);
     await interaction.editReply({
       components,
@@ -546,12 +526,9 @@ const handleManageLinkContent = async (
   }
 
   await interaction.editReply(
-    'Име:' +
-      codeBlock(link.name) +
-      '\nОпис:' +
-      codeBlock(link.description?.replaceAll('\n', '\\n') ?? labels.none) +
-      '\nЛинк:' +
-      codeBlock(link.url),
+    `Име:${codeBlock(link.name)}\nОпис:${codeBlock(
+      link.description?.replaceAll('\n', String.raw`\n`) ?? labels.none,
+    )}\nЛинк:${codeBlock(link.url)}`,
   );
 };
 
@@ -654,18 +631,16 @@ const handleManageInfoMessageGet = async (
     return;
   }
 
-  if (infoMessage.type === InfoMessageType.IMAGE) {
-    await interaction.editReply({
-      files: [infoMessage.content],
-    });
-  } else if (infoMessage.type === InfoMessageType.TEXT) {
-    await interaction.editReply({
-      allowedMentions: {
-        parse: [],
-      },
-      content: infoMessage.content.replaceAll('\\n', '\n'),
-    });
-  }
+  await (infoMessage.type === InfoMessageType.IMAGE
+    ? interaction.editReply({
+        files: [infoMessage.content],
+      })
+    : interaction.editReply({
+        allowedMentions: {
+          parse: [],
+        },
+        content: infoMessage.content.replaceAll(String.raw`\n`, '\n'),
+      }));
 };
 
 const handleMangeInfoMessageSet = async (
@@ -675,7 +650,7 @@ const handleMangeInfoMessageSet = async (
   const type = interaction.options.getString('type', true);
   const content = interaction.options
     .getString('content', true)
-    .replaceAll('\\n', '\n');
+    .replaceAll(String.raw`\n`, '\n');
   const infoMessage = await getInfoMessage(index);
 
   if (infoMessage === null) {

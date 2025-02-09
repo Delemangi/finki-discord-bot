@@ -1,4 +1,11 @@
 import {
+  type ChatInputCommandInteraction,
+  type GuildMember,
+  roleMention,
+  SlashCommandBuilder,
+} from 'discord.js';
+
+import {
   getChannelsProperty,
   getRolesProperty,
 } from '../configuration/main.js';
@@ -19,12 +26,6 @@ import {
   isMemberLevel,
 } from '../utils/members.js';
 import { createPoll, isPollDuplicate } from '../utils/polls/main.js';
-import {
-  type ChatInputCommandInteraction,
-  type GuildMember,
-  roleMention,
-  SlashCommandBuilder,
-} from 'discord.js';
 
 const name = 'council';
 
@@ -82,7 +83,7 @@ const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
 
   const user = interaction.options.getUser('user', true);
   const notify = interaction.options.getBoolean('notify') ?? true;
-  const councilChannelId = await getChannelsProperty(Channel.Council);
+  const councilChannelId = getChannelsProperty(Channel.Council);
 
   if (interaction.channelId !== councilChannelId) {
     await interaction.editReply({
@@ -133,7 +134,7 @@ const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
   }
 
   const poll = createPoll(PollType.COUNCIL_ADD, user);
-  const councilRoleId = await getRolesProperty(Role.Council);
+  const councilRoleId = getRolesProperty(Role.Council);
 
   if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
@@ -155,7 +156,7 @@ const handleCouncilRemove = async (
 
   const user = interaction.options.getUser('user', true);
   const notify = interaction.options.getBoolean('notify') ?? true;
-  const councilChannelId = await getChannelsProperty(Channel.Council);
+  const councilChannelId = getChannelsProperty(Channel.Council);
 
   if (interaction.channelId !== councilChannelId) {
     await interaction.editReply({
@@ -194,7 +195,7 @@ const handleCouncilRemove = async (
   }
 
   const poll = createPoll(PollType.COUNCIL_REMOVE, user);
-  const councilRoleId = await getRolesProperty(Role.Council);
+  const councilRoleId = getRolesProperty(Role.Council);
 
   if (notify && councilRoleId !== undefined) {
     await interaction.channel.send(roleMention(councilRoleId));
@@ -208,19 +209,19 @@ const handleCouncilToggle = async (
 ) => {
   const member = interaction.member as GuildMember | null;
 
-  if (member === null || !isMemberInVip(member)) {
+  if (member === null || !(await isMemberInVip(member))) {
     await interaction.editReply(commandErrors.userNotVipMember);
 
     return;
   }
 
-  if (!isMemberLevel(member, COUNCIL_LEVEL, true)) {
+  if (!(await isMemberLevel(member, COUNCIL_LEVEL, true))) {
     await interaction.editReply(commandErrors.userNotCouncilMember);
 
     return;
   }
 
-  const councilRoleId = await getRolesProperty(Role.Council);
+  const councilRoleId = getRolesProperty(Role.Council);
 
   if (councilRoleId === undefined) {
     await interaction.editReply(commandErrors.invalidRole);

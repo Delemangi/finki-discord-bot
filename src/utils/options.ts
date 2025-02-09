@@ -1,4 +1,3 @@
-/* eslint-disable id-length */
 const transformations = {
   а: ['a'],
   А: ['A'],
@@ -67,11 +66,7 @@ const transformations = {
 const transform = (word: string) => {
   let suffixes: string[] = [];
 
-  if (word.length === 1) {
-    suffixes = [''];
-  } else {
-    suffixes = transform(word.slice(1));
-  }
+  suffixes = word.length === 1 ? [''] : transform(word.slice(1));
 
   const transformed: string[] = [];
 

@@ -1,7 +1,8 @@
+import { type Experience, type Prisma } from '@prisma/client';
+
 import { logger } from '../logger.js';
 import { databaseErrorFunctions } from '../translations/database.js';
 import { database } from './database.js';
-import { type Experience, type Prisma } from '@prisma/client';
 
 export const createExperience = async (
   experience?: Prisma.ExperienceCreateInput,
@@ -49,7 +50,7 @@ export const getExperienceCount = async () => {
   }
 };
 
-export const getExperienceSorted = async (limit: number = 512) => {
+export const getExperienceSorted = async (limit = 512) => {
   try {
     return await database.experience.findMany({
       orderBy: {
@@ -85,7 +86,7 @@ export const updateExperience = async (experience?: Experience) => {
 
 export const addExperienceByUserId = async (
   userId?: string,
-  experience: number = 0,
+  experience = 0,
 ) => {
   if (userId === undefined) {
     return null;
@@ -115,7 +116,7 @@ export const addExperienceByUserId = async (
   }
 };
 
-export const addLevelByUserId = async (userId?: string, level: number = 1) => {
+export const addLevelByUserId = async (userId?: string, level = 1) => {
   if (userId === undefined) {
     return null;
   }
