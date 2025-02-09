@@ -110,6 +110,7 @@ export const handleChatInputCommand = async (
   try {
     await command.execute(interaction);
   } catch (error) {
+    await interaction.editReply(commandErrors.commandError);
     logger.error(
       logErrorFunctions.chatInputInteractionError(interaction, error),
     );
