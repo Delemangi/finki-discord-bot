@@ -104,7 +104,7 @@ export const logErrorFunctions = {
     interaction: ChatInputCommandInteraction,
     error: unknown,
   ) =>
-    `Failed executing chat input command command ${inlineCode(interaction.commandName)}\n${error}`,
+    `Failed executing chat input command ${inlineCode(interaction.commandName)}\n${error}`,
 
   chatInputInteractionDeferError: (
     interaction: ChatInputCommandInteraction,
