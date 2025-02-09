@@ -3,6 +3,7 @@ import {
   ChannelType,
   type GuildMember,
   type GuildMemberRoleManager,
+  MessageFlags,
   roleMention,
 } from 'discord.js';
 
@@ -104,7 +105,7 @@ export const handleCourseButton = async (
         parse: [],
       },
       content: commandResponseFunctions.courseAddedOrRemoved(role.id, removed),
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     void deleteResponse(mess);
   } catch (error) {
@@ -164,7 +165,7 @@ export const handleYearButton = async (
         parse: [],
       },
       content: commandResponseFunctions.yearAddedOrRemoved(role.id, removed),
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     void deleteResponse(mess);
   } catch (error) {
@@ -224,7 +225,7 @@ export const handleProgramButton = async (
         parse: [],
       },
       content: commandResponseFunctions.programAddedOrRemoved(role.id, removed),
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     void deleteResponse(mess);
   } catch (error) {
@@ -286,7 +287,7 @@ export const handleNotificationButton = async (
         role.id,
         removed,
       ),
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     void deleteResponse(mess);
   } catch (error) {
@@ -346,7 +347,7 @@ export const handleColorButton = async (
         parse: [],
       },
       content: commandResponseFunctions.colorAddedOrRemoved(role.id, removed),
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     void deleteResponse(mess);
   } catch (error) {
@@ -460,7 +461,7 @@ export const handleVipButton = async (
     ) {
       const resp = await interaction.reply({
         content: commandErrors.oathNoPermission,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       void deleteResponse(resp);
 
@@ -480,7 +481,7 @@ export const handleVipButton = async (
     ) {
       const resp = await interaction.reply({
         content: commandErrors.oathNoPermission,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       void deleteResponse(resp);
 
@@ -508,7 +509,7 @@ export const handleVipButton = async (
 
     const message = await interaction.reply({
       content: specialStringFunctions.vipWelcome(interaction.user.id),
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     void deleteResponse(message);
 
@@ -520,7 +521,7 @@ export const handleVipButton = async (
   if (!getConfigProperty('oathEnabled')) {
     const message = await interaction.reply({
       content: specialStrings.requestsPaused,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     void deleteResponse(message);
 
@@ -530,7 +531,7 @@ export const handleVipButton = async (
   if (isMemberInVip(member)) {
     await interaction.reply({
       content: commandErrors.alreadyVipMember,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
     return;
@@ -539,7 +540,7 @@ export const handleVipButton = async (
   if (await isMemberBarred(interaction.user.id)) {
     await interaction.reply({
       content: specialStrings.requestRejected,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
     return;
@@ -548,7 +549,7 @@ export const handleVipButton = async (
   if (!(await isMemberLevel(member, VIP_LEVEL, true))) {
     const message = await interaction.reply({
       content: specialStrings.specialRequestUnderLevel,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     void deleteResponse(message);
 
@@ -563,7 +564,7 @@ export const handleVipButton = async (
   if (isDuplicate) {
     const message = await interaction.reply({
       content: specialStrings.requestActive,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     void deleteResponse(message);
 
@@ -581,7 +582,7 @@ export const handleVipButton = async (
 
   await interaction.reply({
     content: specialStrings.requestSent,
-    ephemeral: true,
+    flags: MessageFlags.Ephemeral,
   });
 };
 
@@ -594,7 +595,7 @@ export const handleIrregularsButton = async (
   if (isMemberInIrregulars(member)) {
     await interaction.reply({
       content: commandErrors.alreadyIrregular,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
     return;
@@ -603,7 +604,7 @@ export const handleIrregularsButton = async (
   if (await isMemberBarred(interaction.user.id)) {
     await interaction.reply({
       content: specialStrings.requestRejected,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
     return;
@@ -612,7 +613,7 @@ export const handleIrregularsButton = async (
   if (!isMemberInRegulars(member)) {
     await interaction.reply({
       content: specialStrings.requestRejected,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
     return;
@@ -628,7 +629,7 @@ export const handleIrregularsButton = async (
     ) {
       const resp = await interaction.reply({
         content: commandErrors.oathNoPermission,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       void deleteResponse(resp);
 
@@ -648,7 +649,7 @@ export const handleIrregularsButton = async (
     ) {
       const resp = await interaction.reply({
         content: commandErrors.oathNoPermission,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       void deleteResponse(resp);
 
@@ -671,7 +672,7 @@ export const handleIrregularsButton = async (
 
     const message = await interaction.reply({
       content: specialStringFunctions.irregularsWelcome(interaction.user.id),
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     void deleteResponse(message);
 
@@ -683,7 +684,7 @@ export const handleIrregularsButton = async (
   if (!getConfigProperty('oathEnabled')) {
     const message = await interaction.reply({
       content: specialStrings.requestsPaused,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     void deleteResponse(message);
 
@@ -693,7 +694,7 @@ export const handleIrregularsButton = async (
   if (!(await isMemberLevel(member, IRREGULARS_LEVEL, true))) {
     const message = await interaction.reply({
       content: specialStrings.specialRequestUnderLevel,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     void deleteResponse(message);
 
@@ -708,7 +709,7 @@ export const handleIrregularsButton = async (
   if (isDuplicate) {
     const message = await interaction.reply({
       content: specialStrings.requestActive,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
     void deleteResponse(message);
 
@@ -726,7 +727,7 @@ export const handleIrregularsButton = async (
 
   await interaction.reply({
     content: specialStrings.requestSent,
-    ephemeral: true,
+    flags: MessageFlags.Ephemeral,
   });
 };
 
@@ -739,7 +740,7 @@ export const handleReminderDeleteButton = async (
   if (reminderId === undefined || authorId === undefined) {
     await interaction.reply({
       content: commandErrors.commandError,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
     return;
@@ -750,7 +751,7 @@ export const handleReminderDeleteButton = async (
   if (authorId !== interaction.user.id) {
     await interaction.reply({
       content: commandErrors.reminderNoPermission,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
     return;
@@ -775,7 +776,7 @@ export const handleReminderDeleteButton = async (
 
   await interaction.reply({
     content: commandResponses.reminderDeleted,
-    ephemeral: true,
+    flags: MessageFlags.Ephemeral,
   });
 
   const reminders = await getRemindersByUserId(interaction.user.id);
@@ -797,14 +798,14 @@ export const handleTicketCreateButton = async (
   if (!enabled) {
     await interaction.reply({
       content: commandErrors.ticketingDisabled,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
   }
 
   if (ticketType === undefined) {
     await interaction.reply({
       content: commandErrors.invalidTicketType,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
     return;
@@ -815,7 +816,7 @@ export const handleTicketCreateButton = async (
   if (ticketMetadata === undefined) {
     await interaction.reply({
       content: commandErrors.invalidTicketType,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
     return;
@@ -839,7 +840,7 @@ export const handleTicketCreateButton = async (
   ) {
     await interaction.reply({
       content: commandErrors.invalidChannel,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
     return;
@@ -848,7 +849,7 @@ export const handleTicketCreateButton = async (
   if (ticketMetadata.roles.length === 0) {
     await interaction.reply({
       content: commandErrors.noTicketMembers,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
     return;
@@ -862,7 +863,7 @@ export const handleTicketCreateButton = async (
   if (ticketRoleMembers.length === 0) {
     await interaction.reply({
       content: commandErrors.noTicketMembers,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
     return;

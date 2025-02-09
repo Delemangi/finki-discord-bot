@@ -1,6 +1,7 @@
 import {
   type ChatInputCommandInteraction,
   ComponentType,
+  MessageFlags,
   SlashCommandBuilder,
 } from 'discord.js';
 
@@ -69,7 +70,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     ) {
       const mess = await buttonInteraction.reply({
         content: commandErrors.buttonNoPermission,
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       void deleteResponse(mess);
 

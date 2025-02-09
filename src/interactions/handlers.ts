@@ -3,6 +3,7 @@ import {
   type ButtonInteraction,
   type ChatInputCommandInteraction,
   type MessageContextMenuCommandInteraction,
+  MessageFlags,
   type UserContextMenuCommandInteraction,
 } from 'discord.js';
 
@@ -316,7 +317,7 @@ export const handleButton = async (interaction: ButtonInteraction) => {
   if (ephemeralResponseButtons.has(command)) {
     try {
       const mess = await interaction.deferReply({
-        ephemeral: true,
+        flags: MessageFlags.Ephemeral,
       });
       void deleteResponse(mess, 10_000);
     } catch (error) {
@@ -339,7 +340,7 @@ export const handleButton = async (interaction: ButtonInteraction) => {
   } catch {
     await interaction.reply({
       content: commandErrors.commandError,
-      ephemeral: true,
+      flags: MessageFlags.Ephemeral,
     });
 
     const logsChannel = getChannel(Channel.Logs);
