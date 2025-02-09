@@ -17,7 +17,7 @@ import { Channel } from '../lib/schemas/Channel.js';
 import { logger } from '../logger.js';
 import { commandErrors } from '../translations/commands.js';
 import { logErrorFunctions, logShortStrings } from '../translations/logs.js';
-import { deleteResponse, logEmbed } from '../utils/channels.js';
+import { deleteResponse, getChannel, logEmbed } from '../utils/channels.js';
 import {
   getCommand,
   isContextMenuCommand,
@@ -111,6 +111,15 @@ export const handleChatInputCommand = async (
     await command.execute(interaction);
   } catch (error) {
     await interaction.editReply(commandErrors.commandError);
+
+    const logsChannel = getChannel(Channel.Logs);
+    await logsChannel?.send({
+      content: logErrorFunctions.chatInputCommandExecutionError(
+        interaction,
+        error,
+      ),
+    });
+
     logger.error(
       logErrorFunctions.chatInputInteractionError(interaction, error),
     );
@@ -174,6 +183,16 @@ export const handleUserContextMenuCommand = async (
   try {
     await command.execute(interaction);
   } catch (error) {
+    await interaction.editReply(commandErrors.commandError);
+
+    const logsChannel = getChannel(Channel.Logs);
+    await logsChannel?.send({
+      content: logErrorFunctions.contextMenuCommandExecutionError(
+        interaction,
+        error,
+      ),
+    });
+
     logger.error(
       logErrorFunctions.userContextMenuInteractionError(interaction, error),
     );
@@ -237,6 +256,16 @@ export const handleMessageContextMenuCommand = async (
   try {
     await command.execute(interaction);
   } catch (error) {
+    await interaction.editReply(commandErrors.commandError);
+
+    const logsChannel = getChannel(Channel.Logs);
+    await logsChannel?.send({
+      content: logErrorFunctions.contextMenuCommandExecutionError(
+        interaction,
+        error,
+      ),
+    });
+
     logger.error(
       logErrorFunctions.messageContextMenuInteractionError(interaction, error),
     );
@@ -297,14 +326,26 @@ export const handleButton = async (interaction: ButtonInteraction) => {
     }
   }
 
-  if (Object.keys(buttonInteractionHandlers).includes(command)) {
-    await buttonInteractionHandlers[
-      command as keyof typeof buttonInteractionHandlers
-    ](interaction, args);
-  } else if (ignoredButtons.has(command)) {
-    // Do nothing
-  } else {
-    logger.warn(logErrorFunctions.commandNotFound(interaction.id));
+  try {
+    if (Object.keys(buttonInteractionHandlers).includes(command)) {
+      await buttonInteractionHandlers[
+        command as keyof typeof buttonInteractionHandlers
+      ](interaction, args);
+    } else if (ignoredButtons.has(command)) {
+      // Do nothing
+    } else {
+      logger.warn(logErrorFunctions.commandNotFound(interaction.id));
+    }
+  } catch {
+    await interaction.reply({
+      content: commandErrors.commandError,
+      ephemeral: true,
+    });
+
+    const logsChannel = getChannel(Channel.Logs);
+    await logsChannel?.send({
+      content: logErrorFunctions.buttonExecutionError(interaction, command),
+    });
   }
 };
 
@@ -334,11 +375,20 @@ export const handleAutocomplete = async (
   );
   await logEmbed(getAutocompleteEmbed(interaction), interaction, Channel.Logs);
 
-  if (Object.keys(autocompleteInteractionHandlers).includes(option.name)) {
-    await autocompleteInteractionHandlers[
-      option.name as keyof typeof autocompleteInteractionHandlers
-    ](interaction);
-  } else {
-    logger.warn(logErrorFunctions.commandNotFound(interaction.id));
+  try {
+    if (Object.keys(autocompleteInteractionHandlers).includes(option.name)) {
+      await autocompleteInteractionHandlers[
+        option.name as keyof typeof autocompleteInteractionHandlers
+      ](interaction);
+    } else {
+      logger.warn(logErrorFunctions.commandNotFound(interaction.id));
+    }
+  } catch (error) {
+    await interaction.respond([]);
+
+    const logsChannel = getChannel(Channel.Logs);
+    await logsChannel?.send({
+      content: logErrorFunctions.autocompleteExecutionError(interaction, error),
+    });
   }
 };

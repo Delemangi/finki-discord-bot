@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 
 import {
+  type AutocompleteInteraction,
   type ButtonInteraction,
   type ChatInputCommandInteraction,
   inlineCode,
@@ -67,8 +68,17 @@ export const logErrorFunctions = {
 
   antosParseError: (error: unknown) => `Failed parsing Anto facts\n${error}`,
 
+  autocompleteExecutionError: (
+    interaction: AutocompleteInteraction,
+    error: unknown,
+  ) =>
+    `Failed executing autocomplete interaction ${interaction.options.getFocused(true).name}\n${error}`,
+
   autocompleteResponseError: (userTag: string, error: unknown) =>
     `Failed responding to autocomplete interaction by ${userTag}\n${error}`,
+
+  buttonExecutionError: (interaction: ButtonInteraction, error: unknown) =>
+    `Failed executing button interaction ${interaction.customId}\n${error}`,
 
   buttonInteractionDeferError: (
     interaction: ButtonInteraction,
@@ -89,6 +99,12 @@ export const logErrorFunctions = {
 
   channelFetchError: (channelId: string, error: unknown) =>
     `Failed fetching channel ${channelId}\n${error}`,
+
+  chatInputCommandExecutionError: (
+    interaction: ChatInputCommandInteraction,
+    error: unknown,
+  ) =>
+    `Failed executing chat input command command ${inlineCode(interaction.commandName)}\n${error}`,
 
   chatInputInteractionDeferError: (
     interaction: ChatInputCommandInteraction,
@@ -121,6 +137,14 @@ export const logErrorFunctions = {
   companyDeleteError: (error: unknown) => `Failed deleting company\n${error}`,
 
   configSetError: (error: unknown) => `Failed setting config\n${error}`,
+
+  contextMenuCommandExecutionError: (
+    interaction:
+      | MessageContextMenuCommandInteraction
+      | UserContextMenuCommandInteraction,
+    error: unknown,
+  ) =>
+    `Failed executing context menu command ${inlineCode(interaction.commandName)}\n${error}`,
 
   crosspostError: (channelId: string, error: unknown) =>
     `Failed crossposting message in channel ${channelId}\n${error}`,
