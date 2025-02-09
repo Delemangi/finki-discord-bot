@@ -231,3 +231,15 @@ export const logErrorFunctions = {
 
 export const bootMessage = (dateString: string) =>
   `Bot successfully started at ${inlineCode(dateString)}`;
+
+export const exitMessages = {
+  beforeExit: 'Exiting...',
+  databaseConnectionClosed: 'Database connection closed.',
+  goodbye: 'Goodbye.',
+  shutdownGracefully: 'Shutting down gracefully...',
+};
+
+export const exitMessageFunctions = {
+  databaseConnectionError: (error: unknown) =>
+    `Error during shutdown\n${error}`,
+};
