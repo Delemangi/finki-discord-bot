@@ -1,4 +1,4 @@
-import { closest } from 'fastest-levenshtein';
+import Fuse from 'fuse.js';
 
 import {
   getNthQuestion,
@@ -25,10 +25,23 @@ export const getClosestQuestion = async (question: number | string) => {
     questions.map(({ name }) => name),
   );
 
-  const closestLatinQuestion = closest(
-    question,
-    Object.keys(transformedQuestionNames),
-  );
+  const fuse = new Fuse(Object.keys(transformedQuestionNames), {
+    includeScore: true,
+    threshold: 0.4,
+  });
+
+  const result = fuse.search(question);
+
+  if (result.length === 0) {
+    return null;
+  }
+
+  const closestLatinQuestion = result[0]?.item;
+
+  if (closestLatinQuestion === undefined) {
+    return null;
+  }
+
   const closestQuestion = transformedQuestionNames[closestLatinQuestion];
 
   return await getQuestion(closestQuestion);
