@@ -36,7 +36,7 @@ import { labels } from '../translations/labels.js';
 import { paginationStringFunctions } from '../translations/pagination.js';
 import { commandMention } from '../utils/commands.js';
 import { getUsername } from '../utils/members.js';
-import { linkProfessors } from './utils.js';
+import { linkStaff } from './utils.js';
 
 export const getAboutEmbed = () =>
   new EmbedBuilder()
@@ -103,12 +103,12 @@ export const getCourseProfessorsEmbed = (information: CourseStaff) =>
       {
         inline: true,
         name: labels.professors,
-        value: linkProfessors(information.professors),
+        value: linkStaff(information.professors),
       },
       {
         inline: true,
         name: labels.assistants,
-        value: linkProfessors(information.assistants),
+        value: linkStaff(information.assistants),
       },
     )
     .setTimestamp();
@@ -203,7 +203,7 @@ export const getCourseSummaryEmbed = (course: string) => {
         value:
           professors === undefined
             ? labels.unknown
-            : linkProfessors(professors.professors),
+            : linkStaff(professors.professors),
       },
       {
         inline: true,
@@ -211,7 +211,7 @@ export const getCourseSummaryEmbed = (course: string) => {
         value:
           professors === undefined
             ? labels.unknown
-            : linkProfessors(professors.assistants),
+            : linkStaff(professors.assistants),
       },
     ),
     new EmbedBuilder()

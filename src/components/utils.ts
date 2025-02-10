@@ -116,21 +116,29 @@ export const getButtonInfo = (
   }
 };
 
-export const linkProfessors = (professors: string) => {
+export const linkStaff = (professors: string) => {
   if (professors === '') {
     return labels.none;
   }
 
-  return professors
+  const allStaff = professors
     .split('\n')
     .map((professor) => [
       professor,
       getStaff().find((staff) => professor.includes(staff.name))?.finki,
-    ])
+    ]);
+
+  const linkedStaff = allStaff
     .map(([professor, finki]) =>
       finki ? `[${professor}](${finki})` : professor,
     )
     .join('\n');
+
+  if (linkedStaff.length < 1_000) {
+    return linkedStaff;
+  }
+
+  return allStaff.map(([professor]) => professor).join('\n');
 };
 
 export const fetchMessageUrl = async (
