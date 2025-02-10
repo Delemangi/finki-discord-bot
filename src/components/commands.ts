@@ -99,6 +99,7 @@ export const getCourseProfessorsEmbed = (information: CourseStaff) =>
   new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(information.course)
+    .setDescription(embedMessages.courseStaffInfo)
     .addFields(
       {
         inline: true,
@@ -131,6 +132,7 @@ export const getCourseInfoEmbed = (information: CourseInformation) =>
   new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(information.course)
+    .setDescription(embedMessages.courseInfo)
     .addFields(
       {
         inline: true,
@@ -169,51 +171,57 @@ export const getCourseSummaryEmbed = (course: string) => {
       .setColor(getThemeColor())
       .setTitle(course)
       .setDescription(embedMessages.courseSummaryInfo),
-    new EmbedBuilder().setColor(getThemeColor()).addFields(
-      {
-        name: labels.prerequisites,
-        value:
-          prerequisite === undefined || prerequisite.prerequisite === ''
-            ? labels.none
-            : prerequisite.prerequisite,
-      },
-      {
-        inline: true,
-        name: labels.accreditation,
-        value:
-          info === undefined
-            ? labels.unknown
-            : `[${labels.link}](${info.link})`,
-      },
-      {
-        inline: true,
-        name: labels.code === '' ? labels.unknown : labels.code,
-        value: info === undefined ? labels.unknown : info.code,
-      },
-      {
-        inline: true,
-        name: labels.level === '' ? labels.unknown : labels.level,
-        value: info === undefined ? labels.unknown : info.level.toString(),
-      },
-    ),
-    new EmbedBuilder().setColor(getThemeColor()).addFields(
-      {
-        inline: true,
-        name: labels.professors,
-        value:
-          professors === undefined
-            ? labels.unknown
-            : linkStaff(professors.professors),
-      },
-      {
-        inline: true,
-        name: labels.assistants,
-        value:
-          professors === undefined
-            ? labels.unknown
-            : linkStaff(professors.assistants),
-      },
-    ),
+    new EmbedBuilder()
+      .setColor(getThemeColor())
+      .setDescription(embedMessages.courseInfo)
+      .addFields(
+        {
+          name: labels.prerequisites,
+          value:
+            prerequisite === undefined || prerequisite.prerequisite === ''
+              ? labels.none
+              : prerequisite.prerequisite,
+        },
+        {
+          inline: true,
+          name: labels.accreditation,
+          value:
+            info === undefined
+              ? labels.unknown
+              : `[${labels.link}](${info.link})`,
+        },
+        {
+          inline: true,
+          name: labels.code === '' ? labels.unknown : labels.code,
+          value: info === undefined ? labels.unknown : info.code,
+        },
+        {
+          inline: true,
+          name: labels.level === '' ? labels.unknown : labels.level,
+          value: info === undefined ? labels.unknown : info.level.toString(),
+        },
+      ),
+    new EmbedBuilder()
+      .setColor(getThemeColor())
+      .setDescription(embedMessages.courseStaffInfo)
+      .addFields(
+        {
+          inline: true,
+          name: labels.professors,
+          value:
+            professors === undefined
+              ? labels.unknown
+              : linkStaff(professors.professors),
+        },
+        {
+          inline: true,
+          name: labels.assistants,
+          value:
+            professors === undefined
+              ? labels.unknown
+              : linkStaff(professors.assistants),
+        },
+      ),
     new EmbedBuilder()
       .setColor(getThemeColor())
       .setDescription(embedMessages.courseParticipantsInfo)
