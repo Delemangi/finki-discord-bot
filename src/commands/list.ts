@@ -1,7 +1,6 @@
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-  userMention,
 } from 'discord.js';
 
 import {
@@ -13,6 +12,7 @@ import { getQuestions } from '../data/Question.js';
 import {
   commandDescriptions,
   commandErrors,
+  commandResponseFunctions,
 } from '../translations/commands.js';
 
 const name = 'list';
@@ -54,7 +54,7 @@ const handleListQuestions = async (
 
   const embed = getListQuestionsEmbed(questions);
   await interaction.editReply({
-    content: user ? userMention(user.id) : null,
+    content: user ? commandResponseFunctions.commandFor(user.id) : null,
     embeds: [embed],
   });
 };
@@ -74,7 +74,7 @@ const handleListLinks = async (interaction: ChatInputCommandInteraction) => {
 
   const embed = getListLinksEmbed(links);
   await interaction.editReply({
-    content: user ? userMention(user.id) : null,
+    content: user ? commandResponseFunctions.commandFor(user.id) : null,
     embeds: [embed],
   });
 };

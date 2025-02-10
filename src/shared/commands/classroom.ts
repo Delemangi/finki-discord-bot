@@ -1,7 +1,6 @@
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-  userMention,
 } from 'discord.js';
 
 import { getClassroomEmbed } from '../../components/commands.js';
@@ -10,6 +9,7 @@ import { type Command } from '../../lib/types/Command.js';
 import {
   commandDescriptions,
   commandErrors,
+  commandResponseFunctions,
 } from '../../translations/commands.js';
 
 export const getCommonCommand = (
@@ -51,7 +51,7 @@ export const getCommonCommand = (
 
     const embeds = classrooms.map((cl) => getClassroomEmbed(cl));
     await interaction.editReply({
-      content: user ? userMention(user.id) : null,
+      content: user ? commandResponseFunctions.commandFor(user.id) : null,
       embeds,
     });
   },

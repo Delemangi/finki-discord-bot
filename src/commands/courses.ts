@@ -2,7 +2,6 @@ import {
   type ChatInputCommandInteraction,
   type GuildMember,
   SlashCommandBuilder,
-  userMention,
 } from 'discord.js';
 
 import { getCoursesPrerequisiteEmbed } from '../components/commands.js';
@@ -70,7 +69,7 @@ const handleCoursesPrerequisite = async (
 
   const embed = getCoursesPrerequisiteEmbed(course);
   await interaction.editReply({
-    content: user ? userMention(user.id) : null,
+    content: user ? commandResponseFunctions.commandFor(user.id) : null,
     embeds: [embed],
   });
 };

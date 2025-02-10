@@ -3,6 +3,7 @@ import {
   codeBlock,
   type GuildPremiumTier,
   inlineCode,
+  italic,
   roleMention,
   userMention,
 } from 'discord.js';
@@ -169,6 +170,8 @@ export const commandResponses = {
 export const commandResponseFunctions = {
   colorAddedOrRemoved: (roleId: string, added: boolean) =>
     `Ја ${added ? 'земавте' : 'отстранивте'} бојата ${roleMention(roleId)}.`,
+
+  commandFor: (userId: string) => italic(`за ${userMention(userId)}`),
 
   courseAdded: (roleId: string) =>
     `Го земавте предметот ${roleMention(roleId)}. ${bold(

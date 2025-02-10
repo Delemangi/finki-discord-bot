@@ -1,7 +1,6 @@
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-  userMention,
 } from 'discord.js';
 import { access } from 'node:fs/promises';
 
@@ -9,6 +8,7 @@ import { getSessions } from '../configuration/files.js';
 import {
   commandDescriptions,
   commandErrors,
+  commandResponseFunctions,
 } from '../translations/commands.js';
 
 const name = 'session';
@@ -52,7 +52,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   }
 
   await interaction.editReply({
-    content: user ? userMention(user.id) : null,
+    content: user ? commandResponseFunctions.commandFor(user.id) : null,
     files: [path],
   });
 };

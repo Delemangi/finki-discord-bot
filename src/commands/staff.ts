@@ -1,7 +1,6 @@
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-  userMention,
 } from 'discord.js';
 
 import { getStaffEmbed } from '../components/commands.js';
@@ -9,6 +8,7 @@ import { getStaff } from '../configuration/files.js';
 import {
   commandDescriptions,
   commandErrors,
+  commandResponseFunctions,
 } from '../translations/commands.js';
 
 const name = 'staff';
@@ -43,7 +43,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   const embed = getStaffEmbed(information);
   await interaction.editReply({
-    content: user ? userMention(user.id) : null,
+    content: user ? commandResponseFunctions.commandFor(user.id) : null,
     embeds: [embed],
   });
 };

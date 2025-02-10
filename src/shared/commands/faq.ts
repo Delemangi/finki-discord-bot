@@ -1,7 +1,6 @@
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
-  userMention,
 } from 'discord.js';
 
 import {
@@ -12,6 +11,7 @@ import { getNthQuestion, getQuestion } from '../../data/Question.js';
 import {
   commandDescriptions,
   commandErrors,
+  commandResponseFunctions,
 } from '../../translations/commands.js';
 
 export const getCommonCommand = (name: keyof typeof commandDescriptions) => ({
@@ -47,7 +47,7 @@ export const getCommonCommand = (name: keyof typeof commandDescriptions) => ({
     const components = getQuestionComponents(question);
     await interaction.editReply({
       components,
-      content: user ? userMention(user.id) : null,
+      content: user ? commandResponseFunctions.commandFor(user.id) : null,
       embeds: [embed],
     });
   },

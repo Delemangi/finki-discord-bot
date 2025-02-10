@@ -3,7 +3,6 @@ import {
   type GuildMember,
   roleMention,
   SlashCommandBuilder,
-  userMention,
 } from 'discord.js';
 
 import {
@@ -153,7 +152,7 @@ const handleCourseParticipants = async (
 
   const embed = getCourseParticipantsEmbed(information);
   await interaction.editReply({
-    content: user ? userMention(user.id) : null,
+    content: user ? commandResponseFunctions.commandFor(user.id) : null,
     embeds: [embed],
   });
 };
@@ -176,7 +175,7 @@ const handleCourseProfessors = async (
 
   const embed = getCourseProfessorsEmbed(information);
   await interaction.editReply({
-    content: user ? userMention(user.id) : null,
+    content: user ? commandResponseFunctions.commandFor(user.id) : null,
     embeds: [embed],
   });
 };
@@ -242,7 +241,7 @@ const handleCoursePrerequisite = async (
 
   const embed = getCoursePrerequisiteEmbed(information);
   await interaction.editReply({
-    content: user ? userMention(user.id) : null,
+    content: user ? commandResponseFunctions.commandFor(user.id) : null,
     embeds: [embed],
   });
 };
@@ -265,7 +264,7 @@ const handleCourseInfo = async (
 
   const embed = getCourseInfoEmbed(information);
   await interaction.editReply({
-    content: user ? userMention(user.id) : null,
+    content: user ? commandResponseFunctions.commandFor(user.id) : null,
     embeds: [embed],
   });
 };
@@ -284,7 +283,7 @@ const handleCourseSummary = async (
 
   const embeds = getCourseSummaryEmbed(course);
   await interaction.editReply({
-    content: user ? userMention(user.id) : null,
+    content: user ? commandResponseFunctions.commandFor(user.id) : null,
     embeds,
   });
 };
