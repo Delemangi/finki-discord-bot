@@ -11,6 +11,7 @@ import {
   commandErrors,
   commandResponseFunctions,
 } from '../../translations/commands.js';
+import { getClosestClassroom } from '../../utils/search.js';
 
 export const getCommonCommand = (
   name: keyof typeof commandDescriptions,
@@ -33,9 +34,13 @@ export const getCommonCommand = (
     const classroom = interaction.options.getString('classroom', true);
     const user = interaction.options.getUser('user');
 
-    const charPos = classroom.indexOf('(');
+    const closestClassroom = getClosestClassroom(classroom) ?? classroom;
+
+    const charPos = closestClassroom.indexOf('(');
     const classroomName =
-      charPos === -1 ? classroom : classroom.slice(0, charPos).trim();
+      charPos === -1
+        ? closestClassroom
+        : closestClassroom.slice(0, charPos).trim();
     const classrooms = getClassrooms().filter(
       (cl) =>
         cl.classroom.toString().toLowerCase() === classroomName.toLowerCase(),

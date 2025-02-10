@@ -10,6 +10,7 @@ import {
   commandErrors,
   commandResponseFunctions,
 } from '../translations/commands.js';
+import { getClosestStaff } from '../utils/search.js';
 
 const name = 'staff';
 
@@ -31,8 +32,10 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const professor = interaction.options.getString('professor', true);
   const user = interaction.options.getUser('user');
 
+  const closestStaff = getClosestStaff(professor);
+
   const information = getStaff().find(
-    (staff) => staff.name.toLowerCase() === professor.toLowerCase(),
+    (staff) => staff.name.toLowerCase() === closestStaff?.toLowerCase(),
   );
 
   if (information === undefined) {

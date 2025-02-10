@@ -4,12 +4,12 @@ import {
 } from 'discord.js';
 
 import { getLinkComponents, getLinkEmbed } from '../components/commands.js';
-import { getLink, getNthLink } from '../data/Link.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
 } from '../translations/commands.js';
+import { getClosestLink } from '../utils/search.js';
 
 const name = 'link';
 
@@ -31,9 +31,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const keyword = interaction.options.getString('link', true);
   const user = interaction.options.getUser('user');
 
-  const link = Number.isNaN(Number(keyword))
-    ? await getLink(keyword)
-    : await getNthLink(Number(keyword));
+  const link = await getClosestLink(keyword);
 
   if (link === null) {
     await interaction.editReply(commandErrors.linkNotFound);

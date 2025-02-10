@@ -27,6 +27,7 @@ import {
 } from '../translations/commands.js';
 import { getGuild } from '../utils/guild.js';
 import { getCourseRoleByCourseName } from '../utils/roles.js';
+import { getClosestCourse, getClosestCourseRole } from '../utils/search.js';
 
 const name = 'course';
 
@@ -350,12 +351,24 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const course = interaction.options.getString('course');
   const courseRole = interaction.options.getString('courserole');
 
+  const closestItem = course
+    ? getClosestCourse(course)
+    : courseRole
+      ? getClosestCourseRole(courseRole)
+      : null;
+
+  if (closestItem === null) {
+    await interaction.editReply(commandErrors.courseNotFound);
+
+    return;
+  }
+
   const subcommand = interaction.options.getSubcommand(true);
 
   if (subcommand in courseHandlers) {
     await courseHandlers[subcommand as keyof typeof courseHandlers](
       interaction,
-      course ?? courseRole,
+      closestItem,
     );
   }
 };

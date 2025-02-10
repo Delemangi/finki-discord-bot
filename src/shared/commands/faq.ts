@@ -12,7 +12,7 @@ import {
   commandErrors,
   commandResponseFunctions,
 } from '../../translations/commands.js';
-import { getClosestQuestion } from '../../utils/questions.js';
+import { getClosestQuestion } from '../../utils/search.js';
 
 export const getCommonCommand = (name: keyof typeof commandDescriptions) => ({
   data: new SlashCommandBuilder()

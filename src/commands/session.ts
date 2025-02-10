@@ -10,6 +10,7 @@ import {
   commandErrors,
   commandResponseFunctions,
 } from '../translations/commands.js';
+import { getClosestSession } from '../utils/search.js';
 
 const name = 'session';
 
@@ -31,8 +32,10 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const session = interaction.options.getString('session', true);
   const user = interaction.options.getUser('user');
 
+  const closestSession = getClosestSession(session);
+
   const information = Object.entries(getSessions()).find(
-    ([key]) => key.toLowerCase() === session.toLowerCase(),
+    ([key]) => key.toLowerCase() === closestSession?.toLowerCase(),
   );
 
   if (information === undefined) {

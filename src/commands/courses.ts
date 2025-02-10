@@ -13,6 +13,7 @@ import {
 } from '../translations/commands.js';
 import { getGuild } from '../utils/guild.js';
 import { getCourseRolesBySemester, getRoles } from '../utils/roles.js';
+import { getClosestCourse } from '../utils/search.js';
 
 const name = 'courses';
 
@@ -67,7 +68,9 @@ const handleCoursesPrerequisite = async (
   const course = interaction.options.getString('course', true);
   const user = interaction.options.getUser('user');
 
-  const embed = getCoursesPrerequisiteEmbed(course);
+  const closestCourse = getClosestCourse(course);
+
+  const embed = getCoursesPrerequisiteEmbed(closestCourse ?? course);
   await interaction.editReply({
     content: user ? commandResponseFunctions.commandFor(user.id) : null,
     embeds: [embed],
