@@ -207,11 +207,6 @@ export const commandResponseFunctions = {
 
   messageStarred: (messageUrl: string) => `Пораката ${messageUrl} е обележана!`,
 
-  multipleClassrooms: (classroom: string) =>
-    `${bold(
-      'НАПОМЕНА',
-    )}: Просторијата ${classroom} постои на повеќе факултети.`,
-
   notificationAddedOrRemoved: (roleId: string, added: boolean) =>
     `${added ? 'земавте' : 'отстранивте'} нотификации за ${roleMention(
       roleId,

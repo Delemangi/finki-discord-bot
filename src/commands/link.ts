@@ -1,6 +1,7 @@
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
+  userMention,
 } from 'discord.js';
 
 import { getLinkComponents, getLinkEmbed } from '../components/commands.js';
@@ -21,10 +22,15 @@ export const data = new SlashCommandBuilder()
       .setDescription('Линк')
       .setRequired(true)
       .setAutocomplete(true),
+  )
+  .addUserOption((option) =>
+    option.setName('user').setDescription('Корисник').setRequired(false),
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const keyword = interaction.options.getString('link', true);
+  const user = interaction.options.getUser('user');
+
   const link = Number.isNaN(Number(keyword))
     ? await getLink(keyword)
     : await getNthLink(Number(keyword));
@@ -39,6 +45,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   const components = getLinkComponents(link);
   await interaction.editReply({
     components,
+    content: user ? userMention(user.id) : null,
     embeds: [embed],
   });
 };

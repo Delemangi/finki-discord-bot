@@ -3,6 +3,7 @@ import {
   type GuildMember,
   roleMention,
   SlashCommandBuilder,
+  userMention,
 } from 'discord.js';
 
 import {
@@ -43,6 +44,9 @@ export const data = new SlashCommandBuilder()
           .setDescription('Предмет')
           .setRequired(true)
           .setAutocomplete(true),
+      )
+      .addUserOption((option) =>
+        option.setName('user').setDescription('Корисник').setRequired(false),
       ),
   )
   .addSubcommand((command) =>
@@ -55,6 +59,9 @@ export const data = new SlashCommandBuilder()
           .setDescription('Предмет')
           .setRequired(true)
           .setAutocomplete(true),
+      )
+      .addUserOption((option) =>
+        option.setName('user').setDescription('Корисник').setRequired(false),
       ),
   )
   .addSubcommand((command) =>
@@ -79,6 +86,9 @@ export const data = new SlashCommandBuilder()
           .setDescription('Предмет')
           .setRequired(true)
           .setAutocomplete(true),
+      )
+      .addUserOption((option) =>
+        option.setName('user').setDescription('Корисник').setRequired(false),
       ),
   )
   .addSubcommand((command) =>
@@ -91,6 +101,9 @@ export const data = new SlashCommandBuilder()
           .setDescription('Предмет')
           .setRequired(true)
           .setAutocomplete(true),
+      )
+      .addUserOption((option) =>
+        option.setName('user').setDescription('Корисник').setRequired(false),
       ),
   )
   .addSubcommand((command) =>
@@ -103,6 +116,9 @@ export const data = new SlashCommandBuilder()
           .setDescription('Предмет')
           .setRequired(true)
           .setAutocomplete(true),
+      )
+      .addUserOption((option) =>
+        option.setName('user').setDescription('Корисник').setRequired(false),
       ),
   )
   .addSubcommand((command) =>
@@ -122,6 +138,8 @@ const handleCourseParticipants = async (
   interaction: ChatInputCommandInteraction,
   course: null | string,
 ) => {
+  const user = interaction.options.getUser('user');
+
   const information = getParticipants().find(
     (participants) =>
       participants.course.toLowerCase() === course?.toLowerCase(),
@@ -135,6 +153,7 @@ const handleCourseParticipants = async (
 
   const embed = getCourseParticipantsEmbed(information);
   await interaction.editReply({
+    content: user ? userMention(user.id) : null,
     embeds: [embed],
   });
 };
@@ -143,6 +162,8 @@ const handleCourseProfessors = async (
   interaction: ChatInputCommandInteraction,
   course: null | string,
 ) => {
+  const user = interaction.options.getUser('user');
+
   const information = getProfessors().find(
     (staff) => staff.course.toLowerCase() === course?.toLowerCase(),
   );
@@ -155,6 +176,7 @@ const handleCourseProfessors = async (
 
   const embed = getCourseProfessorsEmbed(information);
   await interaction.editReply({
+    content: user ? userMention(user.id) : null,
     embeds: [embed],
   });
 };
@@ -205,6 +227,8 @@ const handleCoursePrerequisite = async (
   interaction: ChatInputCommandInteraction,
   course: null | string,
 ) => {
+  const user = interaction.options.getUser('user');
+
   const information = getPrerequisites().find(
     (prerequisites) =>
       prerequisites.course.toLowerCase() === course?.toLowerCase(),
@@ -218,6 +242,7 @@ const handleCoursePrerequisite = async (
 
   const embed = getCoursePrerequisiteEmbed(information);
   await interaction.editReply({
+    content: user ? userMention(user.id) : null,
     embeds: [embed],
   });
 };
@@ -226,6 +251,8 @@ const handleCourseInfo = async (
   interaction: ChatInputCommandInteraction,
   course: null | string,
 ) => {
+  const user = interaction.options.getUser('user');
+
   const information = getInformation().find(
     (info) => info.course.toLowerCase() === course?.toLowerCase(),
   );
@@ -238,6 +265,7 @@ const handleCourseInfo = async (
 
   const embed = getCourseInfoEmbed(information);
   await interaction.editReply({
+    content: user ? userMention(user.id) : null,
     embeds: [embed],
   });
 };
@@ -246,6 +274,8 @@ const handleCourseSummary = async (
   interaction: ChatInputCommandInteraction,
   course: null | string,
 ) => {
+  const user = interaction.options.getUser('user');
+
   if (course === null || !getCourses().includes(course)) {
     await interaction.editReply(commandErrors.courseNotFound);
 
@@ -254,6 +284,7 @@ const handleCourseSummary = async (
 
   const embeds = getCourseSummaryEmbed(course);
   await interaction.editReply({
+    content: user ? userMention(user.id) : null,
     embeds,
   });
 };

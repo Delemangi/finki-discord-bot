@@ -1,6 +1,7 @@
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
+  userMention,
 } from 'discord.js';
 
 import { getStaffEmbed } from '../components/commands.js';
@@ -21,10 +22,15 @@ export const data = new SlashCommandBuilder()
       .setDescription('Професор')
       .setRequired(true)
       .setAutocomplete(true),
+  )
+  .addUserOption((option) =>
+    option.setName('user').setDescription('Корисник').setRequired(false),
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const professor = interaction.options.getString('professor', true);
+  const user = interaction.options.getUser('user');
+
   const information = getStaff().find(
     (staff) => staff.name.toLowerCase() === professor.toLowerCase(),
   );
@@ -37,6 +43,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
 
   const embed = getStaffEmbed(information);
   await interaction.editReply({
+    content: user ? userMention(user.id) : null,
     embeds: [embed],
   });
 };

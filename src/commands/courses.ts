@@ -2,6 +2,7 @@ import {
   type ChatInputCommandInteraction,
   type GuildMember,
   SlashCommandBuilder,
+  userMention,
 } from 'discord.js';
 
 import { getCoursesPrerequisiteEmbed } from '../components/commands.js';
@@ -29,6 +30,9 @@ export const data = new SlashCommandBuilder()
           .setDescription('Курс')
           .setRequired(true)
           .setAutocomplete(true),
+      )
+      .addUserOption((option) =>
+        option.setName('user').setDescription('Корисник').setRequired(false),
       ),
   )
   .addSubcommand((command) =>
@@ -62,9 +66,11 @@ const handleCoursesPrerequisite = async (
   interaction: ChatInputCommandInteraction,
 ) => {
   const course = interaction.options.getString('course', true);
+  const user = interaction.options.getUser('user');
 
   const embed = getCoursesPrerequisiteEmbed(course);
   await interaction.editReply({
+    content: user ? userMention(user.id) : null,
     embeds: [embed],
   });
 };

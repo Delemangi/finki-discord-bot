@@ -1,6 +1,7 @@
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
+  userMention,
 } from 'discord.js';
 import { access } from 'node:fs/promises';
 
@@ -21,10 +22,15 @@ export const data = new SlashCommandBuilder()
       .setDescription('Сесија')
       .setRequired(true)
       .setAutocomplete(true),
+  )
+  .addUserOption((option) =>
+    option.setName('user').setDescription('Корисник').setRequired(false),
   );
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const session = interaction.options.getString('session', true);
+  const user = interaction.options.getUser('user');
+
   const information = Object.entries(getSessions()).find(
     ([key]) => key.toLowerCase() === session.toLowerCase(),
   );
@@ -46,7 +52,7 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   }
 
   await interaction.editReply({
-    content: information[0],
+    content: user ? userMention(user.id) : null,
     files: [path],
   });
 };

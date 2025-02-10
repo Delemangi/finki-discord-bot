@@ -1,6 +1,7 @@
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
+  userMention,
 } from 'discord.js';
 
 import {
@@ -23,10 +24,15 @@ export const getCommonCommand = (name: keyof typeof commandDescriptions) => ({
         .setDescription('Прашање')
         .setRequired(true)
         .setAutocomplete(true),
+    )
+    .addUserOption((option) =>
+      option.setName('user').setDescription('Корисник').setRequired(false),
     ),
 
   execute: async (interaction: ChatInputCommandInteraction) => {
     const keyword = interaction.options.getString('question', true);
+    const user = interaction.options.getUser('user');
+
     const question = Number.isNaN(Number(keyword))
       ? await getQuestion(keyword)
       : await getNthQuestion(Number(keyword));
@@ -41,6 +47,7 @@ export const getCommonCommand = (name: keyof typeof commandDescriptions) => ({
     const components = getQuestionComponents(question);
     await interaction.editReply({
       components,
+      content: user ? userMention(user.id) : null,
       embeds: [embed],
     });
   },

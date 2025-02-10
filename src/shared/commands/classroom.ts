@@ -1,6 +1,7 @@
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
+  userMention,
 } from 'discord.js';
 
 import { getClassroomEmbed } from '../../components/commands.js';
@@ -9,7 +10,6 @@ import { type Command } from '../../lib/types/Command.js';
 import {
   commandDescriptions,
   commandErrors,
-  commandResponseFunctions,
 } from '../../translations/commands.js';
 
 export const getCommonCommand = (
@@ -24,10 +24,15 @@ export const getCommonCommand = (
         .setDescription('Просторија')
         .setRequired(true)
         .setAutocomplete(true),
+    )
+    .addUserOption((option) =>
+      option.setName('user').setDescription('Корисник').setRequired(false),
     ),
 
   execute: async (interaction: ChatInputCommandInteraction) => {
     const classroom = interaction.options.getString('classroom', true);
+    const user = interaction.options.getUser('user');
+
     const charPos = classroom.indexOf('(');
     const classroomName =
       charPos === -1 ? classroom : classroom.slice(0, charPos).trim();
@@ -46,12 +51,8 @@ export const getCommonCommand = (
 
     const embeds = classrooms.map((cl) => getClassroomEmbed(cl));
     await interaction.editReply({
+      content: user ? userMention(user.id) : null,
       embeds,
-      ...(embeds.length > 1
-        ? {
-            content: commandResponseFunctions.multipleClassrooms(classroomName),
-          }
-        : {}),
     });
   },
 });

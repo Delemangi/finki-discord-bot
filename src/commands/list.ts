@@ -1,6 +1,7 @@
 import {
   type ChatInputCommandInteraction,
   SlashCommandBuilder,
+  userMention,
 } from 'discord.js';
 
 import {
@@ -22,15 +23,25 @@ export const data = new SlashCommandBuilder()
   .addSubcommand((command) =>
     command
       .setName('questions')
-      .setDescription(commandDescriptions['list questions']),
+      .setDescription(commandDescriptions['list questions'])
+      .addUserOption((option) =>
+        option.setName('user').setDescription('Корисник').setRequired(false),
+      ),
   )
   .addSubcommand((command) =>
-    command.setName('links').setDescription(commandDescriptions['list links']),
+    command
+      .setName('links')
+      .setDescription(commandDescriptions['list links'])
+      .addUserOption((option) =>
+        option.setName('user').setDescription('Корисник').setRequired(false),
+      ),
   );
 
 const handleListQuestions = async (
   interaction: ChatInputCommandInteraction,
 ) => {
+  const user = interaction.options.getUser('user');
+
   const questions = await getQuestions();
 
   if (questions === null) {
@@ -43,11 +54,14 @@ const handleListQuestions = async (
 
   const embed = getListQuestionsEmbed(questions);
   await interaction.editReply({
+    content: user ? userMention(user.id) : null,
     embeds: [embed],
   });
 };
 
 const handleListLinks = async (interaction: ChatInputCommandInteraction) => {
+  const user = interaction.options.getUser('user');
+
   const links = await getLinks();
 
   if (links === null) {
@@ -60,6 +74,7 @@ const handleListLinks = async (interaction: ChatInputCommandInteraction) => {
 
   const embed = getListLinksEmbed(links);
   await interaction.editReply({
+    content: user ? userMention(user.id) : null,
     embeds: [embed],
   });
 };
