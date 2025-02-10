@@ -7,12 +7,12 @@ import {
   getQuestionComponents,
   getQuestionEmbed,
 } from '../../components/commands.js';
-import { getNthQuestion, getQuestion } from '../../data/Question.js';
 import {
   commandDescriptions,
   commandErrors,
   commandResponseFunctions,
 } from '../../translations/commands.js';
+import { getClosestQuestion } from '../../utils/questions.js';
 
 export const getCommonCommand = (name: keyof typeof commandDescriptions) => ({
   data: new SlashCommandBuilder()
@@ -33,9 +33,7 @@ export const getCommonCommand = (name: keyof typeof commandDescriptions) => ({
     const keyword = interaction.options.getString('question', true);
     const user = interaction.options.getUser('user');
 
-    const question = Number.isNaN(Number(keyword))
-      ? await getQuestion(keyword)
-      : await getNthQuestion(Number(keyword));
+    const question = await getClosestQuestion(keyword);
 
     if (question === null) {
       await interaction.editReply(commandErrors.faqNotFound);
