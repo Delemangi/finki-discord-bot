@@ -19,6 +19,7 @@ import {
 import {
   commandDescriptions,
   commandErrorFunctions,
+  commandErrors,
 } from '../translations/commands.js';
 import { createCommandChoices } from '../utils/commands.js';
 
@@ -89,9 +90,9 @@ const handleConfigSet = async (interaction: ChatInputCommandInteraction) => {
 
   try {
     jsonValue = JSON.parse(rawValue);
-  } catch {
+  } catch (error) {
     await interaction.editReply(
-      commandErrorFunctions.invalidConfiguration(rawValue),
+      commandErrorFunctions.invalidConfiguration(error),
     );
 
     return;
@@ -101,18 +102,25 @@ const handleConfigSet = async (interaction: ChatInputCommandInteraction) => {
 
   if (!parsedValue.success) {
     await interaction.editReply(
-      commandErrorFunctions.invalidConfiguration(rawValue),
+      commandErrorFunctions.invalidConfiguration(parsedValue.error),
     );
 
     return;
   }
 
   const rawNewConfig = await setConfigProperty(key, parsedValue.data);
+
+  if (rawNewConfig === null) {
+    await interaction.editReply(commandErrors.configurationSavingFailed);
+
+    return;
+  }
+
   const newConfig = BotConfigSchema.safeParse(rawNewConfig);
 
   if (!newConfig.success) {
     await interaction.editReply(
-      commandErrorFunctions.invalidConfiguration(rawValue),
+      commandErrorFunctions.invalidConfiguration(newConfig.error),
     );
 
     return;
