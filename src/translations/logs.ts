@@ -243,6 +243,9 @@ export const exitMessageFunctions = {
   databaseConnectionError: (error: unknown) =>
     `Error during shutdown\n${error}`,
 
+  shutdownWithError: (error: string) =>
+    `Bot has been shut down with error ${error}`,
+
   uncaughtException: (error: unknown) => `Uncaught exception\n${error}`,
 
   unhandledRejection: (error: unknown) => `Unhandled rejection\n${error}`,
