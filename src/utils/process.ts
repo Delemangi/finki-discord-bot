@@ -41,18 +41,6 @@ export const attachProcessListeners = () => {
 
   process.on('SIGTERM', shutdown);
 
-  process.on('uncaughtException', (error, origin) => {
-    logger.error(exitMessageFunctions.uncaughtException(error));
-    logger.error(origin);
-    void shutdown(1);
-  });
-
-  process.on('unhandledRejection', (error, promise) => {
-    logger.error(exitMessageFunctions.unhandledRejection(error));
-    logger.error(promise);
-    void shutdown(1);
-  });
-
   process.on('warning', (warning) => {
     logger.warn(warning);
   });
