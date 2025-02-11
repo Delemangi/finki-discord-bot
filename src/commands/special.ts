@@ -26,7 +26,7 @@ import { createCommandChoices } from '../utils/commands.js';
 import { getGuild, getMemberFromGuild } from '../utils/guild.js';
 import { isMemberAdmin, isMemberBarred } from '../utils/members.js';
 import { safeReplyToInteraction } from '../utils/messages.js';
-import { POLL_TYPES } from '../utils/polls/constants.js';
+import { POLL_OPTIONS } from '../utils/polls/constants.js';
 import {
   createPoll,
   decidePollForcefully,
@@ -65,7 +65,7 @@ export const data = new SlashCommandBuilder()
           .setName('decision')
           .setDescription('Одлука')
           .setRequired(true)
-          .addChoices(...createCommandChoices(POLL_TYPES)),
+          .addChoices(...createCommandChoices(POLL_OPTIONS)),
       ),
   )
   .addSubcommand((command) =>
