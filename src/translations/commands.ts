@@ -292,6 +292,7 @@ export const commandErrors = {
   companiesCreationFailed: 'Креирањето на компаниите беше неуспешно.',
   companyCreationFailed: 'Креирањето на компанијата беше неуспешно.',
   companyNotFound: 'Компанијата не постои.',
+  configurationSavingFailed: 'Зачувувањето на конфигурацијата беше неуспешно.',
   courseNotFound: 'Предметот не постои.',
   dataFetchFailed: 'Преземањето на податоците беше неуспешно.',
   embedSendError: 'Креирањето на ембедот беше неуспешно.',
@@ -366,7 +367,8 @@ export const commandErrors = {
 };
 
 export const commandErrorFunctions = {
-  invalidConfiguration: (error: string) =>
+  invalidConfiguration: (error: unknown) =>
+    // @ts-expect-error error is unknown
     `Дадената конфигурација не е валидна: ${codeBlock('json', error)}`,
 
   pollNoVotePermission: (roleIds: string[]) =>
