@@ -111,7 +111,9 @@ export const handleChatInputCommand = async (
   try {
     await command.execute(interaction);
   } catch (error) {
-    await interaction.editReply(commandErrors.commandError);
+    logger.error(
+      logErrorFunctions.chatInputInteractionError(interaction, error),
+    );
 
     const logsChannel = getChannel(Channel.Logs);
     await logsChannel?.send({
@@ -121,9 +123,7 @@ export const handleChatInputCommand = async (
       ),
     });
 
-    logger.error(
-      logErrorFunctions.chatInputInteractionError(interaction, error),
-    );
+    await interaction.editReply(commandErrors.commandError);
   }
 };
 
@@ -184,7 +184,9 @@ export const handleUserContextMenuCommand = async (
   try {
     await command.execute(interaction);
   } catch (error) {
-    await interaction.editReply(commandErrors.commandError);
+    logger.error(
+      logErrorFunctions.userContextMenuInteractionError(interaction, error),
+    );
 
     const logsChannel = getChannel(Channel.Logs);
     await logsChannel?.send({
@@ -194,9 +196,7 @@ export const handleUserContextMenuCommand = async (
       ),
     });
 
-    logger.error(
-      logErrorFunctions.userContextMenuInteractionError(interaction, error),
-    );
+    await interaction.editReply(commandErrors.commandError);
   }
 };
 
@@ -257,7 +257,9 @@ export const handleMessageContextMenuCommand = async (
   try {
     await command.execute(interaction);
   } catch (error) {
-    await interaction.editReply(commandErrors.commandError);
+    logger.error(
+      logErrorFunctions.messageContextMenuInteractionError(interaction, error),
+    );
 
     const logsChannel = getChannel(Channel.Logs);
     await logsChannel?.send({
@@ -267,9 +269,7 @@ export const handleMessageContextMenuCommand = async (
       ),
     });
 
-    logger.error(
-      logErrorFunctions.messageContextMenuInteractionError(interaction, error),
-    );
+    await interaction.editReply(commandErrors.commandError);
   }
 };
 
@@ -338,14 +338,16 @@ export const handleButton = async (interaction: ButtonInteraction) => {
       logger.warn(logErrorFunctions.commandNotFound(interaction.id));
     }
   } catch {
-    await interaction.reply({
-      content: commandErrors.commandError,
-      flags: MessageFlags.Ephemeral,
-    });
+    logger.error(logErrorFunctions.buttonExecutionError(interaction, command));
 
     const logsChannel = getChannel(Channel.Logs);
     await logsChannel?.send({
       content: logErrorFunctions.buttonExecutionError(interaction, command),
+    });
+
+    await interaction.reply({
+      content: commandErrors.commandError,
+      flags: MessageFlags.Ephemeral,
     });
   }
 };
@@ -385,6 +387,10 @@ export const handleAutocomplete = async (
       logger.warn(logErrorFunctions.commandNotFound(interaction.id));
     }
   } catch (error) {
+    logger.error(
+      logErrorFunctions.autocompleteExecutionError(interaction, error),
+    );
+
     await interaction.respond([]);
 
     const logsChannel = getChannel(Channel.Logs);
