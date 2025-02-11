@@ -242,4 +242,8 @@ export const exitMessages = {
 export const exitMessageFunctions = {
   databaseConnectionError: (error: unknown) =>
     `Error during shutdown\n${error}`,
+
+  uncaughtException: (error: unknown) => `Uncaught exception\n${error}`,
+
+  unhandledRejection: (error: unknown) => `Unhandled rejection\n${error}`,
 };
