@@ -15,6 +15,7 @@ import { Role } from '../lib/schemas/Role.js';
 import {
   commandDescriptions,
   commandErrors,
+  commandResponseFunctions,
   commandResponses,
 } from '../translations/commands.js';
 import { labels } from '../translations/labels.js';
@@ -28,6 +29,7 @@ import { safeReplyToInteraction } from '../utils/messages.js';
 import { POLL_TYPES } from '../utils/polls/constants.js';
 import {
   createPoll,
+  decidePollForcefully,
   getActivePolls,
   getMissingVoters,
   getPollInformation,
@@ -69,7 +71,7 @@ export const data = new SlashCommandBuilder()
         option
           .setName('decision')
           .setDescription('Одлука')
-          .setRequired(false)
+          .setRequired(true)
           .addChoices(...createCommandChoices(POLL_TYPES)),
       ),
   )
@@ -148,53 +150,27 @@ const handleSpecialDelete = async (
 const handleSpecialOverride = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  // TODO: Implement this handler
-  // const user = interaction.options.getUser('user', true);
-  // const type = interaction.options.getString('type', true);
-  // const decision = interaction.options.getString('decision');
+  const pollId = interaction.options.getString('poll', true);
+  const decision = interaction.options.getString('decision', true);
+  const channel = getChannel(Channel.Council);
 
-  // const specialPoll = await getSpecialPollByUserAndType(user.id, type);
-  // const poll = await getPollById(specialPoll?.pollId);
+  if (channel === undefined) {
+    await interaction.editReply(commandErrors.invalidChannel);
 
-  // if (specialPoll === null || poll === null) {
-  //   await interaction.editReply(commandErrors.pollNotFound);
+    return;
+  }
 
-  //   return;
-  // }
+  const message = await channel.messages.fetch(pollId);
 
-  // if (decision === null) {
-  //   await abstainAllMissingVotes(poll.id);
-  //   await decidePoll(poll.id);
-  // } else {
-  //   poll.decision = decision;
-  //   poll.done = true;
+  if (message.poll === null) {
+    await interaction.editReply(commandErrors.pollNotFound);
 
-  //   await updatePoll(poll);
-  // }
+    return;
+  }
 
-  // const member = await getMemberFromGuild(specialPoll.userId, interaction);
+  await decidePollForcefully(message.poll, decision);
 
-  // if (member === null) {
-  //   await interaction.editReply(commandErrors.userNotMember);
-
-  //   return;
-  // }
-
-  // const newPoll = await getPollById(poll.id);
-
-  // if (newPoll === null) {
-  //   await interaction.editReply(commandErrors.pollNotFound);
-
-  //   return;
-  // }
-
-  // await handlePollButtonForSpecialVote(newPoll, member);
-
-  // await interaction.editReply(
-  //   commandResponseFunctions.pollOverriden(newPoll.decision ?? labels.unknown),
-  // );
-
-  await interaction.editReply(commandErrors.notImplemented);
+  await interaction.editReply(commandResponseFunctions.pollOverriden(decision));
 };
 
 const handleSpecialRemaining = async (
