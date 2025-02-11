@@ -57,15 +57,8 @@ export const data = new SlashCommandBuilder()
     command
       .setName('override')
       .setDescription(commandDescriptions['special override'])
-      .addUserOption((option) =>
-        option.setName('user').setDescription('Корисник').setRequired(true),
-      )
       .addStringOption((option) =>
-        option
-          .setName('type')
-          .setDescription('Тип на анкета')
-          .setRequired(true)
-          .addChoices(...createCommandChoices(POLL_TYPES)),
+        option.setName('poll').setDescription('Анкета').setRequired(true),
       )
       .addStringOption((option) =>
         option
