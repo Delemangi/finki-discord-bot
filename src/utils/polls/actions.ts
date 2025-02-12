@@ -421,8 +421,8 @@ export const POLL_ACTIONS: Record<
 } as const;
 
 export const executePollAction = async (poll: Poll, decision: string) => {
-  await poll.message.fetch();
-  const { pollType, userId } = getPollInformation(poll.message.content);
+  const { content } = await poll.message.fetch();
+  const { pollType, userId } = getPollInformation(content);
 
   if (pollType === null || userId === null) {
     logger.warn(
