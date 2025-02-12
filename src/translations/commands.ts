@@ -102,15 +102,14 @@ export const commandDescriptions = {
   'script programs': 'Испрати ембед за избирање смерови',
   'script register': 'Регистрирај команди',
   'script rules': 'Испрати ги правилата на серверот',
-  'script special': 'Испрати ембед за барања за специјални анкети',
+  'script special': 'Испрати ембед за барања за анкети',
   'script years': 'Испрати ембед за избирање години',
   session: 'Преземи распоред за испитна сесија или колоквиумска недела',
   'special bar': 'Предложи забрана на член',
-  'special delete': 'Избриши специјална анкета',
-  'special list': 'Прикажи листа од сите специјални анкети',
-  'special override': 'Спроведи специјална анкета',
-  'special remaining':
-    'Прикажи листа од членови кои не гласале на специјална анкета',
+  'special delete': 'Избриши анкета',
+  'special list': 'Прикажи листа од сите анкети',
+  'special override': 'Спроведи анкета',
+  'special remaining': 'Прикажи листа од членови кои не гласале на анкета',
   'special unbar': 'Предложи укинување на забрана на корисник',
   staff: 'Преземи информации за професор',
   'statistics color': 'Прикажи статистика за улогите за бои',
@@ -156,6 +155,7 @@ export const commandResponses = {
   pollOpen: 'Анкетата е отворена за гласање.',
   pollOptionsAdded: 'Опциите се додадени.',
   pollOptionsDeleted: 'Опциите се избришани.',
+  pollOverridden: 'Спроведовте анкета.',
   reminderDeleted: 'Го избришавте потсетникот.',
   ruleCreated: 'Креиравте правило.',
   ruleDeleted: 'Го избришавте правилото.',
@@ -220,7 +220,7 @@ export const commandResponseFunctions = {
   pollEdited: (edits: string) => `Ја изменивте анкетата (${edits}).`,
 
   pollOverriden: (decision: string) =>
-    `Спроведовте специјална анкета со одлука ${inlineCode(decision)}.`,
+    `Спроведовте анкета со одлука ${inlineCode(decision)}.`,
 
   pollStats: (pollTitle: string) =>
     `Преглед на гласовите за анкетата ${inlineCode(pollTitle)}`,
@@ -343,7 +343,7 @@ export const commandErrors = {
   scriptNotExecuted: 'Скриптата не е извршена.',
   serverOnlyCommand: 'Командата се повикува само во серверот.',
   sessionNotFound: 'Сесијата не постои.',
-  specialPollsFetchFailed: 'Преземањето на специјалните анкети беше неуспешно.',
+  specialPollsFetchFailed: 'Преземањето на анкетите беше неуспешно.',
   staffNotFound: 'Професорот не постои.',
   ticketingDisabled: 'Тикетите не се овозможени.',
   unsupportedChannelType: 'Типот на каналот не е поддржан.',
