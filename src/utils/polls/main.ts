@@ -225,7 +225,7 @@ const getPollThreshold = async (
   roleId: string,
   abstainMissingVotes: boolean,
 ) => {
-  const guild = await getGuild();
+  const guild = poll.message.guild ?? (await getGuild());
   const { pollType } = getPollInformation(poll.message.content);
 
   if (guild === null || pollType === null) {
@@ -259,7 +259,7 @@ const getPollThreshold = async (
 };
 
 export const getAdminVotes = async (poll: Poll) => {
-  const guild = await getGuild();
+  const guild = poll.message.guild ?? (await getGuild());
 
   if (guild === null) {
     return null;
@@ -304,7 +304,7 @@ const getPollSpecialDecision = async (poll: Poll) => {
     return null;
   }
 
-  const member = await getMemberFromGuild(userId);
+  const member = await getMemberFromGuild(userId, poll.message.guild);
 
   if (member === null) {
     return null;

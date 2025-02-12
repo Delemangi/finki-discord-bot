@@ -93,7 +93,9 @@ const handleMembersVip = async (interaction: ChatInputCommandInteraction) => {
   );
   const vipMembers = (
     await Promise.all(
-      vipMemberIds.map(async (id) => await getMemberFromGuild(id, interaction)),
+      vipMemberIds.map(
+        async (id) => await getMemberFromGuild(id, interaction.guild),
+      ),
     )
   ).filter((member) => member !== null);
   const vipMembersFormatted = formatUsers(
@@ -108,7 +110,7 @@ const handleMembersVip = async (interaction: ChatInputCommandInteraction) => {
   const adminTeamMembers = (
     await Promise.all(
       adminTeamMemberIds.map(
-        async (id) => await getMemberFromGuild(id, interaction),
+        async (id) => await getMemberFromGuild(id, interaction.guild),
       ),
     )
   ).filter((member) => member !== null);
@@ -158,7 +160,7 @@ const handleMembersRegulars = async (
   const regularsMembers = (
     await Promise.all(
       regularsMembersIds.map(
-        async (id) => await getMemberFromGuild(id, interaction),
+        async (id) => await getMemberFromGuild(id, interaction.guild),
       ),
     )
   ).filter((member) => member !== null);
@@ -192,7 +194,7 @@ const handleMembersGirlies = async (
   const girliesMembers = (
     await Promise.all(
       girliesMemberIds.map(
-        async (id) => await getMemberFromGuild(id, interaction),
+        async (id) => await getMemberFromGuild(id, interaction.guild),
       ),
     )
   ).filter((member) => member !== null);
@@ -224,7 +226,7 @@ const handleMembersBoys = async (interaction: ChatInputCommandInteraction) => {
   const boysMembers = (
     await Promise.all(
       boysMemberIds.map(
-        async (id) => await getMemberFromGuild(id, interaction),
+        async (id) => await getMemberFromGuild(id, interaction.guild),
       ),
     )
   ).filter((member) => member !== null);
@@ -267,7 +269,7 @@ const handleMembersBarred = async (
     await Promise.all(
       bars
         .map(({ userId }) => userId)
-        .map(async (id) => await getMemberFromGuild(id, interaction)),
+        .map(async (id) => await getMemberFromGuild(id, interaction.guild)),
     )
   ).filter((member) => member !== null);
   const bannedMembersFormatted = formatUsers(
@@ -300,7 +302,7 @@ const handleMembersBoosters = async (
   const boosterMembers = (
     await Promise.all(
       boosterMemberIds.map(
-        async (id) => await getMemberFromGuild(id, interaction),
+        async (id) => await getMemberFromGuild(id, interaction.guild),
       ),
     )
   ).filter((member) => member !== null);
@@ -336,7 +338,7 @@ const handleMembersIrregulars = async (
   const irregularsMembers = (
     await Promise.all(
       irregularsMembersIds.map(
-        async (id) => await getMemberFromGuild(id, interaction),
+        async (id) => await getMemberFromGuild(id, interaction.guild),
       ),
     )
   ).filter((member) => member !== null);

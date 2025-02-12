@@ -34,7 +34,10 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const member = await getMemberFromGuild(interaction.user.id, interaction);
+  const member = await getMemberFromGuild(
+    interaction.user.id,
+    interaction.guild,
+  );
 
   if (member === null) {
     await interaction.editReply(commandErrors.commandNoPermission);

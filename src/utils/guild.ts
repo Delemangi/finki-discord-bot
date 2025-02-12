@@ -23,16 +23,16 @@ export const getGuild = async (interaction?: Interaction) => {
 
 export const getMemberFromGuild = async (
   userId: string,
-  interaction?: Interaction,
+  guild?: Guild | null,
 ) => {
-  const guild = await getGuild(interaction);
+  const chosenGuild = guild ?? (await getGuild());
 
-  if (guild === null) {
+  if (chosenGuild === null) {
     return null;
   }
 
   try {
-    return await guild.members.fetch(userId);
+    return await chosenGuild.members.fetch(userId);
   } catch {
     return null;
   }

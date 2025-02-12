@@ -101,7 +101,7 @@ const handleVipAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const member = await getMemberFromGuild(user.id, interaction);
+  const member = await getMemberFromGuild(user.id, interaction.guild);
 
   if (member === null) {
     await interaction.editReply(commandErrors.userNotMember);
@@ -166,7 +166,7 @@ const handleVipRemove = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const member = await getMemberFromGuild(user.id, interaction);
+  const member = await getMemberFromGuild(user.id, interaction.guild);
 
   if (member === null) {
     await interaction.editReply(commandErrors.userNotMember);

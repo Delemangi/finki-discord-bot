@@ -39,7 +39,7 @@ export const execute = async (
   );
   const member = await getMemberFromGuild(
     message?.author.id ?? '',
-    interaction,
+    interaction.guild,
   );
 
   if (member === null) {

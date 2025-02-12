@@ -99,7 +99,7 @@ const handleCouncilAdd = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const member = await getMemberFromGuild(user.id, interaction);
+  const member = await getMemberFromGuild(user.id, interaction.guild);
 
   if (member === null) {
     await interaction.editReply(commandErrors.userNotMember);
@@ -172,7 +172,7 @@ const handleCouncilRemove = async (
     return;
   }
 
-  const member = await getMemberFromGuild(user.id, interaction);
+  const member = await getMemberFromGuild(user.id, interaction.guild);
 
   if (member === null) {
     await interaction.editReply(commandErrors.userNotMember);

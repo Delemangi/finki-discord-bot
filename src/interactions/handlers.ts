@@ -90,7 +90,10 @@ export const handleChatInputCommand = async (
     return;
   }
 
-  const member = await getMemberFromGuild(interaction.user.id, interaction);
+  const member = await getMemberFromGuild(
+    interaction.user.id,
+    interaction.guild,
+  );
 
   if (member === null) {
     await interaction.editReply(commandErrors.commandNoPermission);
@@ -169,7 +172,10 @@ export const handleUserContextMenuCommand = async (
     return;
   }
 
-  const member = await getMemberFromGuild(interaction.user.id, interaction);
+  const member = await getMemberFromGuild(
+    interaction.user.id,
+    interaction.guild,
+  );
 
   if (member === null) {
     await interaction.editReply(commandErrors.commandNoPermission);
@@ -244,7 +250,10 @@ export const handleMessageContextMenuCommand = async (
     return;
   }
 
-  const member = await getMemberFromGuild(interaction.user.id, interaction);
+  const member = await getMemberFromGuild(
+    interaction.user.id,
+    interaction.guild,
+  );
 
   if (member === null) {
     await interaction.editReply(commandErrors.commandNoPermission);

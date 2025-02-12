@@ -23,7 +23,7 @@ export const data = new SlashCommandBuilder()
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser('user') ?? interaction.user;
-  const member = await getMemberFromGuild(user.id, interaction);
+  const member = await getMemberFromGuild(user.id, interaction.guild);
 
   if (member === null) {
     await interaction.editReply(commandErrors.userNotFound);

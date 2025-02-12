@@ -435,7 +435,7 @@ export const executePollAction = async (poll: Poll, decision: string) => {
     return;
   }
 
-  const member = await getMemberFromGuild(userId);
+  const member = await getMemberFromGuild(userId, poll.message.guild);
 
   if (member === null) {
     logger.warn(logErrorFunctions.memberNotFound(userId));

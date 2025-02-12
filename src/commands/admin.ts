@@ -76,7 +76,7 @@ const handleAdminAdd = async (interaction: ChatInputCommandInteraction) => {
 
   const user = interaction.options.getUser('user', true);
   const notify = interaction.options.getBoolean('notify') ?? true;
-  const member = await getMemberFromGuild(user.id, interaction);
+  const member = await getMemberFromGuild(user.id, interaction.guild);
   const councilChannelId = getChannelsProperty(Channel.Council);
 
   if (interaction.channelId !== councilChannelId) {
@@ -146,7 +146,7 @@ const handleAdminRemove = async (interaction: ChatInputCommandInteraction) => {
 
   const user = interaction.options.getUser('user', true);
   const notify = interaction.options.getBoolean('notify') ?? true;
-  const member = await getMemberFromGuild(user.id, interaction);
+  const member = await getMemberFromGuild(user.id, interaction.guild);
   const councilChannelId = getChannelsProperty(Channel.Council);
 
   if (interaction.channelId !== councilChannelId) {

@@ -53,7 +53,7 @@ export const data = new SlashCommandBuilder()
 
 const handleRegularsAdd = async (interaction: ChatInputCommandInteraction) => {
   const user = interaction.options.getUser('user', true);
-  const member = await getMemberFromGuild(user.id, interaction);
+  const member = await getMemberFromGuild(user.id, interaction.guild);
 
   const regularRole = getRolesProperty(Role.Regulars);
 
@@ -96,7 +96,7 @@ const handleRegularsRemove = async (
   interaction: ChatInputCommandInteraction,
 ) => {
   const user = interaction.options.getUser('user', true);
-  const member = await getMemberFromGuild(user.id, interaction);
+  const member = await getMemberFromGuild(user.id, interaction.guild);
 
   const regularRole = getRolesProperty(Role.Regulars);
 
