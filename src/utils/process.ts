@@ -4,11 +4,10 @@ import { PrismaClient } from '@prisma/client';
 
 import { Channel } from '../lib/schemas/Channel.js';
 import { logger } from '../logger.js';
-import { labels } from '../translations/labels.js';
 import { exitMessageFunctions, exitMessages } from '../translations/logs.js';
 import { getChannel } from './channels.js';
 
-const shutdown = async (errorCode?: number, thrownError?: Error) => {
+const shutdown = async () => {
   logger.info(exitMessages.shutdownGracefully);
 
   const prisma = new PrismaClient();
@@ -19,27 +18,31 @@ const shutdown = async (errorCode?: number, thrownError?: Error) => {
     logger.error(exitMessageFunctions.databaseConnectionError(error));
   }
 
+  // eslint-disable-next-line n/no-process-exit
+  process.exit(0);
+};
+
+const logErrorToChannel = async (thrownError?: Error) => {
   const logsChannel = getChannel(Channel.Logs);
   try {
-    await (errorCode
+    await (thrownError
       ? logsChannel?.send(
-          exitMessageFunctions.shutdownWithError(
-            thrownError?.message ?? labels.unknown,
-          ),
+          exitMessageFunctions.shutdownWithError(thrownError.message),
         )
       : logsChannel?.send(exitMessages.shutdownGracefully));
   } catch {
     // Do nothing
   }
-
-  // eslint-disable-next-line n/no-process-exit
-  process.exit(errorCode ?? 0);
 };
 
 export const attachProcessListeners = () => {
-  process.on('SIGINT', shutdown);
+  process.on('SIGINT', () => shutdown());
 
-  process.on('SIGTERM', shutdown);
+  process.on('SIGTERM', () => shutdown());
+
+  process.on('uncaughtException', async (error) => {
+    await logErrorToChannel(error);
+  });
 
   process.on('warning', (warning) => {
     logger.warn(warning);
