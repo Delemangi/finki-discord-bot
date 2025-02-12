@@ -45,5 +45,5 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply(commandResponseFunctions.deletingMessages(count));
   await setTimeout(500);
   await interaction.deleteReply();
-  await interaction.channel.bulkDelete(count);
+  await interaction.channel.bulkDelete(count, true);
 };
