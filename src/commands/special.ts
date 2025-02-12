@@ -256,6 +256,12 @@ const handleSpecialBar = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
+  if (await isMemberBarred(user.id)) {
+    await interaction.editReply(commandErrors.userBarred);
+
+    return;
+  }
+
   if (isMemberAdmin(member)) {
     await interaction.editReply(commandErrors.userAdmin);
 
