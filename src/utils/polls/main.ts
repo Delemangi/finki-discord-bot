@@ -383,7 +383,7 @@ export const decidePoll = async (poll: Poll, expired = false) => {
 
   await executePollAction(poll, decision);
 
-  if (!poll.resultsFinalized) {
+  if (!poll.resultsFinalized && !expired) {
     await poll.end();
   }
 };
