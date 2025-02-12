@@ -123,7 +123,9 @@ export const handleChatInputCommand = async (
       ),
     });
 
-    await interaction.editReply(commandErrors.commandError);
+    await (interaction.deferred
+      ? interaction.editReply(commandErrors.commandError)
+      : interaction.reply(commandErrors.commandError));
   }
 };
 
@@ -196,7 +198,9 @@ export const handleUserContextMenuCommand = async (
       ),
     });
 
-    await interaction.editReply(commandErrors.commandError);
+    await (interaction.deferred
+      ? interaction.editReply(commandErrors.commandError)
+      : interaction.reply(commandErrors.commandError));
   }
 };
 
@@ -269,7 +273,9 @@ export const handleMessageContextMenuCommand = async (
       ),
     });
 
-    await interaction.editReply(commandErrors.commandError);
+    await (interaction.deferred
+      ? interaction.editReply(commandErrors.commandError)
+      : interaction.reply(commandErrors.commandError));
   }
 };
 
@@ -288,7 +294,11 @@ const buttonInteractionHandlers = {
   year: handleYearButton,
 };
 
-const ephemeralResponseButtons = new Set(['addCourses', 'removeCourses']);
+const ephemeralResponseButtons = new Set([
+  'addCourses',
+  'removeCourses',
+  'ticketCreate',
+]);
 
 export const handleButton = async (interaction: ButtonInteraction) => {
   const [command, ...args] = interaction.customId.split(':');
@@ -337,18 +347,20 @@ export const handleButton = async (interaction: ButtonInteraction) => {
     } else {
       logger.warn(logErrorFunctions.commandNotFound(interaction.id));
     }
-  } catch {
-    logger.error(logErrorFunctions.buttonExecutionError(interaction, command));
+  } catch (error) {
+    logger.error(logErrorFunctions.buttonExecutionError(interaction, error));
 
     const logsChannel = getChannel(Channel.Logs);
     await logsChannel?.send({
-      content: logErrorFunctions.buttonExecutionError(interaction, command),
+      content: logErrorFunctions.buttonExecutionError(interaction, error),
     });
 
-    await interaction.reply({
-      content: commandErrors.commandError,
-      flags: MessageFlags.Ephemeral,
-    });
+    await (interaction.deferred
+      ? interaction.editReply(commandErrors.commandError)
+      : interaction.reply({
+          content: commandErrors.commandError,
+          flags: MessageFlags.Ephemeral,
+        }));
   }
 };
 

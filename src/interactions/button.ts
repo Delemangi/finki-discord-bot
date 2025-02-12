@@ -796,17 +796,11 @@ export const handleTicketCreateButton = async (
   const enabled = getTicketingProperty('enabled');
 
   if (!enabled) {
-    await interaction.reply({
-      content: commandErrors.ticketingDisabled,
-      flags: MessageFlags.Ephemeral,
-    });
+    await interaction.editReply(commandErrors.ticketingDisabled);
   }
 
   if (ticketType === undefined) {
-    await interaction.reply({
-      content: commandErrors.invalidTicketType,
-      flags: MessageFlags.Ephemeral,
-    });
+    await interaction.editReply(commandErrors.invalidTicketType);
 
     return;
   }
@@ -814,10 +808,7 @@ export const handleTicketCreateButton = async (
   const ticketMetadata = getTicketProperty(ticketType);
 
   if (ticketMetadata === undefined) {
-    await interaction.reply({
-      content: commandErrors.invalidTicketType,
-      flags: MessageFlags.Ephemeral,
-    });
+    await interaction.editReply(commandErrors.invalidTicketType);
 
     return;
   }
@@ -838,19 +829,13 @@ export const handleTicketCreateButton = async (
     ticketsChannel === undefined ||
     ticketsChannel.type !== ChannelType.GuildText
   ) {
-    await interaction.reply({
-      content: commandErrors.invalidChannel,
-      flags: MessageFlags.Ephemeral,
-    });
+    await interaction.editReply(commandErrors.invalidChannel);
 
     return;
   }
 
   if (ticketMetadata.roles.length === 0) {
-    await interaction.reply({
-      content: commandErrors.noTicketMembers,
-      flags: MessageFlags.Ephemeral,
-    });
+    await interaction.editReply(commandErrors.noTicketMembers);
 
     return;
   }
@@ -861,10 +846,7 @@ export const handleTicketCreateButton = async (
   );
 
   if (ticketRoleMembers.length === 0) {
-    await interaction.reply({
-      content: commandErrors.noTicketMembers,
-      flags: MessageFlags.Ephemeral,
-    });
+    await interaction.editReply(commandErrors.noTicketMembers);
 
     return;
   }

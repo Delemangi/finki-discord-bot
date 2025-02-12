@@ -3,7 +3,6 @@ import {
   type ButtonInteraction,
   ChannelType,
   type ChatInputCommandInteraction,
-  MessageFlags,
   roleMention,
   ThreadAutoArchiveDuration,
 } from 'discord.js';
@@ -73,10 +72,9 @@ export const createTicket = async (
     content: ticketMessages.sendMessage,
   });
 
-  await interaction.reply({
-    content: ticketMessageFunctions.ticketLink(ticketChannel.url),
-    flags: MessageFlags.Ephemeral,
-  });
+  await interaction.editReply(
+    ticketMessageFunctions.ticketLink(ticketChannel.url),
+  );
 
   const collector = ticketChannel.createMessageCollector({
     time: 1_800_000,
