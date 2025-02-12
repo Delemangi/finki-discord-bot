@@ -209,7 +209,7 @@ export const createPoll = (pollType: PollType, targetUser: User) => {
   } satisfies InteractionEditReplyOptions;
 };
 
-export const getMissingVoters = async (poll: Poll) => {
+export const getVoters = async (poll: Poll) => {
   const votes = await Promise.all(
     poll.answers.map(async (answer) => await answer.fetchVoters()),
   );
@@ -218,6 +218,25 @@ export const getMissingVoters = async (poll: Poll) => {
     .map((voter) => voter.id);
 
   return voters;
+};
+
+export const getMissingVoters = async (poll: Poll) => {
+  const guild = poll.message.guild ?? (await getGuild());
+
+  if (guild === null) {
+    return [];
+  }
+
+  const councilRoleId = getRolesProperty(Role.Council);
+
+  if (councilRoleId === undefined) {
+    return [];
+  }
+
+  const councilMembers = await getMembersByRoleIds(guild, [councilRoleId]);
+  const voters = await getVoters(poll);
+
+  return councilMembers.filter((member) => !voters.includes(member));
 };
 
 const getPollThreshold = async (

@@ -31,8 +31,8 @@ import {
   createPoll,
   decidePollForcefully,
   getActivePolls,
-  getMissingVoters,
   getPollInformation,
+  getVoters,
   isPollDuplicate,
 } from '../utils/polls/main.js';
 import { getMembersByRoleIds } from '../utils/roles.js';
@@ -207,7 +207,7 @@ const handleSpecialRemaining = async (
     return;
   }
 
-  const voters = await getMissingVoters(poll);
+  const voters = await getVoters(poll);
   const allVoters = await getMembersByRoleIds(guild, [councilRole]);
   const missingVoters = allVoters.filter((voter) => !voters.includes(voter));
   const missingVotersMembers = missingVoters
