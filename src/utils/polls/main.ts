@@ -388,11 +388,20 @@ export const decidePoll = async (poll: Poll, expired = false) => {
   }
 };
 
-export const decidePollForcefully = async (poll: Poll, decision: string) => {
+export const decidePollForcefully = async (
+  poll: Poll,
+  decision: null | string,
+) => {
   if (poll.resultsFinalized) {
     return;
   }
 
+  const chosenDecision = decision ?? (await getPollDecision(poll, true));
+
+  if (chosenDecision === null) {
+    return;
+  }
+
   await poll.end();
-  await executePollAction(poll, decision);
+  await executePollAction(poll, chosenDecision);
 };

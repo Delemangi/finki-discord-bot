@@ -64,7 +64,7 @@ export const data = new SlashCommandBuilder()
         option
           .setName('decision')
           .setDescription('Одлука')
-          .setRequired(true)
+          .setRequired(false)
           .addChoices(...createCommandChoices(POLL_OPTIONS)),
       ),
   )
@@ -144,7 +144,7 @@ const handleSpecialOverride = async (
   interaction: ChatInputCommandInteraction,
 ) => {
   const pollId = interaction.options.getString('poll', true);
-  const decision = interaction.options.getString('decision', true);
+  const decision = interaction.options.getString('decision');
   const channel = getChannel(Channel.Council);
 
   if (channel === undefined) {
@@ -163,7 +163,11 @@ const handleSpecialOverride = async (
 
   await decidePollForcefully(message.poll, decision);
 
-  await interaction.editReply(commandResponseFunctions.pollOverriden(decision));
+  await interaction.editReply(
+    decision
+      ? commandResponseFunctions.pollOverriden(decision)
+      : commandResponses.pollOverridden,
+  );
 };
 
 const handleSpecialRemaining = async (
