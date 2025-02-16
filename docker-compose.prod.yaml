@@ -25,7 +25,7 @@ services:
         - 'CMD-SHELL'
         - 'pg_isready -U $$POSTGRES_USER'
       timeout: 30s
-    image: postgres:16
+    image: postgres:17
     restart: unless-stopped
     volumes:
       - ./db:/var/lib/postgresql/data

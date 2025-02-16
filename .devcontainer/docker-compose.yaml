@@ -21,7 +21,7 @@ services:
         - 'CMD-SHELL'
         - 'pg_isready -U $$POSTGRES_USER'
       timeout: 60s
-    image: postgres:16
+    image: postgres:17
     ports:
       - '${POSTGRES_PORT}:${POSTGRES_PORT}'
     restart: unless-stopped
