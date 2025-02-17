@@ -11,6 +11,7 @@ import {
   setConfigProperty,
 } from '../configuration/main.js';
 import { refreshOnConfigChange } from '../configuration/refresh.js';
+import { getConfig } from '../data/Config.js';
 import {
   BotConfigKeysSchema,
   BotConfigSchema,
@@ -37,7 +38,7 @@ export const data = new SlashCommandBuilder()
         option
           .setName('key')
           .setDescription('Клуч на конфигурација')
-          .setRequired(true)
+          .setRequired(false)
           .addChoices(...createCommandChoices(getConfigKeys())),
       ),
   )
@@ -62,9 +63,17 @@ export const data = new SlashCommandBuilder()
   .setDefaultMemberPermissions(permission);
 
 const handleConfigGet = async (interaction: ChatInputCommandInteraction) => {
-  const key = BotConfigKeysSchema.parse(
-    interaction.options.getString('key', true),
-  );
+  const rawKey = interaction.options.getString('key');
+
+  if (rawKey === null) {
+    const fullConfig = await getConfig();
+
+    await interaction.editReply(
+      codeBlock('json', JSON.stringify(fullConfig, null, 2)),
+    );
+  }
+
+  const key = BotConfigKeysSchema.parse(rawKey);
   const value = getConfigProperty(key);
 
   await interaction.editReply(
