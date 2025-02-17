@@ -92,6 +92,8 @@ export const databaseErrorFunctions = {
   deleteSpecialPollError: (error: unknown) =>
     `Failed deleting special poll\n${error}`,
 
+  getAntosError: (error: unknown) => `Failed getting Anto facts\n${error}`,
+
   getBarByUserIdError: (error: unknown) =>
     `Failed getting bar by user ID\n${error}`,
 

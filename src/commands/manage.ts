@@ -11,11 +11,12 @@ import {
   getQuestionComponents,
   getQuestionEmbed,
 } from '../components/commands.js';
-import { createAnto, createAntos, deleteAnto } from '../data/Anto.js';
+import { createAnto, createAntos, deleteAnto, getAntos } from '../data/Anto.js';
 import {
   createCompanies,
   createCompany,
   deleteCompany,
+  getCompanies,
 } from '../data/Company.js';
 import {
   createInfoMessage,
@@ -23,18 +24,25 @@ import {
   getInfoMessage,
   updateInfoMessage,
 } from '../data/InfoMessage.js';
-import { createLink, deleteLink, getLink, updateLink } from '../data/Link.js';
+import {
+  createLink,
+  deleteLink,
+  getLink,
+  getLinks,
+  updateLink,
+} from '../data/Link.js';
 import {
   createQuestion,
   deleteQuestion,
   getQuestion,
+  getQuestions,
   updateQuestion,
 } from '../data/Question.js';
 import {
   createQuestionLinks,
   deleteQuestionLinksByQuestionId,
 } from '../data/QuestionLink.js';
-import { createRule, deleteRule } from '../data/Rule.js';
+import { createRule, deleteRule, getRules } from '../data/Rule.js';
 import { AntosSchema } from '../lib/schemas/Anto.js';
 import { CompaniesSchema } from '../lib/schemas/Company.js';
 import { LinksSchema } from '../lib/schemas/Link.js';
@@ -100,6 +108,11 @@ export const data = new SlashCommandBuilder()
   )
   .addSubcommand((subcommand) =>
     subcommand
+      .setName('question-dump')
+      .setDescription(commandDescriptions['manage question-dump']),
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
       .setName('link-set')
       .setDescription(commandDescriptions['manage link-set'])
       .addStringOption((option) =>
@@ -145,6 +158,11 @@ export const data = new SlashCommandBuilder()
   )
   .addSubcommand((subcommand) =>
     subcommand
+      .setName('link-dump')
+      .setDescription(commandDescriptions['manage link-dump']),
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
       .setName('anto-add')
       .setDescription(commandDescriptions['manage anto-add'])
       .addStringOption((option) =>
@@ -172,6 +190,11 @@ export const data = new SlashCommandBuilder()
   )
   .addSubcommand((subcommand) =>
     subcommand
+      .setName('anto-dump')
+      .setDescription(commandDescriptions['manage anto-dump']),
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
       .setName('rule-set')
       .setDescription(commandDescriptions['manage rule-set'])
       .addStringOption((option) =>
@@ -189,6 +212,11 @@ export const data = new SlashCommandBuilder()
           .setRequired(true)
           .setAutocomplete(true),
       ),
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName('rule-dump')
+      .setDescription(commandDescriptions['manage rule-dump']),
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -247,6 +275,11 @@ export const data = new SlashCommandBuilder()
   )
   .addSubcommand((subcommand) =>
     subcommand
+      .setName('infomessage-dump')
+      .setDescription(commandDescriptions['manage infomessage-dump']),
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
       .setName('company-set')
       .setDescription(commandDescriptions['manage company-set'])
       .addStringOption((option) =>
@@ -255,6 +288,11 @@ export const data = new SlashCommandBuilder()
           .setDescription('Име на компанија')
           .setRequired(true),
       ),
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName('company-dump')
+      .setDescription(commandDescriptions['manage company-dump']),
   )
   .addSubcommand((subcommand) =>
     subcommand
@@ -423,6 +461,27 @@ const handleManageQuestionContent = async (
   );
 };
 
+const handleManageQuestionDump = async (
+  interaction: ChatInputCommandInteraction,
+) => {
+  const questions = await getQuestions();
+
+  if (questions === null) {
+    await interaction.editReply(commandErrors.faqNotFound);
+
+    return;
+  }
+
+  await interaction.editReply({
+    files: [
+      {
+        attachment: Buffer.from(JSON.stringify(questions, null, 2)),
+        name: 'faqs.json',
+      },
+    ],
+  });
+};
+
 const handleManageLinkSet = async (
   interaction: ChatInputCommandInteraction,
 ) => {
@@ -532,6 +591,27 @@ const handleManageLinkContent = async (
   );
 };
 
+const handleManageLinkDump = async (
+  interaction: ChatInputCommandInteraction,
+) => {
+  const links = await getLinks();
+
+  if (links === null) {
+    await interaction.editReply(commandErrors.linkNotFound);
+
+    return;
+  }
+
+  await interaction.editReply({
+    files: [
+      {
+        attachment: Buffer.from(JSON.stringify(links, null, 2)),
+        name: 'links.json',
+      },
+    ],
+  });
+};
+
 const handleManageAntoAdd = async (
   interaction: ChatInputCommandInteraction,
 ) => {
@@ -596,6 +676,27 @@ const handleManageAntoMassAdd = async (
   await interaction.editReply(commandResponses.antosCreated);
 };
 
+const handleManageAntoDump = async (
+  interaction: ChatInputCommandInteraction,
+) => {
+  const antos = await getAntos();
+
+  if (antos === null) {
+    await interaction.editReply(commandErrors.antoNotFound);
+
+    return;
+  }
+
+  await interaction.editReply({
+    files: [
+      {
+        attachment: Buffer.from(JSON.stringify(antos, null, 2)),
+        name: 'antos.json',
+      },
+    ],
+  });
+};
+
 const handleManageRuleSet = async (
   interaction: ChatInputCommandInteraction,
 ) => {
@@ -641,6 +742,27 @@ const handleManageInfoMessageGet = async (
         },
         content: infoMessage.content.replaceAll(String.raw`\n`, '\n'),
       }));
+};
+
+const handleManageRuleDump = async (
+  interaction: ChatInputCommandInteraction,
+) => {
+  const rules = await getRules();
+
+  if (rules === null) {
+    await interaction.editReply(commandErrors.rulesNotFound);
+
+    return;
+  }
+
+  await interaction.editReply({
+    files: [
+      {
+        attachment: Buffer.from(JSON.stringify(rules, null, 2)),
+        name: 'rules.json',
+      },
+    ],
+  });
 };
 
 const handleMangeInfoMessageSet = async (
@@ -690,7 +812,30 @@ const handleManageInfoMessageDelete = async (
   await interaction.editReply(commandResponses.infoDeleted);
 };
 
-const handleCompanySet = async (interaction: ChatInputCommandInteraction) => {
+const handleManageInfoMessageDump = async (
+  interaction: ChatInputCommandInteraction,
+) => {
+  const infoMessages = await getInfoMessage();
+
+  if (infoMessages === null) {
+    await interaction.editReply(commandErrors.infoNotFound);
+
+    return;
+  }
+
+  await interaction.editReply({
+    files: [
+      {
+        attachment: Buffer.from(JSON.stringify(infoMessages, null, 2)),
+        name: 'infoMessages.json',
+      },
+    ],
+  });
+};
+
+const handleManageCompanySet = async (
+  interaction: ChatInputCommandInteraction,
+) => {
   const company = interaction.options.getString('company', true);
 
   const createdCompany = await createCompany({
@@ -707,7 +852,7 @@ const handleCompanySet = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply(commandResponses.companyCreated);
 };
 
-const handleCompanyDelete = async (
+const handleManageCompanyDelete = async (
   interaction: ChatInputCommandInteraction,
 ) => {
   const company = interaction.options.getString('company', true);
@@ -723,7 +868,7 @@ const handleCompanyDelete = async (
   await interaction.editReply(commandResponses.companyDeleted);
 };
 
-const handleCompanyMassAdd = async (
+const handleManageCompanyMassAdd = async (
   interaction: ChatInputCommandInteraction,
 ) => {
   const companies = interaction.options.getString('companies', true);
@@ -754,23 +899,50 @@ const handleCompanyMassAdd = async (
   await interaction.editReply(commandResponses.companiesCreated);
 };
 
+const handleManageCompanyDump = async (
+  interaction: ChatInputCommandInteraction,
+) => {
+  const companies = await getCompanies();
+
+  if (companies === null) {
+    await interaction.editReply(commandErrors.companiesNotFound);
+
+    return;
+  }
+
+  await interaction.editReply({
+    files: [
+      {
+        attachment: Buffer.from(JSON.stringify(companies, null, 2)),
+        name: 'companies.json',
+      },
+    ],
+  });
+};
+
 const manageHandlers = {
   'anto-add': handleManageAntoAdd,
   'anto-delete': handleManageAntoDelete,
+  'anto-dump': handleManageAntoDump,
   'anto-mass-add': handleManageAntoMassAdd,
-  'company-delete': handleCompanyDelete,
-  'company-mass-add': handleCompanyMassAdd,
-  'company-set': handleCompanySet,
+  'company-delete': handleManageCompanyDelete,
+  'company-dump': handleManageCompanyDump,
+  'company-mass-add': handleManageCompanyMassAdd,
+  'company-set': handleManageCompanySet,
   'infomessage-delete': handleManageInfoMessageDelete,
+  'infomessage-dump': handleManageInfoMessageDump,
   'infomessage-get': handleManageInfoMessageGet,
   'infomessage-set': handleMangeInfoMessageSet,
   'link-content': handleManageLinkContent,
   'link-delete': handleManageLinkDelete,
+  'link-dump': handleManageLinkDump,
   'link-set': handleManageLinkSet,
   'question-content': handleManageQuestionContent,
   'question-delete': handleManageQuestionDelete,
+  'question-dump': handleManageQuestionDump,
   'question-set': handleManageQuestionSet,
   'rule-delete': handleManageRuleDelete,
+  'rule-dump': handleManageRuleDump,
   'rule-set': handleManageRuleSet,
 };
 

@@ -5,6 +5,16 @@ import { logger } from '../logger.js';
 import { databaseErrorFunctions } from '../translations/database.js';
 import { database } from './database.js';
 
+export const getAntos = async () => {
+  try {
+    return await database.anto.findMany();
+  } catch (error) {
+    logger.error(databaseErrorFunctions.getAntosError(error));
+
+    return null;
+  }
+};
+
 export const createAnto = async (anto?: Prisma.AntoCreateInput) => {
   if (anto === undefined) {
     return null;
