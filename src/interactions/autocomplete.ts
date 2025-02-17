@@ -63,9 +63,15 @@ export const handleProfessorAutocomplete = async (
 export const handleCourseRoleAutocomplete = async (
   interaction: AutocompleteInteraction,
 ) => {
+  const courses = getFromRoleConfig('courses');
+
+  if (courses === undefined) {
+    return;
+  }
+
   if (transformedCourseRoles === null) {
     transformedCourseRoles = Object.entries(
-      transformOptions(Object.values(getFromRoleConfig('courses'))),
+      transformOptions(Object.values(courses)),
     );
   }
 

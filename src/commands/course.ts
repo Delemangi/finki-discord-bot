@@ -186,6 +186,13 @@ const handleCourseRole = async (
   courseRole: null | string,
 ) => {
   const guild = await getGuild(interaction);
+  const courses = getFromRoleConfig('courses');
+
+  if (courses === undefined) {
+    await interaction.editReply(commandErrors.coursesNotFound);
+
+    return;
+  }
 
   if (guild === null) {
     await interaction.editReply(commandErrors.guildFetchFailed);
@@ -195,7 +202,7 @@ const handleCourseRole = async (
 
   await guild.members.fetch();
 
-  const roleEntry = Object.entries(getFromRoleConfig('courses')).find(
+  const roleEntry = Object.entries(courses).find(
     ([, course]) => course.toLowerCase() === courseRole?.toLowerCase(),
   );
 

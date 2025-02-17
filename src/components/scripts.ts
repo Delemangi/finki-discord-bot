@@ -28,8 +28,12 @@ export const getColorsEmbed = (image: string) =>
     .setImage(image);
 
 export const getColorsComponents = () => {
-  const components = [];
+  const components: Array<ActionRowBuilder<ButtonBuilder>> = [];
   const roles = getFromRoleConfig('color');
+
+  if (roles === undefined) {
+    return components;
+  }
 
   for (let index1 = 0; index1 < roles.length; index1 += 5) {
     const row = new ActionRowBuilder<ButtonBuilder>();
@@ -55,8 +59,10 @@ export const getColorsComponents = () => {
   return components;
 };
 
-export const getCoursesEmbed = (roleSet: string, roles: string[]) =>
-  new EmbedBuilder()
+export const getCoursesEmbed = (roleSet: string, roles: string[]) => {
+  const courses = getFromRoleConfig('courses') ?? {};
+
+  return new EmbedBuilder()
     .setColor(getThemeColor())
     .setTitle(`${roleSet.length > 1 ? '' : embedMessages.semester} ${roleSet}`)
     .setDescription(
@@ -64,7 +70,7 @@ export const getCoursesEmbed = (roleSet: string, roles: string[]) =>
         .map(
           (role, index) =>
             `${inlineCode((index + 1).toString().padStart(2, '0'))} ${
-              getFromRoleConfig('courses')[role]
+              courses[role]
             }`,
         )
         .join('\n'),
@@ -72,6 +78,7 @@ export const getCoursesEmbed = (roleSet: string, roles: string[]) =>
     .setFooter({
       text: embedMessages.multipleOptions,
     });
+};
 
 export const getCoursesComponents = (roles: string[]) => {
   const components = [];
@@ -209,7 +216,11 @@ export const getNotificationsEmbed = () =>
 
 export const getNotificationsComponents = () => {
   const roles = getFromRoleConfig('notification');
-  const components = [];
+  const components: Array<ActionRowBuilder<ButtonBuilder>> = [];
+
+  if (roles === undefined) {
+    return components;
+  }
 
   for (let index1 = 0; index1 < roles.length; index1 += 5) {
     const row = new ActionRowBuilder<ButtonBuilder>();
@@ -246,7 +257,11 @@ export const getProgramsEmbed = () =>
 
 export const getProgramsComponents = () => {
   const roles = getFromRoleConfig('program');
-  const components = [];
+  const components: Array<ActionRowBuilder<ButtonBuilder>> = [];
+
+  if (roles === undefined) {
+    return components;
+  }
 
   for (let index1 = 0; index1 < roles.length; index1 += 5) {
     const row = new ActionRowBuilder<ButtonBuilder>();
@@ -285,6 +300,10 @@ export const getYearsComponents = () => {
   const roles = getFromRoleConfig('year');
   const components = new ActionRowBuilder<ButtonBuilder>();
   const buttons = [];
+
+  if (roles === undefined) {
+    return components;
+  }
 
   for (const role of roles) {
     const button = new ButtonBuilder()

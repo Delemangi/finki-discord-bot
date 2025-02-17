@@ -5,6 +5,7 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 
+import { reloadConfigurationFiles } from '../configuration/files.js';
 import {
   getConfigKeys,
   getConfigProperty,
@@ -21,6 +22,7 @@ import {
   commandDescriptions,
   commandErrorFunctions,
   commandErrors,
+  commandResponses,
 } from '../translations/commands.js';
 import { createCommandChoices } from '../utils/commands.js';
 
@@ -59,6 +61,11 @@ export const data = new SlashCommandBuilder()
           .setDescription('Вредност на конфигурација')
           .setRequired(true),
       ),
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName('reload')
+      .setDescription(commandDescriptions['config reload']),
   )
   .setDefaultMemberPermissions(permission);
 
@@ -147,8 +154,17 @@ const handleConfigSet = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply(codeBlock('json', newProperty));
 };
 
+const handleConfigReload = async (interaction: ChatInputCommandInteraction) => {
+  await interaction.editReply(commandResponses.configurationReloading);
+
+  await reloadConfigurationFiles();
+
+  await interaction.editReply(commandResponses.configurationReloaded);
+};
+
 const configHandlers = {
   get: handleConfigGet,
+  reload: handleConfigReload,
   set: handleConfigSet,
 };
 

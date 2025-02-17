@@ -74,7 +74,13 @@ export const getClosestStaff = (professor: string) => {
 };
 
 export const getClosestCourseRole = (courseRole: string) => {
-  const courseRoles = Object.values(getFromRoleConfig('courses'));
+  const configCourseRoles = getFromRoleConfig('courses');
+
+  if (configCourseRoles === undefined) {
+    return null;
+  }
+
+  const courseRoles = Object.values(configCourseRoles);
 
   // Latin -> Cyrillic
   const transformedCourseRoleNames = transformOptions(courseRoles);

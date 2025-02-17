@@ -203,7 +203,15 @@ const handleScriptCourses = async (
   }
 
   for (const roleSet of roleSets.length === 0 ? '12345678' : roleSets) {
-    const roles = getFromRoleConfig('course')[roleSet];
+    const courses = getFromRoleConfig('course');
+
+    if (courses === undefined) {
+      await interaction.editReply(commandErrors.coursesNotFound);
+
+      return;
+    }
+
+    const roles = courses[roleSet];
 
     if (roles === undefined) {
       await interaction.editReply(commandErrors.invalidRoles);

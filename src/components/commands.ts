@@ -315,30 +315,37 @@ export const getStaffEmbed = (information: Staff) =>
     .setTimestamp();
 
 export const getStudentInfoEmbed = (member: GuildMember) => {
+  const yearRoles = getFromRoleConfig('year') ?? [];
+  const programRoles = getFromRoleConfig('program') ?? [];
+  const colorRoles = getFromRoleConfig('color') ?? [];
+  const levelRoles = getFromRoleConfig('level') ?? [];
+
   const yearRole = member.roles.cache.find((role) =>
-    getFromRoleConfig('year').includes(role.name),
+    yearRoles.includes(role.name),
   );
   const programRole = member.roles.cache.find((role) =>
-    getFromRoleConfig('program').includes(role.name),
+    programRoles.includes(role.name),
   );
   const colorRole = member.roles.cache.find((role) =>
-    getFromRoleConfig('color').includes(role.name),
+    colorRoles.includes(role.name),
   );
   const levelRole = member.roles.cache.find((role) =>
-    getFromRoleConfig('level').includes(role.name),
+    levelRoles.includes(role.name),
   );
   const notificationRoles = member.roles.cache
-    .filter((role) => getFromRoleConfig('notification').includes(role.name))
+    .filter((role) =>
+      (getFromRoleConfig('notification') ?? []).includes(role.name),
+    )
     .map((role) => roleMention(role.id))
     .join('\n');
   const courseRoles = member.roles.cache
     .filter((role) =>
-      Object.keys(getFromRoleConfig('courses')).includes(role.name),
+      Object.keys(getFromRoleConfig('courses') ?? []).includes(role.name),
     )
     .map((role) => roleMention(role.id))
     .join('\n');
   const other = member.roles.cache
-    .filter((role) => getFromRoleConfig('other').includes(role.name))
+    .filter((role) => (getFromRoleConfig('other') ?? []).includes(role.name))
     .map((role) => roleMention(role.id))
     .join('\n');
 

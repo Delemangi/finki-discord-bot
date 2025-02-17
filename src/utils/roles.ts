@@ -40,9 +40,9 @@ export const initializeRoles = async () => {
 export const refreshRoles = (guild: Guild, type: RoleSets) => {
   if (roleSets[type].length === 0) {
     const roleNames =
-      type === 'courses'
-        ? Object.keys(getFromRoleConfig('courses'))
-        : getFromRoleConfig(type);
+      (type === 'courses'
+        ? Object.keys(getFromRoleConfig('courses') ?? [])
+        : getFromRoleConfig(type)) ?? [];
 
     const roleSet = roleNames.map((roleName) =>
       guild.roles.cache.find((role) => role.name === roleName),
@@ -71,7 +71,7 @@ export const getRoles = (guild: Guild, type: RoleSets) => {
 };
 
 export const getCourseRolesBySemester = (guild: Guild, semester: number) => {
-  const courses = getFromRoleConfig('course')[semester];
+  const courses = getFromRoleConfig('course')?.[semester];
 
   if (courses === undefined) {
     return [];
@@ -85,7 +85,7 @@ export const getCourseRolesBySemester = (guild: Guild, semester: number) => {
 };
 
 export const getCourseRoleByCourseName = (guild: Guild, course: string) => {
-  const roleName = Object.entries(getFromRoleConfig('courses')).find(
+  const roleName = Object.entries(getFromRoleConfig('courses') ?? []).find(
     ([, courseName]) => course === courseName,
   );
 
