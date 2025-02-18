@@ -50,17 +50,16 @@ export const getExperienceCount = async () => {
   }
 };
 
-export const getExperienceSorted = async (limit = 512) => {
+export const getExperienceSorted = async (limit?: number) => {
   try {
     return await database.experience.findMany({
       orderBy: {
         experience: 'desc',
       },
-      take: limit,
+      ...(limit !== undefined && { take: limit }),
     });
   } catch (error) {
     logger.error(databaseErrorFunctions.getExperienceSortedError(error));
-
     return null;
   }
 };

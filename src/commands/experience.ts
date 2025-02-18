@@ -68,6 +68,11 @@ export const data = new SlashCommandBuilder()
       .addNumberOption((option) =>
         option.setName('experience').setDescription('Поени').setRequired(true),
       ),
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName('dump')
+      .setDescription(commandDescriptions['experience dump']),
   );
 
 const handleExperienceGet = async (
@@ -155,7 +160,7 @@ const handleExperienceAdd = async (
 const handleExperienceLeaderboard = async (
   interaction: ChatInputCommandInteraction,
 ) => {
-  const experience = await getExperienceSorted();
+  const experience = await getExperienceSorted(512);
 
   if (experience === null) {
     await interaction.editReply(commandErrors.dataFetchFailed);
@@ -327,8 +332,30 @@ const handleExperienceSet = async (
   });
 };
 
+const handleExperienceDump = async (
+  interaction: ChatInputCommandInteraction,
+) => {
+  const experience = await getExperienceSorted();
+
+  if (experience === null) {
+    await interaction.editReply(commandErrors.dataFetchFailed);
+
+    return;
+  }
+
+  await interaction.editReply({
+    files: [
+      {
+        attachment: Buffer.from(JSON.stringify(experience, null, 2)),
+        name: 'experience.json',
+      },
+    ],
+  });
+};
+
 const experienceHandlers = {
   add: handleExperienceAdd,
+  dump: handleExperienceDump,
   get: handleExperienceGet,
   leaderboard: handleExperienceLeaderboard,
   set: handleExperienceSet,

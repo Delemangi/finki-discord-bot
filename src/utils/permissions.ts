@@ -32,6 +32,10 @@ const commandPermissions: Record<
     permissions: [],
     roles: [Role.Administrators],
   },
+  'experience dump': {
+    permissions: [],
+    roles: [Role.Administrators],
+  },
   'experience set': {
     permissions: [],
     roles: [Role.Administrators],
