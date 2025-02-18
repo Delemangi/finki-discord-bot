@@ -101,6 +101,7 @@ export const commandDescriptions = {
   'regulars remove': 'Отстрани редовен член',
   'reminder create': 'Креирај потсетник',
   'reminder delete': 'Избриши потсетник',
+  'reminder dump': 'Извлечи ги сите потсетници од базата на податоци',
   'reminder list': 'Преземи листа од сите потсетници',
   rules: 'Преземи правила на серверот',
   'script colors': 'Испрати ембед за избирање бои',

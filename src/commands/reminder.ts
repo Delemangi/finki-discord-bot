@@ -7,7 +7,11 @@ import {
 } from 'discord.js';
 
 import { getRemindersComponents } from '../components/reminders.js';
-import { createReminder, getRemindersByUserId } from '../data/Reminder.js';
+import {
+  createReminder,
+  getReminders,
+  getRemindersByUserId,
+} from '../data/Reminder.js';
 import {
   commandDescriptions,
   commandErrors,
@@ -44,6 +48,11 @@ export const data = new SlashCommandBuilder()
     command
       .setName('delete')
       .setDescription(commandDescriptions['reminder delete']),
+  )
+  .addSubcommand((command) =>
+    command
+      .setName('dump')
+      .setDescription(commandDescriptions['reminder dump']),
   );
 
 const handleReminderCreate = async (
@@ -139,9 +148,29 @@ const handleReminderDelete = async (
   });
 };
 
+const handleReminderDump = async (interaction: ChatInputCommandInteraction) => {
+  const reminders = await getReminders();
+
+  if (reminders === null) {
+    await interaction.editReply(commandErrors.remindersLoadError);
+
+    return;
+  }
+
+  await interaction.editReply({
+    files: [
+      {
+        attachment: Buffer.from(JSON.stringify(reminders, null, 2)),
+        name: 'reminders.json',
+      },
+    ],
+  });
+};
+
 const reminderHandlers = {
   create: handleReminderCreate,
   delete: handleReminderDelete,
+  dump: handleReminderDump,
   list: handleReminderList,
 };
 
