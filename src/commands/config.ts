@@ -75,9 +75,14 @@ const handleConfigGet = async (interaction: ChatInputCommandInteraction) => {
   if (rawKey === null) {
     const fullConfig = await getConfig();
 
-    await interaction.editReply(
-      codeBlock('json', JSON.stringify(fullConfig, null, 2)),
-    );
+    await interaction.editReply({
+      files: [
+        {
+          attachment: Buffer.from(JSON.stringify(fullConfig, null, 2)),
+          name: 'config.json',
+        },
+      ],
+    });
   }
 
   const key = BotConfigKeysSchema.parse(rawKey);
