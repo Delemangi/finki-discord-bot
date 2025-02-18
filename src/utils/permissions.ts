@@ -46,7 +46,7 @@ const commandPermissions: Record<
   },
   manage: {
     permissions: [],
-    roles: [Role.Administrators, Role.Moderators],
+    roles: [Role.Administrators],
   },
   members: {
     permissions: [],
