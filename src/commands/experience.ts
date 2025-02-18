@@ -346,7 +346,15 @@ const handleExperienceDump = async (
   await interaction.editReply({
     files: [
       {
-        attachment: Buffer.from(JSON.stringify(experience, null, 2)),
+        attachment: Buffer.from(
+          JSON.stringify(
+            experience,
+            (_, value) =>
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+              typeof value === 'bigint' ? value.toString() : value,
+            2,
+          ),
+        ),
         name: 'experience.json',
       },
     ],
