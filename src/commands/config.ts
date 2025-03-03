@@ -12,7 +12,7 @@ import {
   setConfigProperty,
 } from '../configuration/main.js';
 import { refreshOnConfigChange } from '../configuration/refresh.js';
-import { getConfig } from '../data/Config.js';
+import { getConfig } from '../data/database/Config.js';
 import {
   BotConfigKeysSchema,
   BotConfigSchema,

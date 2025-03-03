@@ -4,7 +4,7 @@ import {
 } from 'discord.js';
 
 import { getRulesEmbed } from '../components/scripts.js';
-import { getRules } from '../data/Rule.js';
+import { getRules } from '../data/database/Rule.js';
 import {
   commandDescriptions,
   commandErrors,

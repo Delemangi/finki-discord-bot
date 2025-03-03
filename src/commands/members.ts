@@ -6,7 +6,7 @@ import {
 } from 'discord.js';
 
 import { getRolesProperty } from '../configuration/main.js';
-import { getBars } from '../data/Bar.js';
+import { getBars } from '../data/database/Bar.js';
 import { Role } from '../lib/schemas/Role.js';
 import {
   commandDescriptions,

@@ -3,7 +3,7 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 
-import { getRandomAnto } from '../data/Anto.js';
+import { getRandomAnto } from '../data/database/Anto.js';
 import {
   commandDescriptions,
   commandErrors,

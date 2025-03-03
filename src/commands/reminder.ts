@@ -11,7 +11,7 @@ import {
   createReminder,
   getReminders,
   getRemindersByUserId,
-} from '../data/Reminder.js';
+} from '../data/database/Reminder.js';
 import {
   commandDescriptions,
   commandErrors,

@@ -9,7 +9,7 @@ import {
   getVipConfirmEmbed,
 } from '../../components/scripts.js';
 import { getRolesProperty } from '../../configuration/main.js';
-import { createBar, deleteBar } from '../../data/Bar.js';
+import { createBar, deleteBar } from '../../data/database/Bar.js';
 import { Channel } from '../../lib/schemas/Channel.js';
 import { PollType } from '../../lib/schemas/PollType.js';
 import { Role } from '../../lib/schemas/Role.js';

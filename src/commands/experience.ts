@@ -18,7 +18,7 @@ import {
   getExperienceCount,
   getExperienceSorted,
   updateExperience,
-} from '../data/Experience.js';
+} from '../data/database/Experience.js';
 import { logger } from '../logger.js';
 import {
   commandDescriptions,

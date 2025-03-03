@@ -1,6 +1,6 @@
 import type { ColorResolvable } from 'discord.js';
 
-import { getConfig, setConfig } from '../data/Config.js';
+import { getConfig, setConfig } from '../data/database/Config.js';
 import {
   type BotConfig,
   type BotConfigKeys,

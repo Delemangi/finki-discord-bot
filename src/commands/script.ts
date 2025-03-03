@@ -34,9 +34,9 @@ import { getTicketCreateComponents } from '../components/tickets.js';
 import { getApplicationId, getToken } from '../configuration/environment.js';
 import { getCourses, getFromRoleConfig } from '../configuration/files.js';
 import { getTicketingProperty } from '../configuration/main.js';
-import { getCompanies } from '../data/Company.js';
-import { getInfoMessages } from '../data/InfoMessage.js';
-import { getRules } from '../data/Rule.js';
+import { getCompanies } from '../data/database/Company.js';
+import { getInfoMessages } from '../data/database/InfoMessage.js';
+import { getRules } from '../data/database/Rule.js';
 import { logger } from '../logger.js';
 import {
   commandDescriptions,

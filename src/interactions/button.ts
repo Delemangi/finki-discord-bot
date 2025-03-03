@@ -18,7 +18,7 @@ import {
   deleteReminder,
   getReminderById,
   getRemindersByUserId,
-} from '../data/Reminder.js';
+} from '../data/database/Reminder.js';
 import { Channel } from '../lib/schemas/Channel.js';
 import { PollType } from '../lib/schemas/PollType.js';
 import { Role } from '../lib/schemas/Role.js';

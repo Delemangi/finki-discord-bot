@@ -7,10 +7,10 @@ import {
   getSessions,
   getStaff,
 } from '../configuration/files.js';
-import { getCompanies } from '../data/Company.js';
-import { getLinkNames } from '../data/Link.js';
-import { getQuestionNames } from '../data/Question.js';
-import { getRules } from '../data/Rule.js';
+import { getLinkNames } from '../data/api/Link.js';
+import { getQuestionNames } from '../data/api/Question.js';
+import { getCompanies } from '../data/database/Company.js';
+import { getRules } from '../data/database/Rule.js';
 import { logger } from '../logger.js';
 import { logErrorFunctions } from '../translations/logs.js';
 import { transformOptions } from '../utils/options.js';
@@ -98,7 +98,7 @@ export const handleQuestionAutocomplete = async (
   try {
     await interaction.respond(
       createOptions(
-        Object.entries(transformOptions(questionNames.map(({ name }) => name))),
+        Object.entries(transformOptions(questionNames)),
         interaction.options.getFocused(),
       ),
     );
@@ -121,7 +121,7 @@ export const handleLinkAutocomplete = async (
   try {
     await interaction.respond(
       createOptions(
-        Object.entries(transformOptions(linkNames.map(({ name }) => name))),
+        Object.entries(transformOptions(linkNames)),
         interaction.options.getFocused(),
       ),
     );

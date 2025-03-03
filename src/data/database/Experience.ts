@@ -1,7 +1,7 @@
 import { type Experience, type Prisma } from '@prisma/client';
 
-import { logger } from '../logger.js';
-import { databaseErrorFunctions } from '../translations/database.js';
+import { logger } from '../../logger.js';
+import { databaseErrorFunctions } from '../../translations/database.js';
 import { database } from './database.js';
 
 export const createExperience = async (

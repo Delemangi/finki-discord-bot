@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 
-import { type BotConfig } from '../lib/schemas/BotConfig.js';
-import { logger } from '../logger.js';
+import type { BotConfig } from '../../lib/schemas/BotConfig.js';
+
+import { logger } from '../../logger.js';
 import { database } from './database.js';
 
 export const getConfig = async () => await database.config.findFirst();

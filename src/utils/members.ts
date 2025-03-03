@@ -2,8 +2,8 @@ import { type GuildMember, PermissionsBitField } from 'discord.js';
 
 import { client } from '../client.js';
 import { getRolesProperty } from '../configuration/main.js';
-import { getBarByUserId } from '../data/Bar.js';
-import { getExperienceByUserId } from '../data/Experience.js';
+import { getBarByUserId } from '../data/database/Bar.js';
+import { getExperienceByUserId } from '../data/database/Experience.js';
 import { Role } from '../lib/schemas/Role.js';
 
 export const getUsername = async (userId: string) => {

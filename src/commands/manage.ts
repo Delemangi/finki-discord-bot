@@ -4,6 +4,7 @@ import {
   codeBlock,
   SlashCommandBuilder,
 } from 'discord.js';
+import { z } from 'zod';
 
 import {
   getLinkComponents,
@@ -11,41 +12,46 @@ import {
   getQuestionComponents,
   getQuestionEmbed,
 } from '../components/commands.js';
-import { createAnto, createAntos, deleteAnto, getAntos } from '../data/Anto.js';
-import {
-  createCompanies,
-  createCompany,
-  deleteCompany,
-  getCompanies,
-} from '../data/Company.js';
-import {
-  createInfoMessage,
-  deleteInfoMessage,
-  getInfoMessage,
-  updateInfoMessage,
-} from '../data/InfoMessage.js';
 import {
   createLink,
   deleteLink,
   getLink,
   getLinks,
   updateLink,
-} from '../data/Link.js';
+} from '../data/api/Link.js';
 import {
   createQuestion,
   deleteQuestion,
   getQuestion,
   getQuestions,
   updateQuestion,
-} from '../data/Question.js';
+} from '../data/api/Question.js';
 import {
-  createQuestionLinks,
-  deleteQuestionLinksByQuestionId,
-} from '../data/QuestionLink.js';
-import { createRule, deleteRule, getRules } from '../data/Rule.js';
+  createAnto,
+  createAntos,
+  deleteAnto,
+  getAntos,
+} from '../data/database/Anto.js';
+import {
+  createCompanies,
+  createCompany,
+  deleteCompany,
+  getCompanies,
+} from '../data/database/Company.js';
+import {
+  createInfoMessage,
+  deleteInfoMessage,
+  getInfoMessage,
+  updateInfoMessage,
+} from '../data/database/InfoMessage.js';
+import { createRule, deleteRule, getRules } from '../data/database/Rule.js';
 import { AntosSchema } from '../lib/schemas/Anto.js';
 import { CompaniesSchema } from '../lib/schemas/Company.js';
-import { LinksSchema } from '../lib/schemas/Link.js';
+import { CreateLinkSchema, UpdateLinkSchema } from '../lib/schemas/Link.js';
+import {
+  CreateQuestionSchema,
+  UpdateQuestionSchema,
+} from '../lib/schemas/Question.js';
 import { logger } from '../logger.js';
 import {
   commandDescriptions,
@@ -328,9 +334,9 @@ const handleManageQuestionSet = async (
   const links = interaction.options.getString('links') ?? '{}';
   const question = await getQuestion(keyword);
 
-  const { data: parsedLinks, error: parseError } = LinksSchema.safeParse(
-    JSON.parse(links),
-  );
+  const { data: parsedLinks, error: parseError } = z
+    .record(z.string())
+    .safeParse(JSON.parse(links));
 
   if (parseError !== undefined) {
     await interaction.editReply(commandErrors.invalidLinks);
@@ -339,19 +345,12 @@ const handleManageQuestionSet = async (
   }
 
   if (question === null) {
-    const newQuestion = {
+    const newQuestion = CreateQuestionSchema.parse({
       content: answer,
-      links: {
-        createMany: {
-          data: Object.entries(parsedLinks).map(([linkName, linkUrl]) => ({
-            name: linkName,
-            url: linkUrl,
-          })),
-        },
-      },
+      links: parsedLinks,
       name: keyword,
       userId: interaction.user.id,
-    };
+    });
 
     const createdQuestion = await createQuestion(newQuestion);
 
@@ -376,17 +375,13 @@ const handleManageQuestionSet = async (
     return;
   }
 
-  question.content = answer;
-  await updateQuestion(question);
-
-  await deleteQuestionLinksByQuestionId(question.id);
-  await createQuestionLinks(
-    Object.entries(parsedLinks).map(([linkName, linkUrl]) => ({
-      name: linkName,
-      questionId: question.id,
-      url: linkUrl,
-    })),
-  );
+  const updatedQuestionSchema = UpdateQuestionSchema.parse({
+    content: answer,
+    links: parsedLinks,
+    name: keyword,
+    userId: interaction.user.id,
+  });
+  await updateQuestion(question.name, updatedQuestionSchema);
 
   const updatedQuestion = await getQuestion(keyword);
 
@@ -440,24 +435,7 @@ const handleManageQuestionContent = async (
   await interaction.editReply(
     `Име:${codeBlock(question.name)}\nОдговор:${codeBlock(
       question.content.replaceAll('\n', String.raw`\n`),
-    )}\nЛинкови:${codeBlock(
-      JSON.stringify(
-        question.links
-          .map(({ name: linkName, url }) => ({
-            [linkName]: url,
-          }))
-          // eslint-disable-next-line unicorn/no-array-reduce
-          .reduce<Record<string, string>>(
-            (accumulator, currentValue) => ({
-              ...accumulator,
-              ...currentValue,
-            }),
-            {},
-          ),
-        null,
-        2,
-      ),
-    )}`,
+    )}\nЛинкови:${codeBlock(JSON.stringify(question.links, null, 2))}`,
   );
 };
 
@@ -499,11 +477,12 @@ const handleManageLinkSet = async (
   }
 
   if (link === null) {
-    const newLink = {
+    const newLink = CreateLinkSchema.parse({
       description: description ?? null,
       name: keyword,
       url,
-    };
+      userId: interaction.user.id,
+    });
 
     const createdLink = await createLink(newLink);
 
@@ -528,12 +507,13 @@ const handleManageLinkSet = async (
     return;
   }
 
-  link.url = url;
-  if (description !== undefined) {
-    link.description = description;
-  }
-
-  await updateLink(link);
+  const updatedLinkSchema = UpdateLinkSchema.parse({
+    description: description ?? link.description,
+    name: keyword,
+    url,
+    userId: interaction.user.id,
+  });
+  await updateLink(link.name, updatedLinkSchema);
 
   const updatedLink = await getLink(keyword);
 

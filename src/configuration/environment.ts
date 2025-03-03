@@ -20,3 +20,11 @@ export const getApplicationId = () => {
     throw new Error(configErrors.noApplicationId);
   }
 };
+
+export const getChatbotUrl = () => {
+  try {
+    return z.string().parse(env['CHATBOT_URL']);
+  } catch {
+    return null;
+  }
+};

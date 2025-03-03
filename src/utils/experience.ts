@@ -11,7 +11,7 @@ import {
   createExperience,
   getExperienceByUserId,
   updateExperience,
-} from '../data/Experience.js';
+} from '../data/database/Experience.js';
 import { Channel } from '../lib/schemas/Channel.js';
 import { Role } from '../lib/schemas/Role.js';
 import { logger } from '../logger.js';

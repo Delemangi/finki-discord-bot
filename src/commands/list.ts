@@ -7,8 +7,8 @@ import {
   getListLinksEmbed,
   getListQuestionsEmbed,
 } from '../components/commands.js';
-import { getLinks } from '../data/Link.js';
-import { getQuestions } from '../data/Question.js';
+import { getLinks } from '../data/api/Link.js';
+import { getQuestions } from '../data/api/Question.js';
 import {
   commandDescriptions,
   commandErrors,

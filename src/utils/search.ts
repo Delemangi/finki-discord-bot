@@ -7,12 +7,12 @@ import {
   getSessions,
   getStaff,
 } from '../configuration/files.js';
-import { getLink, getLinkNames, getNthLink } from '../data/Link.js';
+import { getLink, getLinkNames, getNthLink } from '../data/api/Link.js';
 import {
   getNthQuestion,
   getQuestion,
   getQuestionNames,
-} from '../data/Question.js';
+} from '../data/api/Question.js';
 import { transformOptions } from './options.js';
 
 export const getClosestCourse = (course: string) => {
@@ -121,9 +121,7 @@ export const getClosestQuestion = async (question: number | string) => {
   }
 
   // Latin -> Cyrillic
-  const transformedQuestionNames = transformOptions(
-    questions.map(({ name }) => name),
-  );
+  const transformedQuestionNames = transformOptions(questions);
 
   const fuse = new Fuse(Object.keys(transformedQuestionNames), {
     includeScore: true,
@@ -161,7 +159,7 @@ export const getClosestLink = async (link: number | string) => {
   }
 
   // Latin -> Cyrillic
-  const transformedLinkNames = transformOptions(links.map(({ name }) => name));
+  const transformedLinkNames = transformOptions(links);
 
   const fuse = new Fuse(Object.keys(transformedLinkNames), {
     includeScore: true,

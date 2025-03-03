@@ -1,4 +1,5 @@
-import { type Experience, type Link, type Question } from '@prisma/client';
+import type { Experience } from '@prisma/client';
+
 import {
   ActionRowBuilder,
   ButtonBuilder,
@@ -10,6 +11,9 @@ import {
   type User,
   userMention,
 } from 'discord.js';
+
+import type { Link } from '../lib/schemas/Link.js';
+import type { Question } from '../lib/schemas/Question.js';
 
 import {
   getFromRoleConfig,
@@ -25,7 +29,6 @@ import { type CourseParticipants } from '../lib/schemas/CourseParticipants.js';
 import { type CoursePrerequisites } from '../lib/schemas/CoursePrerequisites.js';
 import { type CourseStaff } from '../lib/schemas/CourseStaff.js';
 import { type Staff } from '../lib/schemas/Staff.js';
-import { type QuestionWithLinks } from '../lib/types/QuestionWithLinks.js';
 import { aboutMessage, botName } from '../translations/about.js';
 import { commandDescriptions } from '../translations/commands.js';
 import {
@@ -495,15 +498,21 @@ export const getQuestionEmbed = (question: Question) =>
     .setDescription(question.content)
     .setTimestamp();
 
-export const getQuestionComponents = (question: QuestionWithLinks) => {
-  const components = [];
+export const getQuestionComponents = (question: Question) => {
+  const components: Array<ActionRowBuilder<ButtonBuilder>> = [];
 
-  for (let index1 = 0; index1 < question.links.length; index1 += 5) {
+  if (question.links === undefined) {
+    return components;
+  }
+
+  const links = Object.entries(question.links);
+
+  for (let index1 = 0; index1 < links.length; index1 += 5) {
     const row = new ActionRowBuilder<ButtonBuilder>();
     const buttons = [];
 
     for (let index2 = index1; index2 < index1 + 5; index2++) {
-      const { name, url } = question.links[index2] ?? {};
+      const [name, url] = links[index2] ?? [];
       if (
         name === undefined ||
         url === undefined ||
@@ -534,7 +543,7 @@ export const getLinkEmbed = (link: Link) => {
     .setTitle(link.name)
     .setTimestamp();
 
-  if (link.description !== null) {
+  if (link.description !== undefined) {
     embed.setDescription(link.description);
   }
 
