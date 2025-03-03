@@ -48,7 +48,7 @@
     "format": "eslint . --cache --fix",
     "generate": "prisma generate",
     "lint": "tsc --noEmit && eslint . --cache",
-    "migrate": "prisma migrate dev --name a",
+    "migrate": "prisma migrate dev",
     "prepare": "husky",
     "start": "node dist/index.js",
     "start:env": "node --env-file=.env dist/index.js",
