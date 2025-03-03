@@ -9,6 +9,7 @@ services:
       TOKEN: ${TOKEN}
       APPLICATION_ID: ${APPLICATION_ID}
       DATABASE_URL: ${DATABASE_URL}
+      CHATBOT_URL: ${CHATBOT_URL}
       TZ: ${TZ}
     image: ghcr.io/delemangi/finki-discord-bot:latest
     networks:
@@ -24,7 +25,6 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_PORT: ${POSTGRES_PORT}
     healthcheck:
       interval: 15s
       retries: 3
@@ -44,3 +44,4 @@ networks:
   finki_stack:
     name: finki_stack
     driver: bridge
+    external: true
