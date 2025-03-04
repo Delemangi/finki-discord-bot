@@ -63,7 +63,7 @@ Regardless of the Docker steps you have followed above for installation, run `do
 The configuration is currently split into a `.env` file which contains login information for the bot and for the database, and several `json` configuration files for command output.
 
 1. Create a `.env` file in the root directory containing the environment variables as specified in the `.env.sample` file in the repository
-2. Create a `config` folder in the root directory containing:
+2. Optionally, create a `config` folder in the root directory containing:
    1. `classrooms.json` - an array of all the classrooms
    2. `courses.json` - an array of the names of all courses
    3. `information.json` - an array of all the course information
