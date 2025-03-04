@@ -31,7 +31,7 @@ export const specialStringFunctions = {
     )} е одобрен како член на Администрацијата.`,
 
   adminAddDescription: (userTag: string) =>
-    `Дали се согласувате корисникот ${inlineCode(userTag)} да стане член на Администрацијата?`,
+    `Дали се согласувате корисникот ${userTag} да стане член на Администрацијата?`,
 
   adminAddRejected: (userId: string) =>
     `# Корисникот ${userMention(
@@ -45,7 +45,7 @@ export const specialStringFunctions = {
     `# Корисникот ${userMention(userId)} е избркан од Администрацијата.`,
 
   adminRemoveDescription: (userTag: string) =>
-    `Дали се согласувате корисникот ${inlineCode(userTag)} да биде избркан од Администрацијата?`,
+    `Дали се согласувате корисникот ${userTag} да биде избркан од Администрацијата?`,
 
   adminRemoveRejected: (userId: string) =>
     `# Корисникот ${userMention(userId)} не е избркан од Администрацијата.`,
@@ -57,7 +57,7 @@ export const specialStringFunctions = {
     `# Корисникот ${userMention(userId)} е забранет.`,
 
   barDescription: (userTag: string) =>
-    `Дали се согласувате корисникот ${inlineCode(userTag)} да добие забрана?`,
+    `Дали се согласувате корисникот ${userTag} да добие забрана?`,
 
   barRejected: (userId: string) =>
     `# Корисникот ${userMention(userId)} не е забранет.`,
@@ -69,7 +69,7 @@ export const specialStringFunctions = {
     `# Корисникот ${userMention(userId)} е одобрен како член на Советот.`,
 
   councilAddDescription: (userTag: string) =>
-    `Дали се согласувате корисникот ${inlineCode(userTag)} да стане член на Советот?`,
+    `Дали се согласувате корисникот ${userTag} да стане член на Советот?`,
 
   councilAddRejected: (userId: string) =>
     `# Корисникот ${userMention(userId)} не е одобрен како член на Советот.`,
@@ -81,7 +81,7 @@ export const specialStringFunctions = {
     `# Корисникот ${userMention(userId)} е избркан од Советот.`,
 
   councilRemoveDescription: (userTag: string) =>
-    `Дали се согласувате корисникот ${inlineCode(userTag)} да биде избркан од Советот?`,
+    `Дали се согласувате корисникот ${userTag} да биде избркан од Советот?`,
 
   councilRemoveRejected: (userId: string) =>
     `# Корисникот ${userMention(userId)} не е избркан од Советот.`,
@@ -93,7 +93,7 @@ export const specialStringFunctions = {
     `# Корисникот ${userMention(userId)} е одобрен како член на Вонредните.`,
 
   irregularsAddDescription: (userTag: string) =>
-    `Дали се согласувате корисникот ${inlineCode(userTag)} да стане член на Вонредните?`,
+    `Дали се согласувате корисникот ${userTag} да стане член на Вонредните?`,
 
   irregularsAddRejected: (userId: string) =>
     `# Корисникот ${userMention(userId)} не е одобрен како член на Вонредните.`,
@@ -108,7 +108,7 @@ export const specialStringFunctions = {
     `# Корисникот ${userMention(userId)} е избркан од Вонредните.`,
 
   irregularsRemoveDescription: (userTag: string) =>
-    `Дали се согласувате корисникот ${inlineCode(userTag)} да биде избркан од Вонредните?`,
+    `Дали се согласувате корисникот ${userTag} да биде избркан од Вонредните?`,
 
   irregularsRemoveRejected: (userId: string) =>
     `# Корисникот ${userMention(userId)} не е избркан од Вонредните.`,
@@ -153,7 +153,7 @@ export const specialStringFunctions = {
     `# Корисникот ${userMention(userId)} е одобрен како член на ВИП.`,
 
   vipAddDescription: (userTag: string) =>
-    `Дали се согласувате корисникот ${inlineCode(userTag)} да стане член на ВИП?`,
+    `Дали се согласувате корисникот ${userTag} да стане член на ВИП?`,
 
   vipAddRejected: (userId: string) =>
     `# Корисникот ${userMention(userId)} не е одобрен како член на ВИП.`,
@@ -168,7 +168,7 @@ export const specialStringFunctions = {
     `# Корисникот ${userMention(userId)} е избркан од ВИП.`,
 
   vipRemoveDescription: (userTag: string) =>
-    `Дали се согласувате корисникот ${inlineCode(userTag)} да биде избркан од ВИП?`,
+    `Дали се согласувате корисникот ${userTag} да биде избркан од ВИП?`,
 
   vipRemoveRejected: (userId: string) =>
     `# Корисникот ${userMention(userId)} не е избркан од ВИП.`,
