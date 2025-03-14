@@ -36,6 +36,8 @@ export const logMessageFunctions = {
   configPropertyChanged: (property: string) =>
     `Config property ${property} changed, refreshing...`,
 
+  cronJobStarted: (jobName: string) => `Cron job ${jobName} started`,
+
   loggedIn: (username: string | undefined) =>
     `Bot is ready! Logged in as ${username ?? 'an unknown user'}`,
 

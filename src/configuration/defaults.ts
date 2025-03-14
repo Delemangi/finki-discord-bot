@@ -17,6 +17,7 @@ export const DEFAULT_CONFIGURATION = {
   intervals: {
     buttonIdle: 60_000,
     ephemeralReply: 5_000,
+    sendReminders: 15_000,
     ticketsCheck: 900_000,
   },
   oathEnabled: false,

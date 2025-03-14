@@ -188,43 +188,6 @@ export const recreateRegularsTemporaryChannel = async () => {
   );
 };
 
-export const resetTemporaryVipChannel = () => {
-  const temporaryChannel = getTemporaryChannelsProperty(TemporaryChannel.VIP);
-
-  if (temporaryChannel === undefined) {
-    return;
-  }
-
-  const cron = new Cron(temporaryChannel.cron, recreateVipTemporaryChannel);
-
-  logger.info(
-    logMessageFunctions.tempVipScheduled(
-      getNextRunTime(cron.nextRuns(1).at(-1), 'mk-MK'),
-    ),
-  );
-};
-
-export const resetTemporaryRegularsChannel = () => {
-  const temporaryChannel = getTemporaryChannelsProperty(
-    TemporaryChannel.Regulars,
-  );
-
-  if (temporaryChannel === undefined) {
-    return;
-  }
-
-  const cron = new Cron(
-    temporaryChannel.cron,
-    recreateRegularsTemporaryChannel,
-  );
-
-  logger.info(
-    logMessageFunctions.tempRegularsScheduled(
-      getNextRunTime(cron.nextRuns(1).at(-1), 'mk-MK'),
-    ),
-  );
-};
-
 export const logEmbed = async (
   embed: EmbedBuilder,
   interaction: Interaction,

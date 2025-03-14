@@ -1,6 +1,5 @@
 import { type Reminder } from '@prisma/client';
 import { userMention } from 'discord.js';
-import { setTimeout } from 'node:timers/promises';
 
 import { client } from '../client.js';
 import { deleteReminder, getReminders } from '../data/database/Reminder.js';
@@ -38,25 +37,20 @@ const remindUser = async (reminder: Reminder) => {
 };
 
 export const sendReminders = async () => {
-  while (true) {
-    try {
-      const reminders = await getReminders();
+  try {
+    const reminders = await getReminders();
 
-      if (reminders === null) {
-        await setTimeout(15_000);
-        continue;
-      }
-
-      for (const reminder of reminders) {
-        if (reminder.timestamp.getTime() <= Date.now()) {
-          await remindUser(reminder);
-          await deleteReminder(reminder.id);
-        }
-      }
-    } catch (error) {
-      logger.error(logErrorFunctions.reminderLoadError(error));
+    if (reminders === null) {
+      return;
     }
 
-    await setTimeout(15_000);
+    for (const reminder of reminders) {
+      if (reminder.timestamp.getTime() <= Date.now()) {
+        await remindUser(reminder);
+        await deleteReminder(reminder.id);
+      }
+    }
+  } catch (error) {
+    logger.error(logErrorFunctions.reminderLoadError(error));
   }
 };

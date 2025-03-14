@@ -6,12 +6,10 @@ import {
   roleMention,
   ThreadAutoArchiveDuration,
 } from 'discord.js';
-import { setTimeout } from 'node:timers/promises';
 
 import { getTicketCloseComponents } from '../components/tickets.js';
 import {
   getChannelsProperty,
-  getIntervalsProperty,
   getTicketingProperty,
 } from '../configuration/main.js';
 import { Channel } from '../lib/schemas/Channel.js';
@@ -124,37 +122,31 @@ export const closeTicket = async (ticketId: string) => {
 };
 
 export const closeInactiveTickets = async () => {
-  while (true) {
-    const allowedInactivityDays = getTicketingProperty('allowedInactivityDays');
-    const ticketsCheckInterval = getIntervalsProperty('ticketsCheck');
+  const allowedInactivityDays = getTicketingProperty('allowedInactivityDays');
 
-    const maxTicketInactivityMilliseconds = allowedInactivityDays * 86_400_000;
+  const maxTicketInactivityMilliseconds = allowedInactivityDays * 86_400_000;
 
-    const ticketThreads = await getActiveTickets();
+  const ticketThreads = await getActiveTickets();
 
-    if (ticketThreads === undefined || ticketThreads.size === 0) {
-      await setTimeout(ticketsCheckInterval);
+  if (ticketThreads === undefined || ticketThreads.size === 0) {
+    return;
+  }
+
+  for (const thread of ticketThreads.values()) {
+    await thread.messages.fetch();
+    const lastMessage = thread.lastMessage;
+
+    if (lastMessage === null) {
       continue;
     }
 
-    for (const thread of ticketThreads.values()) {
-      await thread.messages.fetch();
-      const lastMessage = thread.lastMessage;
+    const lastMessageDate = lastMessage.createdAt;
 
-      if (lastMessage === null) {
-        continue;
-      }
-
-      const lastMessageDate = lastMessage.createdAt;
-
-      if (
-        Date.now() - lastMessageDate.getTime() >
-        maxTicketInactivityMilliseconds
-      ) {
-        await closeTicket(thread.id);
-      }
+    if (
+      Date.now() - lastMessageDate.getTime() >
+      maxTicketInactivityMilliseconds
+    ) {
+      await closeTicket(thread.id);
     }
-
-    await setTimeout(ticketsCheckInterval);
   }
 };
