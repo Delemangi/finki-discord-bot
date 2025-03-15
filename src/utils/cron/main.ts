@@ -1,6 +1,7 @@
 import { Cron } from 'croner';
 
 import {
+  getConfigProperty,
   getIntervalsProperty,
   getTemporaryChannelsProperty,
 } from '../../configuration/main.js';
@@ -8,6 +9,7 @@ import { TemporaryChannel } from '../../lib/schemas/Channel.js';
 import { logger } from '../../logger.js';
 import { labels } from '../../translations/labels.js';
 import { logMessageFunctions } from '../../translations/logs.js';
+import { createSendAdsJob } from '../ads.js';
 import {
   recreateRegularsTemporaryChannel,
   recreateVipTemporaryChannel,
@@ -46,7 +48,7 @@ const convertMillisecondsToCronJob = (ms: number) => {
 };
 
 export const initializeCronJobs = () => {
-  const cronJobs = [];
+  const cronJobs: Cron[] = [];
 
   const sendRemindersInterval = getIntervalsProperty('sendReminders');
   const ticketsCheckInterval = getIntervalsProperty('ticketsCheck');
@@ -57,6 +59,8 @@ export const initializeCronJobs = () => {
   const regularsTemporaryChannel = getTemporaryChannelsProperty(
     TemporaryChannel.Regulars,
   );
+
+  const ads = getConfigProperty('ads');
 
   cronJobs.push(
     new Cron(
@@ -88,6 +92,12 @@ export const initializeCronJobs = () => {
         { name: 'recreateRegularsTemporaryChannel' },
         recreateRegularsTemporaryChannel,
       ),
+    );
+  }
+
+  for (const ad of ads ?? []) {
+    cronJobs.push(
+      new Cron(ad.cron, { name: `sendAd-${ad.name}` }, createSendAdsJob(ad)),
     );
   }
 

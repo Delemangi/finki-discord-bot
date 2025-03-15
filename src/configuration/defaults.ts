@@ -4,6 +4,7 @@ import {
 } from '../lib/schemas/BotConfig.js';
 
 export const DEFAULT_CONFIGURATION = {
+  ads: undefined,
   channels: undefined,
   crossposting: {
     channels: [],

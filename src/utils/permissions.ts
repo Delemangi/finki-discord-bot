@@ -12,6 +12,10 @@ const commandPermissions: Record<
     roles: Role[];
   }
 > = {
+  ad: {
+    permissions: [],
+    roles: [Role.Administrators, Role.Moderators],
+  },
   admin: {
     permissions: [],
     roles: [Role.Council],

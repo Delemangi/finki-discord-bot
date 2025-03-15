@@ -14,6 +14,7 @@ export const commandDescriptions = {
   about: 'За Discord ботот',
   'admin add': 'Предложи нов администратор',
   'admin remove': 'Отстрани администратор',
+  'ad send': 'Испрати реклама',
   anto: 'Преземи Анто факт',
   ask: 'Преземи најчесто поставувано прашање',
   classroom: 'Преземи информации за просторија',
@@ -136,6 +137,7 @@ export const commandDescriptions = {
 };
 
 export const commandResponses = {
+  adSent: 'Рекламата е испратена.',
   allCoursesAdded: 'Ги земавте сите предмети.',
   allCoursesRemoved: 'Ги отстранивте сите предмети.',
   allSemestersCoursesAdded: 'Ги земавте предметите од сите семестри.',

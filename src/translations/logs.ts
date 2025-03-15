@@ -21,6 +21,7 @@ export const logShortStrings = {
 };
 
 export const logMessages = {
+  adsInitialized: 'Ads initialized',
   channelsInitialized: 'Channels initialized',
   commandsRegistered: 'Commands registered',
   pollsInitialized: 'Polls initialized',
@@ -30,6 +31,9 @@ export const logMessages = {
 export const logMessageFunctions = {
   channelNotGuildTextBased: (channelId: string) =>
     `Channel ${channelId} is not a guild text-based channel`,
+
+  channelNotSendable: (channelId: string) =>
+    `Channel ${channelId} is not sendable`,
 
   closedTicket: (ticketThreadId: string) => `Closed ticket ${ticketThreadId}`,
 
@@ -215,6 +219,8 @@ export const logErrorFunctions = {
   roleNotFound: (role: string) => `Role ${role} not found`,
 
   scriptExecutionError: (error: unknown) => `Failed executing script\n${error}`,
+
+  sendAdsError: (error: unknown) => `Failed sending ads\n${error}`,
 
   unknownInteractionError: (userId: string) =>
     `Unknown interaction from ${userId}`,

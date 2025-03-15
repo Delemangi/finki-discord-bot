@@ -14,6 +14,16 @@ const TemporaryChannelConfigSchema = z
 
 export const RequiredBotConfigSchema = z
   .object({
+    ads: z
+      .array(
+        z.object({
+          channels: z.array(z.string()),
+          content: z.string(),
+          cron: z.string(),
+          name: z.string(),
+        }),
+      )
+      .optional(),
     channels: z.record(ChannelSchema, z.string().optional()).optional(),
     crossposting: z
       .object({
