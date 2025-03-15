@@ -20,8 +20,8 @@ const getCronJobForEveryNSeconds = (n: number) => `*/${n} * * * * *`;
 export const initializeCronJobs = () => {
   const cronJobs = [];
 
-  const sendRemindersInterval = getIntervalsProperty('sendReminders');
-  const ticketsCheckInterval = getIntervalsProperty('ticketsCheck');
+  const sendRemindersInterval = getIntervalsProperty('sendReminders') / 1_000;
+  const ticketsCheckInterval = getIntervalsProperty('ticketsCheck') / 1_000;
 
   const vipTemporaryChannel = getTemporaryChannelsProperty(
     TemporaryChannel.VIP,
