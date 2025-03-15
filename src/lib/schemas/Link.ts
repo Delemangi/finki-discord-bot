@@ -5,12 +5,12 @@ import { z } from 'zod';
 export const LinkSchema = z
   .object({
     created_at: z.string(),
-    description: z.string().optional(),
+    description: z.string().nullable(),
     id: z.string(),
     name: z.string(),
     updated_at: z.string(),
     url: z.string(),
-    user_id: z.string().optional(),
+    user_id: z.string().nullable(),
   })
   .transform((data) => ({
     createdAt: new Date(data.created_at),
