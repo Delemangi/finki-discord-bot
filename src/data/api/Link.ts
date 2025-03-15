@@ -130,7 +130,7 @@ export const updateLink = async (name?: string, link?: UpdateLink) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      method: 'POST',
+      method: 'PUT',
     });
 
     if (!result.ok) {
