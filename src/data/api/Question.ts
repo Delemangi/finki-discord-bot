@@ -3,11 +3,11 @@ import { z } from 'zod';
 import { getChatbotUrl } from '../../configuration/environment.js';
 import {
   type CreateQuestion,
-  CreateQuestionSchema,
+  PreparedCreateQuestionSchema,
+  PreparedUpdateQuestionSchema,
   QuestionSchema,
   QuestionsSchema,
   type UpdateQuestion,
-  UpdateQuestionSchema,
 } from '../../lib/schemas/Question.js';
 import { logger } from '../../logger.js';
 import { databaseErrorFunctions } from '../../translations/database.js';
@@ -95,7 +95,7 @@ export const createQuestion = async (question?: CreateQuestion) => {
 
   try {
     const result = await fetch(`${chatbotUrl}/questions/create`, {
-      body: JSON.stringify(CreateQuestionSchema.parse(question)),
+      body: JSON.stringify(PreparedCreateQuestionSchema.parse(question)),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -130,7 +130,7 @@ export const updateQuestion = async (
 
   try {
     const result = await fetch(`${chatbotUrl}/questions/update/${name}`, {
-      body: JSON.stringify(UpdateQuestionSchema.parse(question)),
+      body: JSON.stringify(PreparedUpdateQuestionSchema.parse(question)),
       headers: {
         'Content-Type': 'application/json',
       },

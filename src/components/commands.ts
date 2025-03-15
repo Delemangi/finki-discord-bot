@@ -501,7 +501,7 @@ export const getQuestionEmbed = (question: Question) =>
 export const getQuestionComponents = (question: Question) => {
   const components: Array<ActionRowBuilder<ButtonBuilder>> = [];
 
-  if (question.links === undefined) {
+  if (question.links === null) {
     return components;
   }
 
