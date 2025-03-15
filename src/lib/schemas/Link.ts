@@ -26,34 +26,34 @@ export const LinksSchema = z.array(LinkSchema);
 
 export type Link = z.infer<typeof LinkSchema>;
 
-export const CreateLinkSchema = z
-  .object({
-    description: z.string().optional(),
-    name: z.string(),
-    url: z.string(),
-    userId: z.string().optional(),
-  })
-  .transform((data) => ({
-    description: data.description,
-    name: data.name,
-    url: data.url,
-    user_id: data.userId,
-  }));
+export const CreateLinkSchema = z.object({
+  description: z.string().nullable(),
+  name: z.string(),
+  url: z.string(),
+  userId: z.string().nullable(),
+});
+
+export const PreparedCreateLinkSchema = CreateLinkSchema.transform((data) => ({
+  description: data.description,
+  name: data.name,
+  url: data.url,
+  user_id: data.userId,
+}));
 
 export type CreateLink = z.infer<typeof CreateLinkSchema>;
 
-export const UpdateLinkSchema = z
-  .object({
-    description: z.string().optional(),
-    name: z.string().optional(),
-    url: z.string().optional(),
-    userId: z.string().optional(),
-  })
-  .transform((data) => ({
-    description: data.description,
-    name: data.name,
-    url: data.url,
-    user_id: data.userId,
-  }));
+export const UpdateLinkSchema = z.object({
+  description: z.string().nullable(),
+  name: z.string().nullable(),
+  url: z.string().nullable(),
+  userId: z.string().nullable(),
+});
+
+export const PreparedUpdateLinkSchema = UpdateLinkSchema.transform((data) => ({
+  description: data.description,
+  name: data.name,
+  url: data.url,
+  user_id: data.userId,
+}));
 
 export type UpdateLink = z.infer<typeof UpdateLinkSchema>;
