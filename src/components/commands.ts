@@ -543,7 +543,7 @@ export const getLinkEmbed = (link: Link) => {
     .setTitle(link.name)
     .setTimestamp();
 
-  if (link.description !== undefined) {
+  if (link.description !== null) {
     embed.setDescription(link.description);
   }
 
