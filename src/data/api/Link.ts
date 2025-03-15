@@ -3,9 +3,10 @@ import { z } from 'zod';
 import { getChatbotUrl } from '../../configuration/environment.js';
 import {
   type CreateLink,
-  CreateLinkSchema,
   LinkSchema,
   LinksSchema,
+  PreparedCreateLinkSchema,
+  PreparedUpdateLinkSchema,
   type UpdateLink,
 } from '../../lib/schemas/Link.js';
 import { logger } from '../../logger.js';
@@ -94,7 +95,7 @@ export const createLink = async (link?: CreateLink) => {
 
   try {
     const result = await fetch(`${chatbotUrl}/links/create`, {
-      body: JSON.stringify(CreateLinkSchema.parse(link)),
+      body: JSON.stringify(PreparedCreateLinkSchema.parse(link)),
       headers: {
         'Content-Type': 'application/json',
       },
@@ -126,7 +127,7 @@ export const updateLink = async (name?: string, link?: UpdateLink) => {
 
   try {
     const result = await fetch(`${chatbotUrl}/links/update/${name}`, {
-      body: JSON.stringify(link),
+      body: JSON.stringify(PreparedUpdateLinkSchema.parse(link)),
       headers: {
         'Content-Type': 'application/json',
       },
