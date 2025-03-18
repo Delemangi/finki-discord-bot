@@ -44,4 +44,5 @@ networks:
   finki_stack:
     name: finki_stack
     driver: bridge
-    external: true
+    # Set external to true to use an existing network
+    # external: true
