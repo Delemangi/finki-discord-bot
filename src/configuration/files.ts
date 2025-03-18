@@ -96,7 +96,7 @@ export const reloadConfigurationFiles = async () => {
   const prerequisitesData = parseContent(prerequisitesRaw);
   const professorsData = parseContent(professorsRaw);
   const rolesData = parseContent(rolesRaw, {});
-  const sessionsData = parseContent(sessionsRaw);
+  const sessionsData = parseContent(sessionsRaw, {});
   const staffData = parseContent(staffRaw);
 
   const coursesDataPromise = z.string().array().parseAsync(coursesData);
