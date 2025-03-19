@@ -31,8 +31,9 @@ There is also a dev container available to skip everything past the first step a
 3. Generate the database schema typings: `npm run generate`
 4. Make sure to have a PostgreSQL instance running
 5. Prepare env. variables by coping `env.sample` to `.env` - minimum setup requires `BOT_TOKEN`, `APPLICATION_ID` and `DATABASE_URL`
-6. Build the project: `npm run build`
-7. Run it: `npm run start:env` or `npm run dev` (for hot reloading)
+6. Deploy latest database schema: `npm run apply`
+7. Build the project: `npm run build`
+8. Run it: `npm run start:env` or `npm run dev` (for hot reloading)
 
 ## Configuration
 
@@ -68,6 +69,8 @@ Please set the `CHATBOT_URL` env. variable to the URL of the chat bot.
 
 1. How to create a database migration?
    - Make a change to `prisma.schema` and run `npm run migrate`
+2. How to run all database migrations?
+   - Run `npm run apply`
 2. Can SQLite be used instead of PostgreSQL?
    - Unfortunately, no. Prisma does not allow the database provider to be changed after creating the first migration.
 
