@@ -6,5 +6,6 @@
   "name": "finki-discord-bot",
   "service": "container",
   "shutdownAction": "stopCompose",
-  "workspaceFolder": "/app"
+  "workspaceFolder": "/app",
+  "postCreateCommand": "npm i && npm run generate"
 }

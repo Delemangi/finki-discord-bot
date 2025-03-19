@@ -1,6 +1,8 @@
-FROM mcr.microsoft.com/vscode/devcontainers/base:alpine
+FROM mcr.microsoft.com/devcontainers/typescript-node:22
 WORKDIR /app
 
-RUN apk add --no-cache nodejs npm git openjdk17
+USER root
+RUN mkdir -p /app/node_modules /app/.husky && chown -R node:node /app/node_modules /app/.husky
+USER node
 
 CMD [ "sleep", "infinity" ]
