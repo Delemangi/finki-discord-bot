@@ -71,8 +71,10 @@ Please set the `CHATBOT_URL` env. variable to the URL of the chat bot.
    - Make a change to `prisma.schema` and run `npm run migrate`
 2. How to run all database migrations?
    - Run `npm run apply`
-2. Can SQLite be used instead of PostgreSQL?
+3. Can SQLite be used instead of PostgreSQL?
    - Unfortunately, no. Prisma does not allow the database provider to be changed after creating the first migration.
+4. "The table `public.Config` does not exist in the current database."
+   - You have not deployed the database migrations. Run `npm run apply`
 
 ## License
 
