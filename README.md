@@ -22,7 +22,7 @@ This Docker image is available as [ghcr.io/delemangi/finki-discord-bot](https://
 5. Build the project in Docker: `docker compose build`
 6. Run it: `docker compose up -d`
 
-There is also a dev container available to skip everything past the first step.
+There is also a dev container available to skip everything past the first step and defining the env. variables.
 
 ## Setup Without Docker
 
