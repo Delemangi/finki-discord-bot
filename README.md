@@ -2,95 +2,66 @@
 
 Discord bot for the [`FCSE Students`](https://discord.gg/finki-studenti-810997107376914444) Discord server, powered by [discord.js](https://github.com/discordjs/discord.js) 14. Requires Node.js and PostgreSQL. It is recommended to use the latest LTS versions of both.
 
-It's recommended, but not required to run this inside a Docker container.
+## Quick Setup (Production)
 
-## Features
+If you would like to just run the bot, you can use `docker-compose.prod.yaml`:
 
-This discord bot contains many features personalized for the above-mentioned Discord server. Some of the highlights include:
+1. Download `docker-compose.prod.yaml`
+2. Run `docker compose -f docker-compose.prod.yaml up -d`
 
-- Extensible FAQ and common links system
-- Providing about courses: general information, participants, professors, and so on
-- Providing information about other aspects, such as professors' contact information, classrooms, previous timetables of exam sessions, and so on
-- Management of user content through commands
-- Extensible permissions system
-- Fully featured polls
-- Automation of the entire management of the server, allowing members to vote in new admins and such
-- Experience & leveling
-- Moderation
-- Ticketing system
-- Miscellaneous functionalities, such as reminders, sending embeds for rules, role assignments
+If you wish to avoid Docker, you will have to setup your own PostgreSQL instance and set the `DATABASE_URL` env. variable to point to it.
 
-## Installation
+## Quick Setup (Development)
 
-For development purposes, be sure to run `npm run prepare` to install the Git pre-commit hooks.
+1. Clone the repository: `git clone https://github.com/Delemangi/finki-discord-bot.git`
+2. Install dependencies (and pre-commit hooks): `npm i`
+3. Generate the database schema typings: `npm run generate`
+4. Prepare env. variables by coping `env.sample` to `.env` - minimum setup requires bot credentials
+5. Build the project in Docker: `docker compose build`
+6. Run it: `docker compose up -d`
 
-Also, this project contains a dev container configuration for hot reloading. If you encounter issues in the dev container with Prisma, then run `npm run generate` to regenerate the Prisma client.
+There is also a dev container available to skip everything past the first step.
 
-### Installation (Docker)
+## Setup Without Docker
 
-The project is available as a Docker image on DockerHub as `delemangi/finki-discord-bot`.
-
-Using the provided production Docker Compose setup:
-
-1. Download the `docker-compose.prod.yaml` from the repository, put it in a folder and rename it to `docker-compose.yaml`
-2. Pull the images: `docker compose pull`
-
-Using the repository:
-
-1. Clone the repository: `git clone git@github.com:Delemangi/finki-discord-bot.git`
-2. Build the images: `docker compose build`
-
-### Installation (Normal)
-
-1. Clone the repository: `git clone git@github.com:Delemangi/finki-discord-bot.git`
-2. Install the dependencies: `npm i`
-3. Build the project: `npm run build`
-
-## Running
-
-### Running (Docker)
-
-Regardless of the Docker steps you have followed above for installation, run `docker compose up`
-
-### Running (Normal)
-
-`npm run start`
+1. Clone the repository: `git clone https://github.com/Delemangi/finki-discord-bot.git`
+2. Install dependencies (and pre-commit hooks): `npm i`
+3. Generate the database schema typings: `npm run generate`
+4. Make sure to have a PostgreSQL instance running
+5. Prepare env. variables by coping `env.sample` to `.env` - minimum setup requires bot credentials and database URL
+6. Build the project: `npm run build`
+7. Run it: `npm run start:env` / `npm run dev` (hot reload)
 
 ## Configuration
 
-### Main
+### Environment
 
-The configuration is currently split into a `.env` file which contains login information for the bot and for the database, and several `json` configuration files for command output.
+The env. variables are stored in `.env.sample`. Only the `BOT_TOKEN` and `APPLICATION_ID` variables are required (for logging in to Discord).
 
-1. Create a `.env` file in the root directory containing the environment variables as specified in the `.env.sample` file in the repository
-2. Optionally, create a `config` folder in the root directory containing:
-   1. `classrooms.json` - an array of all the classrooms
-   2. `courses.json` - an array of the names of all courses
-   3. `information.json` - an array of all the course information
-   4. `participants.json` - an array of all courses and their number of participants
-   5. `prerequisites.json` - an array of course prerequisites
-   6. `professors.json` - an array of all courses and their professors and assistants
-   7. `roles.json` - roles for the scripts and for the embeds
-   8. `sessions.json` - an object of all exam sessions
-   9. `staff.json` - an array of the staff
+### Files
 
-### Sessions
+The data for the informational commands is stored in these files. It is not required to configure them. Here is a list of all files:
 
-Create a `sessions` folder in the root directory. All the session schedule files should go there. The files names should match the respective names in the `sessions.json` config file.
+1. `classrooms.json` - an array of all the classrooms
+2. `courses.json` - an array of the names of all courses
+3. `information.json` - an array of all the course information
+4. `participants.json` - an array of all courses and their number of participants
+5. `prerequisites.json` - an array of course prerequisites
+6. `professors.json` - an array of all courses and their professors and assistants
+7. `roles.json` - roles for the scripts and for the embeds
+8. `sessions.json` - an object of all exam sessions
+9. `staff.json` - an array of the staff
 
-## Logging
+### Sessions (Timetables)
 
-The bot logs `info` and above messages in the console, and logs `debug` and above messages in `bot.log`, which gets wiped on every bot restart.
+All the session schedule files should be placed in the `sessions` folder. The names of the files should match the respective names in `sessions.json`.
 
-## Future
+## FAQ
 
-Here is a list of features that are planned:
-
-- Moving away from configuration files as much as possible, and keeping everything in the database
-- Web application for configuring the bot
-- Testing
-- More moderation and lockdown functionalities
-- Bundling, if there is an easy way to achieve it
+1. How to create a database migration?
+   - Make a change to `prisma.schema` and run `npm run migrate`
+2. Can SQLite be used instead of PostgreSQL?
+   - Unfortunately, no. Prisma does not allow the database provider to be changed after creating the first migration.
 
 ## License
 
