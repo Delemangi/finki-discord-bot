@@ -65,7 +65,7 @@ This project features integration with [`finki-chat-bot`](https://github.com/Del
 
 Please set the `CHATBOT_URL` env. variable to the URL of the chat bot.
 
-## FAQ
+## Frequently Asked Questions
 
 1. How to create a database migration?
    - Make a change to `prisma.schema` and run `npm run migrate`
@@ -73,7 +73,12 @@ Please set the `CHATBOT_URL` env. variable to the URL of the chat bot.
    - Run `npm run apply`
 3. Can SQLite be used instead of PostgreSQL?
    - Unfortunately, no. Prisma does not allow the database provider to be changed after creating the first migration.
-4. "The table `public.Config` does not exist in the current database."
+4. The hot reloading is too slow
+   - This is a Discord limitation because the bot has to relogin each time
+
+## Frequently Encountered Errors
+
+1. "The table `public.Config` does not exist in the current database."
    - You have not deployed the database migrations. Run `npm run apply`
 
 ## License
