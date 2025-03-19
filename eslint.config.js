@@ -7,7 +7,7 @@ import {
 } from 'eslint-config-imperium';
 
 export default [
-  { ignores: ['dist'] },
+  { ignores: ['dist/', '.devcontainer/', 'db/', 'pgadmin/', 'logs/'] },
   base,
   node,
   typescript,
