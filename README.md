@@ -75,11 +75,17 @@ Please set the `CHATBOT_URL` env. variable to the URL of the chat bot.
    - Unfortunately, no. Prisma does not allow the database provider to be changed after creating the first migration.
 4. The hot reloading is too slow
    - This is a Discord limitation because the bot has to relogin each time
+5. How do I create a Discord bot?
+   - Refer to <https://discord.com/developers/applications>
 
 ## Frequently Encountered Errors
 
 1. "The table `public.Config` does not exist in the current database."
    - You have not deployed the database migrations. Run `npm run apply`
+2. "Error: Used disallowed intents"
+   - You must enable all intents in the Discord Developer Portal
+3. "Error \[TokenInvalid]: An invalid token was provided."
+   - Your bot token is invalid.
 
 ## License
 
