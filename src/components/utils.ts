@@ -125,7 +125,7 @@ export const linkStaff = (professors: string) => {
     .split('\n')
     .map((professor) => [
       professor,
-      getStaff().find((staff) => professor.includes(staff.name))?.finki,
+      getStaff().find((staff) => professor.includes(staff.name))?.profile,
     ]);
 
   const linkedStaff = allStaff

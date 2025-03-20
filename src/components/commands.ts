@@ -292,11 +292,11 @@ export const getStaffEmbed = (information: Staff) =>
       },
       {
         inline: true,
-        name: labels.finki,
+        name: labels.profile,
         value:
-          information.finki === ''
+          information.profile === ''
             ? labels.none
-            : `[${labels.link}](${information.finki})`,
+            : `[${labels.link}](${information.profile})`,
       },
       {
         inline: true,
@@ -308,11 +308,11 @@ export const getStaffEmbed = (information: Staff) =>
       },
       {
         inline: true,
-        name: labels.timetable,
+        name: labels.consultations,
         value:
-          information.raspored === ''
+          information.consultations === ''
             ? labels.none
-            : `[${labels.link}](${information.raspored})`,
+            : `[${labels.link}](${information.consultations})`,
       },
     )
     .setTimestamp();
