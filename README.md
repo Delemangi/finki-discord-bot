@@ -6,8 +6,8 @@ Discord bot for the [`FCSE Students`](https://discord.gg/finki-studenti-81099710
 
 If you would like to just run the bot:
 
-1. Download [`docker-compose.prod.yaml`](https://github.com/Delemangi/finki-discord-bot/blob/main/docker-compose.prod.yaml)
-2. Run `docker compose -f docker-compose.prod.yaml up -d`
+1. Download [`compose.prod.yaml`](https://github.com/Delemangi/finki-discord-bot/blob/main/compose.prod.yaml)
+2. Run `docker compose -f compose.prod.yaml up -d`
 
 If you wish to avoid Docker, you will have to setup your own PostgreSQL instance and set the `DATABASE_URL` env. variable to point to it.
 
