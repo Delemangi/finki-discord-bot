@@ -20,6 +20,7 @@ export const RequiredBotConfigSchema = z
           channels: z.array(z.string()),
           content: z.string(),
           cron: z.string(),
+          expiry: z.string().optional(),
           name: z.string(),
         }),
       )

@@ -33,6 +33,14 @@ export const createSendAdsJob =
   (ad: FullyRequiredBotConfig['ads'][0]) => async () => {
     for (const channelId of ad.channels) {
       try {
+        if (ad.expiry !== undefined) {
+          const adsExpiration = Date.parse(ad.expiry);
+
+          if (adsExpiration <= Date.now()) {
+            return;
+          }
+        }
+
         const channel = await client.channels.fetch(channelId);
 
         if (!channel?.isSendable()) {
