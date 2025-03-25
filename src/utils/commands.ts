@@ -27,7 +27,6 @@ const refreshCommands = async () => {
   commands.clear();
 
   for (const file of commandFiles) {
-    // TODO: Find a way to validate this
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const command: Command = await import(`../commands/${file}`);
 

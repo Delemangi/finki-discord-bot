@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
-
 import { PrismaClient } from '@prisma/client';
 
 import { Channel } from '../lib/schemas/Channel.js';

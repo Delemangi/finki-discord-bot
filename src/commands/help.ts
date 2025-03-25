@@ -65,7 +65,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     idle: buttonIdle,
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   collector.on('collect', async (buttonInteraction) => {
     if (
       buttonInteraction.user.id !==
@@ -141,7 +140,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     }
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   collector.on('end', async () => {
     try {
       await interaction.editReply({

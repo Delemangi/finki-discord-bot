@@ -25,9 +25,7 @@ let transformedClassrooms: Array<[string, string]> | null = null;
 export const handleCourseAutocomplete = async (
   interaction: AutocompleteInteraction,
 ) => {
-  if (transformedCourses === null) {
-    transformedCourses = Object.entries(transformOptions(getCourses()));
-  }
+  transformedCourses ??= Object.entries(transformOptions(getCourses()));
 
   try {
     await interaction.respond(
@@ -43,11 +41,9 @@ export const handleCourseAutocomplete = async (
 export const handleProfessorAutocomplete = async (
   interaction: AutocompleteInteraction,
 ) => {
-  if (transformedProfessors === null) {
-    transformedProfessors = Object.entries(
-      transformOptions(getStaff().map((professor) => professor.name)),
-    );
-  }
+  transformedProfessors ??= Object.entries(
+    transformOptions(getStaff().map((professor) => professor.name)),
+  );
 
   try {
     await interaction.respond(
@@ -69,11 +65,9 @@ export const handleCourseRoleAutocomplete = async (
     return;
   }
 
-  if (transformedCourseRoles === null) {
-    transformedCourseRoles = Object.entries(
-      transformOptions(Object.values(courses)),
-    );
-  }
+  transformedCourseRoles ??= Object.entries(
+    transformOptions(Object.values(courses)),
+  );
 
   try {
     await interaction.respond(
@@ -135,11 +129,9 @@ export const handleLinkAutocomplete = async (
 export const handleSessionAutocomplete = async (
   interaction: AutocompleteInteraction,
 ) => {
-  if (transformedSessions === null) {
-    transformedSessions = Object.entries(
-      transformOptions(Object.keys(getSessions())),
-    );
-  }
+  transformedSessions ??= Object.entries(
+    transformOptions(Object.keys(getSessions())),
+  );
 
   try {
     await interaction.respond(
@@ -155,15 +147,13 @@ export const handleSessionAutocomplete = async (
 export const handleClassroomAutocomplete = async (
   interaction: AutocompleteInteraction,
 ) => {
-  if (transformedClassrooms === null) {
-    transformedClassrooms = Object.entries(
-      transformOptions(
-        getClassrooms().map(
-          (classroom) => `${classroom.classroom} (${classroom.location})`,
-        ),
+  transformedClassrooms ??= Object.entries(
+    transformOptions(
+      getClassrooms().map(
+        (classroom) => `${classroom.classroom} (${classroom.location})`,
       ),
-    );
-  }
+    ),
+  );
 
   try {
     await interaction.respond(

@@ -78,7 +78,6 @@ export const createTicket = async (
     time: 1_800_000,
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   collector.once('collect', async () => {
     await ticketChannel.send(
       ticketMessageFunctions.ticketStarted(
@@ -89,7 +88,6 @@ export const createTicket = async (
     collector.stop();
   });
 
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
   collector.on('end', async (messages) => {
     if (messages.size > 0) {
       return;
