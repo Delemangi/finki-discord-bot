@@ -48,7 +48,12 @@ export const createSendAdsJob =
           return;
         }
 
-        await channel.send(ad.content);
+        await channel.send({
+          allowedMentions: {
+            parse: [],
+          },
+          content: ad.content,
+        });
       } catch (error) {
         logger.error(logErrorFunctions.sendAdsError(error));
       }
