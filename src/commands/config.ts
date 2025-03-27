@@ -25,6 +25,7 @@ import {
   commandResponses,
 } from '../translations/commands.js';
 import { createCommandChoices } from '../utils/commands.js';
+import { safeReplyToInteraction } from '../utils/messages.js';
 
 const name = 'config';
 const permission = PermissionFlagsBits.ManageMessages;
@@ -88,7 +89,8 @@ const handleConfigGet = async (interaction: ChatInputCommandInteraction) => {
   const key = BotConfigKeysSchema.parse(rawKey);
   const value = getConfigProperty(key);
 
-  await interaction.editReply(
+  await safeReplyToInteraction(
+    interaction,
     codeBlock(
       'json',
       JSON.stringify(
@@ -156,7 +158,7 @@ const handleConfigSet = async (interaction: ChatInputCommandInteraction) => {
   );
 
   void refreshOnConfigChange(key);
-  await interaction.editReply(codeBlock('json', newProperty));
+  await safeReplyToInteraction(interaction, codeBlock('json', newProperty));
 };
 
 const handleConfigReload = async (interaction: ChatInputCommandInteraction) => {
