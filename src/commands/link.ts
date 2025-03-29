@@ -43,5 +43,6 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply({
     components,
     content: user ? commandResponseFunctions.commandFor(user.id) : null,
+    embeds: [],
   });
 };
