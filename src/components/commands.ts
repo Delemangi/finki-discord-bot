@@ -537,15 +537,6 @@ export const getQuestionComponents = (question: Question) => {
   return components;
 };
 
-export const getLinkComponents = (link: Link) => [
-  new ActionRowBuilder<ButtonBuilder>().addComponents(
-    new ButtonBuilder()
-      .setURL(link.url.startsWith('http') ? link.url : `https://${link.url}`)
-      .setLabel(labels.link)
-      .setStyle(ButtonStyle.Link),
-  ),
-];
-
 export const getListQuestionsEmbed = (questions: Question[]) =>
   new EmbedBuilder()
     .setColor(getThemeColor())
