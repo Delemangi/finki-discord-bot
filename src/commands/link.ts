@@ -3,7 +3,7 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 
-import { getLinkComponents, getLinkEmbed } from '../components/commands.js';
+import { getLinkComponents } from '../components/commands.js';
 import {
   commandDescriptions,
   commandErrors,
@@ -39,11 +39,9 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const embed = getLinkEmbed(link);
   const components = getLinkComponents(link);
   await interaction.editReply({
     components,
     content: user ? commandResponseFunctions.commandFor(user.id) : null,
-    embeds: [embed],
   });
 };
