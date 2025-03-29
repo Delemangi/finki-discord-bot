@@ -3,7 +3,6 @@ import {
   SlashCommandBuilder,
 } from 'discord.js';
 
-import { getLinkComponents } from '../components/commands.js';
 import {
   commandDescriptions,
   commandErrors,
@@ -39,10 +38,11 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  const components = getLinkComponents(link);
   await interaction.editReply({
-    components,
-    content: user ? commandResponseFunctions.commandFor(user.id) : null,
-    embeds: [],
+    content: user
+      ? `${commandResponseFunctions.commandFor(user.id)}\n${link.url.startsWith('http') ? link.url : `https://${link.url}`}`
+      : link.url.startsWith('http')
+        ? link.url
+        : `https://${link.url}`,
   });
 };

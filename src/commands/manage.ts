@@ -7,7 +7,6 @@ import {
 import { z } from 'zod';
 
 import {
-  getLinkComponents,
   getQuestionComponents,
   getQuestionEmbed,
 } from '../components/commands.js';
@@ -492,9 +491,10 @@ const handleManageLinkSet = async (
     }
 
     try {
-      const linkComponents = getLinkComponents(createdLink);
       await interaction.editReply({
-        components: linkComponents,
+        content: createdLink.url.startsWith('http')
+          ? createdLink.url
+          : `https://${createdLink.url}`,
       });
     } catch (error) {
       logger.error(logErrorFunctions.linkSendError(error));
@@ -521,9 +521,10 @@ const handleManageLinkSet = async (
   }
 
   try {
-    const components = getLinkComponents(updatedLink);
     await interaction.editReply({
-      components,
+      content: updatedLink.url.startsWith('http')
+        ? updatedLink.url
+        : `https://${updatedLink.url}`,
     });
   } catch (error) {
     logger.error(logErrorFunctions.linkSendError(error));
