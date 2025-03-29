@@ -9,6 +9,7 @@ import { reloadConfigurationFiles } from '../configuration/files.js';
 import {
   getConfigKeys,
   getConfigProperty,
+  reloadDatabaseConfig,
   setConfigProperty,
 } from '../configuration/main.js';
 import { refreshOnConfigChange } from '../configuration/refresh.js';
@@ -25,7 +26,6 @@ import {
   commandResponses,
 } from '../translations/commands.js';
 import { createCommandChoices } from '../utils/commands.js';
-import { safeReplyToInteraction } from '../utils/messages.js';
 
 const name = 'config';
 const permission = PermissionFlagsBits.ManageMessages;
@@ -84,24 +84,35 @@ const handleConfigGet = async (interaction: ChatInputCommandInteraction) => {
         },
       ],
     });
+
+    return;
   }
 
   const key = BotConfigKeysSchema.parse(rawKey);
   const value = getConfigProperty(key);
 
-  await safeReplyToInteraction(
-    interaction,
-    codeBlock(
-      'json',
-      JSON.stringify(
-        {
-          [key]: value,
-        },
-        null,
-        2,
-      ),
-    ),
+  const config = JSON.stringify(
+    {
+      [key]: value,
+    },
+    null,
+    2,
   );
+
+  if (config.length > 2_000) {
+    await interaction.editReply({
+      files: [
+        {
+          attachment: Buffer.from(config),
+          name: 'config.json',
+        },
+      ],
+    });
+
+    return;
+  }
+
+  await interaction.editReply(codeBlock('json', config));
 };
 
 const handleConfigSet = async (interaction: ChatInputCommandInteraction) => {
@@ -158,13 +169,27 @@ const handleConfigSet = async (interaction: ChatInputCommandInteraction) => {
   );
 
   void refreshOnConfigChange(key);
-  await safeReplyToInteraction(interaction, codeBlock('json', newProperty));
+
+  if (newProperty.length > 2_000) {
+    await interaction.editReply({
+      files: [
+        {
+          attachment: Buffer.from(newProperty),
+          name: 'config.json',
+        },
+      ],
+    });
+
+    return;
+  }
+
+  await interaction.editReply(codeBlock('json', newProperty));
 };
 
 const handleConfigReload = async (interaction: ChatInputCommandInteraction) => {
   await interaction.editReply(commandResponses.configurationReloading);
 
-  await reloadConfigurationFiles();
+  await Promise.all([reloadDatabaseConfig(), reloadConfigurationFiles()]);
 
   await interaction.editReply(commandResponses.configurationReloaded);
 };

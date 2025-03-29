@@ -11,15 +11,23 @@ import { logger } from '../logger.js';
 import { configErrors } from '../translations/errors.js';
 import { DEFAULT_CONFIGURATION } from './defaults.js';
 
-let databaseConfig = await getConfig();
-let { data: config } = BotConfigSchema.safeParse(databaseConfig?.value);
+let config: BotConfig | undefined;
 
-if (config === undefined) {
-  databaseConfig = await setConfig(DEFAULT_CONFIGURATION);
-  config = BotConfigSchema.safeParse(databaseConfig?.value).data;
+export const reloadDatabaseConfig = async () => {
+  const currentConfig = await getConfig();
+  const parsedConfig = BotConfigSchema.safeParse(currentConfig?.value);
 
-  logger.warn(configErrors.invalidConfiguration);
-}
+  if (parsedConfig.data === undefined) {
+    const defaultConfig = await setConfig(DEFAULT_CONFIGURATION);
+    config = BotConfigSchema.parse(defaultConfig?.value);
+
+    logger.warn(configErrors.invalidConfiguration);
+
+    return;
+  }
+
+  config = parsedConfig.data;
+};
 
 export const getConfigProperty = <T extends BotConfigKeys>(key: T) =>
   config?.[key] ?? DEFAULT_CONFIGURATION[key];
