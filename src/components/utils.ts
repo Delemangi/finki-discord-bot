@@ -68,6 +68,7 @@ export const getButtonInfo = (
     case 'addCourses':
     case 'exp':
     case 'help':
+    case 'irregulars':
     case 'poll':
     case 'polls':
     case 'pollStats':
