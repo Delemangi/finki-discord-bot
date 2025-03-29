@@ -4,6 +4,7 @@ import type { FullyRequiredBotConfig } from '../lib/schemas/BotConfig.js';
 
 import { client } from '../client.js';
 import { getConfigProperty } from '../configuration/main.js';
+import { Channel } from '../lib/schemas/Channel.js';
 import { logger } from '../logger.js';
 import { labels } from '../translations/labels.js';
 import {
@@ -11,6 +12,7 @@ import {
   logMessageFunctions,
   logMessages,
 } from '../translations/logs.js';
+import { getChannel } from './channels.js';
 import { DATE_FORMATTER } from './cron/constants.js';
 
 export const getAdByName = (name: string) => {
@@ -54,6 +56,9 @@ export const createSendAdsJob =
           },
           content: ad.content,
         });
+
+        const logsChannel = getChannel(Channel.Logs);
+        await logsChannel?.send(logMessageFunctions.adSent(ad.name, channelId));
       } catch (error) {
         logger.error(logErrorFunctions.sendAdsError(error));
       }

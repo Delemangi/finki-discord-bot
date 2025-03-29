@@ -3,6 +3,7 @@
 import {
   type AutocompleteInteraction,
   type ButtonInteraction,
+  channelMention,
   type ChatInputCommandInteraction,
   inlineCode,
   type MessageContextMenuCommandInteraction,
@@ -29,6 +30,9 @@ export const logMessages = {
 };
 
 export const logMessageFunctions = {
+  adSent: (adName: string, channelId: string) =>
+    `Ad ${adName} sent to channel ${channelMention(channelId)}`,
+
   channelNotGuildTextBased: (channelId: string) =>
     `Channel ${channelId} is not a guild text-based channel`,
 
