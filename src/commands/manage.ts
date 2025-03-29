@@ -58,7 +58,7 @@ import {
 } from '../translations/commands.js';
 import { labels } from '../translations/labels.js';
 import { logErrorFunctions } from '../translations/logs.js';
-import { getNormalizedLink } from '../utils/links.js';
+import { getNormalizedUrl } from '../utils/links.js';
 import { LINK_REGEX } from '../utils/regex.js';
 
 const name = 'manage';
@@ -492,7 +492,7 @@ const handleManageLinkSet = async (
     }
 
     try {
-      await interaction.editReply(getNormalizedLink(createdLink.url));
+      await interaction.editReply(getNormalizedUrl(createdLink.url));
     } catch (error) {
       logger.error(logErrorFunctions.linkSendError(error));
       await interaction.editReply(commandErrors.linkSendFailed);
@@ -518,7 +518,7 @@ const handleManageLinkSet = async (
   }
 
   try {
-    await interaction.editReply(getNormalizedLink(updatedLink.url));
+    await interaction.editReply(getNormalizedUrl(updatedLink.url));
   } catch (error) {
     logger.error(logErrorFunctions.linkSendError(error));
     await interaction.editReply(commandErrors.linkSendFailed);

@@ -8,7 +8,7 @@ import {
   commandErrors,
   commandResponseFunctions,
 } from '../translations/commands.js';
-import { getNormalizedLink } from '../utils/links.js';
+import { getNormalizedUrl } from '../utils/links.js';
 import { getClosestLink } from '../utils/search.js';
 
 const name = 'link';
@@ -39,9 +39,11 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     return;
   }
 
-  await interaction.editReply({
-    content: user
-      ? `${commandResponseFunctions.commandFor(user.id)}\n${getNormalizedLink(link.url)}`
-      : getNormalizedLink(link.url),
-  });
+  const normalizedUrl = getNormalizedUrl(link.url);
+
+  await interaction.editReply(
+    user
+      ? `${commandResponseFunctions.commandFor(user.id)}\n${normalizedUrl}`
+      : normalizedUrl,
+  );
 };

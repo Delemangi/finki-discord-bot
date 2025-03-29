@@ -38,6 +38,7 @@ import {
 import { labels } from '../translations/labels.js';
 import { paginationStringFunctions } from '../translations/pagination.js';
 import { commandMention } from '../utils/commands.js';
+import { getNormalizedUrl } from '../utils/links.js';
 import { getUsername } from '../utils/members.js';
 import { linkStaff } from './utils.js';
 
@@ -523,7 +524,7 @@ export const getQuestionComponents = (question: Question) => {
       }
 
       const button = new ButtonBuilder()
-        .setURL(url.startsWith('http') ? url : `https://${url}`)
+        .setURL(getNormalizedUrl(url))
         .setLabel(name)
         .setStyle(ButtonStyle.Link);
 

@@ -1,2 +1,2 @@
-export const getNormalizedLink = (url: string) =>
+export const getNormalizedUrl = (url: string) =>
   url.startsWith('http') ? url : `https://${url}`;
