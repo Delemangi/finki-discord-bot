@@ -21,7 +21,7 @@ export const getAdByName = (name: string) => {
   }
 
   const ad = ads.find((i) => i.name === name) ?? null;
-  const job = scheduledJobs.find((i) => i.name === `sendAd-${name}`);
+  const job = scheduledJobs.find((i) => i.name === `sendAd-${name}`) ?? null;
 
   return {
     ad,
