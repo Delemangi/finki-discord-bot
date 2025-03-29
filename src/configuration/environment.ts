@@ -23,7 +23,10 @@ export const getApplicationId = () => {
 
 export const getChatbotUrl = () => {
   try {
-    return z.string().parse(env['CHATBOT_URL']);
+    return z
+      .string()
+      .transform((url) => (url.endsWith('/') ? url.slice(0, -1) : url))
+      .parse(env['CHATBOT_URL']);
   } catch {
     return null;
   }
