@@ -537,19 +537,6 @@ export const getQuestionComponents = (question: Question) => {
   return components;
 };
 
-export const getLinkEmbed = (link: Link) => {
-  const embed = new EmbedBuilder()
-    .setColor(getThemeColor())
-    .setTitle(link.name)
-    .setTimestamp();
-
-  if (link.description !== null) {
-    embed.setDescription(link.description);
-  }
-
-  return embed;
-};
-
 export const getLinkComponents = (link: Link) => [
   new ActionRowBuilder<ButtonBuilder>().addComponents(
     new ButtonBuilder()

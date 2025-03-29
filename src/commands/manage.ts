@@ -8,7 +8,6 @@ import { z } from 'zod';
 
 import {
   getLinkComponents,
-  getLinkEmbed,
   getQuestionComponents,
   getQuestionEmbed,
 } from '../components/commands.js';
@@ -493,11 +492,9 @@ const handleManageLinkSet = async (
     }
 
     try {
-      const linkEmbed = getLinkEmbed(createdLink);
       const linkComponents = getLinkComponents(createdLink);
       await interaction.editReply({
         components: linkComponents,
-        embeds: [linkEmbed],
       });
     } catch (error) {
       logger.error(logErrorFunctions.linkSendError(error));
@@ -524,11 +521,9 @@ const handleManageLinkSet = async (
   }
 
   try {
-    const embed = getLinkEmbed(updatedLink);
     const components = getLinkComponents(updatedLink);
     await interaction.editReply({
       components,
-      embeds: [embed],
     });
   } catch (error) {
     logger.error(logErrorFunctions.linkSendError(error));
