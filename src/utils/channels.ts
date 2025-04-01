@@ -239,3 +239,5 @@ export const deleteResponse = async (
     logger.error(logErrorFunctions.responseDeleteError(message.id, error));
   }
 };
+
+export const getAllTextChannels = async () => {};

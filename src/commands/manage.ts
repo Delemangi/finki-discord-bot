@@ -321,6 +321,11 @@ export const data = new SlashCommandBuilder()
           .setDescription('Компании во JSON формат')
           .setRequired(true),
       ),
+  )
+  .addSubcommand((subcommand) =>
+    subcommand
+      .setName('lock-channels')
+      .setDescription(commandDescriptions['manage lock-channels']),
   );
 
 const handleManageQuestionSet = async (
@@ -524,6 +529,8 @@ const handleManageLinkSet = async (
     await interaction.editReply(commandErrors.linkSendFailed);
   }
 };
+
+const handleLockChannels = () => {};
 
 const handleManageLinkDelete = async (
   interaction: ChatInputCommandInteraction,
@@ -906,6 +913,7 @@ const manageHandlers = {
   'link-delete': handleManageLinkDelete,
   'link-dump': handleManageLinkDump,
   'link-set': handleManageLinkSet,
+  'lock-channels': handleLockChannels,
   'question-content': handleManageQuestionContent,
   'question-delete': handleManageQuestionDelete,
   'question-dump': handleManageQuestionDump,

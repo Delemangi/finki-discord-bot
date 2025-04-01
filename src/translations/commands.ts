@@ -65,6 +65,7 @@ export const commandDescriptions = {
   'manage link-delete': 'Избриши линк',
   'manage link-dump': 'Извлечи ги сите линкови од базата на податоци',
   'manage link-set': 'Додади или измени линк',
+  'manage lock-channels': 'Заклучи ги каналите за пишување',
   'manage question-content': 'Прикажи содржина на прашање',
   'manage question-delete': 'Избриши прашање',
   'manage question-dump': 'Извлечи ги сите прашања од базата на податоци',
