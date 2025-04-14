@@ -36,7 +36,9 @@ export const execute = async (interaction: ChatInputCommandInteraction) => {
     'channel',
     true,
   ) as GuildBasedChannel;
-  const message = interaction.options.getString('message', true);
+  const message = interaction.options
+    .getString('message', true)
+    .replaceAll(String.raw`\n`, '\n');
 
   if (!channel.isTextBased()) {
     await interaction.editReply(commandErrors.invalidChannel);
