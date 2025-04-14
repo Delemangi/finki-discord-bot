@@ -12,5 +12,5 @@ export const data = new SlashCommandBuilder()
   .setDescription(commandDescriptions[name]);
 
 export const execute = async (interaction: ChatInputCommandInteraction) => {
-  await interaction.editReply('https://github.com/Delemangi/finki-discord-bot');
+  await interaction.editReply('https://github.com/finki-hub/finki-discord-bot');
 };

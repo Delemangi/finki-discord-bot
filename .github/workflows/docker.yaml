@@ -35,4 +35,4 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ghcr.io/delemangi/finki-discord-bot:${{ github.ref == 'refs/heads/main' && 'latest' || 'dev' }}
+            ghcr.io/finki-hub/finki-discord-bot:${{ github.ref == 'refs/heads/main' && 'latest' || 'dev' }}

@@ -11,7 +11,7 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       CHATBOT_URL: ${CHATBOT_URL}
       TZ: ${TZ}
-    image: ghcr.io/delemangi/finki-discord-bot:latest
+    image: ghcr.io/finki-hub/finki-discord-bot:latest
     networks:
       - finki_stack
     restart: unless-stopped

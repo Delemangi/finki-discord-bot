@@ -17,7 +17,7 @@
   "eslint.useFlatConfig": true,
   "files.eol": "\n",
   "sonarlint.connectedMode.project": {
-    "connectionId": "delemangi",
+    "connectionId": "finki-hub",
     "projectKey": "finki-discord-bot"
   },
   "typescript.format.insertSpaceAfterTypeAssertion": true,
