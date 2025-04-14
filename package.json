@@ -4,29 +4,29 @@
     "url": "https://github.com/Delemangi/finki-discord-bot/issues"
   },
   "dependencies": {
-    "@prisma/client": "^6.5.0",
+    "@prisma/client": "^6.6.0",
     "async-lock": "^1.4.1",
-    "chrono-node": "^2.7.9",
+    "chrono-node": "^2.8.0",
     "croner": "^9.0.0",
-    "discord-api-types": "^0.37.119",
+    "discord-api-types": "^0.37.120",
     "discord.js": "^14.18.0",
     "fuse.js": "^7.1.0",
-    "prisma": "^6.5.0",
+    "prisma": "^6.6.0",
     "winston": "^3.17.0",
     "zod": "^3.24.1"
   },
   "description": "FINKI Discord Bot",
   "devDependencies": {
-    "@swc/core": "^1.11.16",
-    "@swc/helpers": "^0.5.15",
+    "@swc/core": "^1.11.21",
+    "@swc/helpers": "^0.5.17",
     "@types/async-lock": "^1.4.2",
-    "eslint": "^9.23.0",
+    "eslint": "^9.24.0",
     "eslint-config-imperium": "^2.2.0",
     "husky": "^9.1.7",
     "nodemon": "^3.1.9",
     "rimraf": "^6.0.1",
     "ts-node": "^10.9.2",
-    "typescript": "~5.8.2",
+    "typescript": "~5.8.3",
     "vitest": "^3.1.1"
   },
   "engines": {
