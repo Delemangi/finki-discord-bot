@@ -20,7 +20,7 @@
     "@swc/core": "^1.11.21",
     "@swc/helpers": "^0.5.17",
     "@types/async-lock": "^1.4.2",
-    "eslint": "^9.24.0",
+    "eslint": "^9.25.0",
     "eslint-config-imperium": "^2.2.0",
     "husky": "^9.1.7",
     "nodemon": "^3.1.9",
