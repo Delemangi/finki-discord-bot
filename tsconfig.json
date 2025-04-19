@@ -31,10 +31,5 @@
     "vitest.config.js",
     "dist",
     "test"
-  ],
-  "ts-node": {
-    "files": true,
-    "swc": true,
-    "transpileOnly": true
-  }
+  ]
 }
