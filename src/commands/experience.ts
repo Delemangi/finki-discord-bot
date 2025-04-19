@@ -217,7 +217,7 @@ const handleExperienceLeaderboard = async (
     let buttons;
     let page =
       Number(
-        buttonInteraction.message.embeds[0]?.footer?.text?.match(/\d+/gu)?.[0],
+        buttonInteraction.message.embeds[0]?.footer?.text.match(/\d+/gu)?.[0],
       ) - 1;
 
     switch (id) {
