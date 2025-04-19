@@ -33,6 +33,10 @@ const options = [
     value: '3600000',
   },
   {
+    name: '8 ч.',
+    value: '28800000',
+  },
+  {
     name: '24 ч.',
     value: '86400000',
   },
