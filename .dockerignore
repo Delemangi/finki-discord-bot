@@ -9,7 +9,7 @@ node_modules
 # Docker
 .dockerignore
 Dockerfile*
-docker-compose*
+compose*
 
 # Output
 dist
@@ -36,8 +36,8 @@ README.md
 .devcontainer
 
 # ESLint
+eslint.config.js
 .eslintcache
-.eslintrc*
 
 # Database
 db
@@ -57,9 +57,6 @@ sonar-project.properties
 # EditorConfig
 .editorconfig
 
-# Nodemon
-nodemon.json
+# ESBuild
 
-# Scripts
-restart.sh
-restart.bat
+esbuild.config.js
