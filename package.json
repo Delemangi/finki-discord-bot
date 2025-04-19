@@ -18,6 +18,7 @@
   "description": "FINKI Discord Bot",
   "devDependencies": {
     "@types/async-lock": "^1.4.2",
+    "esbuild": "^0.25.2",
     "eslint": "^9.25.0",
     "eslint-config-imperium": "^2.2.0",
     "husky": "^9.1.7",
@@ -39,7 +40,7 @@
   },
   "scripts": {
     "apply": "prisma migrate deploy",
-    "build": "npm run clean && tsc",
+    "build": "npm run clean && node esbuild.config.js",
     "clean": "rimraf dist",
     "dev": "node --watch --import=tsx src/index.ts",
     "format": "eslint . --cache --fix",
