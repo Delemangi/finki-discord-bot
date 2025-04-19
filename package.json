@@ -36,7 +36,7 @@
   "name": "finki-discord-bot",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Delemangi/finki-discord-bot.git"
+    "url": "git+https://github.com/Delemangi/finki-discord-bot.git"
   },
   "scripts": {
     "apply": "prisma migrate deploy",
