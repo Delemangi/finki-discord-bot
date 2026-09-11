@@ -1,14 +1,25 @@
 import {
   type ChatInputCommandInteraction,
+  heading,
+  HeadingLevel,
+  hyperlink,
   MessageFlags,
   SlashCommandBuilder,
 } from 'discord.js';
 
 import { getMentionComponent } from '@/common/components/mention.js';
-import { commandDescriptions, commandErrors } from '@/translations/commands.js';
+import { safeReplyToInteraction } from '@/common/utils/messages.js';
+import {
+  commandDescriptions,
+  commandErrors,
+  commandResponseFunctions,
+} from '@/translations/commands.js';
 
 import { getQuestionComponent } from '../components/components.js';
+import { getNormalizedUrl } from './links.js';
 import { getClosestQuestion } from './search.js';
+
+const MAX_COMPONENT_TEXT_LENGTH = 4_000;
 
 export const getCommonCommand = (name: keyof typeof commandDescriptions) => ({
   data: new SlashCommandBuilder()
@@ -38,6 +49,27 @@ export const getCommonCommand = (name: keyof typeof commandDescriptions) => ({
 
     if (question === null) {
       await interaction.editReply(commandErrors.faqNotFound);
+
+      return;
+    }
+
+    const title = heading(question.name, HeadingLevel.Two);
+    const mention = user ? commandResponseFunctions.commandFor(user.id) : '';
+
+    if (
+      title.length + question.content.length + mention.length >
+      MAX_COMPONENT_TEXT_LENGTH
+    ) {
+      const links = Object.entries(question.links ?? {})
+        .filter(([name, url]) => name !== '' && url !== '')
+        .map(([name, url]) => hyperlink(name, getNormalizedUrl(url)))
+        .join('\n');
+
+      await safeReplyToInteraction(
+        interaction,
+        [mention, title, question.content, links].filter(Boolean).join('\n\n'),
+        { mentionUsers: user !== null },
+      );
 
       return;
     }
