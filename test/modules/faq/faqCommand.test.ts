@@ -7,7 +7,8 @@ import { getCommonCommand } from '@/modules/faq/utils/faqCommand.js';
 import { commandResponseFunctions } from '@/translations/commands.js';
 
 const mocks = vi.hoisted(() => ({
-  getClosestQuestion: vi.fn<() => Promise<null | Question>>(),
+  getClosestQuestion:
+    vi.fn<() => Promise<null | Pick<Question, 'content' | 'links' | 'name'>>>(),
 }));
 
 vi.mock('@/modules/faq/utils/search.js', () => ({
@@ -33,13 +34,8 @@ const createInteraction = (userId: null | string = null) => {
 const setQuestion = (content: string, links: Question['links'] = null) => {
   mocks.getClosestQuestion.mockResolvedValue({
     content,
-    createdAt: Temporal.Instant.from('2026-09-11T00:00:00Z'),
-    distance: undefined,
-    id: 'faq-question',
     links,
     name: 'FAQ',
-    updatedAt: Temporal.Instant.from('2026-09-11T00:00:00Z'),
-    userId: null,
   });
 };
 
